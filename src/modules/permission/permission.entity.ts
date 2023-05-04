@@ -4,4 +4,6 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export class Permission {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+  @Column('varchar')
+  title: string;
 }

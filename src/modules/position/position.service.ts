@@ -16,7 +16,7 @@ export class PositionService {
   constructor(
     @InjectRepository(Position)
     private readonly positionRepository: PositionRepository,
-  ) {}
+  ) { }
 
   async getAll(
     options: IPaginationOptions,
@@ -30,18 +30,18 @@ export class PositionService {
   }
 
   async getOne(id: string) {
-    const position = await this.positionRepository.findOne({
+    const data = await this.positionRepository.findOne({
       // relations: {
       //   users: {},
       // },
       where: { id },
     });
 
-    if (!position) {
-      throw new HttpException('Position not found', HttpStatus.NOT_FOUND);
+    if (!data) {
+      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
     }
 
-    return position;
+    return data;
   }
 
   async deleteOne(id: string) {
@@ -55,7 +55,7 @@ export class PositionService {
   }
 
   async create(value: CreatePositionDto) {
-    const data = await this.positionRepository.create(value);
+    const data = this.positionRepository.create(value);
     return await this.positionRepository.save(data);
   }
 }
