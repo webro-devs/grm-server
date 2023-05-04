@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
 
-import { Product } from './position.entity';
+import { Position } from './position.entity';
 
-export class ProductRepository extends Repository<Product> {}
+export class PositionRepository extends Repository<Position> {}

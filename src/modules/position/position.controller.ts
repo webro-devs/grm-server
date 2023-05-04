@@ -1,9 +1,9 @@
 import { Controller } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ProductService } from './position.service';
+import { PositionService } from './position.service';
 
-@ApiTags('Product')
-@Controller('product')
-export class ProductController {
-  constructor(private readonly adminService: ProductService) {}
+@ApiTags('Position')
+@Controller('position')
+export class PositionController {
+  constructor(private readonly positionService: PositionService) {}
 }

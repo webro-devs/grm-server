@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from './position.entity';
-import { ProductRepository } from './position.repository';
+import { Position } from './position.entity';
+import { PositionRepository } from './position.repository';
 
 Injectable();
-export class ProductService {
+export class PositionService {
   constructor(
-    @InjectRepository(Product)
-    private readonly productRepository: ProductRepository,
+    @InjectRepository(Position)
+    private readonly positionRepository: PositionRepository,
   ) {}
 }
