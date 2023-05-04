@@ -1,6 +1,12 @@
-import { IsArray, IsOptional, IsString } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsString, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-class UpdatePositionDto {}
-
+class UpdatePositionDto {
+  @ApiProperty({
+    description: `title`,
+    example: 'Graphic design',
+  })
+  @IsOptional()
+  @IsString()
+  readonly title: string;
+}
 export default UpdatePositionDto;

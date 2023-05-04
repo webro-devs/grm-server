@@ -1,6 +1,13 @@
-import { IsArray, IsNotEmpty, IsString, IsOptional } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-class CreatePositionDto {}
+class CreatePositionDto {
+  @ApiProperty({
+    description: `title`,
+    example: 'Backend developer',
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly title: string;
+}
 
 export default CreatePositionDto;
