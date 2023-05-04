@@ -5,4 +5,7 @@ import * as bcrypt from 'bcrypt';
 export class Collection {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column('varchar')
+  title: string;
 }
