@@ -1,2 +1,2 @@
-export { default as CreateProductDto } from './create-product.dto';
-export { default as UpdateProductDto } from './update-product.dto';
+export { default as CreateFilialDto } from './create-filial.dto';
+export { default as UpdateFilialDto } from './update-filial.dto';

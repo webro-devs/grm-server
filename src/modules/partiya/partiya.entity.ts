@@ -1,8 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-@Entity('product')
-export class Product {
+@Entity('partiya')
+export class Partiya {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 }
