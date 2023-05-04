@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { Product } from './product.entity';
-import { ProductRepository } from './product.repository';
-import { ProductService } from './product.service';
-import { ProductController } from './product.controller';
+import { Permission } from './permission.entity';
+import { PermissionRepository } from './permission.repository';
+import { PermissionService } from './permission.service';
+import { PermissionController } from './permission.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product])],
-  controllers: [ProductController],
-  providers: [ProductService, ProductRepository],
-  exports: [ProductService, ProductRepository],
+  imports: [TypeOrmModule.forFeature([Permission])],
+  controllers: [PermissionController],
+  providers: [PermissionService, PermissionRepository],
+  exports: [PermissionService, PermissionRepository],
 })
-export class ProductModule {}
+export class PermissionModule {}

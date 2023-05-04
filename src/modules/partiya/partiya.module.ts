@@ -12,4 +12,4 @@ import { PartiyaController } from './partiya.controller';
   providers: [PartiyaService, PartiyaRepository],
   exports: [PartiyaService, PartiyaRepository],
 })
-export class ProductModule {}
+export class PartiyaModule {}

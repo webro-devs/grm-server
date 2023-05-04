@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from './product.entity';
-import { ProductRepository } from './product.repository';
+import { Permission } from './permission.entity';
+import { PermissionRepository } from './permission.repository';
 
 Injectable();
-export class ProductService {
+export class PermissionService {
   constructor(
-    @InjectRepository(Product)
-    private readonly productRepository: ProductRepository,
+    @InjectRepository(Permission)
+    private readonly permissionRepository: PermissionRepository,
   ) {}
 }

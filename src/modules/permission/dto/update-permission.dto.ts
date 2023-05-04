@@ -1,6 +1,6 @@
 import { IsArray, IsOptional, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-class UpdateProductDto {}
+class UpdatePermissionDto {}
 
-export default UpdateProductDto;
+export default UpdatePermissionDto;

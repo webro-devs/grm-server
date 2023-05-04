@@ -12,4 +12,4 @@ import { FilialController } from './filial.controller';
   providers: [FilialService, FilialRepository],
   exports: [FilialService, FilialRepository],
 })
-export class ProductModule {}
+export class FilialModule {}

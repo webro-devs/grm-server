@@ -1,9 +1,9 @@
 import { Controller } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ProductService } from './product.service';
+import { PermissionService } from './permission.service';
 
-@ApiTags('Product')
-@Controller('product')
-export class ProductController {
-  constructor(private readonly adminService: ProductService) {}
+@ApiTags('Permission')
+@Controller('permission')
+export class PermissionController {
+  constructor(private readonly permissionService: PermissionService) {}
 }

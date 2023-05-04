@@ -12,4 +12,4 @@ import { PositionController } from './position.controller';
   providers: [PositionService, PositionRepository],
   exports: [PositionService, PositionRepository],
 })
-export class ProductModule {}
+export class PositionModule {}

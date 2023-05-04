@@ -5,5 +5,5 @@ import { CollectionService } from './collection.service';
 @ApiTags('Collection')
 @Controller('collection')
 export class CollectionController {
-  constructor(private readonly adminService: CollectionService) {}
+  constructor(private readonly collectionService: CollectionService) {}
 }

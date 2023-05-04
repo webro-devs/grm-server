@@ -12,4 +12,4 @@ import { CollectionController } from './collection.controller';
   providers: [CollectionService, CollectionRepository],
   exports: [CollectionService, CollectionRepository],
 })
-export class ProductModule {}
+export class CollectionModule {}
