@@ -5,4 +5,10 @@ import * as bcrypt from 'bcrypt';
 export class Filial {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column()
+  title: string;
+
+  @Column()
+  address: string;
 }

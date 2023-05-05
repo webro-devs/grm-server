@@ -16,7 +16,7 @@ export class PermissionService {
   constructor(
     @InjectRepository(Permission)
     private readonly permissionRepository: PermissionRepository,
-  ) { }
+  ) {}
 
   async getAll(
     options: IPaginationOptions,
@@ -31,9 +31,6 @@ export class PermissionService {
 
   async getOne(id: string) {
     const data = await this.permissionRepository.findOne({
-      // relations: {
-      //   users: {},
-      // },
       where: { id },
     });
 
@@ -58,5 +55,4 @@ export class PermissionService {
     const data = this.permissionRepository.create(value);
     return await this.permissionRepository.save(data);
   }
-
 }
