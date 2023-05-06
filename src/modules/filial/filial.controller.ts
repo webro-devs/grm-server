@@ -55,7 +55,6 @@ export class FilialController {
     return this.filialService.getOne(id);
   }
 
-  // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
   @Post('/')
   @ApiOperation({ summary: 'Method: creates new filial' })
   @ApiCreatedResponse({
@@ -70,7 +69,6 @@ export class FilialController {
     }
   }
 
-  // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
   @Patch('/:id')
   @ApiOperation({ summary: 'Method: updating filial' })
   @ApiOkResponse({
@@ -88,7 +86,6 @@ export class FilialController {
     }
   }
 
-  // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
   @Delete('/:id')
   @ApiOperation({ summary: 'Method: deleting filial' })
   @ApiOkResponse({

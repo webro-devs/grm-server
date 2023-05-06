@@ -17,6 +17,22 @@ class UpdateFilialDto {
   @IsOptional()
   @IsString()
   readonly address: string;
+
+  @ApiProperty({
+    description: `Starting time`,
+    example: '9:00',
+  })
+  @IsOptional()
+  @IsString()
+  readonly startWorkTime: string;
+
+  @ApiProperty({
+    description: `Ending time`,
+    example: '18:00',
+  })
+  @IsOptional()
+  @IsString()
+  readonly endWorkTime: string;
 }
 
 export default UpdateFilialDto;
