@@ -11,4 +11,10 @@ export class Filial {
 
   @Column()
   address: string;
+
+  @Column()
+  startWorkTime: string;
+
+  @Column()
+  endWorkTime: string;
 }
