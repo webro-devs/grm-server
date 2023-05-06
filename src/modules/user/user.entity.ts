@@ -6,7 +6,16 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
+  fullName: string;
+
+  @Column({ type: 'varchar' })
+  login: string;
+
+  @Column({ type: 'varchar' })
+  avatar: string;
+
+  @Column({ type: 'varchar' })
   password: string;
 
   public async hashPassword(password: string): Promise<void> {
