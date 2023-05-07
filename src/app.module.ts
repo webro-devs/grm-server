@@ -11,6 +11,7 @@ import { PermissionModule } from './modules/permission/permission.module';
 import { PositionModule } from './modules/position/position.module';
 import { ProductModule } from './modules/product/product.module';
 import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UserModule } from './modules/user/user.module';
         configService.get('database'),
       inject: [ConfigService],
     }),
+    AuthModule,
     CollectionModule,
     FilialModule,
     KassaModule,
