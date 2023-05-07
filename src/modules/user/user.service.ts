@@ -29,6 +29,13 @@ export class UserService {
     });
   }
 
+  async getByLogin(login:string){
+    const data = await this.userRepository.findOne({where:{login}})
+    if (!data) {
+      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
+    }
+    return data
+  }
   async getOne(id: string) {
     const data = await this.userRepository.findOne({
       where: { id },
