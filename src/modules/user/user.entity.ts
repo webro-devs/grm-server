@@ -1,6 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserRoleType } from '../../infra/shared/type';
+import { Position } from '../position/position.entity';
 
 @Entity('users')
 export class User {
@@ -21,6 +28,10 @@ export class User {
 
   @Column({ type: 'int' })
   role: UserRoleType;
+
+  @ManyToOne(() => Position, (position) => position.users)
+  @JoinColumn()
+  position: Position;
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);
