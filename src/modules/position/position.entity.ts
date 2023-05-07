@@ -1,5 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from '../user/user.entity';
 
 @Entity('position')
 export class Position {
@@ -8,4 +8,7 @@ export class Position {
 
   @Column('varchar')
   title: string;
+
+  @OneToMany(() => User, (user) => user.position)
+  users: User[];
 }
