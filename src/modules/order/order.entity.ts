@@ -1,22 +1,28 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('kassa')
-export class Kassa {
+@Entity('order')
+export class Order {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'varchar' })
-  startDate: string;
+  isActive: string;
 
   @Column({ type: 'varchar' })
-  endDate: string;
+  seller: string;
 
   @Column({ type: 'varchar' })
-  filial: string;
+  casher: string;
 
   @Column({ type: 'varchar' })
-  order: string;
+  product: string;
 
   @Column({ type: 'varchar' })
-  money: string;
+  date: string;
+
+  @Column({ type: 'varchar' })
+  kassa: string;
+
+  @Column({ type: 'varchar' })
+  price: string;
 }
