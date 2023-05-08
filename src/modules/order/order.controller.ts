@@ -1,9 +1,100 @@
-import { Controller } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  HttpException,
+  Delete,
+  Patch,
+  Param,
+  Get,
+  Query,
+} from '@nestjs/common';
+import { UpdateResult } from 'typeorm';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { OrderService } from './order.service';
+import { Route } from '../../infra/shared/decorators/route.decorator';
+import { PaginationDto } from '../../infra/shared/dto';
+import { CreateOrderDto, UpdateOrderDto } from './dto';
+import { Order } from './order.entity';
 
 @ApiTags('Order')
 @Controller('order')
 export class KassaController {
   constructor(private readonly orderService: OrderService) {}
+
+  @Get('/')
+  @ApiOperation({ summary: 'Method: returns all orders' })
+  @ApiOkResponse({
+    description: 'The orders were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getData(@Route() route: string, @Query() query: PaginationDto) {
+    try {
+      return await this.orderService.getAll({ ...query, route });
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('/:id')
+  @ApiOperation({ summary: 'Method: returns single order by id' })
+  @ApiOkResponse({
+    description: 'The order was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getMe(@Param('id') id: string): Promise<Order> {
+    return this.orderService.getOne(id);
+  }
+
+  @Post('/')
+  @ApiOperation({ summary: 'Method: creates new order' })
+  @ApiCreatedResponse({
+    description: 'The order was created successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async saveData(@Body() positionData: CreateOrderDto): Promise<Order> {
+    try {
+      return await this.orderService.create(positionData);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Patch('/:id')
+  @ApiOperation({ summary: 'Method: updating order' })
+  @ApiOkResponse({
+    description: 'Order was changed',
+  })
+  @HttpCode(HttpStatus.OK)
+  async changeData(
+    @Body() positionData: UpdateOrderDto,
+    @Param('id') id: string,
+  ): Promise<UpdateResult> {
+    try {
+      return await this.orderService.change(positionData, id);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Delete('/:id')
+  @ApiOperation({ summary: 'Method: deleting order' })
+  @ApiOkResponse({
+    description: 'Order was deleted',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteData(@Param('id') id: string) {
+    try {
+      return await this.orderService.deleteOne(id);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }
