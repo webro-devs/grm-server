@@ -20,6 +20,9 @@ export class Kassa {
   @Column({ type: 'timestamp' })
   endDate: string;
 
+  @Column({ type: 'boolean', default: true })
+  isActive: boolean = true;
+
   @ManyToOne(() => Filial, (filial) => filial.kassa)
   @JoinColumn()
   filial: Filial;
