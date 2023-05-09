@@ -59,14 +59,15 @@ export class OrderService {
     return response;
   }
 
-  async create(value: CreateOrderDto) {
-    const data = this.orderRepository
+  async create(value: CreateOrderDto, id: string) {
+    const data = { ...value, seller: id };
+    const response = this.orderRepository
       .createQueryBuilder()
       .insert()
       .into(Order)
-      .values(value as unknown as Order)
+      .values(data as unknown as Order)
       .returning('id')
       .execute();
-    return data;
+    return response;
   }
 }
