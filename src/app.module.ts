@@ -12,6 +12,7 @@ import { PositionModule } from './modules/position/position.module';
 import { ProductModule } from './modules/product/product.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { OrderModule } from './modules/order/order.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AuthModule } from './modules/auth/auth.module';
     CollectionModule,
     FilialModule,
     KassaModule,
+    OrderModule,
     PartiyaModule,
     PermissionModule,
     PositionModule,

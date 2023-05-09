@@ -1,34 +1,25 @@
-import { IsOptional, IsString } from 'class-validator';
-// import { Transform } from 'class-transformer';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class UpdateOrderDto {
   @ApiProperty({
-    description: `seller`,
-    example: 'John Doe',
+    description: `product id`,
+    example: 'uuid',
   })
   @IsOptional()
   @IsString()
-  readonly seller: string;
-
-  @ApiProperty({
-    description: `casher`,
-    example: 'Jack Richard',
-  })
-  @IsOptional()
-  @IsString()
-  readonly casher: string;
+  readonly product: string;
 
   @ApiProperty({
     description: `price`,
     example: 1500,
   })
   @IsOptional()
-  @IsString()
-  readonly price: string;
+  @IsNumber()
+  readonly price: number;
 
   @ApiProperty({
     description: `date`,
-    example: '15:32GTM5z',
+    example: '2023-05-02 08:10:23.726769',
   })
   @IsOptional()
   @IsString()

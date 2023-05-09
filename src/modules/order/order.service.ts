@@ -49,12 +49,22 @@ export class OrderService {
   }
 
   async change(value: UpdateOrderDto, id: string) {
-    const response = await this.orderRepository.update({ id }, value);
+    const response = await this.orderRepository.createQueryBuilder()
+    .update()
+    .set(value as unknown as Order)
+    .where("id = :id", { id })
+    .execute();
     return response;
   }
 
   async create(value: CreateOrderDto) {
-    const data = this.orderRepository.create(value);
-    return await this.orderRepository.save(data);
+    const data = this.orderRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Order)
+      .values(value as unknown as Order)
+      .returning('id')
+      .execute();
+    return data;
   }
 }

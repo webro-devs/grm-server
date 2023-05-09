@@ -1,36 +1,35 @@
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
-// import { Transform } from 'class-transformer';
+import { IsNotEmpty, IsString, IsOptional, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreateOrderDto {
   @ApiProperty({
-    description: `seller`,
-    example: 'John Doe',
+    description: `seller id`,
+    example: 'uuid',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly seller: string;
 
   @ApiProperty({
-    description: `casher`,
-    example: 'Jack Richard',
+    description: `product id`,
+    example: 'uuid',
   })
   @IsNotEmpty()
   @IsString()
-  readonly casher: string;
+  readonly product: string;
 
   @ApiProperty({
     description: `price`,
     example: 1500,
   })
   @IsNotEmpty()
-  @IsString()
-  readonly price: string;
+  @IsNumber()
+  readonly price: number;
 
   @ApiProperty({
     description: `date`,
-    example: '15:32GTM5z',
+    example: '2023-05-02 08:10:23.726769',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly date: string;
 }

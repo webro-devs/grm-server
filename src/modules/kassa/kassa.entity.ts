@@ -1,22 +1,29 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Order } from '../order/order.entity';
+import { Filial } from '../filial/filial.entity';
 
 @Entity('kassa')
 export class Kassa {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   startDate: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'timestamp' })
   endDate: string;
 
-  @Column({ type: 'varchar' })
-  filial: string;
+  @ManyToOne(() => Filial, (filial) => filial.kassa)
+  @JoinColumn()
+  filial: Filial;
 
-  @Column({ type: 'varchar' })
-  order: string;
-
-  @Column({ type: 'varchar' })
-  money: string;
+  @OneToMany(() => Order, (order) => order.kassa)
+  orders: Order[];
 }

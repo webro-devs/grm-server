@@ -26,7 +26,7 @@ import { Order } from './order.entity';
 
 @ApiTags('Order')
 @Controller('order')
-export class KassaController {
+export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Get('/')
@@ -59,9 +59,9 @@ export class KassaController {
     description: 'The order was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() positionData: CreateOrderDto): Promise<Order> {
+  async saveData(@Body() data: CreateOrderDto) {
     try {
-      return await this.orderService.create(positionData);
+      return await this.orderService.create(data);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

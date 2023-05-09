@@ -63,9 +63,9 @@ export class PositionController {
     description: 'The position was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() positionData: CreatePositionDto): Promise<Position> {
+  async saveData(@Body() data: CreatePositionDto): Promise<Position> {
     try {
-      return await this.positionService.create(positionData);
+      return await this.positionService.create(data);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

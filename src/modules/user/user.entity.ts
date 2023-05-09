@@ -3,11 +3,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserRoleType } from '../../infra/shared/type';
 import { Position } from '../position/position.entity';
+import { Order } from '../order/order.entity';
 
 @Entity('users')
 export class User {
@@ -32,6 +34,12 @@ export class User {
   @ManyToOne(() => Position, (position) => position.users)
   @JoinColumn()
   position: Position;
+
+  @OneToMany(() => Order, (order) => order.seller)
+  sellerOrders: Order[];
+
+  @OneToMany(() => Order, (order) => order.casher)
+  casherOrders: Order[];
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);
