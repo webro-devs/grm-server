@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Order } from '../order/order.entity';
 import { Filial } from '../filial/filial.entity';
+import { Cashflow } from '../cashflow/cashflow.entity';
 
 @Entity('kassa')
 export class Kassa {
@@ -21,7 +22,7 @@ export class Kassa {
   endDate: string;
 
   @Column({ type: 'boolean', default: true })
-  isActive: boolean = true;
+  isActive: boolean;
 
   @ManyToOne(() => Filial, (filial) => filial.kassa)
   @JoinColumn()
@@ -29,4 +30,7 @@ export class Kassa {
 
   @OneToMany(() => Order, (order) => order.kassa)
   orders: Order[];
+
+  @OneToMany(() => Cashflow, cashflow => cashflow.kassa)
+  cashflow: Cashflow[];
 }

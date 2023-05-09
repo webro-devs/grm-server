@@ -13,6 +13,7 @@ import { ProductModule } from './modules/product/product.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { OrderModule } from './modules/order/order.module';
+import { CashflowModule } from './modules/cashflow/cashflow.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { OrderModule } from './modules/order/order.module';
       inject: [ConfigService],
     }),
     AuthModule,
+    CashflowModule,
     CollectionModule,
     FilialModule,
     KassaModule,
