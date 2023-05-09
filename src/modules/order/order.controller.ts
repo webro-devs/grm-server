@@ -10,6 +10,7 @@ import {
   Param,
   Get,
   Query,
+  Req,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import {
@@ -59,9 +60,9 @@ export class OrderController {
     description: 'The order was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() data: CreateOrderDto) {
+  async saveData(@Body() data: CreateOrderDto, @Req() request) {
     try {
-      return await this.orderService.create(data);
+      return await this.orderService.create(data, request.user.id);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
