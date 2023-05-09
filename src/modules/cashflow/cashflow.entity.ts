@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Kassa } from '../kassa/kassa.entity';
 import { User } from '../user/user.entity';
 
@@ -8,7 +14,7 @@ export class Cashflow {
   id: string;
 
   @Column('varchar')
-  price: string;
+  price: number;
 
   @Column('varchar')
   type: string;
@@ -20,8 +26,10 @@ export class Cashflow {
   date: string;
 
   @ManyToOne(() => Kassa, (kassa) => kassa.cashflow)
+  @JoinColumn()
   kassa: Kassa;
 
   @ManyToOne(() => User, (user) => user.cashflow)
-  user: User;
+  @JoinColumn()
+  casher: User;
 }

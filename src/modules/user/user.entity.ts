@@ -42,7 +42,7 @@ export class User {
   @OneToMany(() => Order, (order) => order.casher)
   casherOrders: Order[];
 
-  @OneToMany(() => Cashflow, (cashflow) => cashflow.user)
+  @OneToMany(() => Cashflow, (cashflow) => cashflow.casher)
   cashflow: Cashflow[];
 
   public async hashPassword(password: string): Promise<void> {

@@ -1,5 +1,4 @@
-import { IsArray, IsNotEmpty, IsString, IsOptional } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsNotEmpty, IsString, IsOptional, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreateCashflowDto {
   @ApiProperty({
@@ -7,7 +6,7 @@ class CreateCashflowDto {
     example: '1600',
   })
   @IsNotEmpty()
-  @IsString()
+  @IsNumber()
   readonly price: number;
 
   @ApiProperty({
@@ -38,9 +37,9 @@ class CreateCashflowDto {
     description: `user id`,
     example: 'uuid',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  readonly user: string;
+  readonly casher: string;
 }
 
 export default CreateCashflowDto;

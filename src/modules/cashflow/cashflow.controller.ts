@@ -10,6 +10,7 @@ import {
   Param,
   Get,
   Query,
+  Req,
 } from '@nestjs/common';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import {
@@ -63,9 +64,9 @@ export class CashflowController {
     description: 'The permission was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() data: CreateCashflowDto): Promise<Cashflow> {
+  async saveData(@Body() data: CreateCashflowDto, @Req() request) {
     try {
-      return await this.cashflowService.create(data);
+      return await this.cashflowService.create(data, request.user.id);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

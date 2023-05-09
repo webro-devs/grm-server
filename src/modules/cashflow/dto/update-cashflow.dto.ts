@@ -1,4 +1,4 @@
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 class UpdateCashflowDto {
@@ -7,7 +7,7 @@ class UpdateCashflowDto {
     example: '1600',
   })
   @IsOptional()
-  @IsString()
+  @IsNumber()
   readonly price: number;
 
   @ApiProperty({
@@ -40,7 +40,7 @@ class UpdateCashflowDto {
   })
   @IsOptional()
   @IsString()
-  readonly user: string;
+  readonly casher: string;
 }
 
 export default UpdateCashflowDto;

@@ -18,11 +18,7 @@ export class CashflowService {
   ) {}
 
   async getAll(options: IPaginationOptions): Promise<Pagination<Cashflow>> {
-    return paginate<Cashflow>(this.cashflowRepository, options, {
-      // order: {
-      //   title: 'ASC',
-      // },
-    });
+    return paginate<Cashflow>(this.cashflowRepository, options);
   }
 
   async getOne(id: string) {
@@ -43,12 +39,25 @@ export class CashflowService {
   }
 
   async change(value: UpdateCashflowDto, id: string) {
-    const response = await this.cashflowRepository.update({ id }, value);
+    const response = await this.cashflowRepository
+      .createQueryBuilder()
+      .update()
+      .set(value as unknown as Cashflow)
+      .where('id = :id', { id })
+      .execute();
     return response;
   }
 
-  async create(value: CreateCashflowDto) {
-    const data = this.cashflowRepository.create(value);
-    return await this.cashflowRepository.save(data);
+  async create(value: CreateCashflowDto, id: string) {
+    const data = { ...value, casher: id };
+    const response = this.cashflowRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Cashflow)
+      .values(data as unknown as Cashflow)
+      .returning('id')
+      .execute();
+
+    return response;
   }
 }
