@@ -1,14 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Order } from './order.entity';
-import { OrderRepository } from './order.repository';
-import { FindOptionsWhere } from 'typeorm';
-import { UpdateOrderDto, CreateOrderDto } from './dto';
 import {
   IPaginationOptions,
   Pagination,
   paginate,
 } from 'nestjs-typeorm-paginate';
+import { FindOptionsWhere } from 'typeorm';
+
+import { Order } from './order.entity';
+import { OrderRepository } from './order.repository';
+import { UpdateOrderDto, CreateOrderDto } from './dto';
 
 Injectable();
 export class OrderService {
@@ -49,11 +50,12 @@ export class OrderService {
   }
 
   async change(value: UpdateOrderDto, id: string) {
-    const response = await this.orderRepository.createQueryBuilder()
-    .update()
-    .set(value as unknown as Order)
-    .where("id = :id", { id })
-    .execute();
+    const response = await this.orderRepository
+      .createQueryBuilder()
+      .update()
+      .set(value as unknown as Order)
+      .where('id = :id', { id })
+      .execute();
     return response;
   }
 
