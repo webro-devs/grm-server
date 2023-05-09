@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { UserRoleType } from '../../infra/shared/type';
 import { Position } from '../position/position.entity';
 import { Order } from '../order/order.entity';
+import { Filial } from '../filial/filial.entity';
 
 @Entity('users')
 export class User {
@@ -40,6 +41,10 @@ export class User {
 
   @OneToMany(() => Order, (order) => order.casher)
   casherOrders: Order[];
+
+  @ManyToOne(() => Filial, (filial) => filial.users)
+  @JoinColumn()
+  filial: Filial;
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);

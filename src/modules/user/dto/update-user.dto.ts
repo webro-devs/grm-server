@@ -41,6 +41,22 @@ class UpdateUserDto {
   @IsOptional()
   @IsString()
   readonly role: UserRoleType;
+
+  @ApiProperty({
+    description: `filial id`,
+    example: 'uuid',
+  })
+  @IsOptional()
+  @IsString()
+  readonly filial: string;
+
+  @ApiProperty({
+    description: `position id`,
+    example: 'uuid',
+  })
+  @IsOptional()
+  @IsString()
+  readonly position: string;
 }
 
 export default UpdateUserDto;

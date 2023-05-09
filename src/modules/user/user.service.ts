@@ -29,12 +29,12 @@ export class UserService {
     });
   }
 
-  async getByLogin(login:string){
-    const data = await this.userRepository.findOne({where:{login}})
+  async getByLogin(login: string) {
+    const data = await this.userRepository.findOne({ where: { login } });
     if (!data) {
       throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
     }
-    return data
+    return data;
   }
   async getOne(id: string) {
     const data = await this.userRepository.findOne({
@@ -54,12 +54,23 @@ export class UserService {
   }
 
   async change(value: UpdateUserDto, id: string) {
-    const response = await this.userRepository.update({ id }, value);
+    const response = await this.userRepository
+      .createQueryBuilder()
+      .update()
+      .set(value as unknown as User)
+      .where('id = :id', { id })
+      .execute();
     return response;
   }
 
   async create(value: CreateUserDto) {
-    const data = this.userRepository.create(value);
-    return await this.userRepository.save(data);
+    const data = this.userRepository
+      .createQueryBuilder()
+      .insert()
+      .into(User)
+      .values(value as unknown as User)
+      .returning('id')
+      .execute();
+    return data;
   }
 }
