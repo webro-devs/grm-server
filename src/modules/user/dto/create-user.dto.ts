@@ -6,7 +6,7 @@ class CreateUserDto {
     description: `avatar`,
     example: 'https://image.png',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly avatar: string;
 
@@ -14,7 +14,7 @@ class CreateUserDto {
     description: `Full name`,
     example: 'John Doe',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly fullName: string;
 
@@ -22,7 +22,7 @@ class CreateUserDto {
     description: `login`,
     example: 'login',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly login: string;
 
@@ -30,7 +30,7 @@ class CreateUserDto {
     description: `password`,
     example: 'password',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly password: string;
 
@@ -41,6 +41,22 @@ class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   readonly role: UserRoleType;
+
+  @ApiProperty({
+    description: `filial id`,
+    example: 'uuid',
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly filial: string;
+
+  @ApiProperty({
+    description: `position id`,
+    example: 'uuid',
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly position: string;
 }
 
 export default CreateUserDto;
