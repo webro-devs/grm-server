@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Product } from '../product/product.entity';
+import { Model } from '../model/model.entity';
 
 @Entity('collection')
 export class Collection {
@@ -11,4 +12,7 @@ export class Collection {
 
   @OneToMany(() => Product, (product) => product.collection)
   products: Product[];
+
+  @OneToMany(() => Model, (model) => model.collection)
+  model: Model;
 }

@@ -17,6 +17,7 @@ import { CashflowModule } from './modules/cashflow/cashflow.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { FileModule } from './modules/file/file.module';
+import { ModelModule } from './modules/model/model.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { FileModule } from './modules/file/file.module';
     FileModule,
     FilialModule,
     KassaModule,
+    ModelModule,
     OrderModule,
     PartiyaModule,
     PermissionModule,
