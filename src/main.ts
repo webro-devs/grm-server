@@ -31,11 +31,11 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  const reflector = app.get(Reflector);
-  app.useGlobalGuards(
-    new AccessTokenUserGuard(reflector),
-    new RolesGuard(reflector),
-  );
+  // const reflector = app.get(Reflector);
+  // app.useGlobalGuards(
+  //   new AccessTokenUserGuard(reflector),
+  //   new RolesGuard(reflector),
+  // );
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document, {
