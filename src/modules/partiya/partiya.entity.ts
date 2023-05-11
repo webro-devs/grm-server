@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Product } from '../product/product.entity';
 
 @Entity('partiya')
 export class Partiya {
@@ -22,4 +23,7 @@ export class Partiya {
 
   @Column()
   sum: number;
+
+  @OneToMany(() => Product, (product) => product.partiya)
+  products: Product[];
 }

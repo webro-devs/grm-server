@@ -8,11 +8,16 @@ import {
 } from 'typeorm';
 import { Order } from '../order/order.entity';
 import { Filial } from '../filial/filial.entity';
+import { Partiya } from '../partiya/partiya.entity';
+import { Collection } from '../collection/collection.entity';
 
 @Entity('product')
 export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column()
+  code: string;
 
   @Column()
   color: string;
@@ -41,4 +46,12 @@ export class Product {
   @ManyToOne(() => Filial, (filial) => filial.products)
   @JoinColumn()
   filial: Filial;
+
+  @ManyToOne(() => Collection, (collection) => collection.products)
+  @JoinColumn()
+  collection: Collection;
+
+  @ManyToOne(() => Partiya, (partiya) => partiya.products)
+  @JoinColumn()
+  partiya: Partiya;
 }

@@ -14,6 +14,9 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { OrderModule } from './modules/order/order.module';
 import { CashflowModule } from './modules/cashflow/cashflow.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { FileModule } from './modules/file/file.module';
 
 @Module({
   imports: [
@@ -28,9 +31,13 @@ import { CashflowModule } from './modules/cashflow/cashflow.module';
         configService.get('database'),
       inject: [ConfigService],
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+    }),
     AuthModule,
     CashflowModule,
     CollectionModule,
+    FileModule,
     FilialModule,
     KassaModule,
     OrderModule,

@@ -4,4 +4,10 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export class FileEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column()
+  path: string;
+
+  @Column()
+  url: string;
 }

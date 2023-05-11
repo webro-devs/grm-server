@@ -2,6 +2,14 @@ import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreateProductDto {
   @ApiProperty({
+    description: `Carpet code`,
+    example: '2346290837462098',
+  })
+  @IsNotEmpty()
+  @IsString()
+  code: string;
+
+  @ApiProperty({
     description: `Carpet color`,
     example: 'yellow',
   })

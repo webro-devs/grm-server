@@ -60,7 +60,7 @@ export class ProductController {
     description: 'The product was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() positionData: CreateProductDto): Promise<Product> {
+  async saveData(@Body() positionData: CreateProductDto) {
     try {
       return await this.productService.create(positionData);
     } catch (err) {

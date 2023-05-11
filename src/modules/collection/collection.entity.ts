@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Product } from '../product/product.entity';
 
 @Entity('collection')
 export class Collection {
@@ -7,4 +8,7 @@ export class Collection {
 
   @Column('varchar')
   title: string;
+
+  @OneToMany(() => Product, (product) => product.collection)
+  products: Product[];
 }

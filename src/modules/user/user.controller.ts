@@ -60,7 +60,7 @@ export class UserController {
     description: 'The user was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() positionData: CreateUserDto): Promise<User> {
+  async saveData(@Body() positionData: CreateUserDto) {
     try {
       return await this.userService.create(positionData);
     } catch (err) {

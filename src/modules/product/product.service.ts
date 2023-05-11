@@ -42,12 +42,23 @@ export class ProductService {
   }
 
   async change(value: UpdateProductDto, id: string) {
-    const response = await this.productRepository.update({ id }, value);
+    const response = await this.productRepository
+      .createQueryBuilder()
+      .update()
+      .set(value as unknown as Product)
+      .where('id = :id', { id })
+      .execute();
     return response;
   }
 
   async create(value: CreateProductDto) {
-    const data = this.productRepository.create(value);
-    return await this.productRepository.save(data);
+    const data = this.productRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Product)
+      .values(value as unknown as Product)
+      .returning('id')
+      .execute();
+    return data;
   }
 }
