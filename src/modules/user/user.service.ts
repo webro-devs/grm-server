@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere } from 'typeorm';
+import { DataSource, FindOptionsWhere, EntityManager } from 'typeorm';
 import {
   IPaginationOptions,
   Pagination,
@@ -10,12 +10,18 @@ import {
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
 import { CreateUserDto, UpdateUserDto } from './dto';
+import { generateId } from 'src/infra/helpers';
+import { FilialService } from '../filial/filial.service';
+import { PositionService } from '../position/position.service';
 
 Injectable();
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: UserRepository,
+    private readonly filialService: FilialService,
+    private readonly connection: DataSource,
+    private readonly positionService: PositionService,
   ) {}
 
   async getAll(
@@ -63,14 +69,16 @@ export class UserService {
     return response;
   }
 
-  async create(value: CreateUserDto) {
-    const data = this.userRepository
-      .createQueryBuilder()
-      .insert()
-      .into(User)
-      .values(value as unknown as User)
-      .returning('id')
-      .execute();
-    return data;
+  async create(data: CreateUserDto) {
+    const user = new User();
+    user.login = generateId();
+    user.role = data.role;
+    user.filial = await this.filialService.getOne(data.filial);
+    user.position = await this.positionService.getOne(data.position);
+    await user.hashPassword(user.login);
+    await this.connection.transaction(async (manager: EntityManager) => {
+      await manager.save(user);
+    });
+    return user.login;
   }
 }

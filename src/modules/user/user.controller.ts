@@ -60,9 +60,9 @@ export class UserController {
     description: 'The user was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() positionData: CreateUserDto) {
+  async saveData(@Body() data: CreateUserDto) {
     try {
-      return await this.userService.create(positionData);
+      return await this.userService.create(data);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
