@@ -51,7 +51,7 @@ export class OrderController {
   })
   @HttpCode(HttpStatus.OK)
   async getMe(@Param('id') id: string): Promise<Order> {
-    return this.orderService.getOne(id);
+    return this.orderService.getById(id);
   }
 
   @Post('/')

@@ -44,6 +44,11 @@ export class KassaService {
     return data;
   }
 
+  async closeKassa(id: string) {
+    const response = await this.kassaRepository.update(id, { isActive: false });
+    return response;
+  }
+
   async deleteOne(id: string) {
     const response = await this.kassaRepository.delete(id);
     return response;

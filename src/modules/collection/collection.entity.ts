@@ -10,9 +10,6 @@ export class Collection {
   @Column('varchar')
   title: string;
 
-  @OneToMany(() => Product, (product) => product.collection)
-  products: Product[];
-
   @OneToMany(() => Model, (model) => model.collection)
   model: Model;
 }

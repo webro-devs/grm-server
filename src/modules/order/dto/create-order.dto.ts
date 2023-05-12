@@ -32,6 +32,14 @@ class CreateOrderDto {
   @IsOptional()
   @IsString()
   readonly date: string;
+
+  @ApiProperty({
+    description: `kassa id`,
+    example: 'uuid',
+  })
+  @IsOptional()
+  @IsString()
+  readonly kassa: string;
 }
 
 export default CreateOrderDto;

@@ -32,17 +32,6 @@ export class OrderService {
     }
     return data;
   }
-  async getOne(id: string) {
-    const data = await this.orderRepository.findOne({
-      where: { id },
-    });
-
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
-
-    return data;
-  }
 
   async deleteOne(id: string) {
     const response = await this.orderRepository.delete(id);

@@ -10,6 +10,7 @@ import { Order } from '../order/order.entity';
 import { Filial } from '../filial/filial.entity';
 import { Partiya } from '../partiya/partiya.entity';
 import { Collection } from '../collection/collection.entity';
+import { Model } from '../model/model.entity';
 
 @Entity('product')
 export class Product {
@@ -47,9 +48,9 @@ export class Product {
   @JoinColumn()
   filial: Filial;
 
-  @ManyToOne(() => Collection, (collection) => collection.products)
+  @ManyToOne(() => Model, (model) => model.products)
   @JoinColumn()
-  collection: Collection;
+  model: Model;
 
   @ManyToOne(() => Partiya, (partiya) => partiya.products)
   @JoinColumn()

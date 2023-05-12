@@ -19,6 +19,7 @@ import { join } from 'path';
 import { FileModule } from './modules/file/file.module';
 import { ModelModule } from './modules/model/model.module';
 import { GrmSocketModule } from './modules/web-socket/web-socket.module';
+import { TransferModule } from './modules/transfer/transfer.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { GrmSocketModule } from './modules/web-socket/web-socket.module';
     PermissionModule,
     PositionModule,
     ProductModule,
+    TransferModule,
     UserModule,
   ],
 })

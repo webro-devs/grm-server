@@ -21,12 +21,23 @@ export class ProductService {
     options: IPaginationOptions,
     where?: FindOptionsWhere<Product>,
   ): Promise<Pagination<Product>> {
-    return paginate<Product>(this.productRepository, options, {});
+    return paginate<Product>(this.productRepository, options, {
+      relations: {
+        model: {
+          collection: true,
+        },
+      },
+    });
   }
 
   async getOne(id: string) {
     const data = await this.productRepository.findOne({
       where: { id },
+      relations: {
+        model: {
+          collection: true,
+        },
+      },
     });
 
     if (!data) {
