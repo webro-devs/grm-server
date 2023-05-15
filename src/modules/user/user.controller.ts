@@ -54,6 +54,20 @@ export class UserController {
     return this.userService.getOne(id);
   }
 
+  @Get('/filial/:id')
+  @ApiOperation({ summary: 'Method: returns users with their selling result' })
+  @ApiOkResponse({
+    description: 'The users selling result was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getUserSelling(@Param('id') id: string): Promise<User[]> {
+    try {
+      return this.userService.getUsersWithSelling(id);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @Post('/')
   @ApiOperation({ summary: 'Method: creates new user' })
   @ApiCreatedResponse({
