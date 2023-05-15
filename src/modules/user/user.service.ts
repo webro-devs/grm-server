@@ -42,6 +42,15 @@ export class UserService {
     }
     return data;
   }
+
+  async getUsersWithSelling(id: string) {
+    const data = await this.userRepository.find({
+      where: { filial: { id } },
+      relations: { casherOrders: true, sellerOrders: true },
+    });
+    return data;
+  }
+
   async getOne(id: string) {
     const data = await this.userRepository.findOne({
       where: { id },

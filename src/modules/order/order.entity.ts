@@ -19,8 +19,8 @@ export class Order {
   @Column({ type: 'boolean', default: false })
   isActive: boolean = false;
 
-  @Column({ type: 'varchar' })
-  price: string;
+  @Column({ type: 'int' })
+  price: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;

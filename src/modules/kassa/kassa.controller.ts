@@ -53,6 +53,16 @@ export class KassaController {
     return this.kassaService.getOne(id);
   }
 
+  @Get('/calculate/:id')
+  @ApiOperation({ summary: 'Method: returns kassa accounting' })
+  @ApiOkResponse({
+    description: 'The kassa accounting returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getKassaCalculate(@Param('id') id: string) {
+    return this.kassaService.calculateKassa(id);
+  }
+
   @Post('/')
   @ApiOperation({ summary: 'Method: creates new kassa' })
   @ApiCreatedResponse({

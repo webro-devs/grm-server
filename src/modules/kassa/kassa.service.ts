@@ -10,6 +10,7 @@ import { FindOptionsWhere } from 'typeorm';
 import { Kassa } from './kassa.entity';
 import { KassaRepository } from './kassa.repository';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
+import { CashFlowEnum } from '../../infra/shared/enum';
 
 Injectable();
 export class KassaService {
@@ -73,5 +74,26 @@ export class KassaService {
       .returning('id')
       .execute();
     return data;
+  }
+
+  async calculateKassa(id: string) {
+    const data = await this.kassaRepository.findOne({
+      where: { id },
+      relations: { orders: true, cashflow: true },
+    });
+    const orderSum = data.orders
+      .filter((o) => o.isActive)
+      .map((or) => or.price)
+      .reduce((a, b) => a + b);
+    const cashFlowSum = data.cashflow
+      .filter((c) => c.type == CashFlowEnum.InCome)
+      .map((c) => c.price)
+      .reduce((a, b) => a + b);
+    const comingSum = orderSum + cashFlowSum;
+    const goingSum = data.cashflow
+      .filter((c) => c.type == CashFlowEnum.Consumption)
+      .map((c) => c.price)
+      .reduce((a, b) => a + b);
+      return {comingSum,goingSum}
   }
 }
