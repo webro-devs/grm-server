@@ -5,6 +5,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Order } from '../order/order.entity';
+import { Cashflow } from '../cashflow/cashflow.entity';
 
 @Entity('action')
 export class Action {
@@ -16,4 +18,15 @@ export class Action {
 
   @Column()
   type: string;
+
+  @Column()
+  comment: string;
+
+  @ManyToOne(() => Order, (order) => order.actions)
+  @JoinColumn()
+  order: Order;
+
+  @ManyToOne(() => Cashflow, (cashflow) => cashflow.actions)
+  @JoinColumn()
+  cashFlow: Cashflow;
 }

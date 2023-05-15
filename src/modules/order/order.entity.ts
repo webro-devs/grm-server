@@ -3,11 +3,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Kassa } from '../kassa/kassa.entity';
 import { Product } from '../product/product.entity';
 import { User } from '../user/user.entity';
+import { Action } from '../action/action.entity';
 
 @Entity('order')
 export class Order {
@@ -38,4 +40,7 @@ export class Order {
   @ManyToOne(() => Product, (product) => product.orders)
   @JoinColumn()
   product: Product;
+
+  @OneToMany(() => Action, (action) => action.order)
+  actions: Action[];
 }
