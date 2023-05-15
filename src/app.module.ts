@@ -20,6 +20,7 @@ import { FileModule } from './modules/file/file.module';
 import { ModelModule } from './modules/model/model.module';
 import { GrmSocketModule } from './modules/web-socket/web-socket.module';
 import { TransferModule } from './modules/transfer/transfer.module';
+import { ActionModule } from './modules/action/action.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { TransferModule } from './modules/transfer/transfer.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
     }),
+    ActionModule,
     AuthModule,
     CashflowModule,
     CollectionModule,
