@@ -44,6 +44,18 @@ export class KassaService {
     return data;
   }
 
+  async GetOpenKassa(id: string) {
+    const data = await this.kassaRepository.findOne({
+      where: { isActive: true, filial: { id } },
+    });
+
+    if (!data) {
+      return {};
+    }
+
+    return data;
+  }
+
   async closeKassa(id: string) {
     const response = await this.kassaRepository.update(id, { isActive: false });
     return response;

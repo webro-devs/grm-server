@@ -53,6 +53,16 @@ export class KassaController {
     return this.kassaService.getOne(id);
   }
 
+  @Get('/open-kassa/:filialId')
+  @ApiOperation({ summary: 'Method: returns single kassa' })
+  @ApiOkResponse({
+    description: 'The kassa was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async opnKassa(@Param('filialId') id: string): Promise<Kassa | unknown> {
+    return this.kassaService.GetOpenKassa(id);
+  }
+
   @Post('/')
   @ApiOperation({ summary: 'Method: creates new kassa' })
   @ApiCreatedResponse({
@@ -61,6 +71,15 @@ export class KassaController {
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateKassaDto) {
     try {
+      const check = await this.kassaService.GetOpenKassa(data.filial);
+
+      if (check) {
+        throw new HttpException(
+          'First you Should close kassa',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
       return await this.kassaService.create(data);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);

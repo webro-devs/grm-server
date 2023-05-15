@@ -17,7 +17,7 @@ export class Order {
   id: string;
 
   @Column({ type: 'boolean', default: false })
-  isActive: boolean = false;
+  isActive: boolean;
 
   @Column({ type: 'varchar' })
   price: string;

@@ -59,4 +59,14 @@ export class OrderService {
       .execute();
     return response;
   }
+
+  async checkOrder(id: string, casher: string) {
+    const response = await this.orderRepository
+      .createQueryBuilder()
+      .update()
+      .set({ isActive: true, casher } as unknown as Order)
+      .where('id = :id', { id })
+      .execute();
+    return response;
+  }
 }

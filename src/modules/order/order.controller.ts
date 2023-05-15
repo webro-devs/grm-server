@@ -85,6 +85,23 @@ export class OrderController {
     }
   }
 
+  @Patch('/isActive/:id')
+  @ApiOperation({ summary: 'Method: updating order' })
+  @ApiOkResponse({
+    description: 'Order was changed',
+  })
+  @HttpCode(HttpStatus.OK)
+  async changeIsActive(
+    @Param('id') id: string,
+    @Req() request,
+  ): Promise<UpdateResult> {
+    try {
+      return await this.orderService.checkOrder(id, request.user.id);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @Delete('/:id')
   @ApiOperation({ summary: 'Method: deleting order' })
   @ApiOkResponse({
