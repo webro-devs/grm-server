@@ -24,6 +24,8 @@ import { Position } from './position.entity';
 import { PositionService } from './position.service';
 import { PaginationDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRoleEnum } from '../../infra/shared/enum';
 
 @ApiTags('Position')
 @Controller('position')
@@ -58,6 +60,7 @@ export class PositionController {
 
   // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
   @Post('/')
+  @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: creates new position' })
   @ApiCreatedResponse({
     description: 'The position was created successfully',

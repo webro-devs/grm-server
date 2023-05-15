@@ -9,7 +9,6 @@ import {
 import { Order } from '../order/order.entity';
 import { Filial } from '../filial/filial.entity';
 import { Partiya } from '../partiya/partiya.entity';
-import { Collection } from '../collection/collection.entity';
 import { Model } from '../model/model.entity';
 
 @Entity('product')
