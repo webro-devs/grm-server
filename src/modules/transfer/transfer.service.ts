@@ -23,24 +23,26 @@ export class TransferService {
     options: IPaginationOptions,
     where?: FindOptionsWhere<Transfer>,
   ): Promise<Pagination<Transfer>> {
-    return paginate<Transfer>(this.transferRepository, options,{
-      relations:{
-        from:true,
-        to:true,
-        transferer:true,
-        product:true
-      }
+    return paginate<Transfer>(this.transferRepository, options, {
+      relations: {
+        from: true,
+        to: true,
+        transferer: true,
+        product: true,
+      },
     });
   }
 
   async getById(id: string) {
-    const data = await this.transferRepository.findOne({ where: { id },
-      relations:{
-        from:true,
-        to:true,
-        transferer:true,
-        product:true
-      } });
+    const data = await this.transferRepository.findOne({
+      where: { id },
+      relations: {
+        from: true,
+        to: true,
+        transferer: true,
+        product: true,
+      },
+    });
     if (!data) {
       throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
     }
@@ -63,6 +65,10 @@ export class TransferService {
   }
 
   async create(value: CreateTransferDto, id: string) {
+    const product = await this.productService.getOne(value.product);
+    if (value.count > product.count) {
+      return '';
+    }
     const data = { ...value, transferer: id };
     const response = this.transferRepository
       .createQueryBuilder()
