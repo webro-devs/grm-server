@@ -12,6 +12,9 @@ export class Partiya {
   @Column()
   cost: number;
 
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  date: string;
+
   @Column()
   expense: number;
 

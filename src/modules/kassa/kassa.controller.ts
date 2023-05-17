@@ -10,6 +10,7 @@ import {
   Param,
   Get,
   Query,
+  Req,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import {
@@ -61,6 +62,36 @@ export class KassaController {
   @HttpCode(HttpStatus.OK)
   async opnKassa(@Param('filialId') id: string): Promise<Kassa | unknown> {
     return this.kassaService.GetOpenKassa(id);
+  }
+
+  @Get('/calculate/all-filial/by-range')
+  @ApiOperation({ summary: 'Method: returns by range kassa accounting' })
+  @ApiOkResponse({
+    description: 'The kassa accounting returned by range successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async kassaSumAllFilialByRange(@Req() req) {
+    return this.kassaService.kassaSumAllFilialByRange(req.where);
+  }
+
+  @Get('/calculate/by-range')
+  @ApiOperation({ summary: 'Method: returns by range kassa accounting' })
+  @ApiOkResponse({
+    description: 'The kassa accounting returned by range successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async kassaSumByFilialAndRange(@Req() req) {
+    return this.kassaService.kassaSumByFilialAndRange(req.where);
+  }
+
+  @Get('/calculate/:id')
+  @ApiOperation({ summary: 'Method: returns kassa accounting' })
+  @ApiOkResponse({
+    description: 'The kassa accounting returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getKassaCalculate(@Param('id') id: string) {
+    return this.kassaService.getKassaSum(id);
   }
 
   @Post('/')

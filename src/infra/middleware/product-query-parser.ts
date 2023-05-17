@@ -20,15 +20,15 @@ class ProductQueryParserMiddleware implements NestMiddleware {
 
     if (startDate && endDate) {
       where = {
-        created_at: Between(new Date(startDate), new Date(endDate)),
+        date: Between(new Date(startDate), new Date(endDate)),
       };
     } else if (startDate) {
       where = {
-        created_at: MoreThanOrEqual(new Date(startDate)),
+        date: MoreThanOrEqual(new Date(startDate)),
       };
     } else if (endDate) {
       where = {
-        created_at: LessThanOrEqual(new Date(endDate)),
+        date: LessThanOrEqual(new Date(endDate)),
       };
     }
     if (startPrice && endPrice) {

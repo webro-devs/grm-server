@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreatePartiyaDto {
   @ApiProperty({
@@ -16,6 +16,14 @@ class CreatePartiyaDto {
   @IsNotEmpty()
   @IsNumber()
   readonly cost: number;
+
+  @ApiProperty({
+    description: `date`,
+    example: '2023-05-02 08:10:23.726769',
+  })
+  @IsOptional()
+  @IsString()
+  readonly date: string;
 
   @ApiProperty({
     description: `expense : Расход:`,

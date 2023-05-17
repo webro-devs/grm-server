@@ -18,6 +18,14 @@ class UpdateProductDto {
   color: string;
 
   @ApiProperty({
+    description: `Carpet date`,
+    example: '2023-05-02 08:10:23.726769',
+  })
+  @IsOptional()
+  @IsString()
+  date: string;
+
+  @ApiProperty({
     description: `Carpet count`,
     example: 3,
   })

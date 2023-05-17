@@ -27,6 +27,7 @@ export class ProductService {
           collection: true,
         },
       },
+      where,
     });
   }
 
