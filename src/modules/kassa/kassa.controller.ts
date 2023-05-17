@@ -104,7 +104,7 @@ export class KassaController {
     try {
       const check = await this.kassaService.create(data);
 
-      if (check) {
+      if (!check) {
         throw new HttpException(
           'First you Should close kassa',
           HttpStatus.BAD_REQUEST,
