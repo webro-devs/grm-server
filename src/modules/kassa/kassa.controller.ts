@@ -102,16 +102,16 @@ export class KassaController {
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateKassaDto) {
     try {
-      const check = await this.kassaService.GetOpenKassa(data.filial);
+      const check = await this.kassaService.create(data);
 
       if (check) {
         throw new HttpException(
           'First you Should close kassa',
-          HttpStatus.INTERNAL_SERVER_ERROR,
+          HttpStatus.BAD_REQUEST,
         );
+      } else {
+        return check;
       }
-
-      return await this.kassaService.create(data);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -53,7 +53,7 @@ export class KassaService {
     });
 
     if (!data) {
-      return {};
+      return false;
     }
 
     return data;
@@ -80,6 +80,11 @@ export class KassaService {
   }
 
   async create(value: CreateKassaDto) {
+    const check = this.GetOpenKassa(value.filial);
+    if (check) {
+      return false;
+    }
+
     const data = this.kassaRepository
       .createQueryBuilder()
       .insert()
@@ -115,7 +120,7 @@ export class KassaService {
   async kassaSumAllFilialByRange(where) {
     const result = [];
     const filialData = await this.filialService.getAllFilial();
-    for (let filial of filialData) {
+    for (const filial of filialData) {
       where.filial = filial.id;
       const { comingSum, goingSum } = await this.kassaSumByFilialAndRange(
         where,
@@ -128,7 +133,7 @@ export class KassaService {
   async calculateKassa(data: Kassa[]) {
     let comingSum = 0,
       goingSum = 0;
-    for (let item of data) {
+    for (const item of data) {
       const orderSum = item.orders
         .filter((o) => o.isActive)
         .map((or) => or.price)
