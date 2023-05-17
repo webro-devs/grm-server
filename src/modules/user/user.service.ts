@@ -46,7 +46,7 @@ export class UserService {
   async getUsersWithSelling(id: string) {
     const data = await this.userRepository.find({
       where: { filial: { id } },
-      relations: { casherOrders: true, sellerOrders: true },
+      relations: { sellerOrders: true },
     });
     return data;
   }

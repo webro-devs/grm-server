@@ -10,7 +10,7 @@ import { Product } from './product.entity';
 import { ProductRepository } from './product.repository';
 import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
-import { ProductQueryParserMiddleware } from '../../infra/helpers';
+import { ProductQueryParserMiddleware } from '../../infra/middleware';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Product])],

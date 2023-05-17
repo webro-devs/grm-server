@@ -11,12 +11,14 @@ import { Kassa } from './kassa.entity';
 import { KassaRepository } from './kassa.repository';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
 import { CashFlowEnum } from '../../infra/shared/enum';
+import { FilialService } from '../filial/filial.service';
 
 Injectable();
 export class KassaService {
   constructor(
     @InjectRepository(Kassa)
     private readonly kassaRepository: KassaRepository,
+    private readonly filialService: FilialService,
   ) {}
 
   async getAll(
@@ -76,24 +78,59 @@ export class KassaService {
     return data;
   }
 
-  async calculateKassa(id: string) {
+  async getKassaSum(id: string) {
     const data = await this.kassaRepository.findOne({
       where: { id },
       relations: { orders: true, cashflow: true },
     });
-    const orderSum = data.orders
-      .filter((o) => o.isActive)
-      .map((or) => or.price)
-      .reduce((a, b) => a + b);
-    const cashFlowSum = data.cashflow
-      .filter((c) => c.type == CashFlowEnum.InCome)
-      .map((c) => c.price)
-      .reduce((a, b) => a + b);
-    const comingSum = orderSum + cashFlowSum;
-    const goingSum = data.cashflow
-      .filter((c) => c.type == CashFlowEnum.Consumption)
-      .map((c) => c.price)
-      .reduce((a, b) => a + b);
-      return {comingSum,goingSum}
+    const result = await this.calculateKassa([data]);
+    return result;
+  }
+
+  async kassaSumByFilialAndRange(where) {
+    const data = await this.kassaRepository.find({
+      where,
+      relations: { orders: true, cashflow: true },
+    });
+    if (data.length) {
+      const { comingSum, goingSum } = await this.calculateKassa(data);
+      return { comingSum, goingSum };
+    } else {
+      return { comingSum: 0, goingSum: 0 };
+    }
+  }
+
+  async kassaSumAllFilialByRange(where) {
+    const result = [];
+    const filialData = await this.filialService.getAllFilial();
+    for (let filial of filialData) {
+      where.filial = filial.id;
+      const { comingSum, goingSum } = await this.kassaSumByFilialAndRange(
+        where,
+      );
+      result.push({ ...filial, comingSum, goingSum });
+    }
+    return result;
+  }
+
+  async calculateKassa(data: Kassa[]) {
+    let comingSum = 0,
+      goingSum = 0;
+    for (let item of data) {
+      const orderSum = item.orders
+        .filter((o) => o.isActive)
+        .map((or) => or.price)
+        .reduce((a, b) => a + b);
+      const cashFlowSum = item.cashflow
+        .filter((c) => c.type == CashFlowEnum.InCome)
+        .map((c) => c.price)
+        .reduce((a, b) => a + b);
+      comingSum += orderSum + cashFlowSum;
+      goingSum += item.cashflow
+        .filter((c) => c.type == CashFlowEnum.Consumption)
+        .map((c) => c.price)
+        .reduce((a, b) => a + b);
+    }
+    return { comingSum, goingSum };
   }
 }

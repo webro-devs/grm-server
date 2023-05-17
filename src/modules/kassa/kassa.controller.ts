@@ -10,6 +10,7 @@ import {
   Param,
   Get,
   Query,
+  Req,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import {
@@ -53,6 +54,26 @@ export class KassaController {
     return this.kassaService.getOne(id);
   }
 
+  @Get('/calculate/all-filial/by-range')
+  @ApiOperation({ summary: 'Method: returns by range kassa accounting' })
+  @ApiOkResponse({
+    description: 'The kassa accounting returned by range successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async kassaSumAllFilialByRange(@Req() req) {
+    return this.kassaService.kassaSumAllFilialByRange(req.where);
+  }
+
+  @Get('/calculate/by-range')
+  @ApiOperation({ summary: 'Method: returns by range kassa accounting' })
+  @ApiOkResponse({
+    description: 'The kassa accounting returned by range successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async kassaSumByFilialAndRange(@Req() req) {
+    return this.kassaService.kassaSumByFilialAndRange(req.where);
+  }
+
   @Get('/calculate/:id')
   @ApiOperation({ summary: 'Method: returns kassa accounting' })
   @ApiOkResponse({
@@ -60,7 +81,7 @@ export class KassaController {
   })
   @HttpCode(HttpStatus.OK)
   async getKassaCalculate(@Param('id') id: string) {
-    return this.kassaService.calculateKassa(id);
+    return this.kassaService.getKassaSum(id);
   }
 
   @Post('/')

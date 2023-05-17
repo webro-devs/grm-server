@@ -28,6 +28,9 @@ export class Product {
   @Column()
   imgUrl: string;
 
+  @Column({ type: 'timestamp' })
+  date: string;
+
   @Column({ nullable: true })
   price: number;
 

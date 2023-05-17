@@ -18,6 +18,14 @@ class UpdatePartiyaDto {
   readonly cost: number;
 
   @ApiProperty({
+    description: `date`,
+    example: '2023-05-02 08:10:23.726769',
+  })
+  @IsOptional()
+  @IsString()
+  readonly date: string;
+
+  @ApiProperty({
     description: `expense : Расход:`,
     example: 8000,
   })

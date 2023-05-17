@@ -28,6 +28,11 @@ export class FilialService {
     });
   }
 
+  async getAllFilial() {
+    const data = await this.filialRepository.find();
+    return data;
+  }
+
   async getOne(id: string) {
     const data = await this.filialRepository.findOne({
       where: { id },
