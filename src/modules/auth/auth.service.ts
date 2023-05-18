@@ -9,13 +9,13 @@ import { UserService } from '../user/user.service';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UserService,
+    private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
 
   async validateUserByEmailPassword(login: string, password: string) {
-    const user = await this.usersService.getByLogin(login).catch(() => {
+    const user = await this.userService.getByLogin(login).catch(() => {
       throw new BadRequestException('Invalid login.');
     });
     const isPasswordSame = await this.comparePasswordWithHash(
@@ -29,7 +29,7 @@ export class AuthService {
   }
 
   async validateUserById(userId: string) {
-    const user = await this.usersService.getOne(userId).catch(() => {
+    const user = await this.userService.getOne(userId).catch(() => {
       throw new BadRequestException('Valid token with non-existent user.');
     });
     return user;

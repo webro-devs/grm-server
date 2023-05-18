@@ -1,21 +1,15 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
+import { ValidationPipe } from '@nestjs/common';
 import { AccessTokenUserGuard } from './modules/auth/passport-stratagies/access-token-user/access-token-user.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  const config = new DocumentBuilder()
-    .setTitle('GRM')
-    .setDescription('GRM API description')
-    .setVersion('0.2')
-    .addBearerAuth()
-    .addCookieAuth()
-    .build();
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'warn', 'error'],
+  });
 
   app.enableCors({
     origin: true,
@@ -31,11 +25,20 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  // const reflector = app.get(Reflector);
-  // app.useGlobalGuards(
-  //   new AccessTokenUserGuard(reflector),
-  //   new RolesGuard(reflector),
-  // );
+
+  const reflector = app.get(Reflector);
+  app.useGlobalGuards(
+    new AccessTokenUserGuard(reflector),
+    new RolesGuard(reflector),
+  );
+
+  const config = new DocumentBuilder()
+    .setTitle('Getter uz')
+    .setDescription('Getter API description')
+    .setVersion('0.2')
+    .addBearerAuth()
+    .addCookieAuth()
+    .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document, {

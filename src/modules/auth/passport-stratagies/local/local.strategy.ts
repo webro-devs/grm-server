@@ -11,12 +11,12 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     private authService: AuthService,
     private readonly userService: UserService,
   ) {
-    super({ usernameField: 'email' });
+    super({ usernameField: 'login' });
   }
 
-  async validate(email: string, password: string) {
+  async validate(login: string, password: string) {
     const user = await this.authService.validateUserByEmailPassword(
-      email,
+      login,
       password,
     );
     return user;

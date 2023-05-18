@@ -26,6 +26,14 @@ class CreateOrderDto {
   readonly price: number;
 
   @ApiProperty({
+    description: `price`,
+    example: 1500,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  readonly count: number;
+
+  @ApiProperty({
     description: `date`,
     example: '2023-05-02 08:10:23.726769',
   })

@@ -1,31 +1,23 @@
-import {
-  IsNumber,
-  IsNotEmpty,
-  IsString,
-  IsEmail,
-  MaxLength,
-} from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { UserRoleType } from '../../../infra/shared/type';
 import { User } from '../../user/user.entity';
 
 class ReturnUser {
   @ApiProperty({
-    description: `Firstname`,
-    example: 'Petr',
+    description: `Name`,
+    example: 'John Doe',
   })
   @IsNotEmpty()
   @IsString()
-  @MaxLength(128)
-  fullName: string;
+  name: string;
 
   @ApiProperty({
-    description: `User Email`,
-    example: 'phone.petr@gmail.com',
+    description: `User login`,
+    example: 'admin',
   })
   @IsNotEmpty()
-  @IsEmail()
+  @IsString()
   login: string;
 
   @ApiProperty({
@@ -36,19 +28,10 @@ class ReturnUser {
   @IsString()
   id: string;
 
-  @ApiProperty({
-    description: `User role`,
-    example: 1,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  role: UserRoleType;
-
   constructor(user: User) {
     this.id = user.id;
-    this.fullName = user.fullName;
+    this.name = user.fullName;
     this.login = user.login;
-    this.role = user.role;
   }
 }
 

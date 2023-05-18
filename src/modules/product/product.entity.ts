@@ -67,7 +67,7 @@ export class Product {
   @JoinColumn()
   partiya: Partiya;
 
-  public async setXY() {
+  public setXY() {
     const xy = this.size
       .trim()
       .split('x')
@@ -75,7 +75,11 @@ export class Product {
     this.x = xy[0];
     this.y = xy[1];
   }
-  public async setTotalSize() {
+  public setTotalSize() {
     this.totalSize = this.x * this.y * this.count;
   }
+  // constructor() {
+  //   this.setXY();
+  //   this.setTotalSize();
+  // }
 }

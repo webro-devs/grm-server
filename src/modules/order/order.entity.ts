@@ -22,6 +22,9 @@ export class Order {
   @Column({ type: 'int' })
   price: number;
 
+  @Column({ type: 'int' })
+  count: number;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;
 

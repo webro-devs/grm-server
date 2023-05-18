@@ -32,6 +32,9 @@ export class UserService {
       order: {
         fullName: 'ASC',
       },
+      relations: {
+        position: true,
+      },
     });
   }
 
@@ -54,6 +57,10 @@ export class UserService {
   async getOne(id: string) {
     const data = await this.userRepository.findOne({
       where: { id },
+      relations: {
+        position: true,
+        filial: true,
+      },
     });
 
     if (!data) {

@@ -5,17 +5,20 @@ import {
   Pagination,
   paginate,
 } from 'nestjs-typeorm-paginate';
-import { FindOptionsWhere } from 'typeorm';
+import { DataSource, FindOptionsWhere } from 'typeorm';
 
 import { Order } from './order.entity';
 import { OrderRepository } from './order.repository';
 import { UpdateOrderDto, CreateOrderDto } from './dto';
+import { ProductService } from '../product/product.service';
 
 Injectable();
 export class OrderService {
   constructor(
     @InjectRepository(Order)
     private readonly orderRepository: OrderRepository,
+    private readonly productService: ProductService,
+    private readonly connection: DataSource,
   ) {}
 
   async getAll(
@@ -49,6 +52,11 @@ export class OrderService {
   }
 
   async create(value: CreateOrderDto, id: string) {
+    const product = await this.productService.getOne(value.product);
+    product.count -= value.count;
+    await this.connection.transaction(async (manager) => {
+      await manager.save(product);
+    });
     const data = { ...value, seller: id };
     const response = this.orderRepository
       .createQueryBuilder()
