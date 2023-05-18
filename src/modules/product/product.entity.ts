@@ -41,6 +41,15 @@ export class Product {
   size: string;
 
   @Column()
+  x: number;
+
+  @Column()
+  y: number;
+
+  @Column()
+  totalSize: number;
+
+  @Column()
   style: string;
 
   @OneToMany(() => Order, (order) => order.product)
@@ -57,4 +66,16 @@ export class Product {
   @ManyToOne(() => Partiya, (partiya) => partiya.products)
   @JoinColumn()
   partiya: Partiya;
+
+  public async setXY() {
+    const xy = this.size
+      .trim()
+      .split('x')
+      .map((e) => +e);
+    this.x = xy[0];
+    this.y = xy[1];
+  }
+  public async setTotalSize() {
+    this.totalSize = this.x * this.y * this.count;
+  }
 }
