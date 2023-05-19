@@ -24,6 +24,8 @@ import { Route } from '../../infra/shared/decorators/route.decorator';
 import { PaginationDto } from '../../infra/shared/dto';
 import { CreateOrderDto, UpdateOrderDto } from './dto';
 import { Order } from './order.entity';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRoleEnum } from '../../infra/shared/enum';
 
 @ApiTags('Order')
 @Controller('order')
@@ -86,6 +88,12 @@ export class OrderController {
   }
 
   @Patch('/isActive/:id')
+  @Roles(
+    UserRoleEnum.BOSS,
+    UserRoleEnum.CASHIER,
+    UserRoleEnum.SUPPER_MANAGER,
+    UserRoleEnum.MANAGER,
+  )
   @ApiOperation({ summary: 'Method: updating order' })
   @ApiOkResponse({
     description: 'Order was changed',

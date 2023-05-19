@@ -72,6 +72,22 @@ class UpdateProductDto {
   @IsOptional()
   @IsString()
   style: string;
+
+  @ApiProperty({
+    description: `Carpet filial id`,
+    example: 'uuid',
+  })
+  @IsOptional()
+  @IsString()
+  filial: string;
+
+  @ApiProperty({
+    description: `Carpet model id`,
+    example: 'uuid',
+  })
+  @IsOptional()
+  @IsString()
+  model: string;
 }
 
 export default UpdateProductDto;

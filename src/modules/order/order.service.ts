@@ -53,7 +53,11 @@ export class OrderService {
 
   async create(value: CreateOrderDto, id: string) {
     const product = await this.productService.getOne(value.product);
+    if (product.count < value.count) {
+      throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
+    }
     product.count -= value.count;
+    product.setTotalSize();
     await this.connection.transaction(async (manager) => {
       await manager.save(product);
     });

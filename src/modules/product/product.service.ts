@@ -63,14 +63,29 @@ export class ProductService {
     return response;
   }
 
-  async create(value: CreateProductDto) {
-    const data = this.productRepository
+  async create(value: CreateProductDto[]) {
+    value = this.setXy(value);
+    const data = await this.productRepository
       .createQueryBuilder()
       .insert()
       .into(Product)
       .values(value as unknown as Product)
       .returning('id')
       .execute();
+
     return data;
+  }
+
+  setXy(value: CreateProductDto[]): CreateProductDto[] {
+    for (let i = 0; i < value.length; i++) {
+      const xy = value[i].size
+        .trim()
+        .split('x')
+        .map((e) => +e);
+      value[i].x = xy[0];
+      value[i].y = xy[1];
+      value[i].totalSize = xy[0] * xy[1] * value[i].count;
+    }
+    return value;
   }
 }

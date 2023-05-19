@@ -11,7 +11,7 @@ class UpdateKassaDto {
 
   @ApiProperty({
     description: `end Date`,
-    example: 'uuid',
+    example: '2023-05-02 08:10:23.726769',
   })
   @IsOptional()
   @IsString()

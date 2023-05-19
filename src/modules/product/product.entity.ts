@@ -40,13 +40,13 @@ export class Product {
   @Column()
   size: string;
 
-  @Column()
+  @Column({ nullable: true })
   x: number;
 
-  @Column()
+  @Column({ nullable: true })
   y: number;
 
-  @Column()
+  @Column({ nullable: true })
   totalSize: number;
 
   @Column()
@@ -67,14 +67,6 @@ export class Product {
   @JoinColumn()
   partiya: Partiya;
 
-  public setXY() {
-    const xy = this.size
-      .trim()
-      .split('x')
-      .map((e) => +e);
-    this.x = xy[0];
-    this.y = xy[1];
-  }
   public setTotalSize() {
     this.totalSize = this.x * this.y * this.count;
   }

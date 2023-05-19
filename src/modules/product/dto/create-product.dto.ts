@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreateProductDto {
   @ApiProperty({
@@ -72,6 +72,46 @@ class CreateProductDto {
   @IsNotEmpty()
   @IsString()
   style: string;
+
+  @ApiProperty({
+    description: `Carpet filial id`,
+    example: 'uuid',
+  })
+  @IsNotEmpty()
+  @IsString()
+  filial: string;
+
+  @ApiProperty({
+    description: `Carpet model id`,
+    example: 'uuid',
+  })
+  @IsNotEmpty()
+  @IsString()
+  model: string;
+
+  @ApiProperty({
+    description: `x`,
+    example: 3,
+  })
+  @IsOptional()
+  @IsNumber()
+  x: number;
+
+  @ApiProperty({
+    description: 'y',
+    example: 4,
+  })
+  @IsOptional()
+  @IsNumber()
+  y: number;
+
+  @ApiProperty({
+    description: `totalSize`,
+    example: 36,
+  })
+  @IsOptional()
+  @IsNumber()
+  totalSize: number;
 }
 
 export default CreateProductDto;

@@ -25,7 +25,9 @@ export class KassaService {
     options: IPaginationOptions,
     where?: FindOptionsWhere<Kassa>,
   ): Promise<Pagination<Kassa>> {
-    return paginate<Kassa>(this.kassaRepository, options);
+    return paginate<Kassa>(this.kassaRepository, options, {
+      relations: { orders: true, cashflow: true },
+    });
   }
 
   async getById(id: string) {
@@ -80,7 +82,7 @@ export class KassaService {
   }
 
   async create(value: CreateKassaDto) {
-    const check = this.GetOpenKassa(value.filial);
+    const check = await this.GetOpenKassa(value.filial);
     if (check) {
       return false;
     }
@@ -105,10 +107,14 @@ export class KassaService {
   }
 
   async kassaSumByFilialAndRange(where) {
+    console.log(where);
+
     const data = await this.kassaRepository.find({
       where,
       relations: { orders: true, cashflow: true },
     });
+    console.log(data.length);
+
     if (data.length) {
       const { comingSum, goingSum } = await this.calculateKassa(data);
       return { comingSum, goingSum };
@@ -134,19 +140,36 @@ export class KassaService {
     let comingSum = 0,
       goingSum = 0;
     for (const item of data) {
-      const orderSum = item.orders
-        .filter((o) => o.isActive)
-        .map((or) => or.price)
-        .reduce((a, b) => a + b);
-      const cashFlowSum = item.cashflow
-        .filter((c) => c.type == CashFlowEnum.InCome)
-        .map((c) => c.price)
-        .reduce((a, b) => a + b);
+      const orderSum =
+        item.orders.length > 0
+          ? item.orders.filter((o) => o.isActive).length > 0
+            ? item.orders
+                .filter((o) => o.isActive)
+                .map((or) => +or.price)
+                .reduce((a, b) => a + b)
+            : 0
+          : 0;
+      const cashFlowSum =
+        item.cashflow.length > 0
+          ? item.cashflow.filter((c) => c.type == CashFlowEnum.InCome).length >
+            0
+            ? item.cashflow
+                .filter((c) => c.type == CashFlowEnum.InCome)
+                ?.map((c) => +c.price)
+                ?.reduce((a, b) => a + b)
+            : 0
+          : 0;
       comingSum += orderSum + cashFlowSum;
-      goingSum += item.cashflow
-        .filter((c) => c.type == CashFlowEnum.Consumption)
-        .map((c) => c.price)
-        .reduce((a, b) => a + b);
+      goingSum +=
+        item.cashflow.length > 0
+          ? item.cashflow.filter((c) => c.type == CashFlowEnum.Consumption)
+              .length > 0
+            ? item.cashflow
+                .filter((c) => c.type == CashFlowEnum.Consumption)
+                ?.map((c) => +c.price)
+                ?.reduce((a, b) => a + b)
+            : 0
+          : 0;
     }
     return { comingSum, goingSum };
   }

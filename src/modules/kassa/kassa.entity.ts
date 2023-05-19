@@ -18,7 +18,7 @@ export class Kassa {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   startDate: string;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp',nullable:true })
   endDate: string;
 
   @Column({ type: 'boolean', default: true })

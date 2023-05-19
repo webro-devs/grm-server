@@ -23,7 +23,10 @@ export class KassaModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(KassaQueryParserMiddleware)
-      .forRoutes({ path: 'kassa', method: RequestMethod.GET }),
-      { path: 'kassa', method: RequestMethod.GET };
+      .forRoutes({
+        path: '/kassa/calculate/by-range',
+        method: RequestMethod.GET,
+      }),
+      { path: '/kassa/calculate/by-range', method: RequestMethod.GET };
   }
 }
