@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('shape')
-export class Position {
+export class Shape {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
