@@ -1,12 +1,12 @@
 import { IsString, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-class UpdateStyleDto {
+class UpdateShapeDto {
   @ApiProperty({
     description: `title`,
-    example: 'classic',
+    example: 'pentagon',
   })
   @IsOptional()
   @IsString()
   readonly title: string;
 }
-export default UpdateStyleDto;
+export default UpdateShapeDto;
