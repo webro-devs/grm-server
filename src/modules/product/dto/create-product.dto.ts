@@ -21,7 +21,7 @@ class CreateProductDto {
     description: `Carpet date`,
     example: '2023-05-02 08:10:23.726769',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   date: string;
 

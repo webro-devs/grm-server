@@ -21,9 +21,8 @@ import { ProductQueryParserMiddleware } from '../../infra/middleware';
 export class ProductModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ProductQueryParserMiddleware).forRoutes(
-      { path: 'product', method: RequestMethod.GET },
+      { path: 'product/remaining-products', method: RequestMethod.GET },
       // { path: 'news/my-news', method: RequestMethod.GET },
-    ),
-      { path: 'product', method: RequestMethod.GET };
+    );
   }
 }

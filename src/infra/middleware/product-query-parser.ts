@@ -16,6 +16,10 @@ class ProductQueryParserMiddleware implements NestMiddleware {
       size,
       shape,
       color,
+      collectionId,
+      modelId,
+      filialId,
+      partiyaId,
     } = req.query;
 
     if (startDate && endDate) {
@@ -55,6 +59,27 @@ class ProductQueryParserMiddleware implements NestMiddleware {
     }
     if (color) {
       where.color = color;
+    }
+    if (collectionId) {
+      where.model = {
+        collection: {
+          id: collectionId,
+        },
+      };
+    }
+    if (modelId) {
+      where.model = where?.model || {};
+      where.model.id = modelId;
+    }
+    if (filialId) {
+      where.filial = {
+        id: filialId,
+      };
+    }
+    if (partiyaId) {
+      where.partiya = {
+        id: partiyaId,
+      };
     }
 
     req.where = where;

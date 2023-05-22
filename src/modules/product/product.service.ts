@@ -88,4 +88,19 @@ export class ProductService {
     }
     return value;
   }
+  async remainingProducts(where) {
+    const data = await this.productRepository.find({
+      where,
+    });
+    const remainingSum = data.length
+      ? data.map((p) => p.price * p.count).reduce((a, b) => a + b)
+      : 0;
+    const remainingSize = data.length
+      ? data.map((p) => p.totalSize * p.count).reduce((a, b) => a + b)
+      : 0;
+    const count = data.length
+      ? data.map((p) => p.count).reduce((a, b) => a + b)
+      : 0;
+    return { remainingSize, remainingSum, count };
+  }
 }

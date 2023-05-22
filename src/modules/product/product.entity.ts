@@ -28,7 +28,7 @@ export class Product {
   @Column()
   imgUrl: string;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;
 
   @Column({ nullable: true })

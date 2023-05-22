@@ -49,6 +49,16 @@ export class ProductController {
     }
   }
 
+  @Get('/remaining-products')
+  @ApiOperation({ summary: 'Method: returns remaining ofp products' })
+  @ApiOkResponse({
+    description: 'The remaining of products was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getRemainingProducts(@Req() req) {
+    return this.productService.remainingProducts(req.where);
+  }
+
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single product by id' })
   @ApiOkResponse({

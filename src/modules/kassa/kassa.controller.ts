@@ -134,6 +134,20 @@ export class KassaController {
     }
   }
 
+  @Patch('/close-kassa/:id')
+  @ApiOperation({ summary: 'Method: closing kassa' })
+  @ApiOkResponse({
+    description: 'Kassa was closed',
+  })
+  @HttpCode(HttpStatus.OK)
+  async closeKassa(@Param('id') id: string): Promise<UpdateResult> {
+    try {
+      return await this.kassaService.closeKassa(id);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @Delete('/:id')
   @ApiOperation({ summary: 'Method: deleting kassa' })
   @ApiOkResponse({

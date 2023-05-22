@@ -60,7 +60,7 @@ export class TransferController {
     description: 'The transfer was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() data: CreateTransferDto, @Req() request) {
+  async saveData(@Body() data: CreateTransferDto[], @Req() request) {
     try {
       return await this.transferService.create(data, request.user.id);
     } catch (err) {

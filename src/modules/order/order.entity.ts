@@ -36,11 +36,15 @@ export class Order {
   @JoinColumn()
   casher: User;
 
-  @ManyToOne(() => Kassa, (kassa) => kassa.orders)
+  @ManyToOne(() => Kassa, (kassa) => kassa.orders, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   kassa: Kassa;
 
-  @ManyToOne(() => Product, (product) => product.orders)
+  @ManyToOne(() => Product, (product) => product.orders, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   product: Product;
 
