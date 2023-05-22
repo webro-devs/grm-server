@@ -28,9 +28,8 @@ import { Route } from '../../infra/shared/decorators/route.decorator';
 @ApiTags('Collection')
 @Controller('collection')
 export class CollectionController {
-  constructor(private readonly collectionService: CollectionService) { }
+  constructor(private readonly collectionService: CollectionService) {}
 
-  // @Public()
   @Get('/')
   @ApiOperation({ summary: 'Method: returns all Collections' })
   @ApiOkResponse({
@@ -45,7 +44,20 @@ export class CollectionController {
     }
   }
 
-  // @Public()
+  @Get('/remaining-products')
+  @ApiOperation({ summary: 'Method: returns all remaining products' })
+  @ApiOkResponse({
+    description: 'The remaining products were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getRemainingProductsByCollection() {
+    try {
+      return await this.collectionService.remainingProductsByCollection();
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single collection by id' })
   @ApiOkResponse({
@@ -56,7 +68,6 @@ export class CollectionController {
     return this.collectionService.getOne(id);
   }
 
-  // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
   @Post('/')
   @ApiOperation({ summary: 'Method: creates new Collection' })
   @ApiCreatedResponse({
@@ -71,7 +82,6 @@ export class CollectionController {
     }
   }
 
-  // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
   @Patch('/:id')
   @ApiOperation({ summary: 'Method: updating collection' })
   @ApiOkResponse({
@@ -89,7 +99,6 @@ export class CollectionController {
     }
   }
 
-  // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
   @Delete('/:id')
   @ApiOperation({ summary: 'Method: deleting collection' })
   @ApiOkResponse({

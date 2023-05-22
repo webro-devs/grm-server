@@ -55,4 +55,30 @@ export class CollectionService {
     const data = this.collectionRepository.create(value);
     return await this.collectionRepository.save(data);
   }
+
+  async remainingProductsByCollection() {
+    const data = await this.collectionRepository.find({
+      relations: { model: { products: true } },
+    });
+    let result = {};
+    for (let i = 0; i < data.length; i++) {
+      let remainingSum = 0,
+        remainingSize = 0,
+        remainingCount = 0;
+      for (let j = 0; j < data[i].model.length; j++) {
+        const products = data[i].model[j].products;
+        remainingSum += products.length
+          ? products.map((p) => p.price * p.count).reduce((a, b) => a + b)
+          : 0;
+        remainingSize += products.length
+          ? products.map((p) => p.totalSize).reduce((a, b) => a + b)
+          : 0;
+        remainingCount += products.length
+          ? products.map((p) => p.count).reduce((a, b) => a + b)
+          : 0;
+      }
+      result[data[i].title] = { remainingCount, remainingSize, remainingSum };
+    }
+    return result;
+  }
 }

@@ -11,5 +11,5 @@ export class Collection {
   title: string;
 
   @OneToMany(() => Model, (model) => model.collection)
-  model: Model;
+  model: Model[];
 }

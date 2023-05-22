@@ -20,6 +20,7 @@ import { ModelModule } from './modules/model/model.module';
 import { GrmSocketModule } from './modules/web-socket/web-socket.module';
 import { TransferModule } from './modules/transfer/transfer.module';
 import { ActionModule } from './modules/action/action.module';
+import { ColorModule } from './modules/color/color.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ActionModule } from './modules/action/action.module';
     AuthModule,
     CashflowModule,
     CollectionModule,
+    ColorModule,
     FileModule,
     FilialModule,
     // GrmSocketModule,
