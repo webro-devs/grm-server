@@ -16,12 +16,9 @@ export class ShapeService {
   constructor(
     @InjectRepository(Shape)
     private readonly shapeRepository: ShapeRepository,
-  ) { }
+  ) {}
 
-  async getAll(
-    options: IPaginationOptions,
-    where?: FindOptionsWhere<Shape>,
-  ): Promise<Pagination<Shape>> {
+  async getAll(options: IPaginationOptions): Promise<Pagination<Shape>> {
     return paginate<Shape>(this.shapeRepository, options, {
       order: {
         title: 'ASC',

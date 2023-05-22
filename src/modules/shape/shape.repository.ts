@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
 
-import { Shape } from './shjape.entity';
+import { Shape } from './shape.entity';
 
 export class ShapeRepository extends Repository<Shape> {}

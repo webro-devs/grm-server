@@ -15,7 +15,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 export class StyleService {
   constructor(
     @InjectRepository(Style)
-    private readonly positionRepository: StyleRepository,
+    private readonly styleRepository: StyleRepository,
   ) { }
 
   async getAll(
@@ -31,9 +31,6 @@ export class StyleService {
 
   async getOne(id: string) {
     const data = await this.styleRepository.findOne({
-      // relations: {
-      //   users: {},
-      // },
       where: { id },
     });
 

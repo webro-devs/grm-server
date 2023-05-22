@@ -11,7 +11,7 @@ import {
   Get,
   Query,
 } from '@nestjs/common';
-import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
+import { UpdateResult } from 'typeorm';
 import {
   ApiCreatedResponse,
   ApiOkResponse,
@@ -32,7 +32,6 @@ import { UserRoleEnum } from '../../infra/shared/enum';
 export class ShapeController {
   constructor(private readonly shapeService: ShapeService) {}
 
-  // @Public()
   @Get('/')
   @ApiOperation({ summary: 'Method: returns all Shapes' })
   @ApiOkResponse({
@@ -47,7 +46,6 @@ export class ShapeController {
     }
   }
 
-  // @Public()
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single Shape by id' })
   @ApiOkResponse({
@@ -58,7 +56,6 @@ export class ShapeController {
     return this.shapeService.getOne(id);
   }
 
-  // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
   @Post('/')
   @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: creates new Shape' })
@@ -74,7 +71,6 @@ export class ShapeController {
     }
   }
 
-  // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
   @Patch('/:id')
   @ApiOperation({ summary: 'Method: updating Shape' })
   @ApiOkResponse({
@@ -92,7 +88,6 @@ export class ShapeController {
     }
   }
 
-  // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
   @Delete('/:id')
   @ApiOperation({ summary: 'Method: deleting Shape' })
   @ApiOkResponse({

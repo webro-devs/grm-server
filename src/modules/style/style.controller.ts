@@ -11,7 +11,7 @@ import {
   Get,
   Query,
 } from '@nestjs/common';
-import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
+import { UpdateResult } from 'typeorm';
 import {
   ApiCreatedResponse,
   ApiOkResponse,
@@ -32,7 +32,6 @@ import { UserRoleEnum } from '../../infra/shared/enum';
 export class StyleController {
   constructor(private readonly styleService: StyleService) {}
 
-  // @Public()
   @Get('/')
   @ApiOperation({ summary: 'Method: returns all styles' })
   @ApiOkResponse({
@@ -47,7 +46,6 @@ export class StyleController {
     }
   }
 
-  // @Public()
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single style by id' })
   @ApiOkResponse({
@@ -58,7 +56,6 @@ export class StyleController {
     return this.styleService.getOne(id);
   }
 
-  // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
   @Post('/')
   @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: creates new style' })
@@ -74,7 +71,6 @@ export class StyleController {
     }
   }
 
-  // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
   @Patch('/:id')
   @ApiOperation({ summary: 'Method: updating style' })
   @ApiOkResponse({
@@ -92,7 +88,6 @@ export class StyleController {
     }
   }
 
-  // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
   @Delete('/:id')
   @ApiOperation({ summary: 'Method: deleting style' })
   @ApiOkResponse({

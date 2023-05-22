@@ -15,6 +15,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { OrderModule } from './modules/order/order.module';
 import { CashflowModule } from './modules/cashflow/cashflow.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { StyleModule } from './modules/style/style.module';
+import { ShapeModule } from './modules/shape/shape.module';
 import { FileModule } from './modules/file/file.module';
 import { ModelModule } from './modules/model/model.module';
 import { GrmSocketModule } from './modules/web-socket/web-socket.module';
@@ -45,13 +47,15 @@ import { ColorModule } from './modules/color/color.module';
     ColorModule,
     FileModule,
     FilialModule,
-    // GrmSocketModule,
+    GrmSocketModule,
     KassaModule,
     ModelModule,
     OrderModule,
     PartiyaModule,
     PositionModule,
     ProductModule,
+    ShapeModule,
+    StyleModule,
     TransferModule,
     UserModule,
   ],
