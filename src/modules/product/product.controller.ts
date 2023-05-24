@@ -75,9 +75,9 @@ export class ProductController {
     description: 'The product was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() positionData: CreateProductDto[]) {
+  async saveData(@Body() data: CreateProductDto[]) {
     try {
-      return await this.productService.create(positionData);
+      return await this.productService.create(data);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

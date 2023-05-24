@@ -33,8 +33,8 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Getter uz')
-    .setDescription('Getter API description')
+    .setTitle('GRM uz')
+    .setDescription('GRM API description')
     .setVersion('0.2')
     .addBearerAuth()
     .addCookieAuth()

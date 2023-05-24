@@ -8,12 +8,9 @@ import {
   Body,
   Param,
   Delete,
-  UseInterceptors,
-  UploadedFile,
   HttpStatus,
   HttpException,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiCreatedResponse,
   ApiOkResponse,
@@ -21,19 +18,21 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { GRMGateway } from './web-socket.gateway';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Socket')
 @Controller('socket')
 export class SocketController {
   constructor(private readonly socketGateWay: GRMGateway) {}
 
+  @Public()
   @Get('/ha')
   @ApiOperation({ summary: 'Method: logs ha' })
   @ApiCreatedResponse({
     description: 'The ha logged',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@UploadedFile() file: Express.Multer.File) {
+  async saveData() {
     try {
       return 'data';
     } catch (err) {

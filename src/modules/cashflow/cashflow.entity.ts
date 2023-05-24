@@ -15,7 +15,7 @@ export class Cashflow {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar')
+  @Column('int')
   price: number;
 
   @Column('varchar')

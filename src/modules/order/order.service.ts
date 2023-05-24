@@ -29,7 +29,10 @@ export class OrderService {
   }
 
   async getById(id: string) {
-    const data = await this.orderRepository.findOne({ where: { id } });
+    const data = await this.orderRepository.findOne({
+      where: { id },
+      relations: { casher: true, seller: true, product: true },
+    });
     if (!data) {
       throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
     }
