@@ -1,23 +1,32 @@
 const ExcelDataParser = (data) => {
   const transformedObj = data.reduce((acc, curr) => {
-    const { collection, model, count, color } = curr;
+    const { Collection, Model, Size, Color, Code, Shape, Style, Count, M2 } =
+      curr;
 
-    const collectionItem = acc.find((item) => item.title === collection);
+    const collectionItem = acc.find((item) => item.title === Collection);
 
     if (collectionItem) {
-      const modelItem = collectionItem.items.find(
-        (item) => item.title === model,
+      const modelItem = collectionItem.models.find(
+        (item) => item.title === Model,
       );
 
       if (modelItem) {
-        modelItem.items.push({ color, count });
+        modelItem.products.push({ Color, Count, Size, Code, Shape, Style, M2 });
       } else {
-        collectionItem.items.push({ title: model, items: [{ color, count }] });
+        collectionItem.models.push({
+          title: Model,
+          products: [{ Color, Count, Size, Code, Shape, Style, M2 }],
+        });
       }
     } else {
       acc.push({
-        title: collection,
-        items: [{ title: model, items: [{ color, count }] }],
+        title: Collection,
+        models: [
+          {
+            title: Model,
+            products: [{ Color, Count, Size, Code, Shape, Style, M2 }],
+          },
+        ],
       });
     }
 

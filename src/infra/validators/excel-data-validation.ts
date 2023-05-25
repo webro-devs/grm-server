@@ -45,10 +45,10 @@ class ExcelDataValidation {
   }
   private checkType(data) {
     for (const item of data) {
-      if (isNaN(item.count)) {
+      if (isNaN(item.Count)) {
         this.message.msg.push('Count should be a number.');
       } else {
-        item.count = item.count * 1;
+        item.Count = item.Count * 1;
       }
     }
   }
