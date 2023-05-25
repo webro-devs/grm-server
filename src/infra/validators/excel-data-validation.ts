@@ -30,7 +30,7 @@ class ExcelDataValidation {
       ];
 
       if (properties.length < 9)
-        this.message.msg.push('You have less propery!');
+        this.message.msg.push('You have missing propery!');
       else if (properties.length > 9)
         this.message.msg.push('You have Unexpected property!');
 
