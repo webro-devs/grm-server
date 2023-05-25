@@ -4,8 +4,9 @@ import {
   OnGatewayInit,
   SubscribeMessage,
   MessageBody,
+  ConnectedSocket,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'ws';
+import { Server, Socket } from 'socket.io';
 import { OrderService } from '../order/order.service';
 import { TransferService } from '../transfer/transfer.service';
 import { CashflowService } from '../cashflow/cashflow.service';
@@ -25,12 +26,12 @@ export class GRMGateway implements OnGatewayInit {
   server: Server;
 
   afterInit(server: Server) {
-    this.server = server;
     console.log('WebSocket server initialized!');
   }
 
-  handleConnection(client: any) {
+  handleConnection(@ConnectedSocket() client: Socket) {
     console.log(client.id);
+    this.server.to(client.id).emit('message', 'you connected successfully');
   }
 
   handleDisconnect(client: any) {
@@ -43,17 +44,33 @@ export class GRMGateway implements OnGatewayInit {
   ) {
     const order = await this.orderService.getById(body.orderId);
     const kassa = await this.kassaService.GetOpenKassa(body.filialId);
-    this.server.to().emit('messageReceived', order);
+    kassa?.['id'] ? this.server.to(kassa['id']).emit('order', order) : null;
   }
 
   @SubscribeMessage('checkOrder')
-  async sendKassaSum(@MessageBody() id: string) {
-    const data = await this.kassaService.getKassaSum(id);
-    this.server.to(id).emit('messageReceived', data);
+  async sendKassaSum(
+    @MessageBody() body: { kassaId: string; orderId: string },
+  ) {
+    const kassaSum = await this.kassaService.getKassaSum(body.kassaId);
+    const order = await this.orderService.getById(body.orderId);
+    this.server.to(body.kassaId).emit('kassaSum', kassaSum);
+    this.server.emit('bossOrder', order);
   }
 
-  @SubscribeMessage('createRoom')
-  createRoom(@MessageBody() id: string) {
-    this.server.join(id);
+  @SubscribeMessage('cashflow')
+  async Cashflow(@MessageBody() id: string) {
+    const cashflow = await this.cashflowService.getOne(id);
+    this.server.emit('bossCashFlow', cashflow);
+  }
+
+  @SubscribeMessage('transfer')
+  async transfer(@MessageBody() id: string) {
+    const transfer = await this.transferService.getById(id);
+    this.server.emit('transfer', transfer);
+  }
+
+  @SubscribeMessage('joinRoom')
+  handleJoinRoom(client: Socket, roomName: string) {
+    client.join(roomName);
   }
 }
