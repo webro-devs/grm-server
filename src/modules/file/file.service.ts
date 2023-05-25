@@ -4,18 +4,24 @@ import * as XLSX from 'xlsx';
 
 import { FileEntity } from './file.entity';
 import { FileRepository } from './file.repository';
+import { ExcelDataValidation } from 'src/infra/validators';
+import { ExcelDataParser } from 'src/infra/helpers';
 
 Injectable();
 export class FileService {
   constructor(
     @InjectRepository(FileEntity)
     private readonly fileRepository: FileRepository,
+    private readonly excelDataValidation: ExcelDataValidation,
   ) {}
   async ExcelToJson(path: string) {
     const workbook = XLSX.readFile(path);
     const worksheet = workbook.Sheets['Sheet'];
 
-    const data = XLSX.utils.sheet_to_json(worksheet);
-    return data;
+    const data: any[] = XLSX.utils.sheet_to_json(worksheet);
+
+    this.excelDataValidation.validate(data);
+
+    return ExcelDataParser(data);
   }
 }

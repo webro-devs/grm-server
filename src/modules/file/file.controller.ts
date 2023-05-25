@@ -45,7 +45,7 @@ export class FileController {
       const data = await this.fileService.ExcelToJson(file.path);
       return data;
     } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(err.response, err.status);
     }
   }
 }

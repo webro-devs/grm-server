@@ -1,12 +1,16 @@
+import { HttpStatus } from '@nestjs/common';
+import { HttpException } from '@nestjs/common/exceptions';
+
 class ExcelDataValidation {
-  private message = {
+  private message: { error: boolean; msg: string[]; missingProps: string[] } = {
     error: false,
     msg: [],
     missingProps: [],
   };
-  constructor(private data) {}
+  private data;
 
-  public validate() {
+  public validate(data) {
+    this.data = data;
     this.checkProperties(this.data);
     this.checkType(this.data);
     this.checkValue(this.data);
@@ -58,5 +62,10 @@ class ExcelDataValidation {
     this.message.msg = [...new Set(this.message.msg)];
     if (this.message.missingProps.length > 0 || this.message.msg.length > 0)
       this.message.error = true;
+
+    if (this.message.error)
+      throw new HttpException(this.message, HttpStatus.BAD_REQUEST);
   }
 }
+
+export default ExcelDataValidation;
