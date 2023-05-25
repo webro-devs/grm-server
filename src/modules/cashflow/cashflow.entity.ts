@@ -8,7 +8,6 @@ import {
 } from 'typeorm';
 import { Kassa } from '../kassa/kassa.entity';
 import { User } from '../user/user.entity';
-import { Action } from '../action/action.entity';
 
 @Entity('cashflow')
 export class Cashflow {
@@ -34,7 +33,4 @@ export class Cashflow {
   @ManyToOne(() => User, (user) => user.cashflow)
   @JoinColumn()
   casher: User;
-
-  @OneToMany(() => Action, (action) => action.cashFlow)
-  actions: Action;
 }
