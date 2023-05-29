@@ -30,7 +30,7 @@ class PaginationDto {
   @IsOptional()
   @IsNumber()
   @Transform(parsePaginationQuery)
-  readonly page: number;
+  readonly page: number = 1;
 
   @ApiProperty({
     description: `IsActive`,

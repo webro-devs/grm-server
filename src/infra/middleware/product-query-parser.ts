@@ -1,6 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
 import { Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { ProductQueryDto } from '../shared/dto';
 
 @Injectable()
 class ProductQueryParserMiddleware implements NestMiddleware {
@@ -20,7 +21,7 @@ class ProductQueryParserMiddleware implements NestMiddleware {
       modelId,
       filialId,
       partiyaId,
-    } = req.query;
+    }: ProductQueryDto = req.query;
 
     if (startDate && endDate) {
       where = {

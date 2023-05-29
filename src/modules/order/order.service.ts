@@ -5,12 +5,13 @@ import {
   Pagination,
   paginate,
 } from 'nestjs-typeorm-paginate';
-import { DataSource, FindOptionsWhere } from 'typeorm';
+import { DataSource, EntityManager, FindOptionsWhere } from 'typeorm';
 
 import { Order } from './order.entity';
 import { OrderRepository } from './order.repository';
 import { UpdateOrderDto, CreateOrderDto } from './dto';
 import { ProductService } from '../product/product.service';
+import { KassaService } from '../kassa/kassa.service';
 
 Injectable();
 export class OrderService {
@@ -18,6 +19,7 @@ export class OrderService {
     @InjectRepository(Order)
     private readonly orderRepository: OrderRepository,
     private readonly productService: ProductService,
+    private readonly kassaService: KassaService,
     private readonly connection: DataSource,
   ) {}
 
@@ -40,11 +42,34 @@ export class OrderService {
   }
 
   async deleteOne(id: string) {
+    const order = await this.orderRepository.findOne({
+      where: { id },
+      relations: { kassa: true },
+    });
+    const kassa = await this.kassaService.getById(order.kassa.id);
+    kassa.totalSum -= order.price;
+    await this.connection.transaction(async (manager: EntityManager) => {
+      await manager.save(kassa);
+    });
     const response = await this.orderRepository.delete(id);
     return response;
   }
 
   async change(value: UpdateOrderDto, id: string) {
+    if (value.price) {
+      const order = await this.orderRepository.findOne({
+        where: { id },
+        relations: { kassa: true },
+      });
+      if (order.isActive) {
+        const kassa = await this.kassaService.getById(order.kassa.id);
+        kassa.totalSum -= order.price;
+        kassa.totalSum += value.price;
+        await this.connection.transaction(async (manager: EntityManager) => {
+          await manager.save(kassa);
+        });
+      }
+    }
     const response = await this.orderRepository
       .createQueryBuilder()
       .update()
@@ -76,6 +101,15 @@ export class OrderService {
   }
 
   async checkOrder(id: string, casher: string) {
+    const order = await this.orderRepository.findOne({
+      where: { id },
+      relations: { kassa: true },
+    });
+    const kassa = await this.kassaService.getById(order.kassa.id);
+    kassa.totalSum += order.price;
+    await this.connection.transaction(async (manager: EntityManager) => {
+      await manager.save(kassa);
+    });
     const response = await this.orderRepository
       .createQueryBuilder()
       .update()

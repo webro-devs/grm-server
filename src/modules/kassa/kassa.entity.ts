@@ -18,11 +18,17 @@ export class Kassa {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   startDate: string;
 
-  @Column({ type: 'timestamp',nullable:true })
+  @Column({ type: 'timestamp', nullable: true })
   endDate: string;
 
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
+
+  @Column({ type: 'int', default: 0, nullable: true })
+  totalSum: number;
+
+  @Column({ type: 'int', default: 0, nullable: true })
+  expenditure: number;
 
   @ManyToOne(() => Filial, (filial) => filial.kassa)
   @JoinColumn()
@@ -31,6 +37,6 @@ export class Kassa {
   @OneToMany(() => Order, (order) => order.kassa)
   orders: Order[];
 
-  @OneToMany(() => Cashflow, cashflow => cashflow.kassa)
+  @OneToMany(() => Cashflow, (cashflow) => cashflow.kassa)
   cashflow: Cashflow[];
 }

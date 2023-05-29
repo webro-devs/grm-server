@@ -23,14 +23,13 @@ import {
 import { CreateProductDto, UpdateProductDto } from './dto';
 import { Product } from './product.entity';
 import { ProductService } from './product.service';
-import { PaginationDto } from '../../infra/shared/dto';
+import { ProductQueryDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 
 @ApiTags('Product')
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
-
   @Get('/')
   @ApiOperation({ summary: 'Method: returns all products' })
   @ApiOkResponse({
@@ -39,11 +38,14 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   async getData(
     @Route() route: string,
-    @Query() query: PaginationDto,
+    @Query() query: ProductQueryDto,
     @Req() req,
   ) {
     try {
-      return await this.productService.getAll({ ...query, route }, req.where);
+      return await this.productService.getAll(
+        { limit: query.limit, page: query.page, route },
+        req.where,
+      );
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

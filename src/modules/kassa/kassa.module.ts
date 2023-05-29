@@ -21,12 +21,16 @@ import { FilialModule } from '../filial/filial.module';
 })
 export class KassaModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(KassaQueryParserMiddleware)
-      .forRoutes({
+    consumer.apply(KassaQueryParserMiddleware).forRoutes(
+      {
         path: '/kassa/calculate/by-range',
         method: RequestMethod.GET,
-      }),
+      },
+      {
+        path: '/kassa/calculate/all-filial/by-range',
+        method: RequestMethod.GET,
+      },
+    ),
       { path: '/kassa/calculate/by-range', method: RequestMethod.GET };
   }
 }

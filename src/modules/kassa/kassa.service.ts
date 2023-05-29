@@ -102,21 +102,20 @@ export class KassaService {
       where: { id },
       relations: { orders: true, cashflow: true },
     });
-    const result = await this.calculateKassa([data]);
-    return result;
+    const comingSum = data.totalSum;
+    const goingSum = data.expenditure;
+    return { comingSum, goingSum };
   }
 
   async kassaSumByFilialAndRange(where) {
-    console.log(where);
-
     const data = await this.kassaRepository.find({
       where,
       relations: { orders: true, cashflow: true },
     });
-    console.log(data.length);
 
     if (data.length) {
-      const { comingSum, goingSum } = await this.calculateKassa(data);
+      const comingSum = data.map((d) => d.totalSum).reduce((a, b) => a + b);
+      const goingSum = data.map((d) => d.expenditure).reduce((a, b) => a + b);
       return { comingSum, goingSum };
     } else {
       return { comingSum: 0, goingSum: 0 };
@@ -127,7 +126,9 @@ export class KassaService {
     const result = [];
     const filialData = await this.filialService.getAllFilial();
     for (const filial of filialData) {
-      where.filial = filial.id;
+      where.filial = {
+        id: filial.id,
+      };
       const { comingSum, goingSum } = await this.kassaSumByFilialAndRange(
         where,
       );
@@ -136,41 +137,41 @@ export class KassaService {
     return result;
   }
 
-  async calculateKassa(data: Kassa[]) {
-    let comingSum = 0,
-      goingSum = 0;
-    for (const item of data) {
-      const orderSum =
-        item.orders.length > 0
-          ? item.orders.filter((o) => o.isActive).length > 0
-            ? item.orders
-                .filter((o) => o.isActive)
-                .map((or) => +or.price)
-                .reduce((a, b) => a + b)
-            : 0
-          : 0;
-      const cashFlowSum =
-        item.cashflow.length > 0
-          ? item.cashflow.filter((c) => c.type == CashFlowEnum.InCome).length >
-            0
-            ? item.cashflow
-                .filter((c) => c.type == CashFlowEnum.InCome)
-                ?.map((c) => +c.price)
-                ?.reduce((a, b) => a + b)
-            : 0
-          : 0;
-      comingSum += orderSum + cashFlowSum;
-      goingSum +=
-        item.cashflow.length > 0
-          ? item.cashflow.filter((c) => c.type == CashFlowEnum.Consumption)
-              .length > 0
-            ? item.cashflow
-                .filter((c) => c.type == CashFlowEnum.Consumption)
-                ?.map((c) => +c.price)
-                ?.reduce((a, b) => a + b)
-            : 0
-          : 0;
-    }
-    return { comingSum, goingSum };
-  }
+  // async calculateKassa(data: Kassa[]) {
+  //   let comingSum = 0,
+  //     goingSum = 0;
+  //   for (const item of data) {
+  //     const orderSum =
+  //       item.orders.length > 0
+  //         ? item.orders.filter((o) => o.isActive).length > 0
+  //           ? item.orders
+  //               .filter((o) => o.isActive)
+  //               .map((or) => +or.price)
+  //               .reduce((a, b) => a + b)
+  //           : 0
+  //         : 0;
+  //     const cashFlowSum =
+  //       item.cashflow.length > 0
+  //         ? item.cashflow.filter((c) => c.type == CashFlowEnum.InCome).length >
+  //           0
+  //           ? item.cashflow
+  //               .filter((c) => c.type == CashFlowEnum.InCome)
+  //               ?.map((c) => +c.price)
+  //               ?.reduce((a, b) => a + b)
+  //           : 0
+  //         : 0;
+  //     comingSum += orderSum + cashFlowSum;
+  //     goingSum +=
+  //       item.cashflow.length > 0
+  //         ? item.cashflow.filter((c) => c.type == CashFlowEnum.Consumption)
+  //             .length > 0
+  //           ? item.cashflow
+  //               .filter((c) => c.type == CashFlowEnum.Consumption)
+  //               ?.map((c) => +c.price)
+  //               ?.reduce((a, b) => a + b)
+  //           : 0
+  //         : 0;
+  //   }
+  //   return { comingSum, goingSum };
+  // }
 }
