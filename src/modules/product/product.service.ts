@@ -9,6 +9,7 @@ import {
 import { Product } from './product.entity';
 import { ProductRepository } from './product.repository';
 import { CreateProductDto, UpdateProductDto } from './dto';
+import sizeParser from 'src/infra/helpers/size-parser';
 
 Injectable();
 export class ProductService {
@@ -78,12 +79,10 @@ export class ProductService {
 
   setXy(value: CreateProductDto[]): CreateProductDto[] {
     for (let i = 0; i < value.length; i++) {
-      const xy = value[i].size
-        .trim()
-        .split('x')
-        .map((e) => +e);
+      const xy = sizeParser(value[i].size);
       value[i].x = xy[0];
       value[i].y = xy[1];
+      value[i].size = xy.join('x');
       value[i].totalSize = xy[0] * xy[1] * value[i].count;
     }
     return value;

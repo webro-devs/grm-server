@@ -2,10 +2,16 @@ import { HttpStatus } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions';
 
 class ExcelDataValidation {
-  private message: { error: boolean; msg: string[]; missingProps: string[] } = {
+  private message: {
+    error: boolean;
+    msg: string[];
+    missingProps: string[];
+    missingCells: string[];
+  } = {
     error: false,
     msg: [],
     missingProps: [],
+    missingCells: [],
   };
   private data;
 
@@ -24,11 +30,11 @@ class ExcelDataValidation {
       const expectedProperties = [
         'Collection',
         'Model',
-        'Size',
         'Color',
-        'Code',
         'Shape',
         'Style',
+        'Size',
+        'Code',
         'Count',
         'M2',
       ];
@@ -54,13 +60,39 @@ class ExcelDataValidation {
   }
 
   private checkValue(data) {
-    //....
+    const alphabet = 'ABCDEFGHIJKLMOPQRSTUVWXYZ';
+    const expectedProperties = [
+      'Collection',
+      'Model',
+      'Color',
+      'Shape',
+      'Style',
+      'Size',
+      'Code',
+      'Count',
+      'M2',
+    ];
+
+    data.forEach((item, index) => {
+      const properties = Object.keys(item);
+
+      expectedProperties.forEach((el, i) => {
+        if (!properties.includes(el)) {
+          const cell = `${index + 1}:${alphabet[i]}`;
+          this.message.missingCells.push(cell);
+        }
+      });
+    });
   }
 
   private restoreErrors() {
     this.message.missingProps = [...new Set(this.message.missingProps)];
     this.message.msg = [...new Set(this.message.msg)];
-    if (this.message.missingProps.length > 0 || this.message.msg.length > 0)
+    if (
+      this.message.missingProps.length > 0 ||
+      this.message.msg.length > 0 ||
+      this.message.missingCells.length > 0
+    )
       this.message.error = true;
 
     if (this.message.error)
