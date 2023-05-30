@@ -48,6 +48,9 @@ export class OrderService {
     });
     const kassa = await this.kassaService.getById(order.kassa.id);
     kassa.totalSum -= order.price;
+    if (order.isPlasticPayment) {
+      kassa.plasticSum -= order.price;
+    }
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(kassa);
     });
@@ -65,6 +68,10 @@ export class OrderService {
         const kassa = await this.kassaService.getById(order.kassa.id);
         kassa.totalSum -= order.price;
         kassa.totalSum += value.price;
+        if (order.isPlasticPayment) {
+          kassa.plasticSum -= order.price;
+          kassa.plasticSum += value.price;
+        }
         await this.connection.transaction(async (manager: EntityManager) => {
           await manager.save(kassa);
         });
@@ -107,6 +114,9 @@ export class OrderService {
     });
     const kassa = await this.kassaService.getById(order.kassa.id);
     kassa.totalSum += order.price;
+    if (order.isPlasticPayment) {
+      kassa.plasticSum += order.price;
+    }
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(kassa);
     });

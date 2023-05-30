@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class UpdateOrderDto {
   @ApiProperty({
@@ -16,6 +16,14 @@ class UpdateOrderDto {
   @IsOptional()
   @IsNumber()
   readonly price: number;
+
+  @ApiProperty({
+    description: `isPlasticPayment`,
+    example: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  readonly isPlasticPayment: boolean;
 
   @ApiProperty({
     description: `price`,

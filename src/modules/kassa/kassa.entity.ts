@@ -28,6 +28,9 @@ export class Kassa {
   totalSum: number;
 
   @Column({ type: 'int', default: 0, nullable: true })
+  plasticSum: number;
+
+  @Column({ type: 'int', default: 0, nullable: true })
   expenditure: number;
 
   @ManyToOne(() => Filial, (filial) => filial.kassa)

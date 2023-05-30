@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString, IsOptional, IsNumber } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  IsNumber,
+  IsBoolean,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreateOrderDto {
   @ApiProperty({
@@ -24,6 +30,14 @@ class CreateOrderDto {
   @IsNotEmpty()
   @IsNumber()
   readonly price: number;
+
+  @ApiProperty({
+    description: `isPlasticPayment`,
+    example: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  readonly isPlasticPayment: boolean;
 
   @ApiProperty({
     description: `price`,
