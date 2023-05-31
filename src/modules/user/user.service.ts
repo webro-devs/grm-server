@@ -89,7 +89,9 @@ export class UserService {
     const user = new User();
     user.login = generateId();
     user.role = data.role;
-    user.filial = await this.filialService.getOne(data.filial);
+    user.filial = data.filial
+      ? await this.filialService.getOne(data.filial)
+      : null;
     user.position = await this.positionService.getOne(data.position);
     await user.hashPassword(user.login);
     await this.connection.transaction(async (manager: EntityManager) => {

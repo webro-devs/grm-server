@@ -46,7 +46,7 @@ class CreateUserDto {
     description: `filial id`,
     example: 'uuid',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly filial: string;
 
