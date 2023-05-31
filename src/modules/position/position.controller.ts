@@ -33,7 +33,6 @@ import { Public } from '../auth/decorators/public.decorator';
 export class PositionController {
   constructor(private readonly positionService: PositionService) {}
 
-  @Public()
   @Get('/')
   @ApiOperation({ summary: 'Method: returns all positions' })
   @ApiOkResponse({
@@ -48,7 +47,6 @@ export class PositionController {
     }
   }
 
-  // @Public()
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single position by id' })
   @ApiOkResponse({
@@ -59,7 +57,6 @@ export class PositionController {
     return this.positionService.getOne(id);
   }
 
-  @Public()
   @Post('/')
   @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: creates new position' })

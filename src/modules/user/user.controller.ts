@@ -68,7 +68,7 @@ export class UserController {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-  @Public()
+
   @Post('/')
   @ApiOperation({ summary: 'Method: creates new user' })
   @ApiCreatedResponse({
