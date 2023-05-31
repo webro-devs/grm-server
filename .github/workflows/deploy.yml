@@ -1,0 +1,27 @@
+name: Deployment Grm backend
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy to server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploying to server...
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/user/getter/grm-backend
+            git stash
+            git pull origin main
+            git status
+            npm install --yes --legacy-peer-deps
+            npm run build
+            pm2 restart grm-backend
