@@ -26,13 +26,14 @@ import { PaginationDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from '../../infra/shared/enum';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Position')
 @Controller('position')
 export class PositionController {
   constructor(private readonly positionService: PositionService) {}
 
-  // @Public()
+  @Public()
   @Get('/')
   @ApiOperation({ summary: 'Method: returns all positions' })
   @ApiOkResponse({
@@ -58,7 +59,7 @@ export class PositionController {
     return this.positionService.getOne(id);
   }
 
-  // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
+  @Public()
   @Post('/')
   @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: creates new position' })
