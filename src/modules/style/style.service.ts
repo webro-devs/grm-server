@@ -8,7 +8,7 @@ import {
 
 import { UpdateStyleDto, CreateStyleDto } from './dto';
 import { Style } from './style.entity';
-import { StyleRepository } from './Style.repository';
+import { StyleRepository } from './style.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class StyleService {
   constructor(
     @InjectRepository(Style)
     private readonly styleRepository: StyleRepository,
-  ) { }
+  ) {}
 
   async getAll(
     options: IPaginationOptions,
