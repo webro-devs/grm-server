@@ -14,17 +14,14 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { FileService } from './file.service';
 import { MulterStorage } from '../../infra/helpers';
 import { FileUploadValidationForCreate } from '../../infra/validators';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('File')
+@Public()
 @Controller('file')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
