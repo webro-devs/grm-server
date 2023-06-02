@@ -31,7 +31,7 @@ export class Product {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'decimal' })
   price: number;
 
   @Column()
@@ -40,13 +40,13 @@ export class Product {
   @Column()
   size: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'decimal' })
   x: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'decimal' })
   y: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'decimal' })
   totalSize: number;
 
   @Column()
