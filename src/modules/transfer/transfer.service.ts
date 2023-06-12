@@ -96,6 +96,7 @@ export class TransferService {
       throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
     }
     product.count -= count;
+    product.setTotalSize();
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(product);
     });

@@ -83,7 +83,7 @@ export class ProductService {
       value[i].x = xy[0];
       value[i].y = xy[1];
       value[i].size = xy.join('x');
-      value[i].totalSize = xy[0] * xy[1] * value[i].count;
+      value[i].totalSize = +xy[0] * +xy[1] * value[i].count;
     }
     return value;
   }
@@ -92,10 +92,10 @@ export class ProductService {
       where,
     });
     const remainingSum = data.length
-      ? data.map((p) => p.price * p.count).reduce((a, b) => a + b)
+      ? data.map((p) => +p.price * p.count).reduce((a, b) => a + b)
       : 0;
     const remainingSize = data.length
-      ? data.map((p) => p.totalSize).reduce((a, b) => a + b)
+      ? data.map((p) => +p.totalSize).reduce((a, b) => a + b)
       : 0;
     const count = data.length
       ? data.map((p) => p.count).reduce((a, b) => a + b)

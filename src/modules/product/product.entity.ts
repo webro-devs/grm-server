@@ -68,7 +68,7 @@ export class Product {
   partiya: Partiya;
 
   public setTotalSize() {
-    this.totalSize = this.x * this.y * this.count;
+    this.totalSize = +this.x * +this.y * this.count;
   }
   // constructor() {
   //   this.setXY();

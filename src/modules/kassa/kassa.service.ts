@@ -102,8 +102,8 @@ export class KassaService {
       where: { id },
       relations: { orders: true, cashflow: true },
     });
-    const comingSum = data.totalSum;
-    const goingSum = data.expenditure;
+    const comingSum = +data.totalSum;
+    const goingSum = +data.expenditure;
     return { comingSum, goingSum };
   }
 
@@ -114,8 +114,8 @@ export class KassaService {
     });
 
     if (data.length) {
-      const comingSum = data.map((d) => d.totalSum).reduce((a, b) => a + b);
-      const goingSum = data.map((d) => d.expenditure).reduce((a, b) => a + b);
+      const comingSum = data.map((d) => +d.totalSum).reduce((a, b) => a + b);
+      const goingSum = data.map((d) => +d.expenditure).reduce((a, b) => a + b);
       return { comingSum, goingSum };
     } else {
       return { comingSum: 0, goingSum: 0 };
