@@ -70,8 +70,4 @@ export class Product {
   public setTotalSize() {
     this.totalSize = +this.x * +this.y * this.count;
   }
-  // constructor() {
-  //   this.setXY();
-  //   this.setTotalSize();
-  // }
 }
