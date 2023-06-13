@@ -60,7 +60,7 @@ export class CollectionService {
     const data = await this.collectionRepository.find({
       relations: { model: { products: true } },
     });
-    let result = {};
+    let result = [];
     for (let i = 0; i < data.length; i++) {
       let remainingSum = 0,
         remainingSize = 0,
@@ -77,7 +77,12 @@ export class CollectionService {
           ? products.map((p) => p.count).reduce((a, b) => a + b)
           : 0;
       }
-      result[data[i].title] = { remainingCount, remainingSize, remainingSum };
+      result.push({
+        remainingCount,
+        remainingSize,
+        remainingSum,
+        title: data[i].title,
+      });
     }
     return result;
   }
