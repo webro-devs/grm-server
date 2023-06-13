@@ -10,6 +10,7 @@ import {
 import { Partiya } from './partiya.entity';
 import { PartiyaRepository } from './partiya.repository';
 import { CreatePartiyaDto, UpdatePartiyaDto } from './dto';
+import { partiyaDateSort } from '../../infra/helpers';
 
 Injectable();
 export class PartiyaService {
@@ -23,6 +24,12 @@ export class PartiyaService {
     where?: FindOptionsWhere<Partiya>,
   ): Promise<Pagination<Partiya>> {
     return paginate<Partiya>(this.partiyaRepository, options, {});
+  }
+
+  async getAllByDateRange() {
+    const data = await this.partiyaRepository.find({ order: { date: 'DESC' } });
+    const res = partiyaDateSort(data);
+    return res;
   }
 
   async getOne(id: string) {

@@ -18,7 +18,7 @@ export class Order {
   @Column({ type: 'boolean', default: false })
   isActive: boolean;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'decimal' })
   price: number;
 
   @Column({ type: 'int' })

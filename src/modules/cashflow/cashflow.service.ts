@@ -38,13 +38,16 @@ export class CashflowService {
   }
 
   async deleteOne(id: string) {
-    const cashflow = await this.cashflowRepository.findOne({where:{id},relations:{kassa:true}})
+    const cashflow = await this.cashflowRepository.findOne({
+      where: { id },
+      relations: { kassa: true },
+    });
     const kassa = await this.kassaService.getById(cashflow.kassa.id);
     if (cashflow.type == CashFlowEnum.InCome) {
-      kassa.totalSum -= cashflow.price;
+      kassa.totalSum = +kassa.totalSum - cashflow.price;
     }
     if (cashflow.type == CashFlowEnum.Consumption) {
-      kassa.expenditure -= cashflow.price;
+      kassa.expenditure = +kassa.expenditure - cashflow.price;
     }
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(kassa);
@@ -54,25 +57,25 @@ export class CashflowService {
   }
 
   async change(value: UpdateCashflowDto, id: string) {
-    if(value.price){
+    if (value.price) {
       const cashflow = await this.cashflowRepository.findOne({ where: { id } });
       const kassa = await this.kassaService.getById(value.kassa);
       if (value.type == CashFlowEnum.InCome) {
         if (cashflow.type == CashFlowEnum.InCome) {
-          kassa.totalSum -= cashflow.price;
-          kassa.totalSum += value.price;
+          kassa.totalSum = +kassa.totalSum - cashflow.price;
+          kassa.totalSum = +kassa.totalSum + value.price;
         } else {
-          kassa.expenditure -= cashflow.price;
-          kassa.totalSum += value.price;
+          kassa.expenditure = +kassa.expenditure - cashflow.price;
+          kassa.totalSum = +kassa.totalSum + value.price;
         }
       }
       if (value.type == CashFlowEnum.Consumption) {
         if (cashflow.type == CashFlowEnum.Consumption) {
-          kassa.expenditure -= cashflow.price;
-          kassa.expenditure += value.price;
+          kassa.expenditure = +kassa.expenditure - cashflow.price;
+          kassa.expenditure = +kassa.expenditure + value.price;
         } else {
-          kassa.totalSum -= cashflow.price;
-          kassa.expenditure += value.price;
+          kassa.totalSum = +kassa.totalSum - cashflow.price;
+          kassa.expenditure = +kassa.expenditure + value.price;
         }
       }
       await this.connection.transaction(async (manager: EntityManager) => {
@@ -100,10 +103,10 @@ export class CashflowService {
 
     const kassa = await this.kassaService.getById(value.kassa);
     if (value.type == CashFlowEnum.InCome) {
-      kassa.totalSum += value.price;
+      kassa.totalSum = +kassa.totalSum + value.price;
     }
     if (value.type == CashFlowEnum.Consumption) {
-      kassa.expenditure += value.price;
+      kassa.expenditure = +kassa.expenditure + value.price;
     }
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(kassa);

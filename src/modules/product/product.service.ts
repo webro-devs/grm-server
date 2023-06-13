@@ -10,12 +10,14 @@ import { Product } from './product.entity';
 import { ProductRepository } from './product.repository';
 import { CreateProductDto, UpdateProductDto } from './dto';
 import sizeParser from 'src/infra/helpers/size-parser';
+import { FilialService } from '../filial/filial.service';
 
 Injectable();
 export class ProductService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: ProductRepository,
+    private readonly filialService: FilialService,
   ) {}
 
   async getAll(
@@ -83,7 +85,7 @@ export class ProductService {
       value[i].x = xy[0];
       value[i].y = xy[1];
       value[i].size = xy.join('x');
-      value[i].totalSize = xy[0] * xy[1] * value[i].count;
+      value[i].totalSize = +xy[0] * +xy[1] * value[i].count;
     }
     return value;
   }
@@ -92,14 +94,24 @@ export class ProductService {
       where,
     });
     const remainingSum = data.length
-      ? data.map((p) => p.price * p.count).reduce((a, b) => a + b)
+      ? data.map((p) => +p.price * p.count).reduce((a, b) => a + b)
       : 0;
     const remainingSize = data.length
-      ? data.map((p) => p.totalSize).reduce((a, b) => a + b)
+      ? data.map((p) => +p.totalSize).reduce((a, b) => a + b)
       : 0;
     const count = data.length
       ? data.map((p) => p.count).reduce((a, b) => a + b)
       : 0;
     return { remainingSize, remainingSum, count };
+  }
+
+  async getRemainingProductsForAllFilial() {
+    const result = [];
+    const allFilial = await this.filialService.getAllFilial();
+    for (let data of allFilial) {
+      const remain = await this.remainingProducts({ filial: { id: data.id } });
+      result.push({ ...data, ...remain });
+    }
+    return result;
   }
 }

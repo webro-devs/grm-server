@@ -60,7 +60,7 @@ export class CollectionService {
     const data = await this.collectionRepository.find({
       relations: { model: { products: true } },
     });
-    let result = {};
+    let result = [];
     for (let i = 0; i < data.length; i++) {
       let remainingSum = 0,
         remainingSize = 0,
@@ -68,16 +68,21 @@ export class CollectionService {
       for (let j = 0; j < data[i].model.length; j++) {
         const products = data[i].model[j].products;
         remainingSum += products.length
-          ? products.map((p) => p.price * p.count).reduce((a, b) => a + b)
+          ? products.map((p) => +p.price * p.count).reduce((a, b) => a + b)
           : 0;
         remainingSize += products.length
-          ? products.map((p) => p.totalSize).reduce((a, b) => a + b)
+          ? products.map((p) => +p.totalSize).reduce((a, b) => a + b)
           : 0;
         remainingCount += products.length
           ? products.map((p) => p.count).reduce((a, b) => a + b)
           : 0;
       }
-      result[data[i].title] = { remainingCount, remainingSize, remainingSum };
+      result.push({
+        remainingCount,
+        remainingSize,
+        remainingSum,
+        title: data[i].title,
+      });
     }
     return result;
   }

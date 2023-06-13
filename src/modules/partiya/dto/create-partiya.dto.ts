@@ -35,7 +35,7 @@ class CreatePartiyaDto {
 
   @ApiProperty({
     description: `order quantity : Обём заказа:`,
-    example: 1000 + 'm^2',
+    example: 1000,
   })
   @IsNotEmpty()
   @IsNumber()

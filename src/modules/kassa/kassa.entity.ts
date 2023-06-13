@@ -24,13 +24,13 @@ export class Kassa {
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
 
-  @Column({ type: 'int', default: 0, nullable: true })
+  @Column({ type: 'decimal', default: 0, nullable: true })
   totalSum: number;
 
-  @Column({ type: 'int', default: 0, nullable: true })
+  @Column({ type: 'decimal', default: 0, nullable: true })
   plasticSum: number;
 
-  @Column({ type: 'int', default: 0, nullable: true })
+  @Column({ type: 'decimal', default: 0, nullable: true })
   expenditure: number;
 
   @ManyToOne(() => Filial, (filial) => filial.kassa)

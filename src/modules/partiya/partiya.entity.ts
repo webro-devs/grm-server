@@ -9,22 +9,22 @@ export class Partiya {
   @Column()
   country: string;
 
-  @Column()
+  @Column({ type: 'decimal' })
   cost: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;
 
-  @Column()
+  @Column({ type: 'decimal' })
   expense: number;
 
-  @Column()
+  @Column({ type: 'decimal' })
   orderQuantity: number;
 
-  @Column()
+  @Column({ type: 'decimal' })
   price: number;
 
-  @Column()
+  @Column({ type: 'decimal' })
   sum: number;
 
   @OneToMany(() => Product, (product) => product.partiya)

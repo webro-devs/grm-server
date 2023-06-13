@@ -47,9 +47,9 @@ export class OrderService {
       relations: { kassa: true },
     });
     const kassa = await this.kassaService.getById(order.kassa.id);
-    kassa.totalSum -= order.price;
+    kassa.totalSum = +kassa.totalSum - order.price;
     if (order.isPlasticPayment) {
-      kassa.plasticSum -= order.price;
+      kassa.plasticSum = +kassa.plasticSum - order.price;
     }
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(kassa);
@@ -66,11 +66,11 @@ export class OrderService {
       });
       if (order.isActive) {
         const kassa = await this.kassaService.getById(order.kassa.id);
-        kassa.totalSum -= order.price;
-        kassa.totalSum += value.price;
+        kassa.totalSum = +kassa.totalSum - order.price;
+        kassa.totalSum = +kassa.totalSum + value.price;
         if (order.isPlasticPayment) {
-          kassa.plasticSum -= order.price;
-          kassa.plasticSum += value.price;
+          kassa.plasticSum = +kassa.plasticSum - order.price;
+          kassa.plasticSum = +kassa.plasticSum + value.price;
         }
         await this.connection.transaction(async (manager: EntityManager) => {
           await manager.save(kassa);
@@ -91,7 +91,7 @@ export class OrderService {
     if (product.count < value.count) {
       throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
     }
-    product.count -= value.count;
+    product.count = +product.count - value.count;
     product.setTotalSize();
     await this.connection.transaction(async (manager) => {
       await manager.save(product);
@@ -115,7 +115,7 @@ export class OrderService {
     const kassa = await this.kassaService.getById(order.kassa.id);
     kassa.totalSum += order.price;
     if (order.isPlasticPayment) {
-      kassa.plasticSum += order.price;
+      kassa.plasticSum = +kassa.plasticSum + order.price;
     }
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(kassa);
