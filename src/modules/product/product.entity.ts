@@ -10,6 +10,7 @@ import { Order } from '../order/order.entity';
 import { Filial } from '../filial/filial.entity';
 import { Partiya } from '../partiya/partiya.entity';
 import { Model } from '../model/model.entity';
+import { File } from '../file/file.entity';
 
 @Entity('product')
 export class Product {
@@ -25,8 +26,9 @@ export class Product {
   @Column()
   count: number;
 
-  @Column()
-  imgUrl: string;
+  @ManyToOne(() => File, (file) => file.products)
+  @JoinColumn()
+  imgUrl: File;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;

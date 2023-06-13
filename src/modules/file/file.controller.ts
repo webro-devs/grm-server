@@ -1,13 +1,7 @@
 import {
   Controller,
-  Get,
   Post,
-  Patch,
   HttpCode,
-  Query,
-  Body,
-  Param,
-  Delete,
   UseInterceptors,
   UploadedFile,
   HttpStatus,
@@ -17,7 +11,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiCreatedResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { FileService } from './file.service';
 import { MulterStorage } from '../../infra/helpers';
-import { FileUploadValidationForCreate } from '../../infra/validators';
 import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('File')
