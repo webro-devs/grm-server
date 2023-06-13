@@ -44,6 +44,20 @@ export class PartiyaController {
     }
   }
 
+  @Get('/date-range')
+  @ApiOperation({ summary: 'Method: returns all partiya by date range' })
+  @ApiOkResponse({
+    description: 'The partiya were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getDataByRange() {
+    try {
+      return await this.partiyaService.getAllByDateRange();
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single partiya by id' })
   @ApiOkResponse({
