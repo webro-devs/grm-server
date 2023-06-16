@@ -24,6 +24,7 @@ import { Kassa } from './kassa.entity';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { PaginationDto } from '../../infra/shared/dto';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Kassa')
 @Controller('kassa')
@@ -64,6 +65,7 @@ export class KassaController {
     return this.kassaService.GetOpenKassa(id);
   }
 
+  @Public()
   @Get('/calculate/all-filial/by-range')
   @ApiOperation({ summary: 'Method: returns by range kassa accounting' })
   @ApiOkResponse({

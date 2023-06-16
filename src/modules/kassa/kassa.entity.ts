@@ -28,6 +28,9 @@ export class Kassa {
   totalSum: number;
 
   @Column({ type: 'decimal', default: 0, nullable: true })
+  totalSize: number;
+
+  @Column({ type: 'decimal', default: 0, nullable: true })
   plasticSum: number;
 
   @Column({ type: 'decimal', default: 0, nullable: true })

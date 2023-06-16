@@ -44,37 +44,61 @@ export class OrderService {
   async deleteOne(id: string) {
     const order = await this.orderRepository.findOne({
       where: { id },
-      relations: { kassa: true },
+      relations: { kassa: true, product: true },
     });
-    const kassa = await this.kassaService.getById(order.kassa.id);
-    kassa.totalSum = +kassa.totalSum - order.price;
-    if (order.isPlasticPayment) {
-      kassa.plasticSum = +kassa.plasticSum - order.price;
+    if (order.isActive) {
+      const kassa = await this.kassaService.getById(order.kassa.id);
+      kassa.totalSum = +kassa.totalSum - order.price;
+      kassa.totalSize =
+        +kassa.totalSize - order.count * (+order.product.x * +order.product.y);
+      if (order.isPlasticPayment) {
+        kassa.plasticSum = +kassa.plasticSum - order.price;
+      }
+      await this.saveRepo(kassa);
     }
-    await this.connection.transaction(async (manager: EntityManager) => {
-      await manager.save(kassa);
-    });
+
+    const product = order.product;
+    product.count += order.count;
+    product.setTotalSize();
+    await this.saveRepo(product);
+
     const response = await this.orderRepository.delete(id);
     return response;
   }
 
   async change(value: UpdateOrderDto, id: string) {
-    if (value.price) {
+    if (value.price || value.count) {
       const order = await this.orderRepository.findOne({
         where: { id },
-        relations: { kassa: true },
+        relations: { kassa: true, product: true },
       });
-      if (order.isActive) {
-        const kassa = await this.kassaService.getById(order.kassa.id);
+      const kassa = await this.kassaService.getById(order.kassa.id);
+
+      if (value.count) {
+        const product = order.product;
+        const diff = order.count - value.count;
+        product.count += diff;
+        await this.saveRepo(product);
+
+        if (order.isActive) {
+          kassa.totalSize =
+            +kassa.totalSize -
+            order.count * (+order.product.x * +order.product.y);
+          kassa.totalSize =
+            +kassa.totalSize +
+            value.count * (+order.product.x * +order.product.y);
+
+          await this.saveRepo(kassa);
+        }
+      }
+      if (order.isActive && value.price) {
         kassa.totalSum = +kassa.totalSum - order.price;
         kassa.totalSum = +kassa.totalSum + value.price;
         if (order.isPlasticPayment) {
           kassa.plasticSum = +kassa.plasticSum - order.price;
           kassa.plasticSum = +kassa.plasticSum + value.price;
         }
-        await this.connection.transaction(async (manager: EntityManager) => {
-          await manager.save(kassa);
-        });
+        await this.saveRepo(kassa);
       }
     }
     const response = await this.orderRepository
@@ -93,9 +117,8 @@ export class OrderService {
     }
     product.count = +product.count - value.count;
     product.setTotalSize();
-    await this.connection.transaction(async (manager) => {
-      await manager.save(product);
-    });
+    await this.saveRepo(product);
+
     const data = { ...value, seller: id };
     const response = this.orderRepository
       .createQueryBuilder()
@@ -110,16 +133,20 @@ export class OrderService {
   async checkOrder(id: string, casher: string) {
     const order = await this.orderRepository.findOne({
       where: { id },
-      relations: { kassa: true },
+      relations: { kassa: true, product: true },
     });
+
     const kassa = await this.kassaService.getById(order.kassa.id);
-    kassa.totalSum += order.price;
+    kassa.totalSum = +kassa.totalSum + +order.price;
+    kassa.totalSize =
+      +kassa.totalSize + order.count * (+order.product.x * +order.product.y);
+
     if (order.isPlasticPayment) {
-      kassa.plasticSum = +kassa.plasticSum + order.price;
+      kassa.plasticSum = +kassa.plasticSum + +order.price;
     }
-    await this.connection.transaction(async (manager: EntityManager) => {
-      await manager.save(kassa);
-    });
+
+    await this.saveRepo(kassa);
+
     const response = await this.orderRepository
       .createQueryBuilder()
       .update()
@@ -127,5 +154,11 @@ export class OrderService {
       .where('id = :id', { id })
       .execute();
     return response;
+  }
+
+  async saveRepo(data: any) {
+    await this.connection.transaction(async (manager: EntityManager) => {
+      await manager.save(data);
+    });
   }
 }
