@@ -100,25 +100,25 @@ export class KassaService {
   async getKassaSum(id: string) {
     const data = await this.kassaRepository.findOne({
       where: { id },
-      relations: { orders: true, cashflow: true },
     });
     const comingSum = +data.totalSum;
     const goingSum = +data.expenditure;
-    return { comingSum, goingSum };
+    const sellingSize = +data.totalSize;
+    return { comingSum, goingSum, sellingSize };
   }
 
   async kassaSumByFilialAndRange(where) {
     const data = await this.kassaRepository.find({
       where,
-      relations: { orders: true, cashflow: true },
     });
 
     if (data.length) {
       const comingSum = data.map((d) => +d.totalSum).reduce((a, b) => a + b);
       const goingSum = data.map((d) => +d.expenditure).reduce((a, b) => a + b);
-      return { comingSum, goingSum };
+      const sellingSize = data.map((d) => +d.totalSize).reduce((a, b) => a + b);
+      return { comingSum, goingSum, sellingSize };
     } else {
-      return { comingSum: 0, goingSum: 0 };
+      return { comingSum: 0, goingSum: 0, sellingSize: 0 };
     }
   }
 
@@ -129,10 +129,9 @@ export class KassaService {
       where.filial = {
         id: filial.id,
       };
-      const { comingSum, goingSum } = await this.kassaSumByFilialAndRange(
-        where,
-      );
-      result.push({ ...filial, comingSum, goingSum });
+      const { comingSum, goingSum, sellingSize } =
+        await this.kassaSumByFilialAndRange(where);
+      result.push({ ...filial, comingSum, goingSum, sellingSize });
     }
     return result;
   }
