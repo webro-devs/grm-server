@@ -1,26 +1,16 @@
-import { Product } from '../product/product.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('file')
 export class File {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column('varchar')
   url: string;
 
-  @Column()
+  @Column('varchar')
   model: string;
 
-  @Column()
+  @Column('varchar')
   color: string;
-
-  @Column()
-  shape: string;
-
-  @Column()
-  style: string;
-
-  @OneToMany(() => Product, (product) => product.imgUrl)
-  products: Product;
 }

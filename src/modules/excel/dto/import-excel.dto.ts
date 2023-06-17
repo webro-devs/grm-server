@@ -1,7 +1,6 @@
-import { IsArray, IsNotEmpty, IsString, IsOptional } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsNotEmpty, } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-class ImportFileDto {
+class ImportExcelDto {
   @ApiProperty({
     description: `Excel file`,
     example: 'file',
@@ -12,4 +11,4 @@ class ImportFileDto {
   readonly file: Express.Multer.File;
 }
 
-export default ImportFileDto;
+export default ImportExcelDto;

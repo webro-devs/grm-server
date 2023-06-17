@@ -26,9 +26,8 @@ export class Product {
   @Column()
   count: number;
 
-  @ManyToOne(() => File, (file) => file.products)
-  @JoinColumn()
-  imgUrl: File;
+  @Column()
+  imgUrl: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;

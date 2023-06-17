@@ -1,27 +1,55 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as XLSX from 'xlsx';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
+import { CreateFileDto, UpdateFileDto } from './dto';
 
-import { FileEntity } from './file.entity';
+import { File } from './file.entity';
 import { FileRepository } from './file.repository';
-import { ExcelDataParser } from 'src/infra/helpers';
-import { ValidateExcel } from 'src/infra/validators';
 
 Injectable();
 export class FileService {
   constructor(
-    @InjectRepository(FileEntity)
+    @InjectRepository(File)
     private readonly fileRepository: FileRepository,
   ) {}
 
-  async ExcelToJson(path: string) {
-    const workbook = XLSX.readFile(path);
-    const worksheet = workbook.Sheets['Sheet'];
+  async create(data: CreateFileDto) {
+    const response = this.fileRepository.create(data);
 
-    const data: any[] = XLSX.utils.sheet_to_json(worksheet);
+    return await this.fileRepository.save(response);
+  }
 
-    ValidateExcel(data);
+  async update(data: UpdateFileDto, id: string) {
+    const response = await this.fileRepository.update({ id }, data);
 
-    return ExcelDataParser(data);
+    return response;
+  }
+
+  async delete(id: string) {
+    const response = await this.fileRepository.delete(id);
+
+    return response;
+  }
+
+  async getAll(options: IPaginationOptions): Promise<Pagination<File>> {
+    return paginate<File>(this.fileRepository, options);
+  }
+
+  async getByModel(model: string) {
+    const response = await this.fileRepository.find({ where: { model } });
+
+    return response;
+  }
+
+  async getByModelAndColor(model: string, color: string) {
+    const response = await this.fileRepository.findOne({
+      where: { model, color },
+    });
+
+    return response;
   }
 }

@@ -1,41 +1,102 @@
 import {
   Controller,
-  Post,
   HttpCode,
-  UseInterceptors,
-  UploadedFile,
   HttpStatus,
   HttpException,
+  Get,
+  Query,
+  Post,
+  Param,
+  Delete,
+  Body,
+  Patch,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiCreatedResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiOkResponse } from '@nestjs/swagger';
 import { FileService } from './file.service';
-import { MulterStorage } from '../../infra/helpers';
+import { Route } from 'src/infra/shared/decorators/route.decorator';
+import { PaginationDto } from 'src/infra/shared/dto';
+import { CreateFileDto, UpdateFileDto } from './dto';
+import { File } from './file.entity';
+import { UpdateResult } from 'typeorm';
 import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('File')
-@Public()
 @Controller('file')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
-  @Post('/excel')
-  @ApiOperation({ summary: 'Method: imports excel file and returns json data' })
-  @ApiCreatedResponse({
-    description: 'The excel file imported and converted to json successfully',
+  @Get('/')
+  @ApiOperation({ summary: 'Method: returns all File' })
+  @ApiOkResponse({
+    description: 'The File were returned successfully',
   })
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: MulterStorage('uploads/excel'),
-    }),
-  )
-  @HttpCode(HttpStatus.CREATED)
-  async saveData(@UploadedFile() file: Express.Multer.File) {
+  @HttpCode(HttpStatus.OK)
+  async getData(@Route() route: string, @Query() query: PaginationDto) {
     try {
-      const data = await this.fileService.ExcelToJson(file.path);
-      return data;
+      return await this.fileService.getAll({ ...query, route });
     } catch (err) {
-      throw new HttpException(err.response, err.status);
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Public()
+  @Get('/by-model')
+  @ApiOperation({ summary: 'Method: returns all model' })
+  @ApiOkResponse({
+    description: 'The File were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async get(@Query('model') model: string) {
+    try {
+      return await this.fileService.getByModel(model);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Public()
+  @Post('/')
+  @ApiOperation({ summary: 'Method: create file' })
+  @ApiOkResponse({
+    description: 'The File were create successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async create(@Body() data: CreateFileDto): Promise<File> {
+    try {
+      return await this.fileService.create(data);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Patch('/:id')
+  @ApiOperation({ summary: 'Method: update file' })
+  @ApiOkResponse({
+    description: 'The File were update successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async update(
+    @Body() data: UpdateFileDto,
+    @Param('id') id: string,
+  ): Promise<UpdateResult> {
+    try {
+      return await this.fileService.update(data, id);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Delete('/:id')
+  @ApiOperation({ summary: 'Method: delete file' })
+  @ApiOkResponse({
+    description: 'The File were deleted successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async name(@Param('id') id: string) {
+    try {
+      return await this.fileService.delete(id);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

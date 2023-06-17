@@ -1,4 +1,11 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Excel } from '../excel/excel.entity';
 import { Product } from '../product/product.entity';
 
 @Entity('partiya')
@@ -29,4 +36,7 @@ export class Partiya {
 
   @OneToMany(() => Product, (product) => product.partiya)
   products: Product[];
+
+  @OneToOne(() => Excel, (excel) => excel.partiya)
+  excel: Excel;
 }

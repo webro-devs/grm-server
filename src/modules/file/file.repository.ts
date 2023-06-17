@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
 
-import { FileEntity } from './file.entity';
+import { File } from './file.entity';
 
-export class FileRepository extends Repository<FileEntity> {}
+export class FileRepository extends Repository<File> {}
