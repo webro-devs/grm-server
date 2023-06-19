@@ -68,7 +68,7 @@ export class TransferService {
 
   async create(values: CreateTransferDto[], id: string) {
     if (values.length) {
-      for (let item of values) {
+      for (const item of values) {
         const product = await this.createNewProduct(
           item.product,
           item.count,

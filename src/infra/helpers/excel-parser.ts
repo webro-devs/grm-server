@@ -1,7 +1,7 @@
-const ExcelDataParser = (data) => {
+const ExcelDataParser = async (data) => {
   const transformedObj = data.reduce((acc, curr) => {
-    const { Collection, Model, Size, Color, Code, Shape, Style, Count, M2 } =
-      curr;
+    const { Collection, Model, Size, Color, Code, Count, Img } = curr;
+    const datas = { Size, Color, Code, Count, Img };
 
     const collectionItem = acc.find((item) => item.title === Collection);
 
@@ -11,11 +11,11 @@ const ExcelDataParser = (data) => {
       );
 
       if (modelItem) {
-        modelItem.products.push({ Color, Count, Size, Code, Shape, Style, M2 });
+        modelItem.products.push(datas);
       } else {
         collectionItem.models.push({
           title: Model,
-          products: [{ Color, Count, Size, Code, Shape, Style, M2 }],
+          products: [datas],
         });
       }
     } else {
@@ -24,7 +24,7 @@ const ExcelDataParser = (data) => {
         models: [
           {
             title: Model,
-            products: [{ Color, Count, Size, Code, Shape, Style, M2 }],
+            products: [datas],
           },
         ],
       });

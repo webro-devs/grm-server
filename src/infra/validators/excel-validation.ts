@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { delete_file } from '../helpers';
 
 type message = {
   error: boolean;
@@ -21,12 +22,9 @@ const checkProperties = (data) => {
       'Collection',
       'Model',
       'Color',
-      'Shape',
-      'Style',
       'Size',
       'Code',
       'Count',
-      'M2',
     ];
 
     if (properties.length < 9) message.msg.push('You have missing propery!');
@@ -51,17 +49,7 @@ const checkType = (data) => {
 
 const checkValue = (data) => {
   const alphabet = 'ABCDEFGHIJKLMOPQRSTUVWXYZ';
-  const expectedProperties = [
-    'Collection',
-    'Model',
-    'Color',
-    'Shape',
-    'Style',
-    'Size',
-    'Code',
-    'Count',
-    'M2',
-  ];
+  const expectedProperties = ['Collection', 'Model', 'Size', 'Code', 'Count'];
 
   data.forEach((item, index) => {
     const properties = Object.keys(item);
@@ -75,7 +63,7 @@ const checkValue = (data) => {
   });
 };
 
-const restoreErrors = () => {
+const restoreErrors = (path: string) => {
   message.missingProps = [...new Set(message.missingProps)];
   message.msg = [...new Set(message.msg)];
   if (
@@ -85,10 +73,13 @@ const restoreErrors = () => {
   )
     message.error = true;
 
-  if (message.error) throw new HttpException(message, HttpStatus.BAD_REQUEST);
+  if (message.error) {
+    delete_file(path);
+    throw new HttpException(message, HttpStatus.BAD_REQUEST);
+  }
 };
 
-const validate = (data) => {
+const validate = (data, path) => {
   message = {
     error: false,
     msg: [],
@@ -98,7 +89,7 @@ const validate = (data) => {
   checkProperties(data);
   checkType(data);
   checkValue(data);
-  restoreErrors();
+  restoreErrors(path);
 };
 
 export default validate;
