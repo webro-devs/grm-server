@@ -39,7 +39,10 @@ export class UserService {
   }
 
   async getByLogin(login: string) {
-    const data = await this.userRepository.findOne({ where: { login } });
+    const data = await this.userRepository.findOne({
+      where: { login },
+      relations: { filial: true, position: true },
+    });
     if (!data) {
       throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
     }
