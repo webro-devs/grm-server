@@ -4,9 +4,10 @@ import * as XLSX from 'xlsx';
 
 import { Excel } from './excel.entity';
 import { ExcelRepository } from './excel.repository';
-import { ExcelDataParser } from 'src/infra/helpers';
+import { delete_file, ExcelDataParser } from 'src/infra/helpers';
 import { ValidateExcel } from 'src/infra/validators';
 import { FileService } from '../file/file.service';
+import { createWriteStream } from 'fs';
 
 Injectable();
 export class ExcelService {
@@ -31,6 +32,29 @@ export class ExcelService {
     ValidateExcel(data, path);
 
     return ExcelDataParser(await this.setImg(data));
+  }
+
+  async gatPartiyaExcel(path: string) {
+    const workbook = XLSX.readFile(path);
+    const worksheet = workbook.Sheets['Sheet'];
+
+    const data: any[] = XLSX.utils.sheet_to_json(worksheet);
+
+    return ExcelDataParser(data);
+  }
+
+  async jsonToExcel(data, id: string) {
+    const excel = await this.excelRepository.findOne({
+      where: { partiya: { id } },
+    });
+    delete_file(excel.path);
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    const stream = XLSX.stream.to_csv(workbook);
+    stream.pipe(createWriteStream(excel.path));
+
+    return excel.path;
   }
 
   async setImg(data) {

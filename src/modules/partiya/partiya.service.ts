@@ -1,6 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere } from 'typeorm';
 import {
   IPaginationOptions,
   Pagination,
@@ -11,17 +10,18 @@ import { Partiya } from './partiya.entity';
 import { PartiyaRepository } from './partiya.repository';
 import { CreatePartiyaDto, UpdatePartiyaDto } from './dto';
 import { partiyaDateSort } from '../../infra/helpers';
+import { ExcelService } from '../excel/excel.service';
 
 Injectable();
 export class PartiyaService {
   constructor(
     @InjectRepository(Partiya)
     private readonly partiyaRepository: PartiyaRepository,
+    private readonly excelRepository: ExcelService,
   ) {}
 
   async getAll(
     options: IPaginationOptions,
-    where?: FindOptionsWhere<Partiya>,
   ): Promise<Pagination<Partiya>> {
     return paginate<Partiya>(this.partiyaRepository, options, {});
   }
@@ -35,13 +35,20 @@ export class PartiyaService {
   async getOne(id: string) {
     const data = await this.partiyaRepository.findOne({
       where: { id },
+      relations: {
+        excel: true,
+      },
     });
 
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+    const response = await this.excelRepository.gatPartiyaExcel(
+      data.excel.path,
+    );
 
-    return data;
+    if (!data) throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
+    else if (response?.length < 1)
+      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
+
+    return response;
   }
 
   async deleteOne(id: string) {

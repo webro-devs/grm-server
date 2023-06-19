@@ -34,9 +34,9 @@ export class CashflowController {
 
   // @Public()
   @Get('/')
-  @ApiOperation({ summary: 'Method: returns all Permission' })
+  @ApiOperation({ summary: 'Method: returns all Cashflows' })
   @ApiOkResponse({
-    description: 'The permission were returned successfully',
+    description: 'The cashflows were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
@@ -49,9 +49,9 @@ export class CashflowController {
 
   // @Public()
   @Get('/:id')
-  @ApiOperation({ summary: 'Method: returns single permission by id' })
+  @ApiOperation({ summary: 'Method: returns single cashflow by id' })
   @ApiOkResponse({
-    description: 'The permission was returned successfully',
+    description: 'The cashflow was returned successfully',
   })
   @HttpCode(HttpStatus.OK)
   async getMe(@Param('id') id: string): Promise<Cashflow> {
@@ -59,9 +59,9 @@ export class CashflowController {
   }
 
   @Post('/')
-  @ApiOperation({ summary: 'Method: creates new Permission' })
+  @ApiOperation({ summary: 'Method: creates new Cashflow' })
   @ApiCreatedResponse({
-    description: 'The permission was created successfully',
+    description: 'The cashflow was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateCashflowDto, @Req() request) {
@@ -73,9 +73,9 @@ export class CashflowController {
   }
 
   @Patch('/:id')
-  @ApiOperation({ summary: 'Method: updating permission' })
+  @ApiOperation({ summary: 'Method: updating cashflow' })
   @ApiOkResponse({
-    description: 'Permission was changed',
+    description: 'Cashflow was changed',
   })
   @HttpCode(HttpStatus.OK)
   async changeData(
@@ -90,9 +90,9 @@ export class CashflowController {
   }
 
   @Delete('/:id')
-  @ApiOperation({ summary: 'Method: deleting permission' })
+  @ApiOperation({ summary: 'Method: deleting cashflow' })
   @ApiOkResponse({
-    description: 'Permission was deleted',
+    description: 'Cashflow was deleted',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
