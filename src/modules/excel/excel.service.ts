@@ -24,8 +24,7 @@ export class ExcelService {
   }
 
   async ExcelToJson(path: string) {
-    if (!path)
-      throw new HttpException('data not found', HttpStatus.BAD_REQUEST);
+    if (!path) return [];
 
     const workbook = XLSX.readFile(path);
     const worksheet = workbook.Sheets['Sheet'];

@@ -39,7 +39,7 @@ export class PartiyaService {
     });
 
     const response = await this.excelRepository.gatPartiyaExcel(
-      data.excel.path,
+      data?.excel?.path,
     );
 
     if (!data) throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
