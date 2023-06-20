@@ -20,9 +20,7 @@ export class PartiyaService {
     private readonly excelRepository: ExcelService,
   ) {}
 
-  async getAll(
-    options: IPaginationOptions,
-  ): Promise<Pagination<Partiya>> {
+  async getAll(options: IPaginationOptions): Promise<Pagination<Partiya>> {
     return paginate<Partiya>(this.partiyaRepository, options, {});
   }
 

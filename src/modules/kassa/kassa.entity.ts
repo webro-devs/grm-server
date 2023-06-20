@@ -19,7 +19,7 @@ export class Kassa {
   startDate: string;
 
   @Column({ type: 'timestamp', nullable: true })
-  endDate: string;
+  endDate: Date;
 
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
