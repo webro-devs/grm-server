@@ -9,11 +9,17 @@ import {
   Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiCreatedResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiTags,
+  ApiOperation,
+  ApiConsumes,
+} from '@nestjs/swagger';
 import { ExcelService } from './excel.service';
 import { MulterStorage } from '../../infra/helpers';
 import { Public } from '../auth/decorators/public.decorator';
 import { Body, Put } from '@nestjs/common/decorators';
+import { ImportExcelDto } from './dto';
 
 @ApiTags('Excel')
 @Controller('excel')
@@ -21,7 +27,8 @@ export class ExcelController {
   constructor(private readonly fileService: ExcelService) {}
 
   @Public()
-  @Post('/:partiyaID')
+  @Post('/')
+  @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Method: imports excel file and returns json data' })
   @ApiCreatedResponse({
     description: 'The excel file imported and converted to json successfully',
@@ -34,10 +41,13 @@ export class ExcelController {
   @HttpCode(HttpStatus.CREATED)
   async createExcel(
     @UploadedFile() file: Express.Multer.File,
-    @Param('partiyaID') id: string,
+    @Body() bodyData: ImportExcelDto,
   ) {
     try {
-      const data = await this.fileService.uploadExecl(file.path, id);
+      const data = await this.fileService.uploadExecl(
+        file.path,
+        bodyData.partiyaId,
+      );
       return data;
     } catch (err) {
       throw new HttpException(err.response, err.status);
