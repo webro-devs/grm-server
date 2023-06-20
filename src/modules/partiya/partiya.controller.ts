@@ -64,7 +64,7 @@ export class PartiyaController {
     description: 'The partiya was returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getMe(@Param('id') id: string): Promise<Partiya> {
+  async getMe(@Param('id') id: string) {
     return this.partiyaService.getOne(id);
   }
 

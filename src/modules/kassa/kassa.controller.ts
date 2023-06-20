@@ -22,7 +22,7 @@ import {
 import { KassaService } from './kassa.service';
 import { Kassa } from './kassa.entity';
 import { Route } from '../../infra/shared/decorators/route.decorator';
-import { PaginationDto } from '../../infra/shared/dto';
+import { PaginationDto, RangeDto } from '../../infra/shared/dto';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
 import { Public } from '../auth/decorators/public.decorator';
 
@@ -72,7 +72,7 @@ export class KassaController {
     description: 'The kassa accounting returned by range successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async kassaSumAllFilialByRange(@Req() req) {
+  async kassaSumAllFilialByRange(@Req() req, @Query() query: RangeDto) {
     return this.kassaService.kassaSumAllFilialByRange(req.where);
   }
 

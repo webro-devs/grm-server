@@ -9,7 +9,7 @@ import {
 import { Partiya } from './partiya.entity';
 import { PartiyaRepository } from './partiya.repository';
 import { CreatePartiyaDto, UpdatePartiyaDto } from './dto';
-import { partiyaDateSort } from '../../infra/helpers';
+import { delete_file, partiyaDateSort } from '../../infra/helpers';
 import { ExcelService } from '../excel/excel.service';
 
 Injectable();
@@ -20,9 +20,7 @@ export class PartiyaService {
     private readonly excelRepository: ExcelService,
   ) {}
 
-  async getAll(
-    options: IPaginationOptions,
-  ): Promise<Pagination<Partiya>> {
+  async getAll(options: IPaginationOptions): Promise<Pagination<Partiya>> {
     return paginate<Partiya>(this.partiyaRepository, options, {});
   }
 
@@ -48,10 +46,16 @@ export class PartiyaService {
     else if (response?.length < 1)
       throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
 
-    return response;
+    return { data, items: response };
   }
 
   async deleteOne(id: string) {
+    const data = await this.partiyaRepository.findOne({
+      where: { id },
+      relations: { excel: true },
+    });
+    delete_file(data.excel.path);
+
     const response = await this.partiyaRepository.delete(id);
     return response;
   }
