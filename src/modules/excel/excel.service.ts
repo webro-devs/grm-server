@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as XLSX from 'xlsx';
 
@@ -24,6 +24,9 @@ export class ExcelService {
   }
 
   async ExcelToJson(path: string) {
+    if (!path)
+      throw new HttpException('data not found', HttpStatus.BAD_REQUEST);
+
     const workbook = XLSX.readFile(path);
     const worksheet = workbook.Sheets['Sheet'];
 
@@ -47,6 +50,9 @@ export class ExcelService {
     const excel = await this.excelRepository.findOne({
       where: { partiya: { id } },
     });
+
+    if (!excel || !excel?.path)
+      throw new HttpException('data not found', HttpStatus.BAD_REQUEST);
     delete_file(excel.path);
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(data);
