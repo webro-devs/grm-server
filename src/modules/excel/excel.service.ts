@@ -37,7 +37,9 @@ export class ExcelService {
     return ExcelDataParser(await this.setImg(data));
   }
 
-  async gatPartiyaExcel(path: string) {
+  async getPartiyaExcel(path: string) {
+    if (!path) return [];
+
     const workbook = XLSX.readFile(path);
     const worksheet = workbook.Sheets['Sheet'];
 
