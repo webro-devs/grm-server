@@ -33,6 +33,13 @@ export class User {
   @Column({ type: 'int' })
   role: UserRoleType;
 
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    nullable: true,
+  })
+  createdAt: string;
+
   @ManyToOne(() => Position, (position) => position.users)
   @JoinColumn()
   position: Position;

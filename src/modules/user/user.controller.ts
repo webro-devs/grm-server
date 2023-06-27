@@ -55,13 +55,13 @@ export class UserController {
     return this.userService.getOne(id);
   }
 
-  @Get('/filial/:id')
+  @Get('/filial/:filialId')
   @ApiOperation({ summary: 'Method: returns users with their selling result' })
   @ApiOkResponse({
     description: 'The users selling result was returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getUserSelling(@Param('id') id: string): Promise<User[]> {
+  async getUserSelling(@Param('filialId') id: string): Promise<User[]> {
     try {
       return this.userService.getUsersWithSelling(id);
     } catch (err) {

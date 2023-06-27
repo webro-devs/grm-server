@@ -119,7 +119,10 @@ export class OrderService {
     product.setTotalSize();
     await this.saveRepo(product);
 
-    const data = { ...value, seller: id };
+    const additionalProfitSum = value.price - +product.price * value.count;
+    const netProfitSum = value.count * (product.price - product.comingPrice);
+
+    const data = { ...value, seller: id, additionalProfitSum, netProfitSum };
     const response = this.orderRepository
       .createQueryBuilder()
       .insert()
@@ -140,6 +143,9 @@ export class OrderService {
     kassa.totalSum = +kassa.totalSum + +order.price;
     kassa.totalSize =
       +kassa.totalSize + order.count * (+order.product.x * +order.product.y);
+    kassa.netProfitTotalSum = +kassa.netProfitTotalSum + +order.netProfitSum;
+    kassa.additionalProfitTotalSum =
+      +kassa.additionalProfitTotalSum + +order.additionalProfitSum;
 
     if (order.isPlasticPayment) {
       kassa.plasticSum = +kassa.plasticSum + +order.price;

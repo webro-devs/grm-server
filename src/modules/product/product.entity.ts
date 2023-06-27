@@ -35,6 +35,9 @@ export class Product {
   @Column({ nullable: true, type: 'decimal' })
   price: number;
 
+  @Column({ nullable: true, type: 'decimal' })
+  comingPrice: number;
+
   @Column()
   shape: string;
 
