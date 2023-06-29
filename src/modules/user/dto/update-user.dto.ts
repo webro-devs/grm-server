@@ -5,22 +5,34 @@ class UpdateUserDto {
   @ApiProperty({
     description: `avatar`,
     example: 'https://image.png',
+    required: false,
   })
   @IsOptional()
   @IsString()
   readonly avatar: string;
 
   @ApiProperty({
-    description: `Full name`,
-    example: 'John Doe',
+    description: `Firstname`,
+    example: 'John',
+    required: false,
   })
   @IsOptional()
   @IsString()
-  readonly fullName: string;
+  readonly firstName: string;
+
+  @ApiProperty({
+    description: `Lastname`,
+    example: 'Doe',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  readonly lastName: string;
 
   @ApiProperty({
     description: `login`,
     example: 'login',
+    required: false,
   })
   @IsOptional()
   @IsString()

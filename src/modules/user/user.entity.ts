@@ -22,10 +22,19 @@ export class User {
   avatar: string;
 
   @Column({ type: 'varchar', nullable: true })
-  fullName: string;
+  firstName: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  lastName: string;
 
   @Column({ type: 'varchar' })
   login: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  email: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  number: string;
 
   @Column({ type: 'varchar' })
   password: string;
@@ -50,10 +59,10 @@ export class User {
   @OneToMany(() => Order, (order) => order.casher)
   casherOrders: Order[];
 
-  @OneToMany(() => Cashflow, (cashflow) => cashflow.casher)
+  @OneToMany(() => Cashflow, (cashflow) => cashflow.casher, { nullable: true })
   cashflow: Cashflow[];
 
-  @ManyToOne(() => Filial, (filial) => filial.users)
+  @ManyToOne(() => Filial, (filial) => filial.users, { nullable: true })
   @JoinColumn()
   filial: Filial;
 
