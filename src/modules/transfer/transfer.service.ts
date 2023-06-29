@@ -109,6 +109,7 @@ export class TransferService {
       imgUrl: product.imgUrl,
       model: product.model.id,
       price: product.price,
+      comingPrice: product.comingPrice,
       shape: product.shape,
       size: product.size,
       style: product.style,

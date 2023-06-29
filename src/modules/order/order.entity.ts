@@ -28,6 +28,12 @@ export class Order {
   date: string;
 
   @Column({ type: 'decimal', nullable: true })
+  additionalProfitSum: number;
+
+  @Column({ type: 'decimal', nullable: true })
+  netProfitSum: number;
+
+  @Column({ type: 'decimal', nullable: true })
   discountPercentage: number;
 
   @Column({ type: 'boolean', default: false })
