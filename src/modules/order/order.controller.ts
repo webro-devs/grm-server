@@ -123,4 +123,18 @@ export class OrderController {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  @Patch('/:id')
+  @ApiOperation({ summary: 'Method: reject order' })
+  @ApiOkResponse({
+    description: 'Order was deleted',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async reject(@Param('id') id: string) {
+    try {
+      return await this.orderService.rejectOrder(id);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

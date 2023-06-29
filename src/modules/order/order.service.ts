@@ -10,6 +10,7 @@ import { DataSource, EntityManager, FindOptionsWhere } from 'typeorm';
 import { Order } from './order.entity';
 import { OrderRepository } from './order.repository';
 import { UpdateOrderDto, CreateOrderDto } from './dto';
+import { UpdateProductDto } from '../product/dto';
 import { ProductService } from '../product/product.service';
 import { KassaService } from '../kassa/kassa.service';
 
@@ -25,6 +26,7 @@ export class OrderService {
 
   async getAll(
     options: IPaginationOptions,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     where?: FindOptionsWhere<Order>,
   ): Promise<Pagination<Order>> {
     return paginate<Order>(this.orderRepository, options);
@@ -166,5 +168,19 @@ export class OrderService {
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(data);
     });
+  }
+
+  async rejectOrder(id: string) {
+    const data = await this.orderRepository.findOne({
+      where: { id },
+      relations: { product: true },
+    });
+
+    const response = await this.productService.change(
+      { count: data.product.count + data.count } as UpdateProductDto,
+      data.product.id,
+    );
+
+    return response;
   }
 }
