@@ -1,6 +1,6 @@
 const ExcelDataParser = async (data) => {
   const transformedObj = data.reduce((acc, curr) => {
-    const { Collection, Model, Size, Color, Code, Count, Img } = curr;
+    const { Collection, Model, Size, Color, Code, Count, Img, M2 } = curr;
     const datas = { Size, Color, Code, Count, Img };
 
     const collectionItem = acc.find((item) => item.title === Collection);
@@ -18,6 +18,8 @@ const ExcelDataParser = async (data) => {
           products: [datas],
         });
       }
+
+      collectionItem.totalM2 = (collectionItem.totalM2 || 0) + M2;
     } else {
       acc.push({
         title: Collection,
@@ -27,6 +29,7 @@ const ExcelDataParser = async (data) => {
             products: [datas],
           },
         ],
+        totalM2: M2,
       });
     }
 
