@@ -30,7 +30,7 @@ export class UserService {
   ): Promise<Pagination<User>> {
     return paginate<User>(this.userRepository, options, {
       order: {
-        fullName: 'ASC',
+        firstName: 'ASC',
       },
       relations: {
         position: true,

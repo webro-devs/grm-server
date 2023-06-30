@@ -20,7 +20,7 @@ export class ActionService {
 
   async getAll(
     options: IPaginationOptions,
-    where?: FindOptionsWhere<Color>,
+    where?: FindOptionsWhere<Action>,
   ): Promise<Pagination<Action>> {
     return paginate<Action>(this.actionRepository, options, {
       order: {

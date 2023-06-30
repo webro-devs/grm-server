@@ -27,7 +27,7 @@ import { Route } from '../../infra/shared/decorators/route.decorator';
 
 @ApiTags('Action')
 @Controller('action')
-export class ColorController {
+export class ActionController {
   constructor(private readonly actionService: ActionService) {}
 
   @Get('/')
