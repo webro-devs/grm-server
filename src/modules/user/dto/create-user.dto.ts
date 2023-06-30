@@ -10,13 +10,21 @@ class CreateUserDto {
   // @IsString()
   // readonly avatar: string;
 
-  // @ApiProperty({
-  //   description: `Full name`,
-  //   example: 'John Doe',
-  // })
-  // @IsOptional()
-  // @IsString()
-  // readonly fullName: string;
+  @ApiProperty({
+    description: `Firstname`,
+    example: 'John',
+  })
+  @IsOptional()
+  @IsString()
+  readonly firstName: string;
+
+  @ApiProperty({
+    description: `Lastname`,
+    example: 'Doe',
+  })
+  @IsOptional()
+  @IsString()
+  readonly lastName: string;
 
   // @ApiProperty({
   //   description: `login`,
@@ -53,8 +61,9 @@ class CreateUserDto {
   @ApiProperty({
     description: `position id`,
     example: 'uuid',
+    required: false,
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly position: string;
 }
