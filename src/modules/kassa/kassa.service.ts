@@ -119,7 +119,10 @@ export class KassaService {
       const comingSum = data.map((d) => +d.totalSum).reduce((a, b) => a + b);
       const goingSum = data.map((d) => +d.expenditure).reduce((a, b) => a + b);
       const sellingSize = data.map((d) => +d.totalSize).reduce((a, b) => a + b);
-      return { comingSum, goingSum, sellingSize };
+      const additionalProfitTotalSum = data
+        .map((d) => +d.additionalProfitTotalSum)
+        .reduce((a, b) => a + b);
+      return { comingSum, goingSum, sellingSize, additionalProfitTotalSum };
     } else {
       return { comingSum: 0, goingSum: 0, sellingSize: 0 };
     }
@@ -138,42 +141,4 @@ export class KassaService {
     }
     return result;
   }
-
-  // async calculateKassa(data: Kassa[]) {
-  //   let comingSum = 0,
-  //     goingSum = 0;
-  //   for (const item of data) {
-  //     const orderSum =
-  //       item.orders.length > 0
-  //         ? item.orders.filter((o) => o.isActive).length > 0
-  //           ? item.orders
-  //               .filter((o) => o.isActive)
-  //               .map((or) => +or.price)
-  //               .reduce((a, b) => a + b)
-  //           : 0
-  //         : 0;
-  //     const cashFlowSum =
-  //       item.cashflow.length > 0
-  //         ? item.cashflow.filter((c) => c.type == CashFlowEnum.InCome).length >
-  //           0
-  //           ? item.cashflow
-  //               .filter((c) => c.type == CashFlowEnum.InCome)
-  //               ?.map((c) => +c.price)
-  //               ?.reduce((a, b) => a + b)
-  //           : 0
-  //         : 0;
-  //     comingSum += orderSum + cashFlowSum;
-  //     goingSum +=
-  //       item.cashflow.length > 0
-  //         ? item.cashflow.filter((c) => c.type == CashFlowEnum.Consumption)
-  //             .length > 0
-  //           ? item.cashflow
-  //               .filter((c) => c.type == CashFlowEnum.Consumption)
-  //               ?.map((c) => +c.price)
-  //               ?.reduce((a, b) => a + b)
-  //           : 0
-  //         : 0;
-  //   }
-  //   return { comingSum, goingSum };
-  // }
 }

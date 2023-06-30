@@ -23,6 +23,7 @@ import { GrmSocketModule } from './modules/web-socket/web-socket.module';
 import { TransferModule } from './modules/transfer/transfer.module';
 import { ColorModule } from './modules/color/color.module';
 import { ExcelModule } from './modules/excel/excel.module';
+import { AccountingModule } from './modules/accounting/accounting.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ExcelModule } from './modules/excel/excel.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
     }),
+    AccountingModule,
     AuthModule,
     CashflowModule,
     CollectionModule,

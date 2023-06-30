@@ -27,10 +27,10 @@ export class Kassa {
   @Column({ type: 'decimal', default: 0, nullable: true })
   totalSum: number;
 
-  @Column({ type: 'decimal', nullable: true })
+  @Column({ type: 'decimal', default: 0, nullable: true })
   additionalProfitTotalSum: number;
 
-  @Column({ type: 'decimal', nullable: true })
+  @Column({ type: 'decimal', default: 0, nullable: true })
   netProfitTotalSum: number;
 
   @Column({ type: 'decimal', default: 0, nullable: true })
