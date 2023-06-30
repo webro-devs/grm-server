@@ -52,7 +52,7 @@ export class KassaController {
   })
   @HttpCode(HttpStatus.OK)
   async getMe(@Param('id') id: string): Promise<Kassa> {
-    return this.kassaService.getOne(id);
+    return await this.kassaService.getOne(id);
   }
 
   @Get('/open-kassa/:filialId')
@@ -62,7 +62,7 @@ export class KassaController {
   })
   @HttpCode(HttpStatus.OK)
   async opnKassa(@Param('filialId') id: string): Promise<Kassa | unknown> {
-    return this.kassaService.GetOpenKassa(id);
+    return await this.kassaService.GetOpenKassa(id);
   }
 
   @Public()
@@ -73,7 +73,7 @@ export class KassaController {
   })
   @HttpCode(HttpStatus.OK)
   async kassaSumAllFilialByRange(@Req() req, @Query() query: RangeDto) {
-    return this.kassaService.kassaSumAllFilialByRange(req.where);
+    return await this.kassaService.kassaSumAllFilialByRange(req.where);
   }
 
   @Get('/calculate/by-range')
@@ -83,7 +83,7 @@ export class KassaController {
   })
   @HttpCode(HttpStatus.OK)
   async kassaSumByFilialAndRange(@Req() req) {
-    return this.kassaService.kassaSumByFilialAndRange(req.where);
+    return await this.kassaService.kassaSumByFilialAndRange(req.where);
   }
 
   @Get('/calculate/:id')
@@ -93,7 +93,7 @@ export class KassaController {
   })
   @HttpCode(HttpStatus.OK)
   async getKassaCalculate(@Param('id') id: string) {
-    return this.kassaService.getKassaSum(id);
+    return await this.kassaService.getKassaSum(id);
   }
 
   @Post('/')
