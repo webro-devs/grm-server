@@ -30,7 +30,7 @@ class ReturnUser {
 
   constructor(user: User) {
     this.id = user.id;
-    this.name = user.fullName;
+    this.name = user.firstName;
     this.login = user.login;
   }
 }
