@@ -23,13 +23,8 @@ export class ActionService {
     return paginate<Action>(this.actionRepository, options);
   }
 
-  async create(
-    data: CreateActionDto,
-    user: string,
-    filial: string,
-    key: string,
-  ) {
-    const value: CreateActionDto = {
+  async create(data, user: string, filial, key: string) {
+    const value = {
       user,
       filial,
       desc: ActionDescEnum[key],
