@@ -15,9 +15,11 @@ export class AuthService {
   ) {}
 
   async validateUserByEmailPassword(login: string, password: string) {
-    const user = await this.userService.getByLogin(login).catch(() => {
+    const user = await this.userService.getByLogin(login);
+    if (!user) {
       throw new BadRequestException('Invalid login.');
-    });
+    }
+
     const isPasswordSame = await this.comparePasswordWithHash(
       password,
       user.password,

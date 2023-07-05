@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IPaginationOptions,
@@ -8,13 +8,13 @@ import {
 import { CreateFileDto, UpdateFileDto } from './dto';
 
 import { File } from './file.entity';
-import { FileRepository } from './file.repository';
+import { Repository } from 'typeorm';
 
 Injectable();
 export class FileService {
   constructor(
     @InjectRepository(File)
-    private readonly fileRepository: FileRepository,
+    private readonly fileRepository: Repository<File>,
   ) {}
 
   async create(data: CreateFileDto) {
@@ -30,7 +30,9 @@ export class FileService {
   }
 
   async delete(id: string) {
-    const response = await this.fileRepository.delete(id);
+    const response = await this.fileRepository.delete(id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
 
     return response;
   }

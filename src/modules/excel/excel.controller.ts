@@ -43,15 +43,11 @@ export class ExcelController {
     @UploadedFile() file: Express.Multer.File,
     @Body() bodyData: ImportExcelDto,
   ) {
-    try {
-      const data = await this.fileService.uploadExecl(
-        file.path,
-        bodyData.partiyaId,
-      );
-      return data;
-    } catch (err) {
-      throw new HttpException(err.response, err.status);
-    }
+    const data = await this.fileService.uploadExecl(
+      file.path,
+      bodyData.partiyaId,
+    );
+    return data;
   }
 
   @Public()
@@ -62,11 +58,7 @@ export class ExcelController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data, @Param('partiyaID') id: string) {
-    try {
-      const response = await this.fileService.jsonToExcel(data, id);
-      return response;
-    } catch (err) {
-      throw new HttpException(err.response, err.status);
-    }
+    const response = await this.fileService.jsonToExcel(data, id);
+    return response;
   }
 }

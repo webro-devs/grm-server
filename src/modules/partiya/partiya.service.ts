@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IPaginationOptions,
@@ -7,16 +7,16 @@ import {
 } from 'nestjs-typeorm-paginate';
 
 import { Partiya } from './partiya.entity';
-import { PartiyaRepository } from './partiya.repository';
 import { CreatePartiyaDto, UpdatePartiyaDto } from './dto';
 import { delete_file, partiyaDateSort } from '../../infra/helpers';
 import { ExcelService } from '../excel/excel.service';
+import { Repository } from 'typeorm';
 
 Injectable();
 export class PartiyaService {
   constructor(
     @InjectRepository(Partiya)
-    private readonly partiyaRepository: PartiyaRepository,
+    private readonly partiyaRepository: Repository<Partiya>,
     private readonly excelRepository: ExcelService,
   ) {}
 
@@ -31,27 +31,33 @@ export class PartiyaService {
   }
 
   async getOne(id: string) {
-    const data = await this.partiyaRepository.findOne({
-      where: { id },
-      relations: {
-        excel: true,
-      },
-    });
+    const data = await this.partiyaRepository
+      .findOne({
+        where: { id },
+        relations: {
+          excel: true,
+        },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
 
     const response = await this.excelRepository.getPartiyaExcel(
       data?.excel?.path,
     );
 
-    if (!data) throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-
     return { data, items: response };
   }
 
   async deleteOne(id: string) {
-    const data = await this.partiyaRepository.findOne({
-      where: { id },
-      relations: { excel: true },
-    });
+    const data = await this.partiyaRepository
+      .findOne({
+        where: { id },
+        relations: { excel: true },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
     delete_file(data.excel.path);
 
     const response = await this.partiyaRepository.delete(id);

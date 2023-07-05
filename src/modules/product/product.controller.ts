@@ -41,14 +41,10 @@ export class ProductController {
     @Query() query: ProductQueryDto,
     @Req() req,
   ) {
-    try {
-      return await this.productService.getAll(
-        { limit: query.limit, page: query.page, route },
-        req.where,
-      );
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.productService.getAll(
+      { limit: query.limit, page: query.page, route },
+      req.where,
+    );
   }
 
   @Get('/remaining-products')
@@ -88,11 +84,7 @@ export class ProductController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateProductDto[]) {
-    try {
-      return await this.productService.create(data);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.productService.create(data);
   }
 
   @Patch('/:id')
@@ -105,11 +97,7 @@ export class ProductController {
     @Body() positionData: UpdateProductDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    try {
-      return await this.productService.change(positionData, id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.productService.change(positionData, id);
   }
 
   @Delete('/:id')
@@ -119,10 +107,6 @@ export class ProductController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-    try {
-      return await this.productService.deleteOne(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.productService.deleteOne(id);
   }
 }

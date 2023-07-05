@@ -30,7 +30,6 @@ import { Route } from '../../infra/shared/decorators/route.decorator';
 export class ModelController {
   constructor(private readonly modelService: ModelService) {}
 
-  // @Public()
   @Get('/')
   @ApiOperation({ summary: 'Method: returns all Models' })
   @ApiOkResponse({
@@ -38,14 +37,9 @@ export class ModelController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
-    try {
-      return await this.modelService.getAll({ ...query, route });
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.modelService.getAll({ ...query, route });
   }
 
-  // @Public()
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single model by id' })
   @ApiOkResponse({
@@ -64,11 +58,7 @@ export class ModelController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateModelDto): Promise<InsertResult> {
-    try {
-      return await this.modelService.create(data);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.modelService.create(data);
   }
 
   // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
@@ -82,11 +72,7 @@ export class ModelController {
     @Body() ModelData: UpdateModelDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    try {
-      return await this.modelService.change(ModelData, id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.modelService.change(ModelData, id);
   }
 
   // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
@@ -97,10 +83,6 @@ export class ModelController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-    try {
-      return await this.modelService.deleteOne(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.modelService.deleteOne(id);
   }
 }

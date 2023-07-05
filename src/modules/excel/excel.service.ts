@@ -3,17 +3,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as XLSX from 'xlsx';
 
 import { Excel } from './excel.entity';
-import { ExcelRepository } from './excel.repository';
 import { delete_file, ExcelDataParser } from 'src/infra/helpers';
 import { ValidateExcel } from 'src/infra/validators';
 import { FileService } from '../file/file.service';
 import { createWriteStream } from 'fs';
+import { Repository } from 'typeorm';
 
 Injectable();
 export class ExcelService {
   constructor(
     @InjectRepository(Excel)
-    private readonly excelRepository: ExcelRepository,
+    private readonly excelRepository: Repository<Excel>,
     private readonly fileService: FileService,
   ) {}
 

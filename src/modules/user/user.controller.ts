@@ -38,11 +38,7 @@ export class UserController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
-    try {
-      return await this.userService.getAll({ ...query, route });
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.userService.getAll({ ...query, route });
   }
 
   @Get('/:id')
@@ -62,11 +58,7 @@ export class UserController {
   })
   @HttpCode(HttpStatus.OK)
   async getUserSelling(@Param('filialId') id: string): Promise<User[]> {
-    try {
-      return this.userService.getUsersWithSelling(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return this.userService.getUsersWithSelling(id);
   }
 
   @Post('/')
@@ -76,11 +68,7 @@ export class UserController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateUserDto) {
-    try {
-      return await this.userService.create(data);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.userService.create(data);
   }
 
   @Patch('/:id')
@@ -93,11 +81,7 @@ export class UserController {
     @Body() positionData: UpdateUserDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    try {
-      return await this.userService.change(positionData, id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.userService.change(positionData, id);
   }
 
   @Delete('/:id')
@@ -107,10 +91,6 @@ export class UserController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-    try {
-      return await this.userService.deleteOne(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.userService.deleteOne(id);
   }
 }

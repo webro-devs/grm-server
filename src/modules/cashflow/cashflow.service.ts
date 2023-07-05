@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { NotFoundException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IPaginationOptions,
@@ -8,16 +8,15 @@ import {
 import { CreateCashflowDto, UpdateCashflowDto } from './dto';
 
 import { Cashflow } from './cashflow.entity';
-import { CashflowRepository } from './cashflow.repository';
 import { KassaService } from '../kassa/kassa.service';
 import { CashFlowEnum } from '../../infra/shared/enum';
-import { DataSource, EntityManager } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 
 Injectable();
 export class CashflowService {
   constructor(
     @InjectRepository(Cashflow)
-    private readonly cashflowRepository: CashflowRepository,
+    private readonly cashflowRepository: Repository<Cashflow>,
     private readonly kassaService: KassaService,
     private readonly connection: DataSource,
   ) {}
@@ -27,13 +26,14 @@ export class CashflowService {
   }
 
   async getOne(id: string) {
-    const data = await this.cashflowRepository.findOne({
-      where: { id },
-    });
+    const data = await this.cashflowRepository
+      .findOne({
+        where: { id },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
 
-    if (!data) {
-      throw new HttpException('data not found', HttpStatus.NOT_FOUND);
-    }
     return data;
   }
 
@@ -52,7 +52,9 @@ export class CashflowService {
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(kassa);
     });
-    const response = await this.cashflowRepository.delete(id);
+    const response = await this.cashflowRepository.delete(id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
     return response;
   }
 

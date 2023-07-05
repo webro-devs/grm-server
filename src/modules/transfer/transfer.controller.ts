@@ -37,11 +37,7 @@ export class TransferController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
-    try {
-      return await this.transferService.getAll({ ...query, route });
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.transferService.getAll({ ...query, route });
   }
 
   @Get('/:id')
@@ -61,11 +57,7 @@ export class TransferController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateTransferDto[], @Req() request) {
-    try {
-      return await this.transferService.create(data, request.user.id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.transferService.create(data, request.user.id);
   }
 
   @Patch('/:id')
@@ -78,11 +70,7 @@ export class TransferController {
     @Body() data: UpdateTransferDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    try {
-      return await this.transferService.change(data, id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.transferService.change(data, id);
   }
 
   @Delete('/:id')
@@ -92,10 +80,6 @@ export class TransferController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-    try {
-      return await this.transferService.deleteOne(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.transferService.deleteOne(id);
   }
 }

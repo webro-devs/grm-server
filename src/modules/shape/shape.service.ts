@@ -1,5 +1,5 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { FindOptionsWhere } from 'typeorm';
+import { NotFoundException, Injectable } from '@nestjs/common';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import {
   IPaginationOptions,
   Pagination,
@@ -8,14 +8,13 @@ import {
 
 import { UpdateShapeDto, CreateShapeDto } from './dto';
 import { Shape } from './shape.entity';
-import { ShapeRepository } from './shape.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ShapeService {
   constructor(
     @InjectRepository(Shape)
-    private readonly shapeRepository: ShapeRepository,
+    private readonly shapeRepository: Repository<Shape>,
   ) {}
 
   async getAll(options: IPaginationOptions): Promise<Pagination<Shape>> {
@@ -27,19 +26,21 @@ export class ShapeService {
   }
 
   async getOne(id: string) {
-    const data = await this.shapeRepository.findOne({
-      where: { id },
-    });
-
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+    const data = await this.shapeRepository
+      .findOne({
+        where: { id },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
 
     return data;
   }
 
   async deleteOne(id: string) {
-    const response = await this.shapeRepository.delete(id);
+    const response = await this.shapeRepository.delete(id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
     return response;
   }
 

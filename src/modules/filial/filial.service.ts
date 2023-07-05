@@ -1,20 +1,19 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IPaginationOptions,
   Pagination,
   paginate,
 } from 'nestjs-typeorm-paginate';
-import { FindOptionsWhere } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { Filial } from './filial.entity';
-import { FilialRepository } from './filial.repository';
 import { CreateFilialDto, UpdateFilialDto } from './dto';
 
 Injectable();
 export class FilialService {
   constructor(
     @InjectRepository(Filial)
-    private readonly filialRepository: FilialRepository,
+    private readonly filialRepository: Repository<Filial>,
   ) {}
 
   async getAll(
@@ -34,19 +33,21 @@ export class FilialService {
   }
 
   async getOne(id: string) {
-    const data = await this.filialRepository.findOne({
-      where: { id },
-    });
-
-    if (!data) {
-      throw new HttpException('data not found', HttpStatus.NOT_FOUND);
-    }
+    const data = await this.filialRepository
+      .findOne({
+        where: { id },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
 
     return data;
   }
 
   async deleteOne(id: string) {
-    const response = await this.filialRepository.delete(id);
+    const response = await this.filialRepository.delete(id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
     return response;
   }
 

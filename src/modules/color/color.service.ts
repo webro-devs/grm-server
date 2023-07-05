@@ -1,21 +1,20 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { NotFoundException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IPaginationOptions,
   Pagination,
   paginate,
 } from 'nestjs-typeorm-paginate';
-import { FindOptionsWhere } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 
 import { Color } from './color.entity';
-import { ColorRepository } from './color.repository';
 import { CreateColorDto, UpdateColorDto } from './dto';
 
 Injectable();
 export class ColorService {
   constructor(
     @InjectRepository(Color)
-    private readonly colorRepository: ColorRepository,
+    private readonly colorRepository: Repository<Color>,
   ) {}
 
   async getAll(
@@ -30,19 +29,21 @@ export class ColorService {
   }
 
   async getOne(id: string) {
-    const data = await this.colorRepository.findOne({
-      where: { id },
-    });
-
-    if (!data) {
-      throw new HttpException('data not found', HttpStatus.NOT_FOUND);
-    }
+    const data = await this.colorRepository
+      .findOne({
+        where: { id },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
 
     return data;
   }
 
   async deleteOne(id: string) {
-    const response = await this.colorRepository.delete(id);
+    const response = await this.colorRepository.delete(id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
     return response;
   }
 
