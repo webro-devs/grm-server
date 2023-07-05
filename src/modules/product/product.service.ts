@@ -1,13 +1,12 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import {
   IPaginationOptions,
   Pagination,
   paginate,
 } from 'nestjs-typeorm-paginate';
 import { Product } from './product.entity';
-import { ProductRepository } from './product.repository';
 import { CreateProductDto, UpdateProductDto } from './dto';
 import sizeParser from 'src/infra/helpers/size-parser';
 import { FilialService } from '../filial/filial.service';
@@ -16,7 +15,7 @@ Injectable();
 export class ProductService {
   constructor(
     @InjectRepository(Product)
-    private readonly productRepository: ProductRepository,
+    private readonly productRepository: Repository<Product>,
     private readonly filialService: FilialService,
   ) {}
 
@@ -35,24 +34,26 @@ export class ProductService {
   }
 
   async getOne(id: string) {
-    const data = await this.productRepository.findOne({
-      where: { id },
-      relations: {
-        model: {
-          collection: true,
+    const data = await this.productRepository
+      .findOne({
+        where: { id },
+        relations: {
+          model: {
+            collection: true,
+          },
         },
-      },
-    });
-
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
 
     return data;
   }
 
   async deleteOne(id: string) {
-    const response = await this.productRepository.delete(id);
+    const response = await this.productRepository.delete(id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
     return response;
   }
 

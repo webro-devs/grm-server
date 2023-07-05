@@ -39,11 +39,7 @@ export class ShapeController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
-    try {
-      return await this.shapeService.getAll({ ...query, route });
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.shapeService.getAll({ ...query, route });
   }
 
   @Get('/:id')
@@ -64,11 +60,7 @@ export class ShapeController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateShapeDto): Promise<Shape> {
-    try {
-      return await this.shapeService.create(data);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.shapeService.create(data);
   }
 
   @Patch('/:id')
@@ -81,11 +73,7 @@ export class ShapeController {
     @Body() data: UpdateShapeDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    try {
-      return await this.shapeService.change(data, id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.shapeService.change(data, id);
   }
 
   @Delete('/:id')
@@ -95,10 +83,6 @@ export class ShapeController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-    try {
-      return await this.shapeService.deleteOne(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.shapeService.deleteOne(id);
   }
 }

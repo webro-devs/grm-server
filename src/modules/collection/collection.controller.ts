@@ -37,11 +37,7 @@ export class CollectionController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
-    try {
       return await this.collectionService.getAll({ ...query, route });
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
   }
 
   @Get('/remaining-products')
@@ -51,11 +47,7 @@ export class CollectionController {
   })
   @HttpCode(HttpStatus.OK)
   async getRemainingProductsByCollection() {
-    try {
       return await this.collectionService.remainingProductsByCollection();
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
   }
 
   @Get('/:id')
@@ -75,11 +67,7 @@ export class CollectionController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateCollectionDto): Promise<Collection> {
-    try {
       return await this.collectionService.create(data);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
   }
 
   @Patch('/:id')
@@ -92,11 +80,7 @@ export class CollectionController {
     @Body() CollectionData: UpdateCollectionDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    try {
-      return await this.collectionService.change(CollectionData, id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.collectionService.change(CollectionData, id);
   }
 
   @Delete('/:id')
@@ -106,10 +90,6 @@ export class CollectionController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-    try {
-      return await this.collectionService.deleteOne(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.collectionService.deleteOne(id);
   }
 }

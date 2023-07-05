@@ -1,6 +1,6 @@
 import { unlink } from 'fs';
 
-const delete_file = (dirname: string): void => {
+const deleteFile = (dirname: string): void => {
   unlink(dirname, (err) => {
     try {
       if (err) console.log(err);
@@ -11,4 +11,4 @@ const delete_file = (dirname: string): void => {
   });
 };
 
-export default delete_file;
+export default deleteFile;

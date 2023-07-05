@@ -38,11 +38,7 @@ export class KassaController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
-    try {
-      return await this.kassaService.getAll({ ...query, route });
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.kassaService.getAll({ ...query, route });
   }
 
   @Get('/:id')
@@ -103,19 +99,14 @@ export class KassaController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateKassaDto) {
-    try {
-      const check = await this.kassaService.create(data);
-
-      if (!check) {
-        throw new HttpException(
-          'First you Should close kassa',
-          HttpStatus.BAD_REQUEST,
-        );
-      } else {
-        return check;
-      }
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    const check = await this.kassaService.create(data);
+    if (!check) {
+      throw new HttpException(
+        'First you Should close kassa',
+        HttpStatus.BAD_REQUEST,
+      );
+    } else {
+      return check;
     }
   }
 
@@ -129,11 +120,7 @@ export class KassaController {
     @Body() positionData: UpdateKassaDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    try {
-      return await this.kassaService.change(positionData, id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.kassaService.change(positionData, id);
   }
 
   @Patch('/close-kassa/:id')
@@ -143,11 +130,7 @@ export class KassaController {
   })
   @HttpCode(HttpStatus.OK)
   async closeKassa(@Param('id') id: string): Promise<UpdateResult> {
-    try {
-      return await this.kassaService.closeKassa(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.kassaService.closeKassa(id);
   }
 
   @Delete('/:id')
@@ -157,10 +140,6 @@ export class KassaController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-    try {
-      return await this.kassaService.deleteOne(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.kassaService.deleteOne(id);
   }
 }

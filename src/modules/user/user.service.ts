@@ -1,6 +1,15 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  NotFoundException,
+  Injectable,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, FindOptionsWhere, EntityManager } from 'typeorm';
+import {
+  DataSource,
+  FindOptionsWhere,
+  EntityManager,
+  Repository,
+} from 'typeorm';
 import {
   IPaginationOptions,
   Pagination,
@@ -8,9 +17,8 @@ import {
 } from 'nestjs-typeorm-paginate';
 
 import { User } from './user.entity';
-import { UserRepository } from './user.repository';
 import { CreateUserDto, UpdateUserDto } from './dto';
-import { generateId } from 'src/infra/helpers';
+import { idGenerator } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 import { PositionService } from '../position/position.service';
 
@@ -18,7 +26,7 @@ Injectable();
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: Repository<User>,
     private readonly filialService: FilialService,
     private readonly connection: DataSource,
     private readonly positionService: PositionService,
@@ -39,13 +47,12 @@ export class UserService {
   }
 
   async getByLogin(login: string) {
-    const data = await this.userRepository.findOne({
-      where: { login },
-      relations: { filial: true, position: true },
-    });
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+    const data = await this.userRepository
+      .findOne({
+        where: { login },
+        relations: { filial: true, position: true },
+      })
+
     return data;
   }
 
@@ -58,23 +65,25 @@ export class UserService {
   }
 
   async getOne(id: string) {
-    const data = await this.userRepository.findOne({
-      where: { id },
-      relations: {
-        position: true,
-        filial: true,
-      },
-    });
-
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+    const data = await this.userRepository
+      .findOne({
+        where: { id },
+        relations: {
+          position: true,
+          filial: true,
+        },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
 
     return data;
   }
 
   async deleteOne(id: string) {
-    const response = await this.userRepository.delete(id);
+    const response = await this.userRepository.delete(id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
     return response;
   }
 
@@ -90,7 +99,7 @@ export class UserService {
 
   async create(data: CreateUserDto) {
     const user = new User();
-    user.login = generateId();
+    user.login = idGenerator();
     user.role = data.role;
     user.filial = data.filial
       ? await this.filialService.getOne(data.filial)

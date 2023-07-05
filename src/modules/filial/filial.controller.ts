@@ -9,7 +9,6 @@ import {
   Param,
   Delete,
   HttpStatus,
-  HttpException,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -29,7 +28,6 @@ import { UpdateResult } from 'typeorm';
 export class FilialController {
   constructor(private readonly filialService: FilialService) {}
 
-  // @Public()
   @Get('/')
   @ApiOperation({ summary: 'Method: returns all filial' })
   @ApiOkResponse({
@@ -37,14 +35,9 @@ export class FilialController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
-    try {
-      return await this.filialService.getAll({ ...query, route });
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.filialService.getAll({ ...query, route });
   }
 
-  // @Public()
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single filial by id' })
   @ApiOkResponse({
@@ -62,11 +55,7 @@ export class FilialController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateFilialDto): Promise<Filial> {
-    try {
-      return await this.filialService.create(data);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.filialService.create(data);
   }
 
   @Patch('/:id')
@@ -79,11 +68,7 @@ export class FilialController {
     @Body() data: UpdateFilialDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    try {
-      return await this.filialService.change(data, id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.filialService.change(data, id);
   }
 
   @Delete('/:id')
@@ -93,10 +78,6 @@ export class FilialController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-    try {
-      return await this.filialService.deleteOne(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.filialService.deleteOne(id);
   }
 }

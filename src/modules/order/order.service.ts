@@ -1,14 +1,23 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  NotFoundException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IPaginationOptions,
   Pagination,
   paginate,
 } from 'nestjs-typeorm-paginate';
-import { DataSource, EntityManager, FindOptionsWhere } from 'typeorm';
+import {
+  DataSource,
+  EntityManager,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 
 import { Order } from './order.entity';
-import { OrderRepository } from './order.repository';
 import { UpdateOrderDto, CreateOrderDto } from './dto';
 import { UpdateProductDto } from '../product/dto';
 import { ProductService } from '../product/product.service';
@@ -18,7 +27,7 @@ Injectable();
 export class OrderService {
   constructor(
     @InjectRepository(Order)
-    private readonly orderRepository: OrderRepository,
+    private readonly orderRepository: Repository<Order>,
     private readonly productService: ProductService,
     private readonly kassaService: KassaService,
     private readonly connection: DataSource,
@@ -33,13 +42,14 @@ export class OrderService {
   }
 
   async getById(id: string) {
-    const data = await this.orderRepository.findOne({
-      where: { id },
-      relations: { casher: true, seller: true, product: true },
-    });
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+    const data = await this.orderRepository
+      .findOne({
+        where: { id },
+        relations: { casher: true, seller: true, product: true },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
     return data;
   }
 
@@ -64,7 +74,9 @@ export class OrderService {
     product.setTotalSize();
     await this.saveRepo(product);
 
-    const response = await this.orderRepository.delete(id);
+    const response = await this.orderRepository.delete(id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
     return response;
   }
 

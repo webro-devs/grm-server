@@ -1,14 +1,13 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IPaginationOptions,
   Pagination,
   paginate,
 } from 'nestjs-typeorm-paginate';
-import { FindOptionsWhere } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 
 import { Kassa } from './kassa.entity';
-import { KassaRepository } from './kassa.repository';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
 import { CashFlowEnum } from '../../infra/shared/enum';
 import { FilialService } from '../filial/filial.service';
@@ -17,7 +16,7 @@ Injectable();
 export class KassaService {
   constructor(
     @InjectRepository(Kassa)
-    private readonly kassaRepository: KassaRepository,
+    private readonly kassaRepository: Repository<Kassa>,
     private readonly filialService: FilialService,
   ) {}
 
@@ -31,20 +30,21 @@ export class KassaService {
   }
 
   async getById(id: string) {
-    const data = await this.kassaRepository.findOne({ where: { id } });
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+    const data = await this.kassaRepository
+      .findOne({ where: { id } })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
     return data;
   }
   async getOne(id: string) {
-    const data = await this.kassaRepository.findOne({
-      where: { id },
-    });
-
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+    const data = await this.kassaRepository
+      .findOne({
+        where: { id },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
 
     return data;
   }
@@ -70,7 +70,9 @@ export class KassaService {
   }
 
   async deleteOne(id: string) {
-    const response = await this.kassaRepository.delete(id);
+    const response = await this.kassaRepository.delete(id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
     return response;
   }
 
