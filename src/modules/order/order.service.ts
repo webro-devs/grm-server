@@ -13,6 +13,7 @@ import { UpdateOrderDto, CreateOrderDto } from './dto';
 import { UpdateProductDto } from '../product/dto';
 import { ProductService } from '../product/product.service';
 import { KassaService } from '../kassa/kassa.service';
+import { ActionService } from '../action/action.service';
 
 Injectable();
 export class OrderService {
@@ -21,6 +22,7 @@ export class OrderService {
     private readonly orderRepository: OrderRepository,
     private readonly productService: ProductService,
     private readonly kassaService: KassaService,
+    private readonly actionService: ActionService,
     private readonly connection: DataSource,
   ) {}
 
@@ -161,6 +163,7 @@ export class OrderService {
       .set({ isActive: true, casher } as unknown as Order)
       .where('id = :id', { id })
       .execute();
+
     return response;
   }
 

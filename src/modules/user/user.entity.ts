@@ -12,6 +12,7 @@ import { Position } from '../position/position.entity';
 import { Order } from '../order/order.entity';
 import { Cashflow } from '../cashflow/cashflow.entity';
 import { Filial } from '../filial/filial.entity';
+import { Action } from '../action/action.entity';
 
 @Entity('users')
 export class User {
@@ -65,6 +66,9 @@ export class User {
   @ManyToOne(() => Filial, (filial) => filial.users, { nullable: true })
   @JoinColumn()
   filial: Filial;
+
+  @OneToMany(() => Action, (action) => action.user)
+  actions: Action[];
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);
