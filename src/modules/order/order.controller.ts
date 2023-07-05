@@ -127,7 +127,7 @@ export class OrderController {
   @Patch('/:id')
   @ApiOperation({ summary: 'Method: reject order' })
   @ApiOkResponse({
-    description: 'Order was deleted',
+    description: 'Order was rejected',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async reject(@Param('id') id: string) {

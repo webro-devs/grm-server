@@ -12,4 +12,4 @@ import { ActionController } from './action.controller';
   providers: [ActionService, ActionRepository],
   exports: [ActionService, ActionRepository],
 })
-export class ColorModule {}
+export class ActionModule {}
