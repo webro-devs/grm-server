@@ -1,7 +1,19 @@
 const ExcelDataParser = async (data) => {
   const transformedObj = data.reduce((acc, curr) => {
     const { Collection, Model, Size, Color, Code, Count, Img, M2 } = curr;
-    const datas = { Size, Color, Code, Count, Img };
+    const datas = {
+      Size,
+      Color,
+      Code,
+      Count,
+      Img,
+      price: 0,
+      commingPrice: 0,
+      shape: '',
+      style: '',
+      model: '',
+      filial: '',
+    };
 
     const collectionItem = acc.find((item) => item.title === Collection);
 

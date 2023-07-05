@@ -71,7 +71,7 @@ export class ExcelService {
         item.Model,
         item.Color,
       );
-      const Img = img?.url || null;
+      const Img = img?.url || '';
       res.push({ ...item, Img });
     }
 
