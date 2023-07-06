@@ -58,7 +58,7 @@ export class PartiyaService {
       .catch(() => {
         throw new NotFoundException('data not found');
       });
-    deleteFile(data.excel.path);
+    deleteFile(data?.excel?.path);
 
     const response = await this.partiyaRepository.delete(id);
     return response;
