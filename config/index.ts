@@ -15,19 +15,12 @@ export default (): IConfig => ({
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    // url: process.env.ELEPHANT_SQL_URL,
-    //remove after adding migrations
-    synchronize: true,
-
-    migrationsRun: false,
-
     logging: false,
     autoLoadEntities: true,
     entities: ['./dist/**/*.entity.js'],
-    // migrations: ['dist/migrations/scripts/*.js'],
-    // cli: {
-    //   migrationsDir: 'src/migrations/scripts',
-    // },
+    synchronize: false,
+    migrations: [`${__dirname}/../db/migrations/*{.ts,.js}`],
+    migrationsTableName: 'migration',
   },
 
   jwt: {

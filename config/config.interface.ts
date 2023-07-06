@@ -21,6 +21,7 @@ interface IDatabase {
   logging?: boolean;
   autoLoadEntities?: boolean;
   migrations?: string[];
+  migrationsTableName: string;
   cli?: {
     migrationsDir?: string;
   };
