@@ -8,7 +8,7 @@ import {
 } from 'nestjs-typeorm-paginate';
 import { Product } from './product.entity';
 import { CreateProductDto, UpdateProductDto } from './dto';
-import sizeParser from 'src/infra/helpers/size-parser';
+import { sizeParser } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 
 Injectable();

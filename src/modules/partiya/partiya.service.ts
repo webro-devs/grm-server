@@ -8,7 +8,7 @@ import {
 
 import { Partiya } from './partiya.entity';
 import { CreatePartiyaDto, UpdatePartiyaDto } from './dto';
-import { delete_file, partiyaDateSort } from '../../infra/helpers';
+import { deleteFile, partiyaDateSort } from '../../infra/helpers';
 import { ExcelService } from '../excel/excel.service';
 import { Repository } from 'typeorm';
 
@@ -58,7 +58,7 @@ export class PartiyaService {
       .catch(() => {
         throw new NotFoundException('data not found');
       });
-    delete_file(data.excel.path);
+    deleteFile(data.excel.path);
 
     const response = await this.partiyaRepository.delete(id);
     return response;

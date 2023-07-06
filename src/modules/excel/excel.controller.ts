@@ -16,7 +16,7 @@ import {
   ApiConsumes,
 } from '@nestjs/swagger';
 import { ExcelService } from './excel.service';
-import { MulterStorage } from '../../infra/helpers';
+import { multerStorage } from '../../infra/helpers';
 import { Public } from '../auth/decorators/public.decorator';
 import { Body, Put } from '@nestjs/common/decorators';
 import { ImportExcelDto } from './dto';
@@ -35,7 +35,7 @@ export class ExcelController {
   })
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: MulterStorage('uploads/excel'),
+      storage: multerStorage('uploads/excel'),
     }),
   )
   @HttpCode(HttpStatus.CREATED)
