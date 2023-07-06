@@ -37,6 +37,8 @@ export class Partiya {
   @OneToMany(() => Product, (product) => product.partiya)
   products: Product[];
 
-  @OneToOne(() => Excel, (excel) => excel.partiya)
+  @OneToOne(() => Excel, (excel) => excel.partiya, {
+    onDelete: 'SET NULL',
+  })
   excel: Excel;
 }
