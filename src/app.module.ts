@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 
-import configuration from './config';
+import configuration from '../config';
 import { CollectionModule } from './modules/collection/collection.module';
 import { FilialModule } from './modules/filial/filial.module';
 import { KassaModule } from './modules/kassa/kassa.module';
