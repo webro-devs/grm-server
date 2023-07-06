@@ -7,7 +7,4 @@ export class Color {
 
   @Column('varchar')
   title: string;
-
-  @Column('varchar')
-  text: string;
 }

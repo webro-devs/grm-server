@@ -18,7 +18,7 @@ export default (): IConfig => ({
     logging: false,
     autoLoadEntities: true,
     entities: ['./dist/**/*.entity.js'],
-    synchronize: false,
+    synchronize: true,
     migrations: [`${__dirname}/../db/migrations/*{.ts,.js}`],
     migrationsTableName: 'migration',
   },
