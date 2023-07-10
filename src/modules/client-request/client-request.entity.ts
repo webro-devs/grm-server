@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('clientRequest')
+@Entity('client_request')
 export class ClientRequest {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -12,5 +12,5 @@ export class ClientRequest {
   location: string;
 
   @Column('varchar')
-  number: string;
+  phone: string;
 }

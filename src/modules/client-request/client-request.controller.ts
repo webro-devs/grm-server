@@ -23,8 +23,6 @@ import { ClientRequest } from './client-request.entity';
 import { ClientRequestService } from './client-request.service';
 import { PaginationDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRoleEnum } from '../../infra/shared/enum';
 
 @ApiTags('Client-Request')
 @Controller('client-request')
@@ -52,7 +50,6 @@ export class ClientRequestController {
   }
 
   @Post('/')
-  @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: creates new client request' })
   @ApiCreatedResponse({
     description: 'The client request was created successfully',

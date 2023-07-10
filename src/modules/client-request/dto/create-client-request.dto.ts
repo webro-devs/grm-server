@@ -23,7 +23,7 @@ class CreateClientRequestDto {
   })
   @IsNotEmpty()
   @IsString()
-  readonly number: string;
+  readonly phone: string;
 }
 
 export default CreateClientRequestDto;
