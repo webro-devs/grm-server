@@ -85,6 +85,7 @@ export class UserService {
       .set(value as unknown as User)
       .where('id = :id', { id })
       .execute();
+
     return response;
   }
 

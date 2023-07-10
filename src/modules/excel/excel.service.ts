@@ -8,6 +8,7 @@ import { delete_file, ExcelDataParser } from 'src/infra/helpers';
 import { ValidateExcel } from 'src/infra/validators';
 import { FileService } from '../file/file.service';
 import { createWriteStream } from 'fs';
+import { ActionService } from '../action/action.service';
 
 Injectable();
 export class ExcelService {
@@ -15,6 +16,7 @@ export class ExcelService {
     @InjectRepository(Excel)
     private readonly excelRepository: ExcelRepository,
     private readonly fileService: FileService,
+    private readonly actionService: ActionService,
   ) {}
 
   async uploadExecl(path: string, partiya: string) {
