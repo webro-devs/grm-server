@@ -59,6 +59,22 @@ class CreateUserDto {
   readonly filial: string;
 
   @ApiProperty({
+    description: `email`,
+    example: 'example@gmail.com',
+  })
+  @IsOptional()
+  @IsString()
+  readonly email: string;
+
+  @ApiProperty({
+    description: `phone`,
+    example: '+1234567890',
+  })
+  @IsOptional()
+  @IsString()
+  readonly phone: string;
+
+  @ApiProperty({
     description: `position id`,
     example: 'uuid',
     required: false,

@@ -47,11 +47,10 @@ export class UserService {
   }
 
   async getByLogin(login: string) {
-    const data = await this.userRepository
-      .findOne({
-        where: { login },
-        relations: { filial: true, position: true },
-      })
+    const data = await this.userRepository.findOne({
+      where: { login },
+      relations: { filial: true, position: true },
+    });
 
     return data;
   }
@@ -109,6 +108,32 @@ export class UserService {
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(user);
     });
+    return user.login;
+  }
+
+  async createClient(data: CreateUserDto) {
+    const user = new User();
+
+    user.login = idGenerator();
+    user.role = data.role;
+
+    user.filial = data.filial
+      ? await this.filialService.getOne(data.filial)
+      : null;
+
+    user.position = await this.positionService.getOne(data.position);
+    await user.hashPassword(user.password);
+
+    user.firstName = data.firstName;
+    user.lastName = data.lastName;
+
+    user.email = data.email;
+    user.phone = data.phone;
+
+    await this.connection.transaction(async (manager: EntityManager) => {
+      await manager.save(user);
+    });
+
     return user.login;
   }
 }
