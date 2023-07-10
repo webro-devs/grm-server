@@ -25,6 +25,8 @@ import { Product } from './product.entity';
 import { ProductService } from './product.service';
 import { ProductQueryDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRoleEnum } from '../../infra/shared/enum';
 
 @ApiTags('Product')
 @Controller('product')
@@ -98,6 +100,23 @@ export class ProductController {
     @Param('id') id: string,
   ): Promise<UpdateResult> {
     return await this.productService.change(positionData, id);
+  }
+
+  @Patch('/internet-product/:id')
+  @Roles(UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.BOSS)
+  @ApiOperation({ summary: 'Method: updating product isInternetShop' })
+  @ApiOkResponse({
+    description: 'isInternetShop was changed',
+  })
+  @HttpCode(HttpStatus.OK)
+  async changeInternetProduct(
+    @Body() { isInternetProduct },
+    @Param('id') id: string,
+  ): Promise<UpdateResult> {
+    return await this.productService.changeIsInternetShop(
+      id,
+      isInternetProduct,
+    );
   }
 
   @Delete('/:id')

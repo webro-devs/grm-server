@@ -57,6 +57,14 @@ export class ProductService {
     return response;
   }
 
+  async changeIsInternetShop(id: string, isInternetShop: boolean) {
+    const response = await this.productRepository.update(
+      { id },
+      { isInternetShop },
+    );
+    return response;
+  }
+
   async change(value: UpdateProductDto, id: string) {
     const response = await this.productRepository
       .createQueryBuilder()

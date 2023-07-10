@@ -13,6 +13,7 @@ import { Order } from '../order/order.entity';
 import { Cashflow } from '../cashflow/cashflow.entity';
 import { Filial } from '../filial/filial.entity';
 import { Action } from '../action/action.entity';
+import { ClientOrder } from '../client-order/client-order.entity';
 
 @Entity('users')
 export class User {
@@ -69,6 +70,9 @@ export class User {
 
   @OneToMany(() => Action, (action) => action.user)
   actions: Action[];
+
+  @OneToMany(() => ClientOrder, (clientOrder) => clientOrder.user)
+  clientOrders: ClientOrder[];
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);

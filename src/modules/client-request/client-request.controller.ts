@@ -23,6 +23,7 @@ import { ClientRequest } from './client-request.entity';
 import { ClientRequestService } from './client-request.service';
 import { PaginationDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Client-Request')
 @Controller('client-request')
@@ -49,6 +50,7 @@ export class ClientRequestController {
     return this.clientRequestService.getOne(id);
   }
 
+  @Public()
   @Post('/')
   @ApiOperation({ summary: 'Method: creates new client request' })
   @ApiCreatedResponse({

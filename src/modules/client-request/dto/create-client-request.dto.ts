@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 class CreateClientRequestDto {
   @ApiProperty({
     description: `name`,
-    example: 'pentagon',
+    example: 'John Doe',
   })
   @IsNotEmpty()
   @IsString()
@@ -11,7 +11,7 @@ class CreateClientRequestDto {
 
   @ApiProperty({
     description: `location`,
-    example: 'pentagon',
+    example: 'London',
   })
   @IsNotEmpty()
   @IsString()
@@ -19,7 +19,7 @@ class CreateClientRequestDto {
 
   @ApiProperty({
     description: `number`,
-    example: 'pentagon',
+    example: '+998998887766',
   })
   @IsNotEmpty()
   @IsString()

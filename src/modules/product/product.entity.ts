@@ -56,6 +56,9 @@ export class Product {
   @Column()
   style: string;
 
+  @Column({ type: 'boolean', default: false })
+  isInternetShop: boolean = false;
+
   @OneToMany(() => Order, (order) => order.product)
   orders: Order[];
 

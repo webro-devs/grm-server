@@ -25,6 +25,7 @@ import { ColorModule } from './modules/color/color.module';
 import { ExcelModule } from './modules/excel/excel.module';
 import { AccountingModule } from './modules/accounting/accounting.module';
 import { ClientRequestModule } from './modules/client-request/client-request.module';
+import { ClientOrderModule } from './modules/client-order/client-order.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { ClientRequestModule } from './modules/client-request/client-request.mod
     AccountingModule,
     AuthModule,
     CashflowModule,
+    ClientOrderModule,
     ClientRequestModule,
     CollectionModule,
     ColorModule,
