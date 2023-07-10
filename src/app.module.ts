@@ -24,6 +24,7 @@ import { TransferModule } from './modules/transfer/transfer.module';
 import { ColorModule } from './modules/color/color.module';
 import { ExcelModule } from './modules/excel/excel.module';
 import { AccountingModule } from './modules/accounting/accounting.module';
+import { ClientRequestModule } from './modules/client-request/client-request.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { AccountingModule } from './modules/accounting/accounting.module';
     AccountingModule,
     AuthModule,
     CashflowModule,
+    ClientRequestModule,
     CollectionModule,
     ColorModule,
     ExcelModule,
