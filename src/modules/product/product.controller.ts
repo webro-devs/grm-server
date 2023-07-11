@@ -27,6 +27,7 @@ import { ProductQueryDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from '../../infra/shared/enum';
+import { Put } from '@nestjs/common/decorators';
 
 @ApiTags('Product')
 @Controller('product')
@@ -102,14 +103,14 @@ export class ProductController {
     return await this.productService.change(positionData, id);
   }
 
-  @Patch('/internet-product/:id')
+  @Patch('/internet-product-status/:id')
   @Roles(UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.BOSS)
   @ApiOperation({ summary: 'Method: updating product isInternetShop' })
   @ApiOkResponse({
     description: 'isInternetShop was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeInternetProduct(
+  async changeInternetProductStatus(
     @Body() { isInternetProduct },
     @Param('id') id: string,
   ): Promise<UpdateResult> {
@@ -117,6 +118,20 @@ export class ProductController {
       id,
       isInternetProduct,
     );
+  }
+
+  @Put('/internet-product/:id')
+  @Roles(UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.BOSS)
+  @ApiOperation({ summary: 'Method: updating product internet product' })
+  @ApiOkResponse({
+    description: 'Product was changed',
+  })
+  @HttpCode(HttpStatus.OK)
+  async changeInternetProduct(
+    @Body() { data },
+    @Param('id') id: string,
+  ): Promise<UpdateResult> {
+    return await this.productService.changeMagazinProduct(data, id);
   }
 
   @Delete('/:id')
