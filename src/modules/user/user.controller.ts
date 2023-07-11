@@ -19,7 +19,12 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 
-import { CreateUserDto, UpdateClientDto, UpdateUserDto } from './dto';
+import {
+  CreateClientDto,
+  CreateUserDto,
+  UpdateClientDto,
+  UpdateUserDto,
+} from './dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { PaginationDto } from '../../infra/shared/dto';
@@ -78,7 +83,7 @@ export class UserController {
     description: 'The client was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async createClient(@Body() data: { login: string; password: string }) {
+  async createClient(@Body() data: CreateClientDto) {
     return await this.userService.createClient(data);
   }
 

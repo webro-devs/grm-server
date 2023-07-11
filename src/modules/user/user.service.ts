@@ -17,7 +17,12 @@ import {
 } from 'nestjs-typeorm-paginate';
 
 import { User } from './user.entity';
-import { CreateUserDto, UpdateClientDto, UpdateUserDto } from './dto';
+import {
+  CreateClientDto,
+  CreateUserDto,
+  UpdateClientDto,
+  UpdateUserDto,
+} from './dto';
 import { hashPassword, idGenerator } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 import { PositionService } from '../position/position.service';
@@ -114,7 +119,7 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  async createClient(data: { login: string; password: string }) {
+  async createClient(data: CreateClientDto) {
     data.password = await hashPassword(data.password);
     const user = this.userRepository.create({
       ...data,
