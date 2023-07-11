@@ -7,7 +7,11 @@ import {
   paginate,
 } from 'nestjs-typeorm-paginate';
 import { Product } from './product.entity';
-import { CreateProductDto, UpdateProductDto } from './dto';
+import {
+  CreateProductDto,
+  UpdateMagazinProductDto,
+  UpdateProductDto,
+} from './dto';
 import { sizeParser } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 
@@ -79,11 +83,14 @@ export class ProductService {
     return response;
   }
 
-  async changeIsInternetShop(id: string, isInternetShop: boolean) {
-    const response = await this.productRepository.update(
-      { id },
-      { isInternetShop },
-    );
+  async changeIsInternetShop(ids: string, isInternetShop: boolean) {
+    const response = await this.productRepository
+      .createQueryBuilder()
+      .update()
+      .set({ isInternetShop })
+      .where('id IN(:...ids)', { ids })
+      .execute();
+
     return response;
   }
 
@@ -94,6 +101,17 @@ export class ProductService {
       .set(value as unknown as Product)
       .where('id = :id', { id })
       .execute();
+    return response;
+  }
+
+  async changeMagazinProduct(value: UpdateMagazinProductDto, id: string) {
+    const response = await this.productRepository
+      .createQueryBuilder()
+      .update()
+      .set(value as unknown as Product)
+      .where('id = :id', { id })
+      .execute();
+
     return response;
   }
 

@@ -74,6 +74,27 @@ export class Product {
   @JoinColumn()
   partiya: Partiya;
 
+  @Column({ nullable: true, type: 'varchar' })
+  weight: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  pileHeight: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  basedDensity: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  weftdensity: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  pileDensity: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  manufacturer: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  dorsalMaterial: string;
+
   public setTotalSize() {
     this.totalSize = +this.x * +this.y * this.count;
   }
