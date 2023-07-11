@@ -11,6 +11,7 @@ import {
   Get,
   Query,
   Req,
+  Put,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import {
@@ -27,7 +28,7 @@ import { ProductQueryDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from '../../infra/shared/enum';
-import { Put } from '@nestjs/common/decorators';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Product')
 @Controller('product')
@@ -47,6 +48,24 @@ export class ProductController {
     return await this.productService.getAll(
       { limit: query.limit, page: query.page, route },
       req.where,
+    );
+  }
+
+  @Public()
+  @Get('/internet-shop')
+  @ApiOperation({ summary: 'Method: returns all internet shop products' })
+  @ApiOkResponse({
+    description: 'The internet shop products were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getDataFOrInternetShop(
+    @Route() route: string,
+    @Query() query: ProductQueryDto,
+    @Req() req,
+  ) {
+    return await this.productService.getAllInInternetShop(
+      { limit: query.limit, page: query.page, route },
+      { ...req.where, isInternetShop: true },
     );
   }
 
