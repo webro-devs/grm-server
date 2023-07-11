@@ -52,11 +52,14 @@ export class ClientOrder {
   @Column({ type: 'varchar', nullable: true })
   date: string;
 
-  @Column('simple-json')
-  count
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  startDate: string;
 
-  @Column({type:"boolean",default:false})
-  isActive:boolean = false
+  @Column('simple-json')
+  count;
+
+  @Column({ type: 'boolean', default: false })
+  isActive: boolean = false;
 
   @ManyToOne(() => Filial, (filial) => filial.clientOrders, {
     onDelete: 'SET NULL',

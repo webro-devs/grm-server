@@ -15,6 +15,7 @@ import {
 import { ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { AccountingService } from './accounting.service';
 import { RangeDto } from '../../infra/shared/dto';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Accounting')
 @Controller('accounting')
@@ -46,6 +47,21 @@ export class AccountingController {
       return await this.accountingService.getKassaSumForAllFilialByRange(
         req.where,
       );
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Public()
+  @Get('/internet-shop/by-range')
+  @ApiOperation({ summary: 'Method: returns kassa accounting for all filial' })
+  @ApiOkResponse({
+    description: 'Kassa accounting returned successfully!',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getInternetMagazineSumByRange(@Req() req, @Query() query: RangeDto) {
+    try {
+      return await this.accountingService.getInternetShopSum(req.where);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -60,9 +60,9 @@ export class ClientOrderService {
     return response;
   }
 
-  async changeIsActive(id:string,isActive:boolean){
-    const response = await this.clientOrder.update({id},{isActive})
-    return response
+  async changeIsActive(id: string, isActive: boolean) {
+    const response = await this.clientOrder.update({ id }, { isActive });
+    return response;
   }
 
   async create(value: CreateClientOrderDto) {
@@ -85,5 +85,14 @@ export class ClientOrderService {
     });
 
     return await this.clientOrder.save(data);
+  }
+
+  async getInternetShopSumByRange(where) {
+    const data = await this.clientOrder.find({ where });
+    const sum = data?.length
+      ? data.map(c=>Number(c.totalPrice)).reduce((a, b) => a + b)
+      : 0;
+
+    return sum
   }
 }

@@ -156,10 +156,14 @@ export class OrderService {
     });
 
     const kassa = await this.kassaService.getById(order.kassa.id);
+
     kassa.totalSum = +kassa.totalSum + +order.price;
+
     kassa.totalSize =
       +kassa.totalSize + order.count * (+order.product.x * +order.product.y);
+
     kassa.netProfitTotalSum = +kassa.netProfitTotalSum + +order.netProfitSum;
+
     kassa.additionalProfitTotalSum =
       +kassa.additionalProfitTotalSum + +order.additionalProfitSum;
 
