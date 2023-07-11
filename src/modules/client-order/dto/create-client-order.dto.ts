@@ -1,24 +1,32 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreateClientOrderDto {
   @ApiProperty({
-    description: `name`,
-    example: 'John Doe',
+    description: `FirstName`,
+    example: 'John',
   })
   @IsNotEmpty()
   @IsString()
   readonly firstName: string;
 
   @ApiProperty({
-    description: `location`,
-    example: 'London',
+    description: `LastName`,
+    example: 'Doe',
   })
   @IsNotEmpty()
   @IsString()
   readonly lastName: string;
 
   @ApiProperty({
-    description: `number`,
+    description: `phone`,
     example: '+998998887766',
   })
   @IsNotEmpty()
@@ -26,12 +34,28 @@ class CreateClientOrderDto {
   readonly phone: string;
 
   @ApiProperty({
-    description: `is delevery`,
+    description: `is delivery`,
     example: true,
   })
   @IsNotEmpty()
   @IsBoolean()
-  readonly delivery: string;
+  readonly delivery: boolean;
+
+  @ApiProperty({
+    description: `Delivery sum`,
+    example: 10,
+  })
+  @IsOptional()
+  @IsNumber()
+  readonly deliverySum: number;
+
+  @ApiProperty({
+    description: `Total price`,
+    example: 1000,
+  })
+  @IsOptional()
+  @IsNumber()
+  readonly totalPrice: number;
 
   @ApiProperty({
     description: `City`,
@@ -96,6 +120,17 @@ class CreateClientOrderDto {
   @IsOptional()
   @IsString()
   readonly user: string;
+
+  @ApiProperty({
+    description: `order`,
+    example: [
+      { id: 'uuid', count: 5 },
+      { id: 'uuid', count: 10 },
+    ],
+  })
+  @IsOptional()
+  @IsArray()
+  order: { id: string; count: number }[];
 }
 
 export default CreateClientOrderDto;

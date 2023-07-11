@@ -33,6 +33,20 @@ export class ProductService {
     });
   }
 
+  async getAllInInternetShop(
+    options: IPaginationOptions,
+    where?: FindOptionsWhere<Product>,
+  ): Promise<Pagination<Product>> {
+    return paginate<Product>(this.productRepository, options, {
+      relations: {
+        model: {
+          collection: true,
+        },
+      },
+      where,
+    });
+  }
+
   async getOne(id: string) {
     const data = await this.productRepository
       .findOne({
@@ -48,6 +62,14 @@ export class ProductService {
       });
 
     return data;
+  }
+
+  async getMoreByIds(ids: string[]) {
+    const data = await this.productRepository
+    .createQueryBuilder()
+    .where("id IN(:...ids)", { ids })
+    .getMany();
+    return data
   }
 
   async deleteOne(id: string) {

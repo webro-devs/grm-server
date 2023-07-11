@@ -1,6 +1,6 @@
 import { IsBoolean, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-class CreateClientOrderDto {
+class UpdateClientOrderDto {
   @ApiProperty({
     description: `name`,
     example: 'John Doe',
@@ -98,4 +98,4 @@ class CreateClientOrderDto {
   readonly user: string;
 }
 
-export default CreateClientOrderDto;
+export default UpdateClientOrderDto;

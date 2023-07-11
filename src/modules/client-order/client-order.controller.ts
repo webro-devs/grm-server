@@ -84,6 +84,19 @@ export class ClientOrderController {
     return await this.clientRequestService.change(data, id);
   }
 
+  @Patch('/is-active/:id')
+  @ApiOperation({ summary: 'Method: updating client order isActive' })
+  @ApiOkResponse({
+    description: 'Client order isActive property was changed',
+  })
+  @HttpCode(HttpStatus.OK)
+  async changeIsActive(
+    @Body() { isActive },
+    @Param('id') id: string,
+  ): Promise<UpdateResult> {
+    return await this.clientRequestService.changeIsActive(id, isActive);
+  }
+
   @Delete('/:id')
   @ApiOperation({ summary: 'Method: deleting order request' })
   @ApiOkResponse({
