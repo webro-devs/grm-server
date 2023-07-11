@@ -19,7 +19,7 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdateClientDto, UpdateUserDto } from './dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { PaginationDto } from '../../infra/shared/dto';
@@ -71,6 +71,17 @@ export class UserController {
     return await this.userService.create(data);
   }
 
+  @Public()
+  @Post('/client')
+  @ApiOperation({ summary: 'Method: creates new client' })
+  @ApiCreatedResponse({
+    description: 'The client was created successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async createClient(@Body() data: { login: string; password: string }) {
+    return await this.userService.createClient(data);
+  }
+
   @Patch('/:id')
   @ApiOperation({ summary: 'Method: updating user' })
   @ApiOkResponse({
@@ -82,6 +93,19 @@ export class UserController {
     @Param('id') id: string,
   ): Promise<UpdateResult> {
     return await this.userService.change(positionData, id);
+  }
+
+  @Patch('/client/:id')
+  @ApiOperation({ summary: 'Method: updating client' })
+  @ApiOkResponse({
+    description: 'Client was changed',
+  })
+  @HttpCode(HttpStatus.OK)
+  async changeClient(
+    @Body() data: UpdateClientDto,
+    @Param('id') id: string,
+  ): Promise<UpdateResult> {
+    return await this.userService.updateClient(id, data);
   }
 
   @Delete('/:id')

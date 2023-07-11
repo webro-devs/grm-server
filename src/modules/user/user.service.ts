@@ -17,10 +17,11 @@ import {
 } from 'nestjs-typeorm-paginate';
 
 import { User } from './user.entity';
-import { CreateUserDto, UpdateUserDto } from './dto';
-import { idGenerator } from 'src/infra/helpers';
+import { CreateUserDto, UpdateClientDto, UpdateUserDto } from './dto';
+import { hashPassword, idGenerator } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 import { PositionService } from '../position/position.service';
+import { UserRoleEnum } from '../../infra/shared/enum';
 
 Injectable();
 export class UserService {
@@ -97,43 +98,33 @@ export class UserService {
   }
 
   async create(data: CreateUserDto) {
-    const user = new User();
-    user.login = idGenerator();
-    user.role = data.role;
-    user.filial = data.filial
+    const login = idGenerator();
+    const filial = data.filial
       ? await this.filialService.getOne(data.filial)
       : null;
-    user.position = await this.positionService.getOne(data.position);
-    await user.hashPassword(user.login);
-    await this.connection.transaction(async (manager: EntityManager) => {
-      await manager.save(user);
+    const position = await this.positionService.getOne(data.position);
+    const password = await hashPassword(login);
+    const user = this.userRepository.create({
+      ...data,
+      login,
+      filial,
+      position,
+      password,
     });
-    return user.login;
+    return await this.userRepository.save(user);
   }
 
-  async createClient(data: CreateUserDto) {
-    const user = new User();
-
-    user.login = idGenerator();
-    user.role = 0;
-
-    user.filial = data.filial
-      ? await this.filialService.getOne(data.filial)
-      : null;
-
-    user.position = await this.positionService.getOne(data.position);
-    await user.hashPassword(user.password);
-
-    user.firstName = data.firstName;
-    user.lastName = data.lastName;
-
-    user.email = data.email;
-    user.phone = data.phone;
-
-    await this.connection.transaction(async (manager: EntityManager) => {
-      await manager.save(user);
+  async createClient(data: { login: string; password: string }) {
+    data.password = await hashPassword(data.password);
+    const user = this.userRepository.create({
+      ...data,
+      role: UserRoleEnum.CLIENT,
     });
+    return await this.userRepository.save(user);
+  }
 
-    return user.login;
+  async updateClient(id: string, value: UpdateClientDto) {
+    const response = await this.userRepository.update({ id }, { ...value });
+    return response;
   }
 }
