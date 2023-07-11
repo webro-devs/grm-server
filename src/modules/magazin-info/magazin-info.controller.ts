@@ -63,6 +63,7 @@ export class MagazinInfoController {
   }
 
   @Patch('/:id')
+  @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: updating magazin info' })
   @ApiOkResponse({
     description: 'magazin info was changed',
@@ -76,6 +77,7 @@ export class MagazinInfoController {
   }
 
   @Delete('/:id')
+  @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: deleting magazin info' })
   @ApiOkResponse({
     description: 'magazin info was deleted',

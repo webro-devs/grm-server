@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { MagazinInfo } from './magazin-info.entity';
 import { MagazinInfoService } from './magazin-info.service';
-import { MagazinInfoController } from './magazin.info.controller';
+import { MagazinInfoController } from './magazin-info.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([MagazinInfo])],

@@ -115,7 +115,7 @@ export class UserService {
     const user = new User();
 
     user.login = idGenerator();
-    user.role = data.role;
+    user.role = 0;
 
     user.filial = data.filial
       ? await this.filialService.getOne(data.filial)

@@ -52,6 +52,16 @@ export class OrderController {
     return this.orderService.getById(id);
   }
 
+  @Get('order-by-kassa/:id')
+  @ApiOperation({ summary: 'Method: returns single order by id' })
+  @ApiOkResponse({
+    description: 'The order was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getOrderByKassa(@Param('id') id: string) {
+    return this.orderService.getByKassa(id);
+  }
+
   @Post('/')
   @ApiOperation({ summary: 'Method: creates new order' })
   @ApiCreatedResponse({
