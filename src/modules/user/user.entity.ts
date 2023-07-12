@@ -2,6 +2,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -14,6 +16,7 @@ import { Cashflow } from '../cashflow/cashflow.entity';
 import { Filial } from '../filial/filial.entity';
 import { Action } from '../action/action.entity';
 import { ClientOrder } from '../client-order/client-order.entity';
+import { Product } from '../product/product.entity';
 
 @Entity('users')
 export class User {
@@ -73,6 +76,12 @@ export class User {
 
   @OneToMany(() => ClientOrder, (clientOrder) => clientOrder.user)
   clientOrders: ClientOrder[];
+
+  @ManyToMany(() => Product, (product) => product.favoriteUsers, {
+    onDelete: 'CASCADE',
+  })
+  @JoinTable()
+  favoriteProducts: Product[];
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);

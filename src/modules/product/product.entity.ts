@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -11,6 +12,7 @@ import { Filial } from '../filial/filial.entity';
 import { Partiya } from '../partiya/partiya.entity';
 import { Model } from '../model/model.entity';
 import { File } from '../file/file.entity';
+import { User } from '../user/user.entity';
 
 @Entity('product')
 export class Product {
@@ -59,21 +61,6 @@ export class Product {
   @Column({ type: 'boolean', default: false })
   isInternetShop: boolean = false;
 
-  @OneToMany(() => Order, (order) => order.product)
-  orders: Order[];
-
-  @ManyToOne(() => Filial, (filial) => filial.products)
-  @JoinColumn()
-  filial: Filial;
-
-  @ManyToOne(() => Model, (model) => model.products)
-  @JoinColumn()
-  model: Model;
-
-  @ManyToOne(() => Partiya, (partiya) => partiya.products)
-  @JoinColumn()
-  partiya: Partiya;
-
   @Column({ nullable: true, type: 'varchar' })
   weight: string;
 
@@ -94,6 +81,27 @@ export class Product {
 
   @Column({ nullable: true, type: 'varchar' })
   dorsalMaterial: string;
+
+  @OneToMany(() => Order, (order) => order.product)
+  orders: Order[];
+
+  @ManyToOne(() => Filial, (filial) => filial.products)
+  @JoinColumn()
+  filial: Filial;
+
+  @ManyToOne(() => Model, (model) => model.products)
+  @JoinColumn()
+  model: Model;
+
+  @ManyToOne(() => Partiya, (partiya) => partiya.products)
+  @JoinColumn()
+  partiya: Partiya;
+
+  @ManyToMany(() => User, (user) => user.favoriteProducts, {
+    onDelete: 'CASCADE',
+    cascade: true,
+  })
+  favoriteUsers: User[];
 
   public setTotalSize() {
     this.totalSize = +this.x * +this.y * this.count;

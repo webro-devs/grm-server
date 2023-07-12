@@ -6,9 +6,15 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { FilialModule } from '../filial/filial.module';
 import { PositionModule } from '../position/position.module';
+import { ProductModule } from '../product/product.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), FilialModule, PositionModule],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    FilialModule,
+    PositionModule,
+    ProductModule,
+  ],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

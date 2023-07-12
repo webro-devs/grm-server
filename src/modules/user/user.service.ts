@@ -27,6 +27,7 @@ import { hashPassword, idGenerator } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 import { PositionService } from '../position/position.service';
 import { UserRoleEnum } from '../../infra/shared/enum';
+import { ProductService } from '../product/product.service';
 
 Injectable();
 export class UserService {
@@ -34,8 +35,8 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly filialService: FilialService,
-    private readonly connection: DataSource,
     private readonly positionService: PositionService,
+    private readonly productService:ProductService
   ) {}
 
   async getAll(
@@ -61,6 +62,22 @@ export class UserService {
     return data;
   }
 
+  async getClientById(id: string) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: {
+        clientOrders: true,
+        favoriteProducts:{
+          model:{
+            collection:true
+          }
+        }
+      },
+    });
+
+    return user;
+  }
+
   async getUsersWithSelling(id: string) {
     const data = await this.userRepository.find({
       where: { filial: { id } },
@@ -83,6 +100,21 @@ export class UserService {
       });
 
     return data;
+  }
+
+  async addFavoriteProduct(userId:string,productId:string){
+    const user = await this.userRepository.findOne({where:{id:userId},relations:{favoriteProducts:true}})
+    const product = await this.productService.getOne(productId)
+    user.favoriteProducts.push(product)
+    await this.userRepository.save(user)
+    return user
+  }
+
+  async removeFavoriteProduct(userId:string,productId:string){
+    const user = await this.userRepository.findOne({where:{id:userId},relations:{favoriteProducts:true}})
+    user.favoriteProducts = user.favoriteProducts.length ? user.favoriteProducts.filter(p=> p.id != productId) : []
+    await this.userRepository.save(user)
+    return user
   }
 
   async deleteOne(id: string) {
