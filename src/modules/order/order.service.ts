@@ -23,6 +23,7 @@ import { UpdateProductDto } from '../product/dto';
 import { ProductService } from '../product/product.service';
 import { KassaService } from '../kassa/kassa.service';
 import { ActionService } from '../action/action.service';
+import { OrderEnum } from 'src/infra/shared/enum';
 
 Injectable();
 export class OrderService {
@@ -189,7 +190,7 @@ export class OrderService {
     const response = await this.orderRepository
       .createQueryBuilder()
       .update()
-      .set({ isActive: true, casher } as unknown as Order)
+      .set({ isActive: OrderEnum.Accept, casher } as unknown as Order)
       .where('id = :id', { id })
       .execute();
 
@@ -208,11 +209,14 @@ export class OrderService {
       relations: { product: true },
     });
 
-    const response = await this.productService.change(
+    await this.productService.change(
       { count: data.product.count + data.count } as UpdateProductDto,
       data.product.id,
     );
 
-    return response;
+    return await this.orderRepository.update(
+      { id },
+      { isActive: OrderEnum.Reject },
+    );
   }
 }
