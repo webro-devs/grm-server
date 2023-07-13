@@ -23,6 +23,9 @@ export class Cashflow {
   @Column('varchar')
   comment: string;
 
+  @Column('varchar')
+  title: string;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;
 

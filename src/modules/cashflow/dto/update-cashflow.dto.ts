@@ -35,6 +35,14 @@ class UpdateCashflowDto {
   readonly comment: string;
 
   @ApiProperty({
+    description: `title`,
+    example: 'прочее',
+  })
+  @IsOptional()
+  @IsString()
+  readonly title: string;
+
+  @ApiProperty({
     description: `kassa id`,
     example: 'uuid',
   })
