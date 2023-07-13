@@ -6,6 +6,7 @@ import {
   IsBoolean,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { OrderEnum } from 'src/infra/shared/enum';
 class CreateOrderDto {
   @ApiProperty({
     description: `seller id`,

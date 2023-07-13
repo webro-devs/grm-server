@@ -1,9 +1,9 @@
+import { OrderEnum } from 'src/infra/shared/enum';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Kassa } from '../kassa/kassa.entity';
@@ -15,8 +15,8 @@ export class Order {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'boolean', default: false })
-  isActive: boolean;
+  @Column({ type: 'varchar', default: OrderEnum.Progress })
+  isActive: string;
 
   @Column({ type: 'decimal' })
   price: number;
