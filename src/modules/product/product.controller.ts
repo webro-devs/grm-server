@@ -109,19 +109,6 @@ export class ProductController {
     return await this.productService.create(data);
   }
 
-  @Patch('/:id')
-  @ApiOperation({ summary: 'Method: updating product' })
-  @ApiOkResponse({
-    description: 'Product was changed',
-  })
-  @HttpCode(HttpStatus.OK)
-  async changeData(
-    @Body() positionData: UpdateProductDto,
-    @Param('id') id: string,
-  ): Promise<UpdateResult> {
-    return await this.productService.change(positionData, id);
-  }
-
   @Patch('/internet-product-status')
   @Roles(UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.BOSS)
   @ApiOperation({ summary: 'Method: updating product isInternetShop' })
@@ -136,6 +123,19 @@ export class ProductController {
       ids,
       isInternetProduct,
     );
+  }
+
+  @Patch('/:id')
+  @ApiOperation({ summary: 'Method: updating product' })
+  @ApiOkResponse({
+    description: 'Product was changed',
+  })
+  @HttpCode(HttpStatus.OK)
+  async changeData(
+    @Body() positionData: UpdateProductDto,
+    @Param('id') id: string,
+  ): Promise<UpdateResult> {
+    return await this.productService.change(positionData, id);
   }
 
   @Put('/internet-product/:id')
