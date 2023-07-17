@@ -82,6 +82,9 @@ export class OrderService {
       if (order.isPlasticPayment) {
         kassa.plasticSum = +kassa.plasticSum - order.price;
       }
+      kassa.additionalProfitTotalSum =
+        +kassa.additionalProfitTotalSum - order.additionalProfitSum;
+      kassa.netProfitTotalSum = +kassa.netProfitTotalSum - order.netProfitSum;
       await this.saveRepo(kassa);
     }
 
@@ -109,6 +112,8 @@ export class OrderService {
         const diff = order.count - value.count;
         product.count += diff;
         await this.saveRepo(product);
+        value.netProfitSum =
+          value.count * (+product.price - +product.comingPrice);
 
         if (order.isActive) {
           kassa.totalSize =
@@ -118,12 +123,24 @@ export class OrderService {
             +kassa.totalSize +
             value.count * (+order.product.x * +order.product.y);
 
+          kassa.netProfitTotalSum =
+            +kassa.netProfitTotalSum - order.netProfitSum;
+          kassa.netProfitTotalSum =
+            +kassa.netProfitTotalSum + value.netProfitSum;
+
+          value.additionalProfitSum =
+            value.price - +product.price * value.count;
+
           await this.saveRepo(kassa);
         }
       }
       if (order.isActive && value.price) {
         kassa.totalSum = +kassa.totalSum - order.price;
         kassa.totalSum = +kassa.totalSum + value.price;
+        kassa.additionalProfitTotalSum =
+          +kassa.additionalProfitTotalSum - order.additionalProfitSum;
+        kassa.additionalProfitTotalSum =
+          +kassa.additionalProfitTotalSum + value.additionalProfitSum;
         if (order.isPlasticPayment) {
           kassa.plasticSum = +kassa.plasticSum - order.price;
           kassa.plasticSum = +kassa.plasticSum + value.price;
@@ -197,12 +214,6 @@ export class OrderService {
     return response;
   }
 
-  async saveRepo(data: any) {
-    await this.connection.transaction(async (manager: EntityManager) => {
-      await manager.save(data);
-    });
-  }
-
   async rejectOrder(id: string) {
     const data = await this.orderRepository.findOne({
       where: { id },
@@ -218,5 +229,11 @@ export class OrderService {
       { id },
       { isActive: OrderEnum.Reject },
     );
+  }
+
+  async saveRepo(data: any) {
+    await this.connection.transaction(async (manager: EntityManager) => {
+      await manager.save(data);
+    });
   }
 }

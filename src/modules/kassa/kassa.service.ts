@@ -121,12 +121,28 @@ export class KassaService {
       const comingSum = data.map((d) => +d.totalSum).reduce((a, b) => a + b);
       const goingSum = data.map((d) => +d.expenditure).reduce((a, b) => a + b);
       const sellingSize = data.map((d) => +d.totalSize).reduce((a, b) => a + b);
+      const cashFlowSum = data
+        .map((d) => +d.cashFlowSum)
+        .reduce((a, b) => a + b);
       const additionalProfitTotalSum = data
         .map((d) => +d.additionalProfitTotalSum)
         .reduce((a, b) => a + b);
-      return { comingSum, goingSum, sellingSize, additionalProfitTotalSum };
+
+      return {
+        comingSum,
+        goingSum,
+        sellingSize,
+        additionalProfitTotalSum,
+        cashFlowSum,
+      };
     } else {
-      return { comingSum: 0, goingSum: 0, sellingSize: 0 };
+      return {
+        comingSum: 0,
+        goingSum: 0,
+        sellingSize: 0,
+        additionalProfitTotalSum: 0,
+        cashFlowSum: 0,
+      };
     }
   }
 

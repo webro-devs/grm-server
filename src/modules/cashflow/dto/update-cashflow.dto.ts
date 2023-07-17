@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { CashFlowEnum } from '../../../infra/shared/enum';
 class UpdateCashflowDto {
@@ -14,7 +14,7 @@ class UpdateCashflowDto {
     description: `type`,
     example: 'Приход',
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   readonly type: CashFlowEnum;
 

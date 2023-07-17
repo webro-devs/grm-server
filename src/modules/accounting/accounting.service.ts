@@ -24,8 +24,13 @@ export class AccountingService {
       where.filial = {
         id: filial.id,
       };
-      const { comingSum, goingSum, sellingSize, additionalProfitTotalSum } =
-        await this.kassaService.kassaSumByFilialAndRange(where);
+      const {
+        comingSum,
+        goingSum,
+        sellingSize,
+        additionalProfitTotalSum,
+        cashFlowSum,
+      } = await this.kassaService.kassaSumByFilialAndRange(where);
       const { remainingSize, remainingSum } =
         await this.productService.remainingProducts({
           filial: { id: filial.id },
@@ -36,9 +41,10 @@ export class AccountingService {
         remainingSize,
         remainingSum,
         sellingSize,
-        kassaSum: 0,
-        sellingSum: comingSum,
+        kassaSum: comingSum - additionalProfitTotalSum - cashFlowSum,
+        sellingSum: comingSum - cashFlowSum,
         goingSum,
+        cashFlowSum,
         profit: 0,
       });
     }

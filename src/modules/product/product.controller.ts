@@ -122,7 +122,7 @@ export class ProductController {
     return await this.productService.change(positionData, id);
   }
 
-  @Patch('/internet-product-status/:id')
+  @Patch('/internet-product-status')
   @Roles(UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.BOSS)
   @ApiOperation({ summary: 'Method: updating product isInternetShop' })
   @ApiOkResponse({
@@ -130,11 +130,10 @@ export class ProductController {
   })
   @HttpCode(HttpStatus.OK)
   async changeInternetProductStatus(
-    @Body() { isInternetProduct },
-    @Param('id') id: string,
+    @Body() { isInternetProduct, ids },
   ): Promise<UpdateResult> {
     return await this.productService.changeIsInternetShop(
-      id,
+      ids,
       isInternetProduct,
     );
   }

@@ -40,6 +40,9 @@ class UpdateOrderDto {
   @IsOptional()
   @IsString()
   readonly date: string;
+
+  additionalProfitSum: number;
+  netProfitSum: number;
 }
 
 export default UpdateOrderDto;
