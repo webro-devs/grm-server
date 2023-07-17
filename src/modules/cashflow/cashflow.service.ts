@@ -45,13 +45,16 @@ export class CashflowService {
     const kassa = await this.kassaService.getById(cashflow.kassa.id);
     if (cashflow.type == CashFlowEnum.InCome) {
       kassa.totalSum = +kassa.totalSum - cashflow.price;
+      kassa.cashFlowSum = +kassa.cashFlowSum - cashflow.price;
     }
     if (cashflow.type == CashFlowEnum.Consumption) {
       kassa.expenditure = +kassa.expenditure - cashflow.price;
     }
+
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(kassa);
     });
+
     const response = await this.cashflowRepository.delete(id).catch(() => {
       throw new NotFoundException('data not found');
     });
@@ -66,9 +69,12 @@ export class CashflowService {
         if (cashflow.type == CashFlowEnum.InCome) {
           kassa.totalSum = +kassa.totalSum - cashflow.price;
           kassa.totalSum = +kassa.totalSum + value.price;
+          kassa.cashFlowSum = +kassa.cashFlowSum - cashflow.price;
+          kassa.cashFlowSum = +kassa.cashFlowSum + value.price;
         } else {
           kassa.expenditure = +kassa.expenditure - cashflow.price;
           kassa.totalSum = +kassa.totalSum + value.price;
+          kassa.cashFlowSum = +kassa.cashFlowSum + value.price;
         }
       }
       if (value.type == CashFlowEnum.Consumption) {
@@ -77,6 +83,7 @@ export class CashflowService {
           kassa.expenditure = +kassa.expenditure + value.price;
         } else {
           kassa.totalSum = +kassa.totalSum - cashflow.price;
+          kassa.cashFlowSum = +kassa.cashFlowSum - cashflow.price;
           kassa.expenditure = +kassa.expenditure + value.price;
         }
       }
@@ -106,6 +113,7 @@ export class CashflowService {
     const kassa = await this.kassaService.getById(value.kassa);
     if (value.type == CashFlowEnum.InCome) {
       kassa.totalSum = +kassa.totalSum + value.price;
+      kassa.cashFlowSum = +kassa.cashFlowSum + value.price;
     }
     if (value.type == CashFlowEnum.Consumption) {
       kassa.expenditure = +kassa.expenditure + value.price;
