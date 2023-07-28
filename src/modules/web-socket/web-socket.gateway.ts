@@ -38,16 +38,16 @@ export class GRMGateway implements OnGatewayInit {
     console.log(client.id);
   }
 
-  @SubscribeMessage('orderedProduct')
+  @SubscribeMessage('ordered-product')
   async orderProduct(
     @MessageBody() body: { orderId: string; filialId: string },
   ) {
     const order = await this.orderService.getById(body.orderId);
     const kassa = await this.kassaService.GetOpenKassa(body.filialId);
-    kassa?.['id'] ? this.server.to(kassa['id']).emit('order', order) : null;
+    kassa?.['id'] ? this.server.to(kassa['id']).emit('get-order', order) : null;
   }
 
-  @SubscribeMessage('checkOrder')
+  @SubscribeMessage('check-order')
   async sendKassaSum(
     @MessageBody() body: { kassaId: string; orderId: string },
   ) {
@@ -69,8 +69,13 @@ export class GRMGateway implements OnGatewayInit {
     this.server.emit('transfer', transfer);
   }
 
-  @SubscribeMessage('joinRoom')
-  handleJoinRoom(client: Socket, roomName: string) {
-    client.join(roomName);
+  @SubscribeMessage('join-room')
+  handleJoinRoom(client: Socket, room: string) {
+    client.join(room);
+  }
+
+  @SubscribeMessage('leave-room')
+  handleLeaveRoom(client: Socket, room: string) {
+    client.leave(room);
   }
 }

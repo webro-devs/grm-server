@@ -21,7 +21,11 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 
-import { CreateProductDto, UpdateProductDto } from './dto';
+import {
+  CreateProductDto,
+  UpdateMagazinProductDto,
+  UpdateProductDto,
+} from './dto';
 import { Product } from './product.entity';
 import { ProductService } from './product.service';
 import { ProductQueryDto } from '../../infra/shared/dto';
@@ -146,7 +150,7 @@ export class ProductController {
   })
   @HttpCode(HttpStatus.OK)
   async changeInternetProduct(
-    @Body() { data },
+    @Body() data: UpdateMagazinProductDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
     return await this.productService.changeMagazinProduct(data, id);

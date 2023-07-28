@@ -52,7 +52,6 @@ export class AccountingController {
     }
   }
 
-  @Public()
   @Get('/internet-shop/by-range')
   @ApiOperation({ summary: 'Method: returns kassa accounting for all filial' })
   @ApiOkResponse({

@@ -23,7 +23,7 @@ export class Cashflow {
   @Column('varchar')
   comment: string;
 
-  @Column('varchar')
+  @Column('varchar', { nullable: true })
   title: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
