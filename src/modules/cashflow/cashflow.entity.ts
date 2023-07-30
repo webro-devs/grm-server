@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Kassa } from '../kassa/kassa.entity';
 import { User } from '../user/user.entity';
+import { CashflowExpenditureEnum } from '../../infra/shared/enum';
 
 @Entity('cashflow')
 export class Cashflow {
@@ -24,7 +25,7 @@ export class Cashflow {
   comment: string;
 
   @Column('varchar', { nullable: true })
-  title: string;
+  title: CashflowExpenditureEnum;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;

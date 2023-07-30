@@ -36,9 +36,10 @@ class CreateCashflowDto {
 
   @ApiProperty({
     description: `title`,
-    example: 'прочее',
+    example: 'Магазин Расход',
+    required: false,
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly title: string;
 

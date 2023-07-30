@@ -36,7 +36,7 @@ class UpdateCashflowDto {
 
   @ApiProperty({
     description: `title`,
-    example: 'прочее',
+    example: 'Босс Расход',
   })
   @IsOptional()
   @IsString()

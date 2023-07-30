@@ -43,7 +43,10 @@ export class Kassa {
   cashFlowSum: number;
 
   @Column({ type: 'decimal', default: 0, nullable: true })
-  expenditure: number;
+  expenditureBoss: number;
+
+  @Column({ type: 'decimal', default: 0, nullable: true })
+  expenditureShop: number;
 
   @ManyToOne(() => Filial, (filial) => filial.kassa)
   @JoinColumn()

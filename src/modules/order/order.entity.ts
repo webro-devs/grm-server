@@ -36,8 +36,8 @@ export class Order {
   @Column({ type: 'decimal', nullable: true })
   discountPercentage: number;
 
-  @Column({ type: 'boolean', default: false })
-  isPlasticPayment: boolean;
+  @Column({ type: 'decimal', default: 0 })
+  plasticSum: number;
 
   @ManyToOne(() => User, (user) => user.sellerOrders)
   @JoinColumn()

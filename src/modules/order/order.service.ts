@@ -79,9 +79,9 @@ export class OrderService {
       kassa.totalSum = +kassa.totalSum - order.price;
       kassa.totalSize =
         +kassa.totalSize - order.count * (+order.product.x * +order.product.y);
-      if (order.isPlasticPayment) {
-        kassa.plasticSum = +kassa.plasticSum - order.price;
-      }
+
+      kassa.plasticSum = +kassa.plasticSum - order.plasticSum;
+
       kassa.additionalProfitTotalSum =
         +kassa.additionalProfitTotalSum - order.additionalProfitSum;
       kassa.netProfitTotalSum = +kassa.netProfitTotalSum - order.netProfitSum;
@@ -107,44 +107,39 @@ export class OrderService {
       });
       const kassa = await this.kassaService.getById(order.kassa.id);
 
-      if (value.count) {
-        const product = order.product;
-        const diff = order.count - value.count;
-        product.count += diff;
-        await this.saveRepo(product);
-        value.netProfitSum =
-          value.count * (+product.price - +product.comingPrice);
+      const product = order.product;
+      const diff = order.count - value.count;
+      product.count += diff;
+      product.setTotalSize();
+      await this.saveRepo(product);
 
-        if (order.isActive) {
-          kassa.totalSize =
-            +kassa.totalSize -
-            order.count * (+order.product.x * +order.product.y);
-          kassa.totalSize =
-            +kassa.totalSize +
-            value.count * (+order.product.x * +order.product.y);
+      value.netProfitSum =
+        value.count * (+product.price - +product.comingPrice);
 
-          kassa.netProfitTotalSum =
-            +kassa.netProfitTotalSum - order.netProfitSum;
-          kassa.netProfitTotalSum =
-            +kassa.netProfitTotalSum + value.netProfitSum;
+      value.additionalProfitSum = value.price - +product.price * value.count;
 
-          value.additionalProfitSum =
-            value.price - +product.price * value.count;
-
-          await this.saveRepo(kassa);
-        }
-      }
-      if (order.isActive && value.price) {
+      if (order.isActive) {
         kassa.totalSum = +kassa.totalSum - order.price;
         kassa.totalSum = +kassa.totalSum + value.price;
+
+        kassa.totalSize =
+          +kassa.totalSize - order.count * (+product.x * +product.y);
+        kassa.totalSize =
+          +kassa.totalSize + value.count * (+product.x * +product.y);
+
+        kassa.netProfitTotalSum = +kassa.netProfitTotalSum - order.netProfitSum;
+        kassa.netProfitTotalSum = +kassa.netProfitTotalSum + value.netProfitSum;
+
         kassa.additionalProfitTotalSum =
           +kassa.additionalProfitTotalSum - order.additionalProfitSum;
         kassa.additionalProfitTotalSum =
           +kassa.additionalProfitTotalSum + value.additionalProfitSum;
-        if (order.isPlasticPayment) {
-          kassa.plasticSum = +kassa.plasticSum - order.price;
-          kassa.plasticSum = +kassa.plasticSum + value.price;
+
+        if (value.plasticSum) {
+          kassa.plasticSum = +kassa.plasticSum - order.plasticSum;
+          kassa.plasticSum = +kassa.plasticSum + value.plasticSum;
         }
+
         await this.saveRepo(kassa);
       }
     }
@@ -198,9 +193,7 @@ export class OrderService {
     kassa.additionalProfitTotalSum =
       +kassa.additionalProfitTotalSum + +order.additionalProfitSum;
 
-    if (order.isPlasticPayment) {
-      kassa.plasticSum = +kassa.plasticSum + +order.price;
-    }
+    kassa.plasticSum = +kassa.plasticSum + +order.plasticSum;
 
     await this.saveRepo(kassa);
 

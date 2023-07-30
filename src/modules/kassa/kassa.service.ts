@@ -107,7 +107,7 @@ export class KassaService {
       where: { id },
     });
     const comingSum = +data.totalSum;
-    const goingSum = +data.expenditure;
+    const goingSum = +data.expenditureBoss + Number(data.expenditureShop);
     const sellingSize = +data.totalSize;
     return { comingSum, goingSum, sellingSize };
   }
@@ -119,7 +119,12 @@ export class KassaService {
 
     if (data.length) {
       const comingSum = data.map((d) => +d.totalSum).reduce((a, b) => a + b);
-      const goingSum = data.map((d) => +d.expenditure).reduce((a, b) => a + b);
+      const goingSumBoss = data
+        .map((d) => +d.expenditureBoss)
+        .reduce((a, b) => a + b);
+      const goingSumShop = data
+        .map((d) => +d.expenditureShop)
+        .reduce((a, b) => a + b);
       const sellingSize = data.map((d) => +d.totalSize).reduce((a, b) => a + b);
       const cashFlowSum = data
         .map((d) => +d.cashFlowSum)
@@ -128,20 +133,26 @@ export class KassaService {
         .map((d) => +d.additionalProfitTotalSum)
         .reduce((a, b) => a + b);
 
+      const plasticSum = data.map((d) => +d.plasticSum).reduce((a, b) => a + b);
+
       return {
         comingSum,
-        goingSum,
+        goingSumBoss,
+        goingSumShop,
         sellingSize,
         additionalProfitTotalSum,
         cashFlowSum,
+        plasticSum,
       };
     } else {
       return {
         comingSum: 0,
-        goingSum: 0,
+        goingSumBoss: 0,
+        goingSumShop: 0,
         sellingSize: 0,
         additionalProfitTotalSum: 0,
         cashFlowSum: 0,
+        plasticSum: 0,
       };
     }
   }
@@ -153,9 +164,16 @@ export class KassaService {
       where.filial = {
         id: filial.id,
       };
-      const { comingSum, goingSum, sellingSize } =
+      const { comingSum, goingSumShop, goingSumBoss, sellingSize, plasticSum } =
         await this.kassaSumByFilialAndRange(where);
-      result.push({ ...filial, comingSum, goingSum, sellingSize });
+      result.push({
+        ...filial,
+        comingSum,
+        goingSumShop,
+        goingSumBoss,
+        sellingSize,
+        plasticSum,
+      });
     }
     return result;
   }

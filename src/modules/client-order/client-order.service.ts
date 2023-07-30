@@ -90,9 +90,9 @@ export class ClientOrderService {
   async getInternetShopSumByRange(where) {
     const data = await this.clientOrder.find({ where });
     const sum = data?.length
-      ? data.map(c=>Number(c.totalPrice)).reduce((a, b) => a + b)
+      ? data.map((c) => Number(c.totalPrice)).reduce((a, b) => a + b)
       : 0;
 
-    return sum
+    return sum;
   }
 }

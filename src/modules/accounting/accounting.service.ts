@@ -26,7 +26,8 @@ export class AccountingService {
       };
       const {
         comingSum,
-        goingSum,
+        goingSumBoss,
+        goingSumShop,
         sellingSize,
         additionalProfitTotalSum,
         cashFlowSum,
@@ -43,7 +44,8 @@ export class AccountingService {
         sellingSize,
         kassaSum: comingSum - additionalProfitTotalSum - cashFlowSum,
         sellingSum: comingSum - cashFlowSum,
-        goingSum,
+        goingSumBoss,
+        goingSumShop,
         cashFlowSum,
         profit: 0,
       });

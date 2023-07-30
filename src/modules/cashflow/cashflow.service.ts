@@ -9,7 +9,7 @@ import { CreateCashflowDto, UpdateCashflowDto } from './dto';
 
 import { Cashflow } from './cashflow.entity';
 import { KassaService } from '../kassa/kassa.service';
-import { CashFlowEnum } from '../../infra/shared/enum';
+import { CashFlowEnum, CashflowExpenditureEnum } from '../../infra/shared/enum';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 
 Injectable();
@@ -48,7 +48,11 @@ export class CashflowService {
       kassa.cashFlowSum = +kassa.cashFlowSum - cashflow.price;
     }
     if (cashflow.type == CashFlowEnum.Consumption) {
-      kassa.expenditure = +kassa.expenditure - cashflow.price;
+      if (cashflow.title == CashflowExpenditureEnum.BOSS) {
+        kassa.expenditureBoss = +kassa.expenditureBoss - cashflow.price;
+      } else {
+        kassa.expenditureShop = +kassa.expenditureShop - cashflow.price;
+      }
     }
 
     await this.connection.transaction(async (manager: EntityManager) => {
@@ -72,19 +76,42 @@ export class CashflowService {
           kassa.cashFlowSum = +kassa.cashFlowSum - cashflow.price;
           kassa.cashFlowSum = +kassa.cashFlowSum + value.price;
         } else {
-          kassa.expenditure = +kassa.expenditure - cashflow.price;
+          if (cashflow.title == CashflowExpenditureEnum.BOSS) {
+            kassa.expenditureBoss = +kassa.expenditureBoss - cashflow.price;
+          } else {
+            kassa.expenditureShop = +kassa.expenditureShop - cashflow.price;
+          }
           kassa.totalSum = +kassa.totalSum + value.price;
           kassa.cashFlowSum = +kassa.cashFlowSum + value.price;
         }
       }
       if (value.type == CashFlowEnum.Consumption) {
         if (cashflow.type == CashFlowEnum.Consumption) {
-          kassa.expenditure = +kassa.expenditure - cashflow.price;
-          kassa.expenditure = +kassa.expenditure + value.price;
+          if (cashflow.title == CashflowExpenditureEnum.BOSS) {
+            if (value.title == CashflowExpenditureEnum.BOSS) {
+              kassa.expenditureBoss = +kassa.expenditureBoss - cashflow.price;
+              kassa.expenditureBoss = +kassa.expenditureBoss + value.price;
+            } else {
+              kassa.expenditureBoss = +kassa.expenditureBoss - cashflow.price;
+              kassa.expenditureShop = +kassa.expenditureShop + value.price;
+            }
+          } else {
+            if (value.title == CashflowExpenditureEnum.BOSS) {
+              kassa.expenditureShop = +kassa.expenditureShop - cashflow.price;
+              kassa.expenditureBoss = +kassa.expenditureBoss + value.price;
+            } else {
+              kassa.expenditureShop = +kassa.expenditureShop - cashflow.price;
+              kassa.expenditureShop = +kassa.expenditureShop + value.price;
+            }
+          }
         } else {
           kassa.totalSum = +kassa.totalSum - cashflow.price;
           kassa.cashFlowSum = +kassa.cashFlowSum - cashflow.price;
-          kassa.expenditure = +kassa.expenditure + value.price;
+          if (value.title == CashflowExpenditureEnum.BOSS) {
+            kassa.expenditureBoss = +kassa.expenditureBoss + value.price;
+          } else {
+            kassa.expenditureShop = +kassa.expenditureShop + value.price;
+          }
         }
       }
       await this.connection.transaction(async (manager: EntityManager) => {
@@ -116,7 +143,11 @@ export class CashflowService {
       kassa.cashFlowSum = +kassa.cashFlowSum + value.price;
     }
     if (value.type == CashFlowEnum.Consumption) {
-      kassa.expenditure = +kassa.expenditure + value.price;
+      if (value.title == CashflowExpenditureEnum.BOSS) {
+        kassa.expenditureBoss = +kassa.expenditureBoss + value.price;
+      } else {
+        kassa.expenditureShop = +kassa.expenditureShop + value.price;
+      }
     }
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(kassa);

@@ -18,12 +18,12 @@ class UpdateOrderDto {
   readonly price: number;
 
   @ApiProperty({
-    description: `isPlasticPayment`,
-    example: true,
+    description: `plasticSum`,
+    example: 1000,
   })
   @IsOptional()
-  @IsBoolean()
-  readonly isPlasticPayment: boolean;
+  @IsNumber()
+  readonly plasticSum: number;
 
   @ApiProperty({
     description: `price`,
