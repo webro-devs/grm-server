@@ -30,7 +30,8 @@ export class AccountingService {
         goingSumShop,
         sellingSize,
         additionalProfitTotalSum,
-        cashFlowSum,
+        cashFlowSumBoss,
+        cashFlowSumShop,
       } = await this.kassaService.kassaSumByFilialAndRange(where);
       const { remainingSize, remainingSum } =
         await this.productService.remainingProducts({
@@ -42,11 +43,10 @@ export class AccountingService {
         remainingSize,
         remainingSum,
         sellingSize,
-        kassaSum: comingSum - additionalProfitTotalSum - cashFlowSum,
-        sellingSum: comingSum - cashFlowSum,
+        kassaSum: comingSum - additionalProfitTotalSum + cashFlowSumBoss,
+        sellingSum: comingSum + cashFlowSumShop,
         goingSumBoss,
         goingSumShop,
-        cashFlowSum,
         profit: 0,
       });
     }

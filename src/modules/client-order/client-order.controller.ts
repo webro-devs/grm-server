@@ -40,6 +40,7 @@ export class ClientOrderController {
     return await this.clientRequestService.getAll({ ...query, route });
   }
 
+  @Public()
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single client order by id' })
   @ApiOkResponse({

@@ -11,6 +11,7 @@ import { Cashflow } from './cashflow.entity';
 import { KassaService } from '../kassa/kassa.service';
 import { CashFlowEnum, CashflowExpenditureEnum } from '../../infra/shared/enum';
 import { DataSource, EntityManager, Repository } from 'typeorm';
+import CashflowComingEnum from '../../infra/shared/enum/cashflow/cashflow-coming';
 
 Injectable();
 export class CashflowService {
@@ -45,7 +46,11 @@ export class CashflowService {
     const kassa = await this.kassaService.getById(cashflow.kassa.id);
     if (cashflow.type == CashFlowEnum.InCome) {
       kassa.totalSum = +kassa.totalSum - cashflow.price;
-      kassa.cashFlowSum = +kassa.cashFlowSum - cashflow.price;
+      if (cashflow.title == CashflowComingEnum.BOSS) {
+        kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss - cashflow.price;
+      } else {
+        kassa.cashFlowSumShop = +kassa.cashFlowSumShop - cashflow.price;
+      }
     }
     if (cashflow.type == CashFlowEnum.Consumption) {
       if (cashflow.title == CashflowExpenditureEnum.BOSS) {
@@ -73,8 +78,23 @@ export class CashflowService {
         if (cashflow.type == CashFlowEnum.InCome) {
           kassa.totalSum = +kassa.totalSum - cashflow.price;
           kassa.totalSum = +kassa.totalSum + value.price;
-          kassa.cashFlowSum = +kassa.cashFlowSum - cashflow.price;
-          kassa.cashFlowSum = +kassa.cashFlowSum + value.price;
+          if (cashflow.title == CashflowComingEnum.BOSS) {
+            if (value.title == CashflowComingEnum.BOSS) {
+              kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss - cashflow.price;
+              kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss + value.price;
+            } else {
+              kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss - cashflow.price;
+              kassa.cashFlowSumShop = +kassa.cashFlowSumShop + value.price;
+            }
+          } else {
+            if (value.title == CashflowComingEnum.BOSS) {
+              kassa.cashFlowSumShop = +kassa.cashFlowSumShop - cashflow.price;
+              kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss + value.price;
+            } else {
+              kassa.cashFlowSumShop = +kassa.cashFlowSumShop - cashflow.price;
+              kassa.cashFlowSumShop = +kassa.cashFlowSumShop + value.price;
+            }
+          }
         } else {
           if (cashflow.title == CashflowExpenditureEnum.BOSS) {
             kassa.expenditureBoss = +kassa.expenditureBoss - cashflow.price;
@@ -82,7 +102,11 @@ export class CashflowService {
             kassa.expenditureShop = +kassa.expenditureShop - cashflow.price;
           }
           kassa.totalSum = +kassa.totalSum + value.price;
-          kassa.cashFlowSum = +kassa.cashFlowSum + value.price;
+          if (value.title == CashflowComingEnum.BOSS) {
+            kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss + value.price;
+          } else {
+            kassa.cashFlowSumShop = +kassa.cashFlowSumShop + value.price;
+          }
         }
       }
       if (value.type == CashFlowEnum.Consumption) {
@@ -106,7 +130,11 @@ export class CashflowService {
           }
         } else {
           kassa.totalSum = +kassa.totalSum - cashflow.price;
-          kassa.cashFlowSum = +kassa.cashFlowSum - cashflow.price;
+          if (cashflow.title == CashflowComingEnum.BOSS) {
+            kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss - cashflow.price;
+          } else {
+            kassa.cashFlowSumShop = +kassa.cashFlowSumShop - cashflow.price;
+          }
           if (value.title == CashflowExpenditureEnum.BOSS) {
             kassa.expenditureBoss = +kassa.expenditureBoss + value.price;
           } else {
@@ -140,7 +168,11 @@ export class CashflowService {
     const kassa = await this.kassaService.getById(value.kassa);
     if (value.type == CashFlowEnum.InCome) {
       kassa.totalSum = +kassa.totalSum + value.price;
-      kassa.cashFlowSum = +kassa.cashFlowSum + value.price;
+      if (value.title == CashflowComingEnum.BOSS) {
+        kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss + value.price;
+      } else {
+        kassa.cashFlowSumShop = +kassa.cashFlowSumShop + value.price;
+      }
     }
     if (value.type == CashFlowEnum.Consumption) {
       if (value.title == CashflowExpenditureEnum.BOSS) {

@@ -13,6 +13,8 @@ import { Partiya } from '../partiya/partiya.entity';
 import { Model } from '../model/model.entity';
 import { File } from '../file/file.entity';
 import { User } from '../user/user.entity';
+import { ClientOrder } from '../client-order/client-order.entity';
+import { ColumnNumericTransformer } from '../../infra/helpers';
 
 @Entity('product')
 export class Product {
@@ -34,10 +36,20 @@ export class Product {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;
 
-  @Column({ nullable: true, type: 'decimal' })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   price: number;
 
-  @Column({ nullable: true, type: 'decimal' })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   comingPrice: number;
 
   @Column()
@@ -46,13 +58,28 @@ export class Product {
   @Column()
   size: string;
 
-  @Column({ nullable: true, type: 'decimal' })
+  @Column('numeric', {
+    nullable: true,
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+  })
   x: number;
 
-  @Column({ nullable: true, type: 'decimal' })
+  @Column('numeric', {
+    nullable: true,
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+  })
   y: number;
 
-  @Column({ nullable: true, type: 'decimal' })
+  @Column('numeric', {
+    nullable: true,
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+  })
   totalSize: number;
 
   @Column()
@@ -102,6 +129,9 @@ export class Product {
     cascade: true,
   })
   favoriteUsers: User[];
+
+  @OneToMany(() => ClientOrder, (clientOrder) => clientOrder.product)
+  clientOrders: ClientOrder[];
 
   public setTotalSize() {
     this.totalSize = +this.x * +this.y * this.count;

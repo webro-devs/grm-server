@@ -119,16 +119,25 @@ export class KassaService {
 
     if (data.length) {
       const comingSum = data.map((d) => +d.totalSum).reduce((a, b) => a + b);
+
       const goingSumBoss = data
         .map((d) => +d.expenditureBoss)
         .reduce((a, b) => a + b);
+
       const goingSumShop = data
         .map((d) => +d.expenditureShop)
         .reduce((a, b) => a + b);
+
       const sellingSize = data.map((d) => +d.totalSize).reduce((a, b) => a + b);
-      const cashFlowSum = data
-        .map((d) => +d.cashFlowSum)
+
+      const cashFlowSumBoss = data
+        .map((d) => +d.cashFlowSumBoss)
         .reduce((a, b) => a + b);
+
+      const cashFlowSumShop = data
+        .map((d) => +d.cashFlowSumShop)
+        .reduce((a, b) => a + b);
+
       const additionalProfitTotalSum = data
         .map((d) => +d.additionalProfitTotalSum)
         .reduce((a, b) => a + b);
@@ -141,7 +150,8 @@ export class KassaService {
         goingSumShop,
         sellingSize,
         additionalProfitTotalSum,
-        cashFlowSum,
+        cashFlowSumBoss,
+        cashFlowSumShop,
         plasticSum,
       };
     } else {
@@ -151,7 +161,8 @@ export class KassaService {
         goingSumShop: 0,
         sellingSize: 0,
         additionalProfitTotalSum: 0,
-        cashFlowSum: 0,
+        cashFlowSumBoss: 0,
+        cashFlowSumShop: 0,
         plasticSum: 0,
       };
     }

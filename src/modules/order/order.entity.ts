@@ -9,6 +9,7 @@ import {
 import { Kassa } from '../kassa/kassa.entity';
 import { Product } from '../product/product.entity';
 import { User } from '../user/user.entity';
+import { ColumnNumericTransformer } from '../../infra/helpers';
 
 @Entity('order')
 export class Order {
@@ -18,7 +19,12 @@ export class Order {
   @Column({ type: 'varchar', default: OrderEnum.Progress })
   isActive: string;
 
-  @Column({ type: 'decimal' })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   price: number;
 
   @Column({ type: 'int' })
@@ -27,16 +33,31 @@ export class Order {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;
 
-  @Column({ type: 'decimal', nullable: true })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   additionalProfitSum: number;
 
-  @Column({ type: 'decimal', nullable: true })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   netProfitSum: number;
 
   @Column({ type: 'decimal', nullable: true })
   discountPercentage: number;
 
-  @Column({ type: 'decimal', default: 0 })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   plasticSum: number;
 
   @ManyToOne(() => User, (user) => user.sellerOrders)

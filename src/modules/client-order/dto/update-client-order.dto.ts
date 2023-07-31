@@ -1,4 +1,4 @@
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class UpdateClientOrderDto {
   @ApiProperty({
@@ -82,20 +82,20 @@ class UpdateClientOrderDto {
   readonly date: string;
 
   @ApiProperty({
+    description: `count`,
+    example: 2,
+  })
+  @IsOptional()
+  @IsNumber()
+  readonly count: number;
+
+  @ApiProperty({
     description: `filial`,
     example: 'uuid',
   })
   @IsOptional()
   @IsString()
   readonly filial: string;
-
-  @ApiProperty({
-    description: `user`,
-    example: 'uuid',
-  })
-  @IsOptional()
-  @IsString()
-  readonly user: string;
 }
 
 export default UpdateClientOrderDto;

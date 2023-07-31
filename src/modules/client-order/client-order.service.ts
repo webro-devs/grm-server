@@ -12,6 +12,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProductService } from '../product/product.service';
 import { UserService } from '../user/user.service';
 import { FilialService } from '../filial/filial.service';
+import { KassaService } from '../kassa/kassa.service';
 
 @Injectable()
 export class ClientOrderService {
@@ -21,12 +22,13 @@ export class ClientOrderService {
     private readonly productService: ProductService,
     private readonly userService: UserService,
     private readonly filialService: FilialService,
+    private readonly kassaService: KassaService,
   ) {}
 
   async getAll(options: IPaginationOptions): Promise<Pagination<ClientOrder>> {
     return paginate<ClientOrder>(this.clientOrder, options, {
       relations: {
-        products: true,
+        product: true,
       },
     });
   }
@@ -39,6 +41,11 @@ export class ClientOrderService {
       .catch(() => {
         throw new NotFoundException('data not found');
       });
+
+    console.log(data.totalPrice);
+    console.log(typeof data.totalPrice);
+    console.log(typeof data.netProfitSum);
+    console.log(typeof data.additionalProfitSum);
 
     return data;
   }
@@ -65,26 +72,32 @@ export class ClientOrderService {
     return response;
   }
 
+  async checkOrder(id: string) {
+    const order = await this.getOne(id);
+  }
+
   async create(value: CreateClientOrderDto) {
     const user = (await this.userService.getOne(value.user)) || null;
     const filial = (await this.filialService.getOne(value.filial)) || null;
-    const products =
-      (await this.productService.getMoreByIds(value.order.map((o) => o.id))) ||
-      null;
-    let count = {};
-    for (let order of value.order) {
-      count[order.id] = order.count;
-    }
+    const order = value.order;
     delete value.order;
-    const data = this.clientOrder.create({
-      ...value,
-      user,
-      filial,
-      products,
-      count,
-    });
+    await Promise.all(
+      order.map(async (o) => {
+        const product = await this.productService.getOne(o.id);
+        const count = o.count;
+        const data = this.clientOrder.create({
+          ...value,
+          user,
+          filial,
+          product,
+          count,
+        });
 
-    return await this.clientOrder.save(data);
+        await this.clientOrder.save(data);
+      }),
+    );
+
+    return 'ok';
   }
 
   async getInternetShopSumByRange(where) {

@@ -10,6 +10,7 @@ import {
 import { Filial } from '../filial/filial.entity';
 import { User } from '../user/user.entity';
 import { Product } from '../product/product.entity';
+import { ColumnNumericTransformer } from '../../infra/helpers';
 
 @Entity('client_order')
 export class ClientOrder {
@@ -28,10 +29,20 @@ export class ClientOrder {
   @Column({ type: 'boolean' })
   delivery: boolean;
 
-  @Column({ type: 'decimal', default: 0 })
+  @Column('numeric', {
+    precision: 7,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   deliverySum: number;
 
-  @Column({ type: 'decimal', default: 0 })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   totalPrice: number;
 
   @Column({ type: 'varchar', nullable: true })
@@ -55,11 +66,30 @@ export class ClientOrder {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   startDate: string;
 
-  @Column('simple-json')
-  count;
+  @Column({ type: 'int' })
+  count: number;
+
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
+  additionalProfitSum: number;
+
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
+  netProfitSum: number;
 
   @Column({ type: 'boolean', default: false })
   isActive: boolean = false;
+
+  @Column({ type: 'boolean', default: false })
+  isChecked: boolean = false;
 
   @ManyToOne(() => Filial, (filial) => filial.clientOrders, {
     onDelete: 'SET NULL',
@@ -73,9 +103,9 @@ export class ClientOrder {
   @JoinColumn()
   user: User;
 
-  @ManyToMany(() => Product, (product) => product, {
+  @ManyToOne(() => Product, (product) => product, {
     onDelete: 'CASCADE',
   })
-  @JoinTable()
-  products: Product[];
+  @JoinColumn()
+  product: Product;
 }

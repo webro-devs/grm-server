@@ -7,6 +7,7 @@ import { ClientOrderController } from './client-order.controller';
 import { ProductModule } from '../product/product.module';
 import { UserModule } from '../user/user.module';
 import { FilialModule } from '../filial/filial.module';
+import { KassaModule } from '../kassa/kassa.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { FilialModule } from '../filial/filial.module';
     ProductModule,
     UserModule,
     FilialModule,
+    KassaModule,
   ],
   controllers: [ClientOrderController],
   providers: [ClientOrderService],
