@@ -37,15 +37,11 @@ export class ClientOrderService {
     const data = await this.clientOrder
       .findOne({
         where: { id },
+        relations: { product: true, filial: true },
       })
       .catch(() => {
         throw new NotFoundException('data not found');
       });
-
-    console.log(data.totalPrice);
-    console.log(typeof data.totalPrice);
-    console.log(typeof data.netProfitSum);
-    console.log(typeof data.additionalProfitSum);
 
     return data;
   }
@@ -74,6 +70,7 @@ export class ClientOrderService {
 
   async checkOrder(id: string) {
     const order = await this.getOne(id);
+    const kassa = await this.kassaService.GetOpenKassa(order.filial.id);
   }
 
   async create(value: CreateClientOrderDto) {

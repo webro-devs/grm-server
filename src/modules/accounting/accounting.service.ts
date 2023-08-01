@@ -43,11 +43,10 @@ export class AccountingService {
         remainingSize,
         remainingSum,
         sellingSize,
-        kassaSum: comingSum - additionalProfitTotalSum + cashFlowSumBoss,
-        sellingSum: comingSum + cashFlowSumShop,
-        goingSumBoss,
+        kassaSum: comingSum - additionalProfitTotalSum - cashFlowSumShop,
+        sellingSum: comingSum,
         goingSumShop,
-        profit: 0,
+        goingSumBoss,
       });
     }
     return result;
