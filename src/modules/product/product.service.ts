@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, OnModuleDestroy } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as cron from 'node-cron';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import {
   IPaginationOptions,
@@ -21,6 +22,7 @@ export class ProductService {
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
     private readonly filialService: FilialService,
+    private scheduledJobs: cron.ScheduledTask[] = [],
   ) {}
 
   async getAll(
@@ -70,10 +72,10 @@ export class ProductService {
 
   async getMoreByIds(ids: string[]) {
     const data = await this.productRepository
-    .createQueryBuilder()
-    .where("id IN(:...ids)", { ids })
-    .getMany();
-    return data
+      .createQueryBuilder()
+      .where('id IN(:...ids)', { ids })
+      .getMany();
+    return data;
   }
 
   async deleteOne(id: string) {
@@ -162,5 +164,46 @@ export class ProductService {
       result.push({ ...data, ...remain });
     }
     return result;
+  }
+
+  async telegramOnOrOff(
+    startTime = '09:00',
+    endTime = '21:00',
+    postPerTime = 1,
+    onOff = 0,
+  ) {
+    if (onOff) {
+      this.scheduledJobs.forEach((job) => job.stop());
+      return;
+    }
+
+    const getTimeInMinutes = (time: string): number => {
+      const [hours, minutes] = time.split(':').map(Number);
+      return hours * 60 + minutes;
+    };
+
+    const sendData = (): void => {
+      // Send the data goes here
+      console.log('Sending data');
+    };
+
+    const intervalMinutes = 60 / postPerTime;
+
+    // Convert start and end time to minutes from midnight
+    const startMinutes = getTimeInMinutes(startTime);
+    const endMinutes = getTimeInMinutes(endTime);
+
+    // Schedule the data sending task
+    for (
+      let minutes = startMinutes;
+      minutes < endMinutes;
+      minutes += intervalMinutes
+    ) {
+      const hour = Math.floor(minutes / 60);
+      const minute = minutes % 60;
+      const cronExpression = `${minute} ${hour} * * *`; // Minutes Hours * * *
+      const job = cron.schedule(cronExpression, () => sendData());
+      this.scheduledJobs.push(job);
+    }
   }
 }

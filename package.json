@@ -45,6 +45,7 @@
     "cookie-parser": "^1.4.6",
     "crypto": "^1.0.1",
     "nestjs-typeorm-paginate": "^4.0.3",
+    "node-cron": "^3.0.2",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "pg": "^8.10.0",
