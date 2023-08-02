@@ -68,12 +68,27 @@ export class ProductService {
     return data;
   }
 
+  async getById(id: string) {
+    const data = await this.productRepository
+      .findOne({
+        where: { id },
+        relations: {
+          filial: true,
+        },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
+
+    return data;
+  }
+
   async getMoreByIds(ids: string[]) {
     const data = await this.productRepository
-    .createQueryBuilder()
-    .where("id IN(:...ids)", { ids })
-    .getMany();
-    return data
+      .createQueryBuilder()
+      .where('id IN(:...ids)', { ids })
+      .getMany();
+    return data;
   }
 
   async deleteOne(id: string) {

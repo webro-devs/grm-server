@@ -82,7 +82,8 @@ class ProductQueryParserMiddleware implements NestMiddleware {
         id: partiyaId,
       };
     }
-    console.log(where);
+
+    where.count = MoreThanOrEqual(1);
 
     req.where = where;
     req.relations = relations;

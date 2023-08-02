@@ -114,7 +114,7 @@ export class OrderController {
     return await this.orderService.deleteOne(id);
   }
 
-  @Patch('/:id')
+  @Patch('/reject/:id')
   @ApiOperation({ summary: 'Method: reject order' })
   @ApiOkResponse({
     description: 'Order was rejected',
@@ -122,5 +122,15 @@ export class OrderController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async reject(@Param('id') id: string) {
     return await this.orderService.rejectOrder(id);
+  }
+
+  @Patch('/return/:id')
+  @ApiOperation({ summary: 'Method: returns order' })
+  @ApiOkResponse({
+    description: 'Order was returned',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async returnOrderProduct(@Param('id') id: string, @Req() req) {
+    return await this.orderService.returnOrder(id, req.user.id);
   }
 }

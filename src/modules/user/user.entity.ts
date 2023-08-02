@@ -17,6 +17,7 @@ import { Filial } from '../filial/filial.entity';
 import { Action } from '../action/action.entity';
 import { ClientOrder } from '../client-order/client-order.entity';
 import { Product } from '../product/product.entity';
+import { Transfer } from '../transfer/transfer.entity';
 
 @Entity('users')
 export class User {
@@ -82,6 +83,12 @@ export class User {
   })
   @JoinTable()
   favoriteProducts: Product[];
+
+  @OneToMany(() => Transfer, (transfer) => transfer.transferer)
+  transfers: Transfer[];
+
+  @OneToMany(() => Transfer, (transfer) => transfer.cashier)
+  transferCashier: Transfer[];
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);

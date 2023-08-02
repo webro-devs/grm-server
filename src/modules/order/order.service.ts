@@ -23,7 +23,13 @@ import { UpdateProductDto } from '../product/dto';
 import { ProductService } from '../product/product.service';
 import { KassaService } from '../kassa/kassa.service';
 import { ActionService } from '../action/action.service';
-import { OrderEnum } from 'src/infra/shared/enum';
+import {
+  CashFlowEnum,
+  CashflowExpenditureEnum,
+  OrderEnum,
+} from 'src/infra/shared/enum';
+import { CashflowService } from '../cashflow/cashflow.service';
+import { Product } from '../product/product.entity';
 
 Injectable();
 export class OrderService {
@@ -33,6 +39,7 @@ export class OrderService {
     private readonly productService: ProductService,
     private readonly kassaService: KassaService,
     private readonly actionService: ActionService,
+    private readonly cashFlowService: CashflowService,
     private readonly connection: DataSource,
   ) {}
 
@@ -48,7 +55,7 @@ export class OrderService {
     const data = await this.orderRepository
       .findOne({
         where: { id },
-        relations: { casher: true, seller: true, product: true },
+        relations: { casher: true, seller: true, product: true, kassa: true },
       })
       .catch(() => {
         throw new NotFoundException('data not found');
@@ -222,6 +229,47 @@ export class OrderService {
       { id },
       { isActive: OrderEnum.Reject },
     );
+  }
+
+  async returnOrder(id: string, userId: string) {
+    const order = await this.getById(id);
+    await this.returnProduct(order.product, order.count);
+
+    await this.addCashFlow(
+      order.price - order.additionalProfitSum,
+      order.kassa.id,
+      CashflowExpenditureEnum.BOSS,
+      CashFlowEnum.Consumption,
+      userId
+    )
+
+    await this.addCashFlow(
+      order.additionalProfitSum,
+      order.kassa.id,
+      CashflowExpenditureEnum.SHOP,
+      CashFlowEnum.Consumption,
+      userId
+    )
+  }
+
+  async addCashFlow(
+    price: number,
+    kassa: string,
+    title: string,
+    type: CashFlowEnum,
+    id: string,
+  ) {
+    await this.cashFlowService.create(
+      { price, comment: 'Возврат товара', casher: '', kassa, title, type },
+      id,
+    );
+  }
+
+  async returnProduct(product: Product, count: number) {
+    product.count += count;
+    await this.connection.transaction(async (manager: EntityManager) => {
+      await manager.save(product);
+    });
   }
 
   async saveRepo(data: any) {

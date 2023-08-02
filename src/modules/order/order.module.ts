@@ -7,6 +7,7 @@ import { OrderController } from './order.controller';
 import { ProductModule } from '../product/product.module';
 import { KassaModule } from '../kassa/kassa.module';
 import { ActionModule } from '../action/action.module';
+import { CashflowModule } from '../cashflow/cashflow.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ActionModule } from '../action/action.module';
     ProductModule,
     KassaModule,
     ActionModule,
+    CashflowModule,
   ],
   controllers: [OrderController],
   providers: [OrderService],

@@ -10,48 +10,48 @@ class UpdateTransferDto {
   readonly title: string;
 
   @ApiProperty({
-    description: `title`,
-    example: 'Create',
+    description: `count`,
+    example: 1,
   })
   @IsOptional()
   @IsNumber()
   readonly count: number;
 
   @ApiProperty({
-    description: `title`,
-    example: 'Create',
+    description: `date`,
+    example: '2022-10-14',
   })
   @IsOptional()
   @IsString()
   readonly date: string;
 
   @ApiProperty({
-    description: `title`,
-    example: 'Create',
+    description: `from filial id`,
+    example: 'uuid',
   })
   @IsOptional()
   @IsString()
   readonly from: string;
 
   @ApiProperty({
-    description: `title`,
-    example: 'Create',
+    description: `to filial id`,
+    example: 'uuid',
   })
   @IsOptional()
   @IsString()
   readonly to: string;
 
   @ApiProperty({
-    description: `title`,
-    example: 'Create',
+    description: `product`,
+    example: 'uuid',
   })
   @IsOptional()
   @IsString()
   readonly product: string;
 
   @ApiProperty({
-    description: `title`,
-    example: 'Create',
+    description: `transferer`,
+    example: 'uuid',
   })
   @IsOptional()
   @IsString()
