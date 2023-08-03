@@ -13,7 +13,7 @@ import {
   UpdateMagazinProductDto,
   UpdateProductDto,
 } from './dto';
-import { sizeParser } from 'src/infra/helpers';
+import { sizeParser, telegramSender } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 
 Injectable();
@@ -205,5 +205,23 @@ export class ProductService {
       const job = cron.schedule(cronExpression, () => sendData());
       this.scheduledJobs.push(job);
     }
+  }
+  async telegramTest() {
+    const randomProductIndex = Math.floor(Math.random() * 10);
+    const product = await this.productRepository
+      .createQueryBuilder()
+      .select()
+      .orderBy('RANDOM()') // This orders the rows randomly
+      .offset(randomProductIndex)
+      .limit(1)
+      .getOne();
+
+    telegramSender({
+      color: product.color,
+      imgUrl: product.imgUrl || 'http://picsum.photos/500/500',
+      model: product.model,
+      shape: product.shape,
+      size: product.size,
+    });
   }
 }
