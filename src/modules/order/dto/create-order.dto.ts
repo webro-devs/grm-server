@@ -6,7 +6,6 @@ import {
   IsBoolean,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { OrderEnum } from 'src/infra/shared/enum';
 class CreateOrderDto {
   @ApiProperty({
     description: `seller id`,
@@ -40,13 +39,13 @@ class CreateOrderDto {
   @IsNumber()
   readonly plasticSum: number;
 
-  @ApiProperty({
-    description: `price`,
-    example: 1500,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  readonly count: number;
+  // @ApiProperty({
+  //   description: `price`,
+  //   example: 1500,
+  // })
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly count: number;
 
   @ApiProperty({
     description: `date`,

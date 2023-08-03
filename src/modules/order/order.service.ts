@@ -83,20 +83,19 @@ export class OrderService {
     });
     if (order.isActive) {
       const kassa = await this.kassaService.getById(order.kassa.id);
-      kassa.totalSum = +kassa.totalSum - order.price;
-      kassa.totalSize =
-        +kassa.totalSize - order.count * (+order.product.x * +order.product.y);
+      kassa.totalSum = kassa.totalSum - order.price;
+      kassa.totalSize = kassa.totalSize - order.product.x * order.product.y;
 
-      kassa.plasticSum = +kassa.plasticSum - order.plasticSum;
+      kassa.plasticSum = kassa.plasticSum - order.plasticSum;
 
       kassa.additionalProfitTotalSum =
-        +kassa.additionalProfitTotalSum - order.additionalProfitSum;
-      kassa.netProfitTotalSum = +kassa.netProfitTotalSum - order.netProfitSum;
+        kassa.additionalProfitTotalSum - order.additionalProfitSum;
+      kassa.netProfitTotalSum = kassa.netProfitTotalSum - order.netProfitSum;
       await this.saveRepo(kassa);
     }
 
     const product = order.product;
-    product.count += order.count;
+    product.count += 1;
     product.setTotalSize();
     await this.saveRepo(product);
 
@@ -107,44 +106,28 @@ export class OrderService {
   }
 
   async change(value: UpdateOrderDto, id: string) {
-    if (value.price || value.count) {
+    if (value.price) {
       const order = await this.orderRepository.findOne({
         where: { id },
         relations: { kassa: true, product: true },
       });
       const kassa = await this.kassaService.getById(order.kassa.id);
 
-      const product = order.product;
-      const diff = order.count - value.count;
-      product.count += diff;
-      product.setTotalSize();
-      await this.saveRepo(product);
-
-      value.netProfitSum =
-        value.count * (+product.price - +product.comingPrice);
-
-      value.additionalProfitSum = value.price - +product.price * value.count;
+      value.additionalProfitSum =
+        value.price - order.product.price * order.product.x * order.product.y;
 
       if (order.isActive) {
-        kassa.totalSum = +kassa.totalSum - order.price;
-        kassa.totalSum = +kassa.totalSum + value.price;
-
-        kassa.totalSize =
-          +kassa.totalSize - order.count * (+product.x * +product.y);
-        kassa.totalSize =
-          +kassa.totalSize + value.count * (+product.x * +product.y);
-
-        kassa.netProfitTotalSum = +kassa.netProfitTotalSum - order.netProfitSum;
-        kassa.netProfitTotalSum = +kassa.netProfitTotalSum + value.netProfitSum;
+        kassa.totalSum = kassa.totalSum - order.price;
+        kassa.totalSum = kassa.totalSum + value.price;
 
         kassa.additionalProfitTotalSum =
-          +kassa.additionalProfitTotalSum - order.additionalProfitSum;
+          kassa.additionalProfitTotalSum - order.additionalProfitSum;
         kassa.additionalProfitTotalSum =
-          +kassa.additionalProfitTotalSum + value.additionalProfitSum;
+          kassa.additionalProfitTotalSum + value.additionalProfitSum;
 
         if (value.plasticSum) {
-          kassa.plasticSum = +kassa.plasticSum - order.plasticSum;
-          kassa.plasticSum = +kassa.plasticSum + value.plasticSum;
+          kassa.plasticSum = kassa.plasticSum - order.plasticSum;
+          kassa.plasticSum = kassa.plasticSum + value.plasticSum;
         }
 
         await this.saveRepo(kassa);
@@ -161,15 +144,17 @@ export class OrderService {
 
   async create(value: CreateOrderDto, id: string) {
     const product = await this.productService.getOne(value.product);
-    if (product.count < value.count) {
+    if (product.count < 1) {
       throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
     }
-    product.count = +product.count - value.count;
+    product.count = +product.count - 1;
     product.setTotalSize();
     await this.saveRepo(product);
 
-    const additionalProfitSum = value.price - +product.price * value.count;
-    const netProfitSum = value.count * (product.price - product.comingPrice);
+    const additionalProfitSum =
+      value.price - product.price * product.x * product.y;
+    const netProfitSum =
+      (product.price - product.comingPrice) * product.x * product.y;
 
     const data = { ...value, seller: id, additionalProfitSum, netProfitSum };
     const response = this.orderRepository
@@ -190,17 +175,16 @@ export class OrderService {
 
     const kassa = await this.kassaService.getById(order.kassa.id);
 
-    kassa.totalSum = +kassa.totalSum + +order.price;
+    kassa.totalSum = kassa.totalSum + order.price;
 
-    kassa.totalSize =
-      +kassa.totalSize + order.count * (+order.product.x * +order.product.y);
+    kassa.totalSize = kassa.totalSize + order.product.x * order.product.y;
 
-    kassa.netProfitTotalSum = +kassa.netProfitTotalSum + +order.netProfitSum;
+    kassa.netProfitTotalSum = kassa.netProfitTotalSum + order.netProfitSum;
 
     kassa.additionalProfitTotalSum =
-      +kassa.additionalProfitTotalSum + +order.additionalProfitSum;
+      kassa.additionalProfitTotalSum + order.additionalProfitSum;
 
-    kassa.plasticSum = +kassa.plasticSum + +order.plasticSum;
+    kassa.plasticSum = kassa.plasticSum + order.plasticSum;
 
     await this.saveRepo(kassa);
 
@@ -221,7 +205,7 @@ export class OrderService {
     });
 
     await this.productService.change(
-      { count: data.product.count + data.count } as UpdateProductDto,
+      { count: data.product.count + 1 } as UpdateProductDto,
       data.product.id,
     );
 
@@ -233,23 +217,23 @@ export class OrderService {
 
   async returnOrder(id: string, userId: string) {
     const order = await this.getById(id);
-    await this.returnProduct(order.product, order.count);
+    await this.returnProduct(order.product, 1);
 
     await this.addCashFlow(
       order.price - order.additionalProfitSum,
       order.kassa.id,
       CashflowExpenditureEnum.BOSS,
       CashFlowEnum.Consumption,
-      userId
-    )
+      userId,
+    );
 
     await this.addCashFlow(
       order.additionalProfitSum,
       order.kassa.id,
       CashflowExpenditureEnum.SHOP,
       CashFlowEnum.Consumption,
-      userId
-    )
+      userId,
+    );
   }
 
   async addCashFlow(

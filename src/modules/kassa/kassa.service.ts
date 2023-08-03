@@ -106,9 +106,9 @@ export class KassaService {
     const data = await this.kassaRepository.findOne({
       where: { id },
     });
-    const comingSum = +data.totalSum;
-    const goingSum = +data.expenditureBoss + Number(data.expenditureShop);
-    const sellingSize = +data.totalSize;
+    const comingSum = data.totalSum;
+    const goingSum = data.expenditureBoss + data.expenditureShop;
+    const sellingSize = data.totalSize;
     return { comingSum, goingSum, sellingSize };
   }
 
@@ -118,31 +118,31 @@ export class KassaService {
     });
 
     if (data.length) {
-      const comingSum = data.map((d) => +d.totalSum).reduce((a, b) => a + b);
+      const comingSum = data.map((d) => d.totalSum).reduce((a, b) => a + b);
 
       const goingSumBoss = data
-        .map((d) => +d.expenditureBoss)
+        .map((d) => d.expenditureBoss)
         .reduce((a, b) => a + b);
 
       const goingSumShop = data
-        .map((d) => +d.expenditureShop)
+        .map((d) => d.expenditureShop)
         .reduce((a, b) => a + b);
 
-      const sellingSize = data.map((d) => +d.totalSize).reduce((a, b) => a + b);
+      const sellingSize = data.map((d) => d.totalSize).reduce((a, b) => a + b);
 
       const cashFlowSumBoss = data
-        .map((d) => +d.cashFlowSumBoss)
+        .map((d) => d.cashFlowSumBoss)
         .reduce((a, b) => a + b);
 
       const cashFlowSumShop = data
-        .map((d) => +d.cashFlowSumShop)
+        .map((d) => d.cashFlowSumShop)
         .reduce((a, b) => a + b);
 
       const additionalProfitTotalSum = data
-        .map((d) => +d.additionalProfitTotalSum)
+        .map((d) => d.additionalProfitTotalSum)
         .reduce((a, b) => a + b);
 
-      const plasticSum = data.map((d) => +d.plasticSum).reduce((a, b) => a + b);
+      const plasticSum = data.map((d) => d.plasticSum).reduce((a, b) => a + b);
 
       return {
         comingSum,

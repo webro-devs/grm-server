@@ -158,10 +158,10 @@ export class ProductService {
       where,
     });
     const remainingSum = data.length
-      ? data.map((p) => +p.price * p.count).reduce((a, b) => a + b)
+      ? data.map((p) => p.price * p.x * p.y * p.count).reduce((a, b) => a + b)
       : 0;
     const remainingSize = data.length
-      ? data.map((p) => +p.totalSize).reduce((a, b) => a + b)
+      ? data.map((p) => p.totalSize).reduce((a, b) => a + b)
       : 0;
     const count = data.length
       ? data.map((p) => p.count).reduce((a, b) => a + b)

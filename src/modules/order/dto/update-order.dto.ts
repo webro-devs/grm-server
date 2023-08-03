@@ -25,13 +25,13 @@ class UpdateOrderDto {
   @IsNumber()
   readonly plasticSum: number;
 
-  @ApiProperty({
-    description: `price`,
-    example: 1500,
-  })
-  @IsOptional()
-  @IsNumber()
-  readonly count: number;
+  // @ApiProperty({
+  //   description: `price`,
+  //   example: 1500,
+  // })
+  // @IsOptional()
+  // @IsNumber()
+  // readonly count: number;
 
   @ApiProperty({
     description: `date`,

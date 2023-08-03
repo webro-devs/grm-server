@@ -45,18 +45,18 @@ export class CashflowService {
     });
     const kassa = await this.kassaService.getById(cashflow.kassa.id);
     if (cashflow.type == CashFlowEnum.InCome) {
-      kassa.totalSum = +kassa.totalSum - cashflow.price;
+      kassa.totalSum = kassa.totalSum - cashflow.price;
       if (cashflow.title == CashflowComingEnum.BOSS) {
-        kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss - cashflow.price;
+        kassa.cashFlowSumBoss = kassa.cashFlowSumBoss - cashflow.price;
       } else {
-        kassa.cashFlowSumShop = +kassa.cashFlowSumShop - cashflow.price;
+        kassa.cashFlowSumShop = kassa.cashFlowSumShop - cashflow.price;
       }
     }
     if (cashflow.type == CashFlowEnum.Consumption) {
       if (cashflow.title == CashflowExpenditureEnum.BOSS) {
-        kassa.expenditureBoss = +kassa.expenditureBoss - cashflow.price;
+        kassa.expenditureBoss = kassa.expenditureBoss - cashflow.price;
       } else {
-        kassa.expenditureShop = +kassa.expenditureShop - cashflow.price;
+        kassa.expenditureShop = kassa.expenditureShop - cashflow.price;
       }
     }
 
@@ -76,36 +76,36 @@ export class CashflowService {
       const kassa = await this.kassaService.getById(value.kassa);
       if (value.type == CashFlowEnum.InCome) {
         if (cashflow.type == CashFlowEnum.InCome) {
-          kassa.totalSum = +kassa.totalSum - cashflow.price;
-          kassa.totalSum = +kassa.totalSum + value.price;
+          kassa.totalSum = kassa.totalSum - cashflow.price;
+          kassa.totalSum = kassa.totalSum + value.price;
           if (cashflow.title == CashflowComingEnum.BOSS) {
             if (value.title == CashflowComingEnum.BOSS) {
-              kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss - cashflow.price;
-              kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss + value.price;
+              kassa.cashFlowSumBoss = kassa.cashFlowSumBoss - cashflow.price;
+              kassa.cashFlowSumBoss = kassa.cashFlowSumBoss + value.price;
             } else {
-              kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss - cashflow.price;
-              kassa.cashFlowSumShop = +kassa.cashFlowSumShop + value.price;
+              kassa.cashFlowSumBoss = kassa.cashFlowSumBoss - cashflow.price;
+              kassa.cashFlowSumShop = kassa.cashFlowSumShop + value.price;
             }
           } else {
             if (value.title == CashflowComingEnum.BOSS) {
-              kassa.cashFlowSumShop = +kassa.cashFlowSumShop - cashflow.price;
-              kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss + value.price;
+              kassa.cashFlowSumShop = kassa.cashFlowSumShop - cashflow.price;
+              kassa.cashFlowSumBoss = kassa.cashFlowSumBoss + value.price;
             } else {
-              kassa.cashFlowSumShop = +kassa.cashFlowSumShop - cashflow.price;
-              kassa.cashFlowSumShop = +kassa.cashFlowSumShop + value.price;
+              kassa.cashFlowSumShop = kassa.cashFlowSumShop - cashflow.price;
+              kassa.cashFlowSumShop = kassa.cashFlowSumShop + value.price;
             }
           }
         } else {
           if (cashflow.title == CashflowExpenditureEnum.BOSS) {
-            kassa.expenditureBoss = +kassa.expenditureBoss - cashflow.price;
+            kassa.expenditureBoss = kassa.expenditureBoss - cashflow.price;
           } else {
-            kassa.expenditureShop = +kassa.expenditureShop - cashflow.price;
+            kassa.expenditureShop = kassa.expenditureShop - cashflow.price;
           }
-          kassa.totalSum = +kassa.totalSum + value.price;
+          kassa.totalSum = kassa.totalSum + value.price;
           if (value.title == CashflowComingEnum.BOSS) {
-            kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss + value.price;
+            kassa.cashFlowSumBoss = kassa.cashFlowSumBoss + value.price;
           } else {
-            kassa.cashFlowSumShop = +kassa.cashFlowSumShop + value.price;
+            kassa.cashFlowSumShop = kassa.cashFlowSumShop + value.price;
           }
         }
       }
@@ -113,32 +113,32 @@ export class CashflowService {
         if (cashflow.type == CashFlowEnum.Consumption) {
           if (cashflow.title == CashflowExpenditureEnum.BOSS) {
             if (value.title == CashflowExpenditureEnum.BOSS) {
-              kassa.expenditureBoss = +kassa.expenditureBoss - cashflow.price;
-              kassa.expenditureBoss = +kassa.expenditureBoss + value.price;
+              kassa.expenditureBoss = kassa.expenditureBoss - cashflow.price;
+              kassa.expenditureBoss = kassa.expenditureBoss + value.price;
             } else {
-              kassa.expenditureBoss = +kassa.expenditureBoss - cashflow.price;
-              kassa.expenditureShop = +kassa.expenditureShop + value.price;
+              kassa.expenditureBoss = kassa.expenditureBoss - cashflow.price;
+              kassa.expenditureShop = kassa.expenditureShop + value.price;
             }
           } else {
             if (value.title == CashflowExpenditureEnum.BOSS) {
-              kassa.expenditureShop = +kassa.expenditureShop - cashflow.price;
-              kassa.expenditureBoss = +kassa.expenditureBoss + value.price;
+              kassa.expenditureShop = kassa.expenditureShop - cashflow.price;
+              kassa.expenditureBoss = kassa.expenditureBoss + value.price;
             } else {
-              kassa.expenditureShop = +kassa.expenditureShop - cashflow.price;
-              kassa.expenditureShop = +kassa.expenditureShop + value.price;
+              kassa.expenditureShop = kassa.expenditureShop - cashflow.price;
+              kassa.expenditureShop = kassa.expenditureShop + value.price;
             }
           }
         } else {
-          kassa.totalSum = +kassa.totalSum - cashflow.price;
+          kassa.totalSum = kassa.totalSum - cashflow.price;
           if (cashflow.title == CashflowComingEnum.BOSS) {
-            kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss - cashflow.price;
+            kassa.cashFlowSumBoss = kassa.cashFlowSumBoss - cashflow.price;
           } else {
-            kassa.cashFlowSumShop = +kassa.cashFlowSumShop - cashflow.price;
+            kassa.cashFlowSumShop = kassa.cashFlowSumShop - cashflow.price;
           }
           if (value.title == CashflowExpenditureEnum.BOSS) {
-            kassa.expenditureBoss = +kassa.expenditureBoss + value.price;
+            kassa.expenditureBoss = kassa.expenditureBoss + value.price;
           } else {
-            kassa.expenditureShop = +kassa.expenditureShop + value.price;
+            kassa.expenditureShop = kassa.expenditureShop + value.price;
           }
         }
       }
@@ -167,18 +167,18 @@ export class CashflowService {
 
     const kassa = await this.kassaService.getById(value.kassa);
     if (value.type == CashFlowEnum.InCome) {
-      kassa.totalSum = +kassa.totalSum + value.price;
+      kassa.totalSum = kassa.totalSum + value.price;
       if (value.title == CashflowComingEnum.BOSS) {
-        kassa.cashFlowSumBoss = +kassa.cashFlowSumBoss + value.price;
+        kassa.cashFlowSumBoss = kassa.cashFlowSumBoss + value.price;
       } else {
-        kassa.cashFlowSumShop = +kassa.cashFlowSumShop + value.price;
+        kassa.cashFlowSumShop = kassa.cashFlowSumShop + value.price;
       }
     }
     if (value.type == CashFlowEnum.Consumption) {
       if (value.title == CashflowExpenditureEnum.BOSS) {
-        kassa.expenditureBoss = +kassa.expenditureBoss + value.price;
+        kassa.expenditureBoss = kassa.expenditureBoss + value.price;
       } else {
-        kassa.expenditureShop = +kassa.expenditureShop + value.price;
+        kassa.expenditureShop = kassa.expenditureShop + value.price;
       }
     }
     await this.connection.transaction(async (manager: EntityManager) => {
