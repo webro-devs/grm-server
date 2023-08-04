@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException, OnModuleDestroy } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as cron from 'node-cron';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import {
   IPaginationOptions,
@@ -13,7 +12,7 @@ import {
   UpdateMagazinProductDto,
   UpdateProductDto,
 } from './dto';
-import { sizeParser, telegramSender } from 'src/infra/helpers';
+import { sizeParser } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 
 Injectable();
@@ -22,7 +21,6 @@ export class ProductService {
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
     private readonly filialService: FilialService,
-    private scheduledJobs: cron.ScheduledTask[] = [],
   ) {}
 
   async getAll(
@@ -164,64 +162,5 @@ export class ProductService {
       result.push({ ...data, ...remain });
     }
     return result;
-  }
-
-  async telegramOnOrOff(
-    startTime = '09:00',
-    endTime = '21:00',
-    postPerTime = 1,
-    onOff = 0,
-  ) {
-    if (onOff) {
-      this.scheduledJobs.forEach((job) => job.stop());
-      return;
-    }
-
-    const getTimeInMinutes = (time: string): number => {
-      const [hours, minutes] = time.split(':').map(Number);
-      return hours * 60 + minutes;
-    };
-
-    const sendData = (): void => {
-      // Send the data goes here
-      console.log('Sending data');
-    };
-
-    const intervalMinutes = 60 / postPerTime;
-
-    // Convert start and end time to minutes from midnight
-    const startMinutes = getTimeInMinutes(startTime);
-    const endMinutes = getTimeInMinutes(endTime);
-
-    // Schedule the data sending task
-    for (
-      let minutes = startMinutes;
-      minutes < endMinutes;
-      minutes += intervalMinutes
-    ) {
-      const hour = Math.floor(minutes / 60);
-      const minute = minutes % 60;
-      const cronExpression = `${minute} ${hour} * * *`; // Minutes Hours * * *
-      const job = cron.schedule(cronExpression, () => sendData());
-      this.scheduledJobs.push(job);
-    }
-  }
-  async telegramTest() {
-    const randomProductIndex = Math.floor(Math.random() * 10);
-    const product = await this.productRepository
-      .createQueryBuilder()
-      .select()
-      .orderBy('RANDOM()') // This orders the rows randomly
-      .offset(randomProductIndex)
-      .limit(1)
-      .getOne();
-
-    telegramSender({
-      color: product.color,
-      imgUrl: product.imgUrl || 'http://picsum.photos/500/500',
-      model: product.model,
-      shape: product.shape,
-      size: product.size,
-    });
   }
 }

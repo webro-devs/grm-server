@@ -73,21 +73,6 @@ export class ProductController {
     );
   }
 
-  @Public()
-  @Get('/telegram')
-  @ApiOperation({ summary: 'Method: returns all internet shop products' })
-  @ApiOkResponse({
-    description: 'The internet shop products were returned successfully',
-  })
-  @HttpCode(HttpStatus.OK)
-  async tggg(
-    @Route() route: string,
-    @Query() query: ProductQueryDto,
-    @Req() req,
-  ) {
-    return await this.productService.telegramTest();
-  }
-
   @Get('/remaining-products')
   @ApiOperation({ summary: 'Method: returns remaining ofp products' })
   @ApiOkResponse({

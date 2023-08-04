@@ -27,6 +27,7 @@ import { AccountingModule } from './modules/accounting/accounting.module';
 import { ClientRequestModule } from './modules/client-request/client-request.module';
 import { ClientOrderModule } from './modules/client-order/client-order.module';
 import { MagazinInfoModule } from './modules/magazin-info/magazin-info.module';
+import { DataSenderModule } from './modules/data-sender/data-sender.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { MagazinInfoModule } from './modules/magazin-info/magazin-info.module';
     ClientRequestModule,
     CollectionModule,
     ColorModule,
+    DataSenderModule,
     ExcelModule,
     FileModule,
     FilialModule,
