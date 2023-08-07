@@ -163,4 +163,10 @@ export class ProductService {
     }
     return result;
   }
+
+  async getAllForTelegraam() {
+    return this.productRepository.find({
+      where: { isInternetShop: true },
+    });
+  }
 }

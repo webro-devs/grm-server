@@ -3,12 +3,16 @@ import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import * as cron from 'node-cron';
 import { ProductService } from '../product/product.service';
 import { telegramSender } from '../../infra/helpers';
+import { CreateProductDto } from '../product/dto';
 
 @Injectable()
 export class DataSenderService implements OnModuleDestroy {
   private scheduledJobs: cron.ScheduledTask[] = [];
 
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private index: number = 1,
+  ) {}
 
   cronJob({ startTime = '09:00', endTime = '21:00', count = 1 }) {
     // Define the interval for sending data (in minutes)
@@ -43,15 +47,18 @@ export class DataSenderService implements OnModuleDestroy {
     return hours * 60 + minutes;
   }
 
-  private sendData(): void {
+  private async sendData() {
+    const products = await this.productService.getAllForTelegraam();
+    if (products.length < this.index) this.index = 1;
+
     // Your code to send the data goes here
-    console.log('Sending data');
     telegramSender({
-      imgUrl: 'http://picsum.photos/500/500',
-      color: 'White - Red - Blue',
-      model: '8804',
-      shape: 'Oracle',
-      size: '24x24',
+      imgUrl: products[this.index]?.imgUrl,
+      color: products[this.index]?.color,
+      model: products[this.index]?.model,
+      shape: products[this.index]?.shape,
+      size: products[this.index]?.size,
     });
+    ++this.index;
   }
 }

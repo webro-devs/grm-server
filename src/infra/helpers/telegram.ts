@@ -26,16 +26,19 @@ const telegram = async ({ imgUrl, model, color, size, shape }) => {
   
   Telegram Chat: 🔵@SanatHali_Labzak`;
 
-  await app.telegram.sendPhoto(
-    chatId,
-    {
-      url: imgUrl,
-    },
-    {
-      caption: text,
-      parse_mode: 'HTML',
-    },
-  );
+  imgUrl &&
+    (await app.telegram.sendPhoto(
+      chatId,
+      {
+        url: imgUrl,
+      },
+      {
+        caption: text,
+        parse_mode: 'HTML',
+      },
+    ));
+
+  if (!imgUrl) app.telegram.sendMessage(chatId, text, { parse_mode: 'HTML' });
 };
 
 export default telegram;
