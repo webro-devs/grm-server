@@ -3,7 +3,6 @@ import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import * as cron from 'node-cron';
 import { ProductService } from '../product/product.service';
 import { telegramSender } from '../../infra/helpers';
-import { CreateProductDto } from '../product/dto';
 
 @Injectable()
 export class DataSenderService implements OnModuleDestroy {
@@ -11,8 +10,8 @@ export class DataSenderService implements OnModuleDestroy {
 
   constructor(
     private readonly productService: ProductService,
-    private index: number = 1,
-  ) {}
+  ) // private index: number = 1,
+  {}
 
   cronJob({ startTime = '09:00', endTime = '21:00', count = 1 }) {
     // Define the interval for sending data (in minutes)
@@ -48,17 +47,16 @@ export class DataSenderService implements OnModuleDestroy {
   }
 
   private async sendData() {
-    const products = await this.productService.getAllForTelegraam();
-    if (products.length < this.index) this.index = 1;
-
-    // Your code to send the data goes here
-    telegramSender({
-      imgUrl: products[this.index]?.imgUrl,
-      color: products[this.index]?.color,
-      model: products[this.index]?.model,
-      shape: products[this.index]?.shape,
-      size: products[this.index]?.size,
-    });
-    ++this.index;
+    // const products = await this.productService.getAllForTelegraam();
+    // if (products.length < this.index) this.index = 1;
+    // // Your code to send the data goes here
+    // telegramSender({
+    //   imgUrl: products[this.index]?.imgUrl,
+    //   color: products[this.index]?.color,
+    //   model: products[this.index]?.model,
+    //   shape: products[this.index]?.shape,
+    //   size: products[this.index]?.size,
+    // });
+    // ++this.index;
   }
 }
