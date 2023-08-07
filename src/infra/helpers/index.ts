@@ -7,3 +7,4 @@ export { default as partiyaDateSort } from './partiya-date-parser';
 export { default as deleteFile } from './file-delete';
 export { default as hashPassword } from './hash-password';
 export { default as ColumnNumericTransformer } from './numeric-transformer';
+export { default as telegramSender } from './telegram';
