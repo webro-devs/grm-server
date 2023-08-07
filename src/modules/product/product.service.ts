@@ -180,8 +180,9 @@ export class ProductService {
   }
 
   async getAllForTelegraam() {
-    return this.productRepository.find({
-      where: { isInternetShop: true },
-    });
+    return await this.productRepository
+      .createQueryBuilder()
+      .where('isInternetShop = :isInternetShop', { isInternetShop: true })
+      .getManyAndCount();
   }
 }

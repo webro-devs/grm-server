@@ -7,11 +7,8 @@ import { telegramSender } from '../../infra/helpers';
 @Injectable()
 export class DataSenderService implements OnModuleDestroy {
   private scheduledJobs: cron.ScheduledTask[] = [];
-
-  constructor(
-    private readonly productService: ProductService,
-  ) // private index: number = 1,
-  {}
+  index = 0;
+  constructor(private readonly productService: ProductService) {}
 
   cronJob({ startTime = '09:00', endTime = '21:00', count = 1 }) {
     // Define the interval for sending data (in minutes)
@@ -47,16 +44,16 @@ export class DataSenderService implements OnModuleDestroy {
   }
 
   private async sendData() {
-    // const products = await this.productService.getAllForTelegraam();
-    // if (products.length < this.index) this.index = 1;
-    // // Your code to send the data goes here
-    // telegramSender({
-    //   imgUrl: products[this.index]?.imgUrl,
-    //   color: products[this.index]?.color,
-    //   model: products[this.index]?.model,
-    //   shape: products[this.index]?.shape,
-    //   size: products[this.index]?.size,
-    // });
-    // ++this.index;
+    const [products, count] = await this.productService.getAllForTelegraam();
+    if (count <= this.index) this.index = 0;
+    // Your code to send the data goes here
+    telegramSender({
+      imgUrl: products[this.index]?.imgUrl,
+      color: products[this.index]?.color,
+      model: products[this.index]?.model,
+      shape: products[this.index]?.shape,
+      size: products[this.index]?.size,
+    });
+    ++this.index;
   }
 }
