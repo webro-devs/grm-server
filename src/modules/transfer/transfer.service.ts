@@ -85,12 +85,12 @@ export class TransferService {
     if (values.length) {
       await Promise.all(
         values.map(async (value) => {
-          await this.takeProduct(value.product,value.count)
+          await this.takeProduct(value.product, value.count);
           await this.transferRepository
             .createQueryBuilder()
             .insert()
             .into(Transfer)
-            .values({...value,transferer:id} as unknown as Transfer)
+            .values({ ...value, transferer: id } as unknown as Transfer)
             .returning('id')
             .execute();
         }),
@@ -111,7 +111,7 @@ export class TransferService {
     });
   }
 
-  async checkTransfer(id: string, userId:string) {
+  async checkTransfer(id: string, userId: string) {
     const transfer = await this.transferRepository.findOne({
       where: { id },
       relations: { product: true, transferer: true, to: true },
@@ -128,6 +128,7 @@ export class TransferService {
       model: product.model.id,
       price: product.price,
       comingPrice: product.comingPrice,
+      priceMeter: product.priceMeter,
       shape: product.shape,
       size: product.size,
       style: product.style,
@@ -138,10 +139,10 @@ export class TransferService {
 
     await this.productService.create([newProduct]);
 
-    const cashier = await this.userService.getOne(userId)
+    const cashier = await this.userService.getOne(userId);
 
-    await this.transferRepository.update(id,{cashier})
+    await this.transferRepository.update(id, { cashier });
 
-    return 'Ok'
+    return 'Ok';
   }
 }
