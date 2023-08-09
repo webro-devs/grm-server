@@ -4,7 +4,6 @@ import {
   Body,
   HttpCode,
   HttpStatus,
-  HttpException,
   Delete,
   Patch,
   Param,
@@ -24,6 +23,8 @@ import { Route } from '../../infra/shared/decorators/route.decorator';
 import { PaginationDto } from '../../infra/shared/dto';
 import { CreateTransferDto, UpdateTransferDto } from './dto';
 import { Transfer } from './transfer.entity';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRoleEnum } from '../../infra/shared/enum';
 
 @ApiTags('Transfer')
 @Controller('transfer')
@@ -37,11 +38,7 @@ export class TransferController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
-    try {
-      return await this.transferService.getAll({ ...query, route });
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.transferService.getAll({ ...query, route });
   }
 
   @Get('/:id')
@@ -61,11 +58,7 @@ export class TransferController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateTransferDto[], @Req() request) {
-    try {
-      return await this.transferService.create(data, request.user.id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.transferService.create(data, request.user.id);
   }
 
   @Patch('/:id')
@@ -78,11 +71,18 @@ export class TransferController {
     @Body() data: UpdateTransferDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    try {
-      return await this.transferService.change(data, id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.transferService.change(data, id);
+  }
+
+  @Roles(UserRoleEnum.CASHIER, UserRoleEnum.MANAGER)
+  @Patch('/accept/:id')
+  @ApiOperation({ summary: 'Method: checking transfer' })
+  @ApiOkResponse({
+    description: 'Transfer was accepted by cashier',
+  })
+  @HttpCode(HttpStatus.OK)
+  async checkTransfer(@Param('id') id: string, @Req() req) {
+    return await this.transferService.checkTransfer(id, req.user.id);
   }
 
   @Delete('/:id')
@@ -92,10 +92,6 @@ export class TransferController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-    try {
-      return await this.transferService.deleteOne(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.transferService.deleteOne(id);
   }
 }

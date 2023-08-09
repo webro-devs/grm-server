@@ -1,6 +1,15 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  NotFoundException,
+  Injectable,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, FindOptionsWhere, EntityManager } from 'typeorm';
+import {
+  DataSource,
+  FindOptionsWhere,
+  EntityManager,
+  Repository,
+} from 'typeorm';
 import {
   IPaginationOptions,
   Pagination,
@@ -8,20 +17,26 @@ import {
 } from 'nestjs-typeorm-paginate';
 
 import { User } from './user.entity';
-import { UserRepository } from './user.repository';
-import { CreateUserDto, UpdateUserDto } from './dto';
-import { generateId } from 'src/infra/helpers';
+import {
+  CreateClientDto,
+  CreateUserDto,
+  UpdateClientDto,
+  UpdateUserDto,
+} from './dto';
+import { hashPassword, idGenerator } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 import { PositionService } from '../position/position.service';
+import { UserRoleEnum } from '../../infra/shared/enum';
+import { ProductService } from '../product/product.service';
 
 Injectable();
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: Repository<User>,
     private readonly filialService: FilialService,
-    private readonly connection: DataSource,
     private readonly positionService: PositionService,
+    private readonly productService:ProductService
   ) {}
 
   async getAll(
@@ -43,10 +58,24 @@ export class UserService {
       where: { login },
       relations: { filial: true, position: true },
     });
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+
     return data;
+  }
+
+  async getClientById(id: string) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: {
+        clientOrders: true,
+        favoriteProducts:{
+          model:{
+            collection:true
+          }
+        }
+      },
+    });
+
+    return user;
   }
 
   async getUsersWithSelling(id: string) {
@@ -58,23 +87,40 @@ export class UserService {
   }
 
   async getOne(id: string) {
-    const data = await this.userRepository.findOne({
-      where: { id },
-      relations: {
-        position: true,
-        filial: true,
-      },
-    });
-
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+    const data = await this.userRepository
+      .findOne({
+        where: { id },
+        relations: {
+          position: true,
+          filial: true,
+        },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
 
     return data;
   }
 
+  async addFavoriteProduct(userId:string,productId:string){
+    const user = await this.userRepository.findOne({where:{id:userId},relations:{favoriteProducts:true}})
+    const product = await this.productService.getOne(productId)
+    user.favoriteProducts.push(product)
+    await this.userRepository.save(user)
+    return user
+  }
+
+  async removeFavoriteProduct(userId:string,productId:string){
+    const user = await this.userRepository.findOne({where:{id:userId},relations:{favoriteProducts:true}})
+    user.favoriteProducts = user.favoriteProducts.length ? user.favoriteProducts.filter(p=> p.id != productId) : []
+    await this.userRepository.save(user)
+    return user
+  }
+
   async deleteOne(id: string) {
-    const response = await this.userRepository.delete(id);
+    const response = await this.userRepository.delete(id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
     return response;
   }
 
@@ -90,17 +136,33 @@ export class UserService {
   }
 
   async create(data: CreateUserDto) {
-    const user = new User();
-    user.login = generateId();
-    user.role = data.role;
-    user.filial = data.filial
+    const login = idGenerator();
+    const filial = data.filial
       ? await this.filialService.getOne(data.filial)
       : null;
-    user.position = await this.positionService.getOne(data.position);
-    await user.hashPassword(user.login);
-    await this.connection.transaction(async (manager: EntityManager) => {
-      await manager.save(user);
+    const position = await this.positionService.getOne(data.position);
+    const password = await hashPassword(login);
+    const user = this.userRepository.create({
+      ...data,
+      login,
+      filial,
+      position,
+      password,
     });
-    return user.login;
+    return await this.userRepository.save(user);
+  }
+
+  async createClient(data: CreateClientDto) {
+    data.password = await hashPassword(data.password);
+    const user = this.userRepository.create({
+      ...data,
+      role: UserRoleEnum.CLIENT,
+    });
+    return await this.userRepository.save(user);
+  }
+
+  async updateClient(id: string, value: UpdateClientDto) {
+    const response = await this.userRepository.update({ id }, { ...value });
+    return response;
   }
 }

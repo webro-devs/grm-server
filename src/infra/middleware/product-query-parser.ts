@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
-import { Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { Between, In, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { ProductQueryDto } from '../shared/dto';
 
 @Injectable()
@@ -52,8 +52,8 @@ class ProductQueryParserMiddleware implements NestMiddleware {
     if (style) {
       where.style = style;
     }
-    if (size) {
-      where.size = size;
+    if (size?.length) {
+      where.size = In(size);
     }
     if (shape) {
       where.shape = shape;
@@ -82,6 +82,8 @@ class ProductQueryParserMiddleware implements NestMiddleware {
         id: partiyaId,
       };
     }
+
+    where.count = MoreThanOrEqual(1);
 
     req.where = where;
     req.relations = relations;

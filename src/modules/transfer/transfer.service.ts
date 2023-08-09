@@ -1,24 +1,35 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IPaginationOptions,
   Pagination,
   paginate,
 } from 'nestjs-typeorm-paginate';
-import { DataSource, EntityManager, FindOptionsWhere } from 'typeorm';
+import {
+  DataSource,
+  EntityManager,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 import { CreateTransferDto, UpdateTransferDto } from './dto';
 
 import { Transfer } from './transfer.entity';
 import { ProductService } from '../product/product.service';
-import { TransferRepository } from './transfer.repository';
 import { CreateProductDto } from '../product/dto';
+import { UserService } from '../user/user.service';
 
 Injectable();
 export class TransferService {
   constructor(
     @InjectRepository(Transfer)
-    private readonly transferRepository: TransferRepository,
+    private readonly transferRepository: Repository<Transfer>,
     private readonly productService: ProductService,
+    private readonly userService: UserService,
     private readonly connection: DataSource,
   ) {}
   async getAll(
@@ -36,23 +47,27 @@ export class TransferService {
   }
 
   async getById(id: string) {
-    const data = await this.transferRepository.findOne({
-      where: { id },
-      relations: {
-        from: true,
-        to: true,
-        transferer: true,
-        product: true,
-      },
-    });
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+    const data = await this.transferRepository
+      .findOne({
+        where: { id },
+        relations: {
+          from: true,
+          to: true,
+          transferer: true,
+          product: true,
+        },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
+
     return data;
   }
 
   async deleteOne(id: string) {
-    const response = await this.transferRepository.delete(id);
+    const response = await this.transferRepository.delete(id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
     return response;
   }
 
@@ -68,56 +83,66 @@ export class TransferService {
 
   async create(values: CreateTransferDto[], id: string) {
     if (values.length) {
-      for (const item of values) {
-        const product = await this.createNewProduct(
-          item.product,
-          item.count,
-          item.to,
-        );
-        const data = { ...item, product, transferer: id };
-        const response = this.transferRepository
-          .createQueryBuilder()
-          .insert()
-          .into(Transfer)
-          .values(data as unknown as Transfer)
-          .returning('id')
-          .execute();
-      }
+      await Promise.all(
+        values.map(async (value) => {
+          await this.takeProduct(value.product, value.count);
+          await this.transferRepository
+            .createQueryBuilder()
+            .insert()
+            .into(Transfer)
+            .values({ ...value, transferer: id } as unknown as Transfer)
+            .returning('id')
+            .execute();
+        }),
+      );
     }
-    return 'Successfully transferred';
   }
-  async createNewProduct(
-    id: string,
-    count: number,
-    filial: string,
-  ): Promise<string> {
-    const product = await this.productService.getOne(id);
+
+  async takeProduct(id: string, count: number) {
+    const product = await this.productService.getById(id);
     if (count > product.count) {
       throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
     }
     product.count -= count;
+
     product.setTotalSize();
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(product);
     });
+  }
+
+  async checkTransfer(id: string, userId: string) {
+    const transfer = await this.transferRepository.findOne({
+      where: { id },
+      relations: { product: true, transferer: true, to: true },
+    });
+
+    const product = transfer.product;
     const newProduct: CreateProductDto = {
       code: product.code,
       color: product.color,
-      count: count,
+      count: transfer.count,
       date: product.date,
-      filial,
+      filial: transfer.to.id,
       imgUrl: product.imgUrl,
       model: product.model.id,
       price: product.price,
       comingPrice: product.comingPrice,
+      priceMeter: product.priceMeter,
       shape: product.shape,
       size: product.size,
       style: product.style,
-      totalSize: product.totalSize,
+      totalSize: product.x * product.y * transfer.count,
       x: product.x,
       y: product.y,
     };
-    const result = await this.productService.create([newProduct]);
-    return result.raw[0].id;
+
+    await this.productService.create([newProduct]);
+
+    const cashier = await this.userService.getOne(userId);
+
+    await this.transferRepository.update(id, { cashier });
+
+    return 'Ok';
   }
 }

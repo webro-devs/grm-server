@@ -1,4 +1,5 @@
 enum UserRoleEnum {
+  CLIENT = 0,
   SELLER = 1,
   CASHIER = 2,
   MANAGER = 3,

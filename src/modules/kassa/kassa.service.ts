@@ -1,14 +1,13 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IPaginationOptions,
   Pagination,
   paginate,
 } from 'nestjs-typeorm-paginate';
-import { FindOptionsWhere } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 
 import { Kassa } from './kassa.entity';
-import { KassaRepository } from './kassa.repository';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
 import { CashFlowEnum } from '../../infra/shared/enum';
 import { FilialService } from '../filial/filial.service';
@@ -17,7 +16,7 @@ Injectable();
 export class KassaService {
   constructor(
     @InjectRepository(Kassa)
-    private readonly kassaRepository: KassaRepository,
+    private readonly kassaRepository: Repository<Kassa>,
     private readonly filialService: FilialService,
   ) {}
 
@@ -31,20 +30,21 @@ export class KassaService {
   }
 
   async getById(id: string) {
-    const data = await this.kassaRepository.findOne({ where: { id } });
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+    const data = await this.kassaRepository
+      .findOne({ where: { id } })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
     return data;
   }
   async getOne(id: string) {
-    const data = await this.kassaRepository.findOne({
-      where: { id },
-    });
-
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+    const data = await this.kassaRepository
+      .findOne({
+        where: { id },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
 
     return data;
   }
@@ -70,7 +70,9 @@ export class KassaService {
   }
 
   async deleteOne(id: string) {
-    const response = await this.kassaRepository.delete(id);
+    const response = await this.kassaRepository.delete(id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
     return response;
   }
 
@@ -104,9 +106,9 @@ export class KassaService {
     const data = await this.kassaRepository.findOne({
       where: { id },
     });
-    const comingSum = +data.totalSum;
-    const goingSum = +data.expenditure;
-    const sellingSize = +data.totalSize;
+    const comingSum = data.totalSum;
+    const goingSum = data.expenditureBoss + data.expenditureShop;
+    const sellingSize = data.totalSize;
     return { comingSum, goingSum, sellingSize };
   }
 
@@ -116,15 +118,53 @@ export class KassaService {
     });
 
     if (data.length) {
-      const comingSum = data.map((d) => +d.totalSum).reduce((a, b) => a + b);
-      const goingSum = data.map((d) => +d.expenditure).reduce((a, b) => a + b);
-      const sellingSize = data.map((d) => +d.totalSize).reduce((a, b) => a + b);
-      const additionalProfitTotalSum = data
-        .map((d) => +d.additionalProfitTotalSum)
+      const comingSum = data.map((d) => d.totalSum).reduce((a, b) => a + b);
+
+      const goingSumBoss = data
+        .map((d) => d.expenditureBoss)
         .reduce((a, b) => a + b);
-      return { comingSum, goingSum, sellingSize, additionalProfitTotalSum };
+
+      const goingSumShop = data
+        .map((d) => d.expenditureShop)
+        .reduce((a, b) => a + b);
+
+      const sellingSize = data.map((d) => d.totalSize).reduce((a, b) => a + b);
+
+      const cashFlowSumBoss = data
+        .map((d) => d.cashFlowSumBoss)
+        .reduce((a, b) => a + b);
+
+      const cashFlowSumShop = data
+        .map((d) => d.cashFlowSumShop)
+        .reduce((a, b) => a + b);
+
+      const additionalProfitTotalSum = data
+        .map((d) => d.additionalProfitTotalSum)
+        .reduce((a, b) => a + b);
+
+      const plasticSum = data.map((d) => d.plasticSum).reduce((a, b) => a + b);
+
+      return {
+        comingSum,
+        goingSumBoss,
+        goingSumShop,
+        sellingSize,
+        additionalProfitTotalSum,
+        cashFlowSumBoss,
+        cashFlowSumShop,
+        plasticSum,
+      };
     } else {
-      return { comingSum: 0, goingSum: 0, sellingSize: 0 };
+      return {
+        comingSum: 0,
+        goingSumBoss: 0,
+        goingSumShop: 0,
+        sellingSize: 0,
+        additionalProfitTotalSum: 0,
+        cashFlowSumBoss: 0,
+        cashFlowSumShop: 0,
+        plasticSum: 0,
+      };
     }
   }
 
@@ -135,9 +175,16 @@ export class KassaService {
       where.filial = {
         id: filial.id,
       };
-      const { comingSum, goingSum, sellingSize } =
+      const { comingSum, goingSumShop, goingSumBoss, sellingSize, plasticSum } =
         await this.kassaSumByFilialAndRange(where);
-      result.push({ ...filial, comingSum, goingSum, sellingSize });
+      result.push({
+        ...filial,
+        comingSum,
+        goingSumShop,
+        goingSumBoss,
+        sellingSize,
+        plasticSum,
+      });
     }
     return result;
   }

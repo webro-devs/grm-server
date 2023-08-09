@@ -5,12 +5,12 @@ import { Transfer } from './transfer.entity';
 import { TransferService } from './transfer.service';
 import { TransferController } from './transfer.controller';
 import { ProductModule } from '../product/product.module';
-import { TransferRepository } from './transfer.repository';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Transfer]), ProductModule],
+  imports: [TypeOrmModule.forFeature([Transfer]), ProductModule, UserModule],
   controllers: [TransferController],
-  providers: [TransferService, TransferRepository],
-  exports: [TransferService, TransferRepository],
+  providers: [TransferService],
+  exports: [TransferService],
 })
 export class TransferModule {}

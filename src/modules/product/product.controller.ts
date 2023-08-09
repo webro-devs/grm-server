@@ -11,6 +11,7 @@ import {
   Get,
   Query,
   Req,
+  Put,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import {
@@ -20,11 +21,18 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 
-import { CreateProductDto, UpdateProductDto } from './dto';
+import {
+  CreateProductDto,
+  UpdateMagazinProductDto,
+  UpdateProductDto,
+} from './dto';
 import { Product } from './product.entity';
 import { ProductService } from './product.service';
 import { ProductQueryDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRoleEnum } from '../../infra/shared/enum';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Product')
 @Controller('product')
@@ -41,14 +49,28 @@ export class ProductController {
     @Query() query: ProductQueryDto,
     @Req() req,
   ) {
-    try {
-      return await this.productService.getAll(
-        { limit: query.limit, page: query.page, route },
-        req.where,
-      );
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.productService.getAll(
+      { limit: query.limit, page: query.page, route },
+      req.where,
+    );
+  }
+
+  @Public()
+  @Get('/internet-shop')
+  @ApiOperation({ summary: 'Method: returns all internet shop products' })
+  @ApiOkResponse({
+    description: 'The internet shop products were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getDataFOrInternetShop(
+    @Route() route: string,
+    @Query() query: ProductQueryDto,
+    @Req() req,
+  ) {
+    return await this.productService.getAllInInternetShop(
+      { limit: query.limit, page: query.page, route },
+      { ...req.where, isInternetShop: true },
+    );
   }
 
   @Get('/remaining-products')
@@ -88,11 +110,23 @@ export class ProductController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateProductDto[]) {
-    try {
-      return await this.productService.create(data);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.productService.create(data);
+  }
+
+  @Patch('/internet-product-status')
+  @Roles(UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.BOSS)
+  @ApiOperation({ summary: 'Method: updating product isInternetShop' })
+  @ApiOkResponse({
+    description: 'isInternetShop was changed',
+  })
+  @HttpCode(HttpStatus.OK)
+  async changeInternetProductStatus(
+    @Body() { isInternetProduct, ids },
+  ): Promise<UpdateResult> {
+    return await this.productService.changeIsInternetShop(
+      ids,
+      isInternetProduct,
+    );
   }
 
   @Patch('/:id')
@@ -105,11 +139,21 @@ export class ProductController {
     @Body() positionData: UpdateProductDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    try {
-      return await this.productService.change(positionData, id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.productService.change(positionData, id);
+  }
+
+  @Put('/internet-product/:id')
+  @Roles(UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.BOSS)
+  @ApiOperation({ summary: 'Method: updating product internet product' })
+  @ApiOkResponse({
+    description: 'Product was changed',
+  })
+  @HttpCode(HttpStatus.OK)
+  async changeInternetProduct(
+    @Body() data: UpdateMagazinProductDto,
+    @Param('id') id: string,
+  ): Promise<UpdateResult> {
+    return await this.productService.changeMagazinProduct(data, id);
   }
 
   @Delete('/:id')
@@ -119,10 +163,6 @@ export class ProductController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-    try {
-      return await this.productService.deleteOne(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.productService.deleteOne(id);
   }
 }

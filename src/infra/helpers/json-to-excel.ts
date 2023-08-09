@@ -1,4 +1,4 @@
-const json_parser = (data) => {
+const jsonParser = (data) => {
   const result = data.flatMap(({ title: collection, models }) =>
     models.flatMap(({ title: model, products }) =>
       products.map(({ color, size, count }) => ({
@@ -14,4 +14,4 @@ const json_parser = (data) => {
   return result;
 };
 
-export default json_parser;
+export default jsonParser;

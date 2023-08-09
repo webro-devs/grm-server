@@ -3,6 +3,7 @@ import { KassaService } from '../kassa/kassa.service';
 import { FilialService } from '../filial/filial.service';
 import { ProductService } from '../product/product.service';
 import { CollectionService } from '../collection/collection.service';
+import { ClientOrderService } from '../client-order/client-order.service';
 
 Injectable();
 export class AccountingService {
@@ -12,6 +13,7 @@ export class AccountingService {
     private readonly filialService: FilialService,
     private readonly productService: ProductService,
     private readonly collectionService: CollectionService,
+    private readonly clientOrderService: ClientOrderService,
   ) {}
 
   async getFullAccounting(where) {
@@ -22,8 +24,15 @@ export class AccountingService {
       where.filial = {
         id: filial.id,
       };
-      const { comingSum, goingSum, sellingSize, additionalProfitTotalSum } =
-        await this.kassaService.kassaSumByFilialAndRange(where);
+      const {
+        comingSum,
+        goingSumBoss,
+        goingSumShop,
+        sellingSize,
+        additionalProfitTotalSum,
+        cashFlowSumBoss,
+        cashFlowSumShop,
+      } = await this.kassaService.kassaSumByFilialAndRange(where);
       const { remainingSize, remainingSum } =
         await this.productService.remainingProducts({
           filial: { id: filial.id },
@@ -34,10 +43,10 @@ export class AccountingService {
         remainingSize,
         remainingSum,
         sellingSize,
-        kassaSum: 0,
+        kassaSum: comingSum - additionalProfitTotalSum - cashFlowSumShop,
         sellingSum: comingSum,
-        goingSum,
-        profit: 0,
+        goingSumShop,
+        goingSumBoss,
       });
     }
     return result;
@@ -55,6 +64,11 @@ export class AccountingService {
 
   async getKassaSumForAllFilialByRange(where) {
     const data = await this.kassaService.kassaSumAllFilialByRange(where);
+    return data;
+  }
+
+  async getInternetShopSum(where) {
+    const data = await this.clientOrderService.getInternetShopSumByRange(where);
     return data;
   }
 }

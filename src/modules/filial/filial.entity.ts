@@ -3,6 +3,7 @@ import { Kassa } from '../kassa/kassa.entity';
 import { User } from '../user/user.entity';
 import { Product } from '../product/product.entity';
 import { Action } from '../action/action.entity';
+import { ClientOrder } from '../client-order/client-order.entity';
 
 @Entity('filial')
 export class Filial {
@@ -32,4 +33,7 @@ export class Filial {
 
   @OneToMany(() => Action, (action) => action.filial)
   actions: Action[];
+
+  @OneToMany(() => ClientOrder, (clientOrder) => clientOrder.filial)
+  clientOrders: ClientOrder[];
 }

@@ -18,13 +18,13 @@ class CreateCashflowDto {
   @IsString()
   readonly type: CashFlowEnum;
 
-  @ApiProperty({
-    description: `date`,
-    example: '2023-05-02 08:10:23.726769',
-  })
-  @IsOptional()
-  @IsString()
-  readonly date: string;
+  // @ApiProperty({
+  //   description: `date`,
+  //   example: '2023-05-02 08:10:23.726769',
+  // })
+  // @IsOptional()
+  // @IsString()
+  // readonly date: string;
 
   @ApiProperty({
     description: `comment`,
@@ -33,6 +33,15 @@ class CreateCashflowDto {
   @IsNotEmpty()
   @IsString()
   readonly comment: string;
+
+  @ApiProperty({
+    description: `title`,
+    example: 'Магазин Расход',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  readonly title: string;
 
   @ApiProperty({
     description: `kassa id`,

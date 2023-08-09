@@ -10,6 +10,7 @@ import {
   Param,
   Get,
   Query,
+  Req,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import {
@@ -19,7 +20,12 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 
-import { CreateUserDto, UpdateUserDto } from './dto';
+import {
+  CreateClientDto,
+  CreateUserDto,
+  UpdateClientDto,
+  UpdateUserDto,
+} from './dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { PaginationDto } from '../../infra/shared/dto';
@@ -38,11 +44,7 @@ export class UserController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
-    try {
-      return await this.userService.getAll({ ...query, route });
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.userService.getAll({ ...query, route });
   }
 
   @Get('/:id')
@@ -55,6 +57,16 @@ export class UserController {
     return this.userService.getOne(id);
   }
 
+  @Get('/client/:id')
+  @ApiOperation({ summary: 'Method: returns single client by id' })
+  @ApiOkResponse({
+    description: 'The client was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getClientById(@Param('id') id: string): Promise<User> {
+    return this.userService.getClientById(id);
+  }
+
   @Get('/filial/:filialId')
   @ApiOperation({ summary: 'Method: returns users with their selling result' })
   @ApiOkResponse({
@@ -62,11 +74,7 @@ export class UserController {
   })
   @HttpCode(HttpStatus.OK)
   async getUserSelling(@Param('filialId') id: string): Promise<User[]> {
-    try {
-      return this.userService.getUsersWithSelling(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return this.userService.getUsersWithSelling(id);
   }
 
   @Post('/')
@@ -76,11 +84,41 @@ export class UserController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateUserDto) {
-    try {
-      return await this.userService.create(data);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.userService.create(data);
+  }
+
+  @Public()
+  @Post('/client')
+  @ApiOperation({ summary: 'Method: creates new client' })
+  @ApiCreatedResponse({
+    description: 'The client was created successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async createClient(@Body() data: CreateClientDto) {
+    return await this.userService.createClient(data);
+  }
+
+  @Post('/add-favorite-product/:productId')
+  @ApiOperation({ summary: 'Method: add favorite product' })
+  @ApiCreatedResponse({
+    description: 'The client was created successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async addFavoriteProduct(@Param('productId') productId: string, @Req() req) {
+    return await this.userService.addFavoriteProduct(req.user.id, productId);
+  }
+
+  @Post('/remove-favorite-product/:productId')
+  @ApiOperation({ summary: 'Method: remove favorite product' })
+  @ApiCreatedResponse({
+    description: 'The client was created successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async removeFavoriteProduct(
+    @Param('productId') productId: string,
+    @Req() req,
+  ) {
+    return await this.userService.removeFavoriteProduct(req.user.id, productId);
   }
 
   @Patch('/:id')
@@ -93,11 +131,20 @@ export class UserController {
     @Body() positionData: UpdateUserDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    try {
-      return await this.userService.change(positionData, id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.userService.change(positionData, id);
+  }
+
+  @Patch('/client/:id')
+  @ApiOperation({ summary: 'Method: updating client' })
+  @ApiOkResponse({
+    description: 'Client was changed',
+  })
+  @HttpCode(HttpStatus.OK)
+  async changeClient(
+    @Body() data: UpdateClientDto,
+    @Param('id') id: string,
+  ): Promise<UpdateResult> {
+    return await this.userService.updateClient(id, data);
   }
 
   @Delete('/:id')
@@ -107,10 +154,6 @@ export class UserController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-    try {
-      return await this.userService.deleteOne(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.userService.deleteOne(id);
   }
 }

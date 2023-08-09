@@ -47,11 +47,7 @@ export class FileController {
   })
   @HttpCode(HttpStatus.OK)
   async get(@Query('model') model: string) {
-    try {
-      return await this.fileService.getByModel(model);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.fileService.getByModel(model);
   }
 
   @Public()
@@ -62,11 +58,7 @@ export class FileController {
   })
   @HttpCode(HttpStatus.OK)
   async create(@Body() data: CreateFileDto): Promise<File> {
-    try {
-      return await this.fileService.create(data);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.fileService.create(data);
   }
 
   @Patch('/:id')
@@ -79,11 +71,7 @@ export class FileController {
     @Body() data: UpdateFileDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    try {
-      return await this.fileService.update(data, id);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.fileService.update(data, id);
   }
 
   @Delete('/:id')
@@ -93,10 +81,6 @@ export class FileController {
   })
   @HttpCode(HttpStatus.OK)
   async name(@Param('id') id: string) {
-    try {
-      return await this.fileService.delete(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.fileService.delete(id);
   }
 }

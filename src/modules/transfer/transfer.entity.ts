@@ -22,6 +22,9 @@ export class Transfer {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;
 
+  @Column({ type: 'boolean', default: false })
+  isChecked: boolean = false;
+
   @ManyToOne(() => Filial, (filial) => filial)
   @JoinColumn()
   from: Filial;
@@ -34,7 +37,11 @@ export class Transfer {
   @JoinColumn()
   product: Product;
 
-  @ManyToOne(() => User, (user) => user)
+  @ManyToOne(() => User, (user) => user.transfers)
   @JoinColumn()
   transferer: User;
+
+  @ManyToOne(() => User, (user) => user.transferCashier)
+  @JoinColumn()
+  cashier: User;
 }

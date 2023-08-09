@@ -1,5 +1,5 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { FindOptionsWhere } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import {
   IPaginationOptions,
   Pagination,
@@ -8,14 +8,13 @@ import {
 
 import { UpdateStyleDto, CreateStyleDto } from './dto';
 import { Style } from './style.entity';
-import { StyleRepository } from './style.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class StyleService {
   constructor(
     @InjectRepository(Style)
-    private readonly styleRepository: StyleRepository,
+    private readonly styleRepository: Repository<Style>,
   ) {}
 
   async getAll(
@@ -30,19 +29,21 @@ export class StyleService {
   }
 
   async getOne(id: string) {
-    const data = await this.styleRepository.findOne({
-      where: { id },
-    });
-
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+    const data = await this.styleRepository
+      .findOne({
+        where: { id },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
 
     return data;
   }
 
   async deleteOne(id: string) {
-    const response = await this.styleRepository.delete(id);
+    const response = await this.styleRepository.delete(id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
     return response;
   }
 

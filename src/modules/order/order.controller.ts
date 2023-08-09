@@ -39,11 +39,7 @@ export class OrderController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
-    try {
-      return await this.orderService.getAll({ ...query, route });
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.orderService.getAll({ ...query, route });
   }
 
   @Get('/:id')
@@ -56,6 +52,16 @@ export class OrderController {
     return this.orderService.getById(id);
   }
 
+  @Get('order-by-kassa/:id')
+  @ApiOperation({ summary: 'Method: returns single order by id' })
+  @ApiOkResponse({
+    description: 'The order was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getOrderByKassa(@Param('id') id: string) {
+    return this.orderService.getByKassa(id);
+  }
+
   @Post('/')
   @ApiOperation({ summary: 'Method: creates new order' })
   @ApiCreatedResponse({
@@ -63,11 +69,7 @@ export class OrderController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateOrderDto, @Req() request) {
-    try {
-      return await this.orderService.create(data, request.user.id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.orderService.create(data, request.user.id);
   }
 
   @Patch('/:id')
@@ -80,11 +82,7 @@ export class OrderController {
     @Body() positionData: UpdateOrderDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    try {
-      return await this.orderService.change(positionData, id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.orderService.change(positionData, id);
   }
 
   @Patch('/isActive/:id')
@@ -103,11 +101,7 @@ export class OrderController {
     @Param('id') id: string,
     @Req() request,
   ): Promise<UpdateResult> {
-    try {
-      return await this.orderService.checkOrder(id, request.user.id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.orderService.checkOrder(id, request.user.id);
   }
 
   @Delete('/:id')
@@ -117,24 +111,26 @@ export class OrderController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-    try {
-      return await this.orderService.deleteOne(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.orderService.deleteOne(id);
   }
 
-  @Patch('/:id')
+  @Patch('/reject/:id')
   @ApiOperation({ summary: 'Method: reject order' })
   @ApiOkResponse({
     description: 'Order was rejected',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async reject(@Param('id') id: string) {
-    try {
-      return await this.orderService.rejectOrder(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.orderService.rejectOrder(id);
+  }
+
+  @Patch('/return/:id')
+  @ApiOperation({ summary: 'Method: returns order' })
+  @ApiOkResponse({
+    description: 'Order was returned',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async returnOrderProduct(@Param('id') id: string, @Req() req) {
+    return await this.orderService.returnOrder(id, req.user.id);
   }
 }

@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 
-import configuration from './config';
+import configuration from '../config';
 import { CollectionModule } from './modules/collection/collection.module';
 import { FilialModule } from './modules/filial/filial.module';
 import { KassaModule } from './modules/kassa/kassa.module';
@@ -24,6 +24,10 @@ import { TransferModule } from './modules/transfer/transfer.module';
 import { ColorModule } from './modules/color/color.module';
 import { ExcelModule } from './modules/excel/excel.module';
 import { AccountingModule } from './modules/accounting/accounting.module';
+import { ClientRequestModule } from './modules/client-request/client-request.module';
+import { ClientOrderModule } from './modules/client-order/client-order.module';
+import { MagazinInfoModule } from './modules/magazin-info/magazin-info.module';
+import { DataSenderModule } from './modules/data-sender/data-sender.module';
 
 @Module({
   imports: [
@@ -44,13 +48,17 @@ import { AccountingModule } from './modules/accounting/accounting.module';
     AccountingModule,
     AuthModule,
     CashflowModule,
+    ClientOrderModule,
+    ClientRequestModule,
     CollectionModule,
     ColorModule,
+    DataSenderModule,
     ExcelModule,
     FileModule,
     FilialModule,
     GrmSocketModule,
     KassaModule,
+    MagazinInfoModule,
     ModelModule,
     OrderModule,
     PartiyaModule,

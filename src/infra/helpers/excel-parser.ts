@@ -1,4 +1,4 @@
-const ExcelDataParser = async (data) => {
+const excelDataParser = async (data) => {
   const transformedObj = data.reduce((acc, curr) => {
     const { Collection, Model, Size, Color, Code, Count, Img, M2 } = curr;
     const datas = {
@@ -51,4 +51,4 @@ const ExcelDataParser = async (data) => {
   return transformedObj;
 };
 
-export default ExcelDataParser;
+export default excelDataParser;

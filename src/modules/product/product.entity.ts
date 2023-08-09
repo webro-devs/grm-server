@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -11,6 +12,9 @@ import { Filial } from '../filial/filial.entity';
 import { Partiya } from '../partiya/partiya.entity';
 import { Model } from '../model/model.entity';
 import { File } from '../file/file.entity';
+import { User } from '../user/user.entity';
+import { ClientOrder } from '../client-order/client-order.entity';
+import { ColumnNumericTransformer } from '../../infra/helpers';
 
 @Entity('product')
 export class Product {
@@ -32,10 +36,28 @@ export class Product {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;
 
-  @Column({ nullable: true, type: 'decimal' })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   price: number;
 
-  @Column({ nullable: true, type: 'decimal' })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
+  priceMeter: number;
+
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   comingPrice: number;
 
   @Column()
@@ -44,17 +66,56 @@ export class Product {
   @Column()
   size: string;
 
-  @Column({ nullable: true, type: 'decimal' })
+  @Column('numeric', {
+    nullable: true,
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+  })
   x: number;
 
-  @Column({ nullable: true, type: 'decimal' })
+  @Column('numeric', {
+    nullable: true,
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+  })
   y: number;
 
-  @Column({ nullable: true, type: 'decimal' })
+  @Column('numeric', {
+    nullable: true,
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+  })
   totalSize: number;
 
   @Column()
   style: string;
+
+  @Column({ type: 'boolean', default: false })
+  isInternetShop: boolean = false;
+
+  @Column({ nullable: true, type: 'varchar' })
+  weight: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  pileHeight: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  basedDensity: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  weftdensity: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  pileDensity: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  manufacturer: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  dorsalMaterial: string;
 
   @OneToMany(() => Order, (order) => order.product)
   orders: Order[];
@@ -70,6 +131,15 @@ export class Product {
   @ManyToOne(() => Partiya, (partiya) => partiya.products)
   @JoinColumn()
   partiya: Partiya;
+
+  @ManyToMany(() => User, (user) => user.favoriteProducts, {
+    onDelete: 'CASCADE',
+    cascade: true,
+  })
+  favoriteUsers: User[];
+
+  @OneToMany(() => ClientOrder, (clientOrder) => clientOrder.product)
+  clientOrders: ClientOrder[];
 
   public setTotalSize() {
     this.totalSize = +this.x * +this.y * this.count;

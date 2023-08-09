@@ -1,5 +1,5 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { FindOptionsWhere } from 'typeorm';
+import { NotFoundException, Injectable } from '@nestjs/common';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import {
   IPaginationOptions,
   Pagination,
@@ -8,15 +8,14 @@ import {
 
 import { UpdatePositionDto, CreatePositionDto } from './dto';
 import { Position } from './position.entity';
-import { PositionRepository } from './position.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class PositionService {
   constructor(
     @InjectRepository(Position)
-    private readonly positionRepository: PositionRepository,
-  ) { }
+    private readonly positionRepository: Repository<Position>,
+  ) {}
 
   async getAll(
     options: IPaginationOptions,
@@ -30,22 +29,21 @@ export class PositionService {
   }
 
   async getOne(id: string) {
-    const data = await this.positionRepository.findOne({
-      // relations: {
-      //   users: {},
-      // },
-      where: { id },
-    });
-
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+    const data = await this.positionRepository
+      .findOne({
+        where: { id },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
 
     return data;
   }
 
   async deleteOne(id: string) {
-    const response = await this.positionRepository.delete(id);
+    const response = await this.positionRepository.delete(id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
     return response;
   }
 

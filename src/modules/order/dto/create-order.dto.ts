@@ -32,20 +32,20 @@ class CreateOrderDto {
   readonly price: number;
 
   @ApiProperty({
-    description: `isPlasticPayment`,
-    example: true,
+    description: `plasticSum`,
+    example: 1000,
   })
   @IsOptional()
-  @IsBoolean()
-  readonly isPlasticPayment: boolean;
-
-  @ApiProperty({
-    description: `price`,
-    example: 1500,
-  })
-  @IsNotEmpty()
   @IsNumber()
-  readonly count: number;
+  readonly plasticSum: number;
+
+  // @ApiProperty({
+  //   description: `price`,
+  //   example: 1500,
+  // })
+  // @IsNotEmpty()
+  // @IsNumber()
+  // readonly count: number;
 
   @ApiProperty({
     description: `date`,

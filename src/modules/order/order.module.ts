@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Order } from './order.entity';
-import { OrderRepository } from './order.repository';
 import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 import { ProductModule } from '../product/product.module';
 import { KassaModule } from '../kassa/kassa.module';
 import { ActionModule } from '../action/action.module';
+import { CashflowModule } from '../cashflow/cashflow.module';
 
 @Module({
   imports: [
@@ -15,9 +15,10 @@ import { ActionModule } from '../action/action.module';
     ProductModule,
     KassaModule,
     ActionModule,
+    CashflowModule,
   ],
   controllers: [OrderController],
-  providers: [OrderService, OrderRepository],
-  exports: [OrderService, OrderRepository],
+  providers: [OrderService],
+  exports: [OrderService],
 })
 export class OrderModule {}

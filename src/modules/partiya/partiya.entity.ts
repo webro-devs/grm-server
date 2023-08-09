@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Excel } from '../excel/excel.entity';
 import { Product } from '../product/product.entity';
+import { ColumnNumericTransformer } from '../../infra/helpers';
 
 @Entity('partiya')
 export class Partiya {
@@ -16,27 +17,54 @@ export class Partiya {
   @Column()
   country: string;
 
-  @Column({ type: 'decimal' })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   cost: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;
 
-  @Column({ type: 'decimal' })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   expense: number;
 
-  @Column({ type: 'decimal' })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   orderQuantity: number;
 
-  @Column({ type: 'decimal' })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   price: number;
 
-  @Column({ type: 'decimal' })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   sum: number;
 
   @OneToMany(() => Product, (product) => product.partiya)
   products: Product[];
 
-  @OneToOne(() => Excel, (excel) => excel.partiya)
+  @OneToOne(() => Excel, (excel) => excel.partiya, {
+    onDelete: 'SET NULL',
+  })
   excel: Excel;
 }

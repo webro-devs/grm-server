@@ -15,7 +15,10 @@ export class Excel {
   @Column()
   path: string;
 
-  @OneToOne(() => Partiya, (partiya) => partiya.excel)
+  @OneToOne(() => Partiya, (partiya) => partiya.excel, {
+    onDelete: 'CASCADE',
+    cascade: true,
+  })
   @JoinColumn()
   partiya: Partiya;
 }

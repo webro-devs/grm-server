@@ -3,18 +3,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as XLSX from 'xlsx';
 
 import { Excel } from './excel.entity';
-import { ExcelRepository } from './excel.repository';
-import { delete_file, ExcelDataParser } from 'src/infra/helpers';
+import { deleteFile, excelDataParser } from 'src/infra/helpers';
 import { ValidateExcel } from 'src/infra/validators';
 import { FileService } from '../file/file.service';
 import { createWriteStream } from 'fs';
 import { ActionService } from '../action/action.service';
+import { Repository } from 'typeorm';
 
 Injectable();
 export class ExcelService {
   constructor(
     @InjectRepository(Excel)
-    private readonly excelRepository: ExcelRepository,
+    private readonly excelRepository: Repository<Excel>,
     private readonly fileService: FileService,
     private readonly actionService: ActionService,
   ) {}
@@ -35,7 +35,7 @@ export class ExcelService {
 
     ValidateExcel(data, path);
 
-    return ExcelDataParser(await this.setImg(data));
+    return excelDataParser(await this.setImg(data));
   }
 
   async getPartiyaExcel(path: string) {
@@ -46,7 +46,7 @@ export class ExcelService {
 
     const data: any[] = XLSX.utils.sheet_to_json(worksheet);
 
-    return ExcelDataParser(data);
+    return excelDataParser(data);
   }
 
   async jsonToExcel(data, id: string) {
@@ -56,7 +56,7 @@ export class ExcelService {
 
     if (!excel || !excel?.path)
       throw new HttpException('data not found', HttpStatus.BAD_REQUEST);
-    delete_file(excel.path);
+    deleteFile(excel.path);
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(data);
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');

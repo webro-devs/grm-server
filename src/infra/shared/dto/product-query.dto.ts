@@ -1,16 +1,31 @@
-import { isNumber, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  isArray,
+  isNumber,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { BadRequestException } from '@nestjs/common';
 
 function parsePaginationQuery({ key, value }: TransformFnParams) {
-  const int = parseInt(value);
+  const int = Number(value);
   if (isNaN(int) || `${int}`.length !== value.length) {
     throw new BadRequestException(
       `${key} should be integer. Or pagination query string may be absent, then the page=1, limit=10 will be used.`,
     );
   }
   return int;
+}
+
+function parseTextToArray({ key, value }: TransformFnParams) {
+  const arr = value ? JSON.parse(value) : '';
+  if (!isArray(arr)) {
+    throw new BadRequestException(`${key} should be array`);
+  }
+  return arr;
 }
 
 class ProductQueryDto {
@@ -36,6 +51,7 @@ class ProductQueryDto {
   })
   @IsOptional()
   @IsNumber()
+  @Transform(parsePaginationQuery)
   readonly startPrice;
 
   @ApiProperty({
@@ -44,6 +60,7 @@ class ProductQueryDto {
   })
   @IsOptional()
   @IsNumber()
+  @Transform(parsePaginationQuery)
   readonly endPrice;
 
   @ApiProperty({
@@ -59,7 +76,8 @@ class ProductQueryDto {
     example: '3x4',
   })
   @IsOptional()
-  @IsString()
+  @IsArray()
+  @Transform(parseTextToArray)
   readonly size;
 
   @ApiProperty({

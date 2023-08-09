@@ -1,6 +1,6 @@
 import { diskStorage } from 'multer';
 
-const MulterStorage = (dest) =>
+const multerStorage = (dest) =>
   diskStorage({
     destination: dest,
     filename: (req, file, cb) => {
@@ -14,4 +14,4 @@ const MulterStorage = (dest) =>
     },
   });
 
-export default MulterStorage;
+export default multerStorage;

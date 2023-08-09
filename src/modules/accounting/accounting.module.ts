@@ -12,9 +12,16 @@ import { ProductModule } from '../product/product.module';
 import { FilialModule } from '../filial/filial.module';
 import { CollectionModule } from '../collection/collection.module';
 import { KassaQueryParserMiddleware } from '../../infra/middleware';
+import { ClientOrderModule } from '../client-order/client-order.module';
 
 @Module({
-  imports: [KassaModule, ProductModule, FilialModule, CollectionModule],
+  imports: [
+    KassaModule,
+    ProductModule,
+    FilialModule,
+    CollectionModule,
+    ClientOrderModule,
+  ],
   controllers: [AccountingController],
   providers: [AccountingService],
   exports: [AccountingService],
@@ -28,6 +35,10 @@ export class AccountingModule implements NestModule {
       },
       {
         path: '/accounting/filial/by-range',
+        method: RequestMethod.GET,
+      },
+      {
+        path: '/accounting/internet-shop/by-range',
         method: RequestMethod.GET,
       },
     );

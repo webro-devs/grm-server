@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { delete_file } from '../helpers';
+import { deleteFile } from '../helpers';
 
 type message = {
   error: boolean;
@@ -74,7 +74,7 @@ const restoreErrors = (path: string) => {
     message.error = true;
 
   if (message.error) {
-    delete_file(path);
+    deleteFile(path);
     throw new HttpException(message, HttpStatus.BAD_REQUEST);
   }
 };

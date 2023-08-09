@@ -1,28 +1,45 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  NotFoundException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IPaginationOptions,
   Pagination,
   paginate,
 } from 'nestjs-typeorm-paginate';
-import { DataSource, EntityManager, FindOptionsWhere } from 'typeorm';
+import {
+  DataSource,
+  EntityManager,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 
 import { Order } from './order.entity';
-import { OrderRepository } from './order.repository';
 import { UpdateOrderDto, CreateOrderDto } from './dto';
 import { UpdateProductDto } from '../product/dto';
 import { ProductService } from '../product/product.service';
 import { KassaService } from '../kassa/kassa.service';
 import { ActionService } from '../action/action.service';
+import {
+  CashFlowEnum,
+  CashflowExpenditureEnum,
+  OrderEnum,
+} from 'src/infra/shared/enum';
+import { CashflowService } from '../cashflow/cashflow.service';
+import { Product } from '../product/product.entity';
 
 Injectable();
 export class OrderService {
   constructor(
     @InjectRepository(Order)
-    private readonly orderRepository: OrderRepository,
+    private readonly orderRepository: Repository<Order>,
     private readonly productService: ProductService,
     private readonly kassaService: KassaService,
     private readonly actionService: ActionService,
+    private readonly cashFlowService: CashflowService,
     private readonly connection: DataSource,
   ) {}
 
@@ -35,13 +52,27 @@ export class OrderService {
   }
 
   async getById(id: string) {
-    const data = await this.orderRepository.findOne({
-      where: { id },
-      relations: { casher: true, seller: true, product: true },
-    });
-    if (!data) {
-      throw new HttpException('Data not found', HttpStatus.NOT_FOUND);
-    }
+    const data = await this.orderRepository
+      .findOne({
+        where: { id },
+        relations: { casher: true, seller: true, product: true, kassa: true },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
+    return data;
+  }
+
+  async getByKassa(id: string) {
+    const data = await this.orderRepository
+      .find({
+        relations: { kassa: true, casher: true, seller: true, product: true },
+        where: { kassa: { id } },
+        order: { date: 'desc' },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
     return data;
   }
 
@@ -52,56 +83,53 @@ export class OrderService {
     });
     if (order.isActive) {
       const kassa = await this.kassaService.getById(order.kassa.id);
-      kassa.totalSum = +kassa.totalSum - order.price;
-      kassa.totalSize =
-        +kassa.totalSize - order.count * (+order.product.x * +order.product.y);
-      if (order.isPlasticPayment) {
-        kassa.plasticSum = +kassa.plasticSum - order.price;
-      }
+      kassa.totalSum = kassa.totalSum - order.price;
+      kassa.totalSize = kassa.totalSize - order.product.x * order.product.y;
+
+      kassa.plasticSum = kassa.plasticSum - order.plasticSum;
+
+      kassa.additionalProfitTotalSum =
+        kassa.additionalProfitTotalSum - order.additionalProfitSum;
+      kassa.netProfitTotalSum = kassa.netProfitTotalSum - order.netProfitSum;
       await this.saveRepo(kassa);
     }
 
     const product = order.product;
-    product.count += order.count;
+    product.count += 1;
     product.setTotalSize();
     await this.saveRepo(product);
 
-    const response = await this.orderRepository.delete(id);
+    const response = await this.orderRepository.delete(id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
     return response;
   }
 
   async change(value: UpdateOrderDto, id: string) {
-    if (value.price || value.count) {
+    if (value.price) {
       const order = await this.orderRepository.findOne({
         where: { id },
         relations: { kassa: true, product: true },
       });
       const kassa = await this.kassaService.getById(order.kassa.id);
 
-      if (value.count) {
-        const product = order.product;
-        const diff = order.count - value.count;
-        product.count += diff;
-        await this.saveRepo(product);
+      value.additionalProfitSum =
+        value.price - order.product.price * order.product.x * order.product.y;
 
-        if (order.isActive) {
-          kassa.totalSize =
-            +kassa.totalSize -
-            order.count * (+order.product.x * +order.product.y);
-          kassa.totalSize =
-            +kassa.totalSize +
-            value.count * (+order.product.x * +order.product.y);
+      if (order.isActive) {
+        kassa.totalSum = kassa.totalSum - order.price;
+        kassa.totalSum = kassa.totalSum + value.price;
 
-          await this.saveRepo(kassa);
+        kassa.additionalProfitTotalSum =
+          kassa.additionalProfitTotalSum - order.additionalProfitSum;
+        kassa.additionalProfitTotalSum =
+          kassa.additionalProfitTotalSum + value.additionalProfitSum;
+
+        if (value.plasticSum) {
+          kassa.plasticSum = kassa.plasticSum - order.plasticSum;
+          kassa.plasticSum = kassa.plasticSum + value.plasticSum;
         }
-      }
-      if (order.isActive && value.price) {
-        kassa.totalSum = +kassa.totalSum - order.price;
-        kassa.totalSum = +kassa.totalSum + value.price;
-        if (order.isPlasticPayment) {
-          kassa.plasticSum = +kassa.plasticSum - order.price;
-          kassa.plasticSum = +kassa.plasticSum + value.price;
-        }
+
         await this.saveRepo(kassa);
       }
     }
@@ -116,15 +144,17 @@ export class OrderService {
 
   async create(value: CreateOrderDto, id: string) {
     const product = await this.productService.getOne(value.product);
-    if (product.count < value.count) {
+    if (product.count < 1) {
       throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
     }
-    product.count = +product.count - value.count;
+    product.count = +product.count - 1;
     product.setTotalSize();
     await this.saveRepo(product);
 
-    const additionalProfitSum = value.price - +product.price * value.count;
-    const netProfitSum = value.count * (product.price - product.comingPrice);
+    const additionalProfitSum =
+      value.price - product.price * product.x * product.y;
+    const netProfitSum =
+      (product.price - product.comingPrice) * product.x * product.y;
 
     const data = { ...value, seller: id, additionalProfitSum, netProfitSum };
     const response = this.orderRepository
@@ -144,33 +174,28 @@ export class OrderService {
     });
 
     const kassa = await this.kassaService.getById(order.kassa.id);
-    kassa.totalSum = +kassa.totalSum + +order.price;
-    kassa.totalSize =
-      +kassa.totalSize + order.count * (+order.product.x * +order.product.y);
-    kassa.netProfitTotalSum = +kassa.netProfitTotalSum + +order.netProfitSum;
-    kassa.additionalProfitTotalSum =
-      +kassa.additionalProfitTotalSum + +order.additionalProfitSum;
 
-    if (order.isPlasticPayment) {
-      kassa.plasticSum = +kassa.plasticSum + +order.price;
-    }
+    kassa.totalSum = kassa.totalSum + order.price;
+
+    kassa.totalSize = kassa.totalSize + order.product.x * order.product.y;
+
+    kassa.netProfitTotalSum = kassa.netProfitTotalSum + order.netProfitSum;
+
+    kassa.additionalProfitTotalSum =
+      kassa.additionalProfitTotalSum + order.additionalProfitSum;
+
+    kassa.plasticSum = kassa.plasticSum + order.plasticSum;
 
     await this.saveRepo(kassa);
 
     const response = await this.orderRepository
       .createQueryBuilder()
       .update()
-      .set({ isActive: true, casher } as unknown as Order)
+      .set({ isActive: OrderEnum.Accept, casher } as unknown as Order)
       .where('id = :id', { id })
       .execute();
 
     return response;
-  }
-
-  async saveRepo(data: any) {
-    await this.connection.transaction(async (manager: EntityManager) => {
-      await manager.save(data);
-    });
   }
 
   async rejectOrder(id: string) {
@@ -179,11 +204,61 @@ export class OrderService {
       relations: { product: true },
     });
 
-    const response = await this.productService.change(
-      { count: data.product.count + data.count } as UpdateProductDto,
+    await this.productService.change(
+      { count: data.product.count + 1 } as UpdateProductDto,
       data.product.id,
     );
 
-    return response;
+    return await this.orderRepository.update(
+      { id },
+      { isActive: OrderEnum.Reject },
+    );
+  }
+
+  async returnOrder(id: string, userId: string) {
+    const order = await this.getById(id);
+    await this.returnProduct(order.product, 1);
+
+    await this.addCashFlow(
+      order.price - order.additionalProfitSum,
+      order.kassa.id,
+      CashflowExpenditureEnum.BOSS,
+      CashFlowEnum.Consumption,
+      userId,
+    );
+
+    await this.addCashFlow(
+      order.additionalProfitSum,
+      order.kassa.id,
+      CashflowExpenditureEnum.SHOP,
+      CashFlowEnum.Consumption,
+      userId,
+    );
+  }
+
+  async addCashFlow(
+    price: number,
+    kassa: string,
+    title: string,
+    type: CashFlowEnum,
+    id: string,
+  ) {
+    await this.cashFlowService.create(
+      { price, comment: 'Возврат товара', casher: '', kassa, title, type },
+      id,
+    );
+  }
+
+  async returnProduct(product: Product, count: number) {
+    product.count += count;
+    await this.connection.transaction(async (manager: EntityManager) => {
+      await manager.save(product);
+    });
+  }
+
+  async saveRepo(data: any) {
+    await this.connection.transaction(async (manager: EntityManager) => {
+      await manager.save(data);
+    });
   }
 }

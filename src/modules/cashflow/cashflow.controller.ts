@@ -32,7 +32,6 @@ import { Cashflow } from './cashflow.entity';
 export class CashflowController {
   constructor(private readonly cashflowService: CashflowService) {}
 
-  // @Public()
   @Get('/')
   @ApiOperation({ summary: 'Method: returns all Cashflows' })
   @ApiOkResponse({
@@ -40,14 +39,9 @@ export class CashflowController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
-    try {
-      return await this.cashflowService.getAll({ ...query, route });
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.cashflowService.getAll({ ...query, route });
   }
 
-  // @Public()
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single cashflow by id' })
   @ApiOkResponse({
@@ -65,11 +59,7 @@ export class CashflowController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateCashflowDto, @Req() request) {
-    try {
-      return await this.cashflowService.create(data, request.user.id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.cashflowService.create(data, request.user.id);
   }
 
   @Patch('/:id')
@@ -82,11 +72,7 @@ export class CashflowController {
     @Body() data: UpdateCashflowDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    try {
-      return await this.cashflowService.change(data, id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.cashflowService.change(data, id);
   }
 
   @Delete('/:id')
@@ -96,10 +82,6 @@ export class CashflowController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-    try {
-      return await this.cashflowService.deleteOne(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.cashflowService.deleteOne(id);
   }
 }

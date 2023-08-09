@@ -50,6 +50,14 @@ class CreateProductDto {
   price: number;
 
   @ApiProperty({
+    description: `Carpet meter price`,
+    example: 20,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  priceMeter: number;
+
+  @ApiProperty({
     description: `Carpet coming price`,
     example: 100,
   })

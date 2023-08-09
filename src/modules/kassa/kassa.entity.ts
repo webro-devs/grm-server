@@ -9,6 +9,7 @@ import {
 import { Order } from '../order/order.entity';
 import { Filial } from '../filial/filial.entity';
 import { Cashflow } from '../cashflow/cashflow.entity';
+import { ColumnNumericTransformer } from '../../infra/helpers';
 
 @Entity('kassa')
 export class Kassa {
@@ -24,23 +25,85 @@ export class Kassa {
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
 
-  @Column({ type: 'decimal', default: 0, nullable: true })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   totalSum: number;
 
-  @Column({ type: 'decimal', default: 0, nullable: true })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   additionalProfitTotalSum: number;
 
-  @Column({ type: 'decimal', default: 0, nullable: true })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   netProfitTotalSum: number;
 
-  @Column({ type: 'decimal', default: 0, nullable: true })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   totalSize: number;
 
-  @Column({ type: 'decimal', default: 0, nullable: true })
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   plasticSum: number;
 
-  @Column({ type: 'decimal', default: 0, nullable: true })
-  expenditure: number;
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
+  cashFlowSumBoss: number;
+
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
+  cashFlowSumShop: number;
+
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
+  expenditureBoss: number;
+
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
+  expenditureShop: number;
+
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
+  internetShopSum: number;
 
   @ManyToOne(() => Filial, (filial) => filial.kassa)
   @JoinColumn()

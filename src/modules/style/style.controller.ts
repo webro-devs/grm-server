@@ -39,11 +39,7 @@ export class StyleController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
-    try {
-      return await this.styleService.getAll({ ...query, route });
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.styleService.getAll({ ...query, route });
   }
 
   @Get('/:id')
@@ -64,11 +60,7 @@ export class StyleController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateStyleDto): Promise<Style> {
-    try {
-      return await this.styleService.create(data);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.styleService.create(data);
   }
 
   @Patch('/:id')
@@ -81,11 +73,7 @@ export class StyleController {
     @Body() data: UpdateStyleDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    try {
-      return await this.styleService.change(data, id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.styleService.change(data, id);
   }
 
   @Delete('/:id')
@@ -95,10 +83,6 @@ export class StyleController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-    try {
-      return await this.styleService.deleteOne(id);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.styleService.deleteOne(id);
   }
 }

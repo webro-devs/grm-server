@@ -1,6 +1,6 @@
 import * as crypto from 'crypto';
 
-function generateId() {
+function idGenerator() {
   const randomString = crypto.randomBytes(16 * 2).toString('hex');
   const timestamp = Date.now().toString();
   const hash = crypto.createHash('sha256');
@@ -10,4 +10,4 @@ function generateId() {
   return '#' + fullHash.substr(0, 11);
 }
 
-export default generateId;
+export default idGenerator;
