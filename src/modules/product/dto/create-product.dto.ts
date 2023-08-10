@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsNumber,
+  IsOptional,
+  IsArray,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreateProductDto {
   @ApiProperty({
@@ -128,6 +134,14 @@ class CreateProductDto {
   @IsOptional()
   @IsNumber()
   totalSize: number;
+
+  @ApiProperty({
+    description: `other imgs`,
+    example: ['link', 'link', 'link'],
+  })
+  @IsOptional()
+  @IsArray()
+  otherImgs: string[];
 }
 
 export default CreateProductDto;

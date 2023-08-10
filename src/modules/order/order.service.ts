@@ -19,7 +19,7 @@ import {
 
 import { Order } from './order.entity';
 import { UpdateOrderDto, CreateOrderDto } from './dto';
-import { UpdateProductDto } from '../product/dto';
+import { CreateProductDto, UpdateProductDto } from '../product/dto';
 import { ProductService } from '../product/product.service';
 import { KassaService } from '../kassa/kassa.service';
 import { ActionService } from '../action/action.service';
@@ -84,7 +84,12 @@ export class OrderService {
     if (order.isActive) {
       const kassa = await this.kassaService.getById(order.kassa.id);
       kassa.totalSum = kassa.totalSum - order.price;
-      kassa.totalSize = kassa.totalSize - order.product.x * order.product.y;
+
+      if (order.x) {
+        kassa.totalSize = kassa.totalSize - order.x * order.product.y;
+      } else {
+        kassa.totalSize = kassa.totalSize - order.product.x * order.product.y;
+      }
 
       kassa.plasticSum = kassa.plasticSum - order.plasticSum;
 
@@ -95,8 +100,15 @@ export class OrderService {
     }
 
     const product = order.product;
-    product.count += 1;
-    product.setTotalSize();
+    if (product.isMetric) {
+      product.x += order.x;
+      product.calculateProductPrice();
+      product.setTotalSize();
+    } else {
+      product.count += 1;
+      product.setTotalSize();
+    }
+
     await this.saveRepo(product);
 
     const response = await this.orderRepository.delete(id).catch(() => {
@@ -113,8 +125,14 @@ export class OrderService {
       });
       const kassa = await this.kassaService.getById(order.kassa.id);
 
-      value.additionalProfitSum =
-        value.price - order.product.price * order.product.x * order.product.y;
+      if (order.product.isMetric) {
+        if (value.x) {
+          value.additionalProfitSum =
+            value.price - order.product.priceMeter * value.x * order.product.y;
+        }
+      } else {
+        value.additionalProfitSum = value.price - order.product.price;
+      }
 
       if (order.isActive) {
         kassa.totalSum = kassa.totalSum - order.price;
@@ -144,17 +162,27 @@ export class OrderService {
 
   async create(value: CreateOrderDto, id: string) {
     const product = await this.productService.getOne(value.product);
+    let additionalProfitSum, netProfitSum;
     if (product.count < 1) {
       throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
     }
-    product.count = +product.count - 1;
-    product.setTotalSize();
-    await this.saveRepo(product);
 
-    const additionalProfitSum =
-      value.price - product.price * product.x * product.y;
-    const netProfitSum =
-      (product.price - product.comingPrice) * product.x * product.y;
+    if (value.x) {
+      product.x = product.x - value.x;
+      product.setTotalSize();
+      product.calculateProductPrice();
+      additionalProfitSum =
+        value.price - product.priceMeter * value.x * product.y;
+      netProfitSum =
+        (product.priceMeter - product.comingPrice) * value.x * product.y;
+    } else {
+      product.count = +product.count - 1;
+      product.setTotalSize();
+      additionalProfitSum = value.price - product.price;
+      netProfitSum =
+        (product.priceMeter - product.comingPrice) * product.x * product.y;
+    }
+    await this.saveRepo(product);
 
     const data = { ...value, seller: id, additionalProfitSum, netProfitSum };
     const response = this.orderRepository
@@ -177,7 +205,11 @@ export class OrderService {
 
     kassa.totalSum = kassa.totalSum + order.price;
 
-    kassa.totalSize = kassa.totalSize + order.product.x * order.product.y;
+    if (order.product.isMetric) {
+      kassa.totalSize = kassa.totalSize + order.x * order.product.y;
+    } else {
+      kassa.totalSize = kassa.totalSize + order.product.x * order.product.y;
+    }
 
     kassa.netProfitTotalSum = kassa.netProfitTotalSum + order.netProfitSum;
 
@@ -203,11 +235,18 @@ export class OrderService {
       where: { id },
       relations: { product: true },
     });
+    const product = data.product;
 
-    await this.productService.change(
-      { count: data.product.count + 1 } as UpdateProductDto,
-      data.product.id,
-    );
+    if (product.isMetric) {
+      product.x += data.x;
+      product.calculateProductPrice();
+      product.setTotalSize();
+    } else {
+      product.count += 1;
+      product.setTotalSize();
+    }
+
+    await this.saveRepo(product);
 
     return await this.orderRepository.update(
       { id },
@@ -216,8 +255,17 @@ export class OrderService {
   }
 
   async returnOrder(id: string, userId: string) {
-    const order = await this.getById(id);
-    await this.returnProduct(order.product, 1);
+    const order = await this.orderRepository.findOne({
+      where: { id },
+      relations: {
+        product: {
+          filial: true,
+        },
+        kassa: true,
+      },
+    });
+
+    await this.returnProduct(order.product, 1, order.x);
 
     await this.addCashFlow(
       order.price - order.additionalProfitSum,
@@ -249,16 +297,44 @@ export class OrderService {
     );
   }
 
-  async returnProduct(product: Product, count: number) {
-    product.count += count;
-    await this.connection.transaction(async (manager: EntityManager) => {
-      await manager.save(product);
-    });
+  async returnProduct(product: Product, count: number, x?: number) {
+    if (product.isMetric) {
+      await this.createCopyProduct(product, x);
+    } else {
+      product.count += count;
+      await this.connection.transaction(async (manager: EntityManager) => {
+        await manager.save(product);
+      });
+    }
   }
 
   async saveRepo(data: any) {
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(data);
     });
+  }
+
+  async createCopyProduct(product: Product, x: number) {
+    const newProduct: CreateProductDto = {
+      code: product.code,
+      color: product.color,
+      count: 1,
+      date: product.date,
+      filial: product.filial.id,
+      imgUrl: product.imgUrl,
+      model: product.model.id,
+      price: product.priceMeter * product.y * x,
+      comingPrice: product.comingPrice,
+      priceMeter: product.priceMeter,
+      shape: product.shape,
+      size: product.size,
+      style: product.style,
+      otherImgs: product.otherImgs,
+      totalSize: x * product.y,
+      x,
+      y: product.y,
+    };
+
+    await this.productService.create([newProduct]);
   }
 }

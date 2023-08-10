@@ -9,7 +9,7 @@ import {
 import { Product } from './product.entity';
 import {
   CreateProductDto,
-  UpdateMagazinProductDto,
+  UpdateInternetShopProductDto,
   UpdateProductDto,
 } from './dto';
 import { sizeParser } from 'src/infra/helpers';
@@ -119,7 +119,10 @@ export class ProductService {
     return response;
   }
 
-  async changeMagazinProduct(value: UpdateMagazinProductDto, id: string) {
+  async changeInternetShopProduct(
+    value: UpdateInternetShopProductDto,
+    id: string,
+  ) {
     const response = await this.productRepository
       .createQueryBuilder()
       .update()
@@ -179,7 +182,7 @@ export class ProductService {
     return result;
   }
 
-  async getAllForTelegraam() {
+  async getAllForTelegram() {
     return await this.productRepository
       .createQueryBuilder()
       .where('isInternetShop = :isInternetShop', { isInternetShop: true })

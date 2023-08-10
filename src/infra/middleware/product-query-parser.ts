@@ -21,6 +21,7 @@ class ProductQueryParserMiddleware implements NestMiddleware {
       modelId,
       filialId,
       partiyaId,
+      isMetric,
     }: ProductQueryDto = req.query;
 
     if (startDate && endDate) {
@@ -81,6 +82,9 @@ class ProductQueryParserMiddleware implements NestMiddleware {
       where.partiya = {
         id: partiyaId,
       };
+    }
+    if (isMetric) {
+      where.isMetric = true;
     }
 
     where.count = MoreThanOrEqual(1);

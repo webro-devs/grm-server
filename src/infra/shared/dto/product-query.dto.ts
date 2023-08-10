@@ -1,6 +1,7 @@
 import {
   IsArray,
   isArray,
+  IsBoolean,
   isNumber,
   IsNumber,
   IsOptional,
@@ -151,8 +152,16 @@ class ProductQueryDto {
     example: true,
   })
   @IsOptional()
-  @IsString()
-  readonly isActive?: string;
+  @IsBoolean()
+  readonly isActive?: boolean;
+
+  @ApiProperty({
+    description: `isMetric`,
+    example: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  readonly isMetric: boolean;
 
   constructor() {
     this.limit = this.limit ? this.limit : 100;
