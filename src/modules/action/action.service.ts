@@ -23,13 +23,13 @@ export class ActionService {
     return paginate<Action>(this.actionRepository, options);
   }
 
-  async create(data, user: string, filial, key: string) {
+  async create(info, user: string, filial, key: string) {
     const value = {
       user,
       filial,
       desc: ActionDescEnum[key],
       type: ActionTypeEnum[key],
-      info: data,
+      info,
     };
 
     const response = await this.actionRepository

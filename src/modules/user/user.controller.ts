@@ -83,8 +83,8 @@ export class UserController {
     description: 'The user was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() data: CreateUserDto) {
-    return await this.userService.create(data);
+  async saveData(@Body() data: CreateUserDto, @Req() req) {
+    return await this.userService.create(data, req.user.id);
   }
 
   @Public()

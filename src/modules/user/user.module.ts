@@ -7,6 +7,7 @@ import { UserController } from './user.controller';
 import { FilialModule } from '../filial/filial.module';
 import { PositionModule } from '../position/position.module';
 import { ProductModule } from '../product/product.module';
+import { ActionModule } from '../action/action.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ProductModule } from '../product/product.module';
     FilialModule,
     PositionModule,
     ProductModule,
+    ActionModule,
   ],
   controllers: [UserController],
   providers: [UserService],
