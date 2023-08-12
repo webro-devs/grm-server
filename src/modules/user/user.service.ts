@@ -28,6 +28,7 @@ import { FilialService } from '../filial/filial.service';
 import { PositionService } from '../position/position.service';
 import { UserRoleEnum } from '../../infra/shared/enum';
 import { ProductService } from '../product/product.service';
+import { ActionService } from '../action/action.service';
 
 Injectable();
 export class UserService {
@@ -36,7 +37,8 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     private readonly filialService: FilialService,
     private readonly positionService: PositionService,
-    private readonly productService:ProductService
+    private readonly productService: ProductService,
+    private readonly actionService: ActionService,
   ) {}
 
   async getAll(
@@ -67,11 +69,11 @@ export class UserService {
       where: { id },
       relations: {
         clientOrders: true,
-        favoriteProducts:{
-          model:{
-            collection:true
-          }
-        }
+        favoriteProducts: {
+          model: {
+            collection: true,
+          },
+        },
       },
     });
 
@@ -102,25 +104,35 @@ export class UserService {
     return data;
   }
 
-  async addFavoriteProduct(userId:string,productId:string){
-    const user = await this.userRepository.findOne({where:{id:userId},relations:{favoriteProducts:true}})
-    const product = await this.productService.getOne(productId)
-    user.favoriteProducts.push(product)
-    await this.userRepository.save(user)
-    return user
+  async addFavoriteProduct(userId: string, productId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: { favoriteProducts: true },
+    });
+    const product = await this.productService.getOne(productId);
+    user.favoriteProducts.push(product);
+    await this.userRepository.save(user);
+    return user;
   }
 
-  async removeFavoriteProduct(userId:string,productId:string){
-    const user = await this.userRepository.findOne({where:{id:userId},relations:{favoriteProducts:true}})
-    user.favoriteProducts = user.favoriteProducts.length ? user.favoriteProducts.filter(p=> p.id != productId) : []
-    await this.userRepository.save(user)
-    return user
+  async removeFavoriteProduct(userId: string, productId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: { favoriteProducts: true },
+    });
+    user.favoriteProducts = user.favoriteProducts.length
+      ? user.favoriteProducts.filter((p) => p.id != productId)
+      : [];
+    await this.userRepository.save(user);
+    return user;
   }
 
   async deleteOne(id: string) {
-    const response = await this.userRepository.delete(id).catch(() => {
-      throw new NotFoundException('data not found');
-    });
+    const response = await this.userRepository
+      .update({ id }, { isActive: false })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
     return response;
   }
 
@@ -135,7 +147,7 @@ export class UserService {
     return response;
   }
 
-  async create(data: CreateUserDto) {
+  async create(data: CreateUserDto, id) {
     const login = idGenerator();
     const filial = data.filial
       ? await this.filialService.getOne(data.filial)
@@ -149,7 +161,9 @@ export class UserService {
       position,
       password,
     });
-    return await this.userRepository.save(user);
+    const response = await this.userRepository.save(user);
+    this.actionService.create(response, id, filial.id, 'user_create');
+    return;
   }
 
   async createClient(data: CreateClientDto) {

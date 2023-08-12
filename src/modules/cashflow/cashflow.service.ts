@@ -9,9 +9,14 @@ import { CreateCashflowDto, UpdateCashflowDto } from './dto';
 
 import { Cashflow } from './cashflow.entity';
 import { KassaService } from '../kassa/kassa.service';
-import { CashFlowEnum, CashflowExpenditureEnum } from '../../infra/shared/enum';
+import {
+  ActionTypeEnum,
+  CashFlowEnum,
+  CashflowExpenditureEnum,
+} from '../../infra/shared/enum';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import CashflowComingEnum from '../../infra/shared/enum/cashflow/cashflow-coming';
+import { ActionService } from '../action/action.service';
 
 Injectable();
 export class CashflowService {
@@ -20,6 +25,7 @@ export class CashflowService {
     private readonly cashflowRepository: Repository<Cashflow>,
     private readonly kassaService: KassaService,
     private readonly connection: DataSource,
+    private readonly actionServise: ActionService,
   ) {}
 
   async getAll(options: IPaginationOptions): Promise<Pagination<Cashflow>> {
@@ -157,7 +163,7 @@ export class CashflowService {
 
   async create(value: CreateCashflowDto, id: string) {
     const data = { ...value, casher: id };
-    const response = this.cashflowRepository
+    const response = await this.cashflowRepository
       .createQueryBuilder()
       .insert()
       .into(Cashflow)
@@ -170,15 +176,39 @@ export class CashflowService {
       kassa.totalSum = kassa.totalSum + value.price;
       if (value.title == CashflowComingEnum.BOSS) {
         kassa.cashFlowSumBoss = kassa.cashFlowSumBoss + value.price;
+        this.actionServise.create(
+          response.raw[0].id,
+          id,
+          kassa.filial.id,
+          'income_boss',
+        );
       } else {
         kassa.cashFlowSumShop = kassa.cashFlowSumShop + value.price;
+        this.actionServise.create(
+          response.raw[0].id,
+          id,
+          kassa.filial.id,
+          'income_market',
+        );
       }
     }
     if (value.type == CashFlowEnum.Consumption) {
       if (value.title == CashflowExpenditureEnum.BOSS) {
         kassa.expenditureBoss = kassa.expenditureBoss + value.price;
+        this.actionServise.create(
+          response.raw[0].id,
+          id,
+          kassa.filial.id,
+          'expend_boss',
+        );
       } else {
         kassa.expenditureShop = kassa.expenditureShop + value.price;
+        this.actionServise.create(
+          response.raw[0].id,
+          id,
+          kassa.filial.id,
+          'expend_market',
+        );
       }
     }
     await this.connection.transaction(async (manager: EntityManager) => {

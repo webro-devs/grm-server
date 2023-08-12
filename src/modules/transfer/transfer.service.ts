@@ -22,6 +22,7 @@ import { Transfer } from './transfer.entity';
 import { ProductService } from '../product/product.service';
 import { CreateProductDto } from '../product/dto';
 import { UserService } from '../user/user.service';
+import { ActionService } from '../action/action.service';
 
 Injectable();
 export class TransferService {
@@ -29,6 +30,7 @@ export class TransferService {
     @InjectRepository(Transfer)
     private readonly transferRepository: Repository<Transfer>,
     private readonly productService: ProductService,
+    private readonly actionService: ActionService,
     private readonly userService: UserService,
     private readonly connection: DataSource,
   ) {}

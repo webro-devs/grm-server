@@ -5,9 +5,10 @@ import { Cashflow } from './cashflow.entity';
 import { CashflowService } from './cashflow.service';
 import { CashflowController } from './cashflow.controller';
 import { KassaModule } from '../kassa/kassa.module';
+import { ActionModule } from '../action/action.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Cashflow]), KassaModule],
+  imports: [TypeOrmModule.forFeature([Cashflow]), KassaModule, ActionModule],
   controllers: [CashflowController],
   providers: [CashflowService],
   exports: [CashflowService],

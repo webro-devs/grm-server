@@ -33,6 +33,9 @@ export class User {
   @Column({ type: 'varchar', nullable: true })
   lastName: string;
 
+  @Column({ type: 'boolean', default: () => true })
+  isActive: boolean;
+
   @Column({ type: 'varchar' })
   login: string;
 

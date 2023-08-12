@@ -6,9 +6,10 @@ import { TransferService } from './transfer.service';
 import { TransferController } from './transfer.controller';
 import { ProductModule } from '../product/product.module';
 import { UserModule } from '../user/user.module';
+import { ActionModule } from '../action/action.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Transfer]), ProductModule, UserModule],
+  imports: [TypeOrmModule.forFeature([Transfer]), ProductModule, UserModule, ActionModule],
   controllers: [TransferController],
   providers: [TransferService],
   exports: [TransferService],
