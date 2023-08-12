@@ -23,7 +23,7 @@ import {
 
 import {
   CreateProductDto,
-  UpdateMagazinProductDto,
+  UpdateInternetShopProductDto,
   UpdateProductDto,
 } from './dto';
 import { Product } from './product.entity';
@@ -150,10 +150,10 @@ export class ProductController {
   })
   @HttpCode(HttpStatus.OK)
   async changeInternetProduct(
-    @Body() data: UpdateMagazinProductDto,
+    @Body() data: UpdateInternetShopProductDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-    return await this.productService.changeMagazinProduct(data, id);
+    return await this.productService.changeInternetShopProduct(data, id);
   }
 
   @Delete('/:id')

@@ -11,7 +11,6 @@ import { Order } from '../order/order.entity';
 import { Filial } from '../filial/filial.entity';
 import { Partiya } from '../partiya/partiya.entity';
 import { Model } from '../model/model.entity';
-import { File } from '../file/file.entity';
 import { User } from '../user/user.entity';
 import { ClientOrder } from '../client-order/client-order.entity';
 import { ColumnNumericTransformer } from '../../infra/helpers';
@@ -32,6 +31,9 @@ export class Product {
 
   @Column()
   imgUrl: string;
+
+  @Column('text', { array: true, nullable: true })
+  otherImgs: string[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;
@@ -96,26 +98,11 @@ export class Product {
   @Column({ type: 'boolean', default: false })
   isInternetShop: boolean = false;
 
-  @Column({ nullable: true, type: 'varchar' })
-  weight: string;
+  @Column({ nullable: true, type: 'text' })
+  internetInfo: string;
 
-  @Column({ nullable: true, type: 'varchar' })
-  pileHeight: string;
-
-  @Column({ nullable: true, type: 'varchar' })
-  basedDensity: string;
-
-  @Column({ nullable: true, type: 'varchar' })
-  weftdensity: string;
-
-  @Column({ nullable: true, type: 'varchar' })
-  pileDensity: string;
-
-  @Column({ nullable: true, type: 'varchar' })
-  manufacturer: string;
-
-  @Column({ nullable: true, type: 'varchar' })
-  dorsalMaterial: string;
+  @Column({ type: 'boolean', default: false })
+  isMetric: boolean = false;
 
   @OneToMany(() => Order, (order) => order.product)
   orders: Order[];
@@ -143,5 +130,9 @@ export class Product {
 
   public setTotalSize() {
     this.totalSize = +this.x * +this.y * this.count;
+  }
+
+  public calculateProductPrice() {
+    this.price = this.x * this.y * this.priceMeter;
   }
 }

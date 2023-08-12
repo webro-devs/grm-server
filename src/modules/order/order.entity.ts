@@ -27,8 +27,13 @@ export class Order {
   })
   price: number;
 
-  // @Column({ type: 'int' })
-  // count: number;
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
+  x: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;

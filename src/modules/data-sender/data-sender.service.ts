@@ -44,7 +44,7 @@ export class DataSenderService implements OnModuleDestroy {
   }
 
   private async sendData() {
-    const [products, count] = await this.productService.getAllForTelegraam();
+    const [products, count] = await this.productService.getAllForTelegram();
     if (count <= this.index) this.index = 0;
     // Your code to send the data goes here
     telegramSender({
