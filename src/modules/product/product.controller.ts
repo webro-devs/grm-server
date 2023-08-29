@@ -45,8 +45,8 @@ export class ProductController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(
-    @Route() route: string,
     @Query() query: ProductQueryDto,
+    @Route() route: string,
     @Req() req,
   ) {
     return await this.productService.getAll(

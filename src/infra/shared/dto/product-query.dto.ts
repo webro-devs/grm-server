@@ -148,24 +148,17 @@ class ProductQueryDto {
   readonly page: number = 1;
 
   @ApiProperty({
-    description: `IsActive`,
-    example: true,
-  })
-  @IsOptional()
-  @IsBoolean()
-  readonly isActive?: boolean;
-
-  @ApiProperty({
     description: `isMetric`,
-    example: true,
+    example: 'true',
+    required: false,
   })
   @IsOptional()
-  @IsBoolean()
-  readonly isMetric: boolean;
+  readonly isMetric: string | boolean;
 
   constructor() {
     this.limit = this.limit ? this.limit : 100;
     this.page = this.page ? this.page : 1;
+    this.isMetric = this.isMetric == 'true' ? true : false;
   }
 }
 
