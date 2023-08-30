@@ -41,6 +41,9 @@ export class CollectionService {
     const data = await this.collectionRepository
       .findOne({
         where: { id },
+        relations: {
+          model: true,
+        },
       })
       .catch(() => {
         throw new NotFoundException('data not found');
