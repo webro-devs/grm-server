@@ -17,11 +17,8 @@ export class StyleService {
     private readonly styleRepository: Repository<Style>,
   ) {}
 
-  async getAll(
-    options: IPaginationOptions,
-    where?: FindOptionsWhere<Style>,
-  ): Promise<Pagination<Style>> {
-    return paginate<Style>(this.styleRepository, options, {
+  async getAll() {
+    return await this.styleRepository.find({
       order: {
         title: 'ASC',
       },

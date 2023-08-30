@@ -28,6 +28,14 @@ export class ModelService {
     });
   }
 
+  async getAllModel() {
+    return await this.modelRepository.find({
+      order: {
+        title: 'ASC',
+      },
+    });
+  }
+
   async getOne(id: string) {
     const data = await this.modelRepository
       .findOne({

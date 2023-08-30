@@ -32,16 +32,6 @@ import { UserRoleEnum } from '../../infra/shared/enum';
 export class ShapeController {
   constructor(private readonly shapeService: ShapeService) {}
 
-  @Get('/')
-  @ApiOperation({ summary: 'Method: returns all Shapes' })
-  @ApiOkResponse({
-    description: 'The Shapes were returned successfully',
-  })
-  @HttpCode(HttpStatus.OK)
-  async getData(@Route() route: string, @Query() query: PaginationDto) {
-    return await this.shapeService.getAll({ ...query, route });
-  }
-
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single Shape by id' })
   @ApiOkResponse({

@@ -28,6 +28,7 @@ import { ClientRequestModule } from './modules/client-request/client-request.mod
 import { ClientOrderModule } from './modules/client-order/client-order.module';
 import { MagazinInfoModule } from './modules/magazin-info/magazin-info.module';
 import { DataSenderModule } from './modules/data-sender/data-sender.module';
+import { CountryModule } from './modules/country/country.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { DataSenderModule } from './modules/data-sender/data-sender.module';
     ClientRequestModule,
     CollectionModule,
     ColorModule,
+    CountryModule,
     DataSenderModule,
     ExcelModule,
     FileModule,

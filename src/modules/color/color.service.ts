@@ -17,11 +17,8 @@ export class ColorService {
     private readonly colorRepository: Repository<Color>,
   ) {}
 
-  async getAll(
-    options: IPaginationOptions,
-    where?: FindOptionsWhere<Color>,
-  ): Promise<Pagination<Color>> {
-    return paginate<Color>(this.colorRepository, options, {
+  async getAll() {
+    return await this.colorRepository.find({
       order: {
         title: 'ASC',
       },

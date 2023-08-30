@@ -33,6 +33,10 @@ export class CollectionService {
     });
   }
 
+  async getAllData() {
+    return await this.collectionRepository.find();
+  }
+
   async getOne(id: string) {
     const data = await this.collectionRepository
       .findOne({

@@ -8,6 +8,14 @@ class CreateColorDto {
   @IsNotEmpty()
   @IsString()
   readonly title: string;
+
+  @ApiProperty({
+    description: `color code`,
+    example: '#fe2389',
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly code: string;
 }
 
 export default CreateColorDto;

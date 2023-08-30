@@ -30,16 +30,6 @@ import { Route } from '../../infra/shared/decorators/route.decorator';
 export class ColorController {
   constructor(private readonly colorService: ColorService) {}
 
-  @Get('/')
-  @ApiOperation({ summary: 'Method: returns all colors' })
-  @ApiOkResponse({
-    description: 'The colors were returned successfully',
-  })
-  @HttpCode(HttpStatus.OK)
-  async getData(@Route() route: string, @Query() query: PaginationDto) {
-    return await this.colorService.getAll({ ...query, route });
-  }
-
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single color by id' })
   @ApiOkResponse({

@@ -32,16 +32,6 @@ import { UserRoleEnum } from '../../infra/shared/enum';
 export class StyleController {
   constructor(private readonly styleService: StyleService) {}
 
-  @Get('/')
-  @ApiOperation({ summary: 'Method: returns all styles' })
-  @ApiOkResponse({
-    description: 'The styles were returned successfully',
-  })
-  @HttpCode(HttpStatus.OK)
-  async getData(@Route() route: string, @Query() query: PaginationDto) {
-    return await this.styleService.getAll({ ...query, route });
-  }
-
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single style by id' })
   @ApiOkResponse({

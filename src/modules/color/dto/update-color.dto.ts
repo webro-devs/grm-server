@@ -8,6 +8,14 @@ class UpdateColorDto {
   @IsOptional()
   @IsString()
   readonly title: string;
+
+  @ApiProperty({
+    description: `color code`,
+    example: '#fe2389',
+  })
+  @IsOptional()
+  @IsString()
+  readonly code: string;
 }
 
 export default UpdateColorDto;

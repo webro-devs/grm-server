@@ -112,6 +112,14 @@ class CreateProductDto {
   model: string;
 
   @ApiProperty({
+    description: `Carpet partiya id`,
+    example: 'uuid',
+  })
+  @IsOptional()
+  @IsString()
+  partiya: string;
+
+  @ApiProperty({
     description: `x`,
     example: 3,
   })

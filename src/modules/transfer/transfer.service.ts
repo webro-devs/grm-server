@@ -132,10 +132,11 @@ export class TransferService {
       shape: product.shape,
       size: product.size,
       style: product.style,
-      otherImgs:product.otherImgs,
+      otherImgs: product.otherImgs,
       totalSize: product.x * product.y * transfer.count,
       x: product.x,
       y: product.y,
+      partiya: product.partiya.id,
     };
 
     await this.productService.create([newProduct]);

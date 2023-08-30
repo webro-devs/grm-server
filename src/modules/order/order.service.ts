@@ -333,6 +333,7 @@ export class OrderService {
       totalSize: x * product.y,
       x,
       y: product.y,
+      partiya: product.partiya.id || null,
     };
 
     await this.productService.create([newProduct]);

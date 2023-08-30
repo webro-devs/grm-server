@@ -17,8 +17,8 @@ export class ShapeService {
     private readonly shapeRepository: Repository<Shape>,
   ) {}
 
-  async getAll(options: IPaginationOptions): Promise<Pagination<Shape>> {
-    return paginate<Shape>(this.shapeRepository, options, {
+  async getAll() {
+    return await this.shapeRepository.find({
       order: {
         title: 'ASC',
       },
