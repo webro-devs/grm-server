@@ -8,6 +8,7 @@ import { ValidateExcel } from 'src/infra/validators';
 import { FileService } from '../file/file.service';
 import { createWriteStream } from 'fs';
 import { Repository } from 'typeorm';
+import { PartiyaService } from '../partiya/partiya.service';
 
 Injectable();
 export class ExcelService {
@@ -15,12 +16,18 @@ export class ExcelService {
     @InjectRepository(Excel)
     private readonly excelRepository: Repository<Excel>,
     private readonly fileService: FileService,
+    private readonly partiyaService: PartiyaService,
   ) {}
 
   async uploadExecl(path: string, partiya: string) {
-    const data = await this.ExcelToJson(path);
-    await this.create(path, partiya);
-    return data;
+    const response = await this.partiyaService.getOne(partiya);
+    if (response.items.length) {
+      throw new HttpException('excel already exist', HttpStatus.BAD_REQUEST);
+    } else {
+      const data = await this.ExcelToJson(path);
+      await this.create(path, partiya);
+      return data;
+    }
   }
 
   async ExcelToJson(path: string) {
