@@ -8,6 +8,6 @@ export class Color {
   @Column('varchar')
   title: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: true })
   code: string;
 }
