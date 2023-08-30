@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Excel } from './excel.entity';
@@ -8,7 +8,11 @@ import { FileModule } from '../file/file.module';
 import { PartiyaModule } from '../partiya/partiya.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Excel]), FileModule, PartiyaModule],
+  imports: [
+    TypeOrmModule.forFeature([Excel]),
+    FileModule,
+    forwardRef(() => PartiyaModule),
+  ],
   controllers: [ExcelController],
   providers: [ExcelService],
   exports: [ExcelService],

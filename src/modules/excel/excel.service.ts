@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as XLSX from 'xlsx';
 
@@ -16,6 +22,7 @@ export class ExcelService {
     @InjectRepository(Excel)
     private readonly excelRepository: Repository<Excel>,
     private readonly fileService: FileService,
+    @Inject(forwardRef(() => PartiyaService))
     private readonly partiyaService: PartiyaService,
   ) {}
 

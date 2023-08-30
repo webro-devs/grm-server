@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Partiya } from './partiya.entity';
@@ -7,7 +7,7 @@ import { PartiyaController } from './partiya.controller';
 import { ExcelModule } from '../excel/excel.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Partiya]), ExcelModule],
+  imports: [TypeOrmModule.forFeature([Partiya]), forwardRef(() => ExcelModule)],
   controllers: [PartiyaController],
   providers: [PartiyaService],
   exports: [PartiyaService],
