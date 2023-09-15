@@ -36,7 +36,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     private readonly filialService: FilialService,
     private readonly positionService: PositionService,
-    private readonly productService:ProductService
+    private readonly productService: ProductService,
   ) {}
 
   async getAll(
@@ -49,6 +49,7 @@ export class UserService {
       },
       relations: {
         position: true,
+        filial: true,
       },
     });
   }
@@ -67,11 +68,11 @@ export class UserService {
       where: { id },
       relations: {
         clientOrders: true,
-        favoriteProducts:{
-          model:{
-            collection:true
-          }
-        }
+        favoriteProducts: {
+          model: {
+            collection: true,
+          },
+        },
       },
     });
 
@@ -102,19 +103,27 @@ export class UserService {
     return data;
   }
 
-  async addFavoriteProduct(userId:string,productId:string){
-    const user = await this.userRepository.findOne({where:{id:userId},relations:{favoriteProducts:true}})
-    const product = await this.productService.getOne(productId)
-    user.favoriteProducts.push(product)
-    await this.userRepository.save(user)
-    return user
+  async addFavoriteProduct(userId: string, productId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: { favoriteProducts: true },
+    });
+    const product = await this.productService.getOne(productId);
+    user.favoriteProducts.push(product);
+    await this.userRepository.save(user);
+    return user;
   }
 
-  async removeFavoriteProduct(userId:string,productId:string){
-    const user = await this.userRepository.findOne({where:{id:userId},relations:{favoriteProducts:true}})
-    user.favoriteProducts = user.favoriteProducts.length ? user.favoriteProducts.filter(p=> p.id != productId) : []
-    await this.userRepository.save(user)
-    return user
+  async removeFavoriteProduct(userId: string, productId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: { favoriteProducts: true },
+    });
+    user.favoriteProducts = user.favoriteProducts.length
+      ? user.favoriteProducts.filter((p) => p.id != productId)
+      : [];
+    await this.userRepository.save(user);
+    return user;
   }
 
   async deleteOne(id: string) {

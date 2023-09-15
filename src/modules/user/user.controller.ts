@@ -77,6 +77,7 @@ export class UserController {
     return this.userService.getUsersWithSelling(id);
   }
 
+  @Public()
   @Post('/')
   @ApiOperation({ summary: 'Method: creates new user' })
   @ApiCreatedResponse({

@@ -19,7 +19,7 @@ import { ExcelService } from './excel.service';
 import { multerStorage } from '../../infra/helpers';
 import { Public } from '../auth/decorators/public.decorator';
 import { Body, Put } from '@nestjs/common/decorators';
-import { ImportExcelDto } from './dto';
+import { ImportExcelDto, UpdateExcelDto } from './dto';
 
 @ApiTags('Excel')
 @Controller('excel')
@@ -57,8 +57,12 @@ export class ExcelController {
     description: 'The data imported and saved to partiya successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() data, @Param('partiyaID') id: string) {
-    const response = await this.fileService.jsonToExcel(data, id);
+  async saveData(@Body() data: UpdateExcelDto, @Param('partiyaID') id: string) {
+    const response = await this.fileService.partiyaToBaza(
+      data.filialId,
+      id,
+      data.datas,
+    );
     return response;
   }
 }
