@@ -32,6 +32,7 @@ export class ProductService {
         model: {
           collection: true,
         },
+        filial: true,
       },
       where,
     });
@@ -46,6 +47,7 @@ export class ProductService {
         model: {
           collection: true,
         },
+        filial: true,
       },
       where,
     });
