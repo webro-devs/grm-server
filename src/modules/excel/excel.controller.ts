@@ -20,6 +20,7 @@ import { multerStorage } from '../../infra/helpers';
 import { Public } from '../auth/decorators/public.decorator';
 import { Body, Put } from '@nestjs/common/decorators';
 import { ImportExcelDto, UpdateExcelDto } from './dto';
+import { CreateProductDto } from '../product/dto';
 
 @ApiTags('Excel')
 @Controller('excel')
@@ -57,12 +58,26 @@ export class ExcelController {
     description: 'The data imported and saved to partiya successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() data: UpdateExcelDto, @Param('partiyaID') id: string) {
-    const response = await this.fileService.partiyaToBaza(
-      data.filialId,
-      id,
-      data.datas,
-    );
-    return response;
+  async saveData(
+    @Body() data: CreateProductDto,
+    @Param('partiyaID') id: string,
+  ) {
+    const response = await this.fileService.partiyaToBaza(id, data);
+    return 'ok';
+  }
+
+  @Public()
+  @Put('/multiple/:partiyaID')
+  @ApiOperation({ summary: 'Method: imports data and save partiya' })
+  @ApiCreatedResponse({
+    description: 'The data imported and saved to partiya successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async saveDatas(
+    @Body() data: CreateProductDto[],
+    @Param('partiyaID') id: string,
+  ) {
+    const response = await this.fileService.datasToBaza(id, data);
+    return 'ok';
   }
 }

@@ -16,6 +16,7 @@ import { createWriteStream } from 'fs';
 import { Repository } from 'typeorm';
 import { PartiyaService } from '../partiya/partiya.service';
 import { ProductService } from '../product/product.service';
+import { CreateProductDto } from '../product/dto';
 
 Injectable();
 export class ExcelService {
@@ -39,6 +40,7 @@ export class ExcelService {
         response.items[0].id,
       );
       deleteFile(path);
+      console.log(pathExcel);
       await this.update(pathExcel, response.items[0].excel.id);
       return updatedData;
     } else {
@@ -77,7 +79,7 @@ export class ExcelService {
     });
 
     if (!excel || !excel?.path)
-      throw new HttpException('data not found', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Partiya not found', HttpStatus.BAD_REQUEST);
     deleteFile(excel.path);
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(data);
@@ -122,9 +124,14 @@ export class ExcelService {
     return response;
   }
 
-  async partiyaToBaza(filial, partiyaId, datas) {
+  async partiyaToBaza(partiyaId, datas: CreateProductDto) {
     await this.jsonToExcel(datas, partiyaId);
-    datas = datas.map((item) => (item.filial = filial));
+    const response = await this.productService.create([datas]);
+    return response;
+  }
+
+  async datasToBaza(partiyaId, datas: CreateProductDto[]) {
+    await this.jsonToExcel(datas, partiyaId);
     const response = await this.productService.create(datas);
     return response;
   }

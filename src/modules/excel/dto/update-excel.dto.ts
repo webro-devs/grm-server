@@ -1,11 +1,12 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Product } from 'src/modules/product/product.entity';
 class UpdateExcelDto {
   @ApiProperty({
     description: `data excel file`,
     example: '[ {...}, {...} ]',
   })
-  readonly datas: Array<object>;
+  readonly datas: Product[];
 
   @ApiProperty({
     description: `filial id`,

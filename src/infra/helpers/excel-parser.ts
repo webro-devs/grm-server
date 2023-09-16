@@ -1,48 +1,48 @@
 const excelDataParser = async (data, isExcel = true) => {
   if (isExcel) {
     const transformedObj = data.reduce((acc, curr) => {
-      const { collection, model, size, color, code, count, img, m2 } = curr;
+      const { Collection, Model, Size, Color, Code, Count, Img, M2 } = curr;
       const datas = {
-        size,
-        color,
-        code,
-        count,
-        img,
-        price: 0,
-        commingPrice: 0,
-        shape: '',
-        style: '',
-        model: '',
-        filial: '',
+        Size,
+        Color,
+        Code,
+        Count,
+        Img,
+        Price: 0,
+        CommingPrice: 0,
+        Shape: '',
+        Style: '',
+        Model: '',
+        Filial: '',
       };
 
-      const collectionItem = acc.find((item) => item.title === collection);
+      const collectionItem = acc.find((item) => item.title === Collection);
 
       if (collectionItem) {
         const modelItem = collectionItem.models.find(
-          (item) => item.title === model,
+          (item) => item.title === Model,
         );
 
         if (modelItem) {
           modelItem.products.push(datas);
         } else {
           collectionItem.models.push({
-            title: model,
+            title: Model,
             products: [datas],
           });
         }
 
-        collectionItem.totalM2 = (collectionItem.totalM2 || 0) + m2;
+        collectionItem.totalM2 = (collectionItem.totalM2 || 0) + M2;
       } else {
         acc.push({
-          title: collection,
+          title: Collection,
           models: [
             {
-              title: model,
+              title: Model,
               products: [datas],
             },
           ],
-          totalM2: m2,
+          totalM2: M2,
         });
       }
 

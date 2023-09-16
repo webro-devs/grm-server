@@ -40,7 +40,7 @@ export class PositionController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
-      return await this.positionService.getAll({ ...query, route });
+    return await this.positionService.getAll({ ...query, route });
   }
 
   @Get('/:id')
@@ -53,15 +53,16 @@ export class PositionController {
     return this.positionService.getOne(id);
   }
 
+  @Public()
   @Post('/')
-  @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
+  // @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: creates new position' })
   @ApiCreatedResponse({
     description: 'The position was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreatePositionDto): Promise<Position> {
-      return await this.positionService.create(data);
+    return await this.positionService.create(data);
   }
 
   // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
@@ -75,7 +76,7 @@ export class PositionController {
     @Body() positionData: UpdatePositionDto,
     @Param('id') id: string,
   ): Promise<UpdateResult> {
-      return await this.positionService.change(positionData, id);
+    return await this.positionService.change(positionData, id);
   }
 
   // @Roles(userRoles.ADMIN, userRoles.SUPER_ADMIN)
@@ -86,6 +87,6 @@ export class PositionController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-      return await this.positionService.deleteOne(id);
+    return await this.positionService.deleteOne(id);
   }
 }

@@ -119,26 +119,14 @@ class CreateProductDto {
   @IsString()
   partiya: string;
 
-  @ApiProperty({
-    description: `x`,
-    example: 3,
-  })
   @IsOptional()
   @IsNumber()
   x: number;
 
-  @ApiProperty({
-    description: 'y',
-    example: 4,
-  })
   @IsOptional()
   @IsNumber()
   y: number;
 
-  @ApiProperty({
-    description: `totalSize`,
-    example: 36,
-  })
   @IsOptional()
   @IsNumber()
   totalSize: number;
