@@ -2,17 +2,17 @@ const jsonParser = (data) => {
   const result = data.flatMap(({ title: collection, models }) =>
     models.flatMap(({ title: model, products }) =>
       products.map(
-        ({ color, size, count, imgUrl, price, shape, filial, code, date }) => ({
+        ({ Color, Size, Count, imgUrl, price, shape, filial, Code, date }) => ({
           collection,
           model,
-          color,
-          size,
-          count,
+          Color,
+          Size,
+          Count,
           imgUrl,
           price,
           shape,
           filial,
-          code,
+          Code,
           date,
         }),
       ),

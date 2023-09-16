@@ -61,6 +61,7 @@ export class ProductService {
           model: {
             collection: true,
           },
+          filial: true,
         },
       })
       .catch(() => {
