@@ -114,13 +114,13 @@ export class TransferService {
   async checkTransfer(id: string, userId: string) {
     const transfer = await this.transferRepository.findOne({
       where: { id },
-      relations: { product: true, transferer: true, to: true },
+      relations: { product: { color: true }, transferer: true, to: true },
     });
 
     const product = transfer.product;
     const newProduct: CreateProductDto = {
       code: product.code,
-      color: product.color,
+      color: product.color.id,
       count: transfer.count,
       date: product.date,
       filial: transfer.to.id,

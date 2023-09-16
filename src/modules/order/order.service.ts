@@ -260,6 +260,7 @@ export class OrderService {
       relations: {
         product: {
           filial: true,
+          color: true,
         },
         kassa: true,
       },
@@ -317,7 +318,7 @@ export class OrderService {
   async createCopyProduct(product: Product, x: number) {
     const newProduct: CreateProductDto = {
       code: product.code,
-      color: product.color,
+      color: product.color.id,
       count: 1,
       date: product.date,
       filial: product.filial.id,

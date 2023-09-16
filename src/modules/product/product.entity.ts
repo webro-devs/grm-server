@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -14,6 +15,7 @@ import { Model } from '../model/model.entity';
 import { User } from '../user/user.entity';
 import { ClientOrder } from '../client-order/client-order.entity';
 import { ColumnNumericTransformer } from '../../infra/helpers';
+import { Color } from '../color/color.entity';
 
 @Entity('product')
 export class Product {
@@ -23,8 +25,7 @@ export class Product {
   @Column()
   code: string;
 
-  @Column()
-  color: string;
+
 
   @Column()
   count: number;
@@ -124,6 +125,10 @@ export class Product {
     cascade: true,
   })
   favoriteUsers: User[];
+
+  @ManyToOne(()=> Color, (color)=> color.products, {onDelete: "SET NULL"})
+  @JoinColumn()
+  color: Color;
 
   @OneToMany(() => ClientOrder, (clientOrder) => clientOrder.product)
   clientOrders: ClientOrder[];

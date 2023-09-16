@@ -16,14 +16,6 @@ class CreateProductDto {
   code: string;
 
   @ApiProperty({
-    description: `Carpet color`,
-    example: 'yellow',
-  })
-  @IsNotEmpty()
-  @IsString()
-  color: string;
-
-  @ApiProperty({
     description: `Carpet date`,
     example: '2023-05-02 08:10:23.726769',
   })
@@ -150,6 +142,14 @@ class CreateProductDto {
   @IsOptional()
   @IsArray()
   otherImgs: string[];
+
+  @ApiProperty({
+    description: `Carpet color`,
+    example: 'yellow',
+  })
+  @IsNotEmpty()
+  @IsString()
+  color: string;
 }
 
 export default CreateProductDto;
