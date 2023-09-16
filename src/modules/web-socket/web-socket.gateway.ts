@@ -36,6 +36,7 @@ export class GRMGateway implements OnGatewayInit {
 
   handleDisconnect(client: any) {
     console.log(client.id);
+    this.server.to(client.id).emit('message', 'you disconnected successfully');
   }
 
   @SubscribeMessage('ordered-product')

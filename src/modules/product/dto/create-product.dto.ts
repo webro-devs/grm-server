@@ -43,7 +43,7 @@ class CreateProductDto {
     description: `Carpet price`,
     example: 140,
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   price: number;
 

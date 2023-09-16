@@ -153,6 +153,7 @@ export class ProductService {
       value[i].y = xy[1];
       value[i].size = xy.join('x');
       value[i].totalSize = +xy[0] * +xy[1] * value[i].count;
+      value[i].price = +xy[0] * +xy[1] * value[i].priceMeter;
     }
     return value;
   }
