@@ -19,7 +19,8 @@ import { ExcelService } from './excel.service';
 import { multerStorage } from '../../infra/helpers';
 import { Public } from '../auth/decorators/public.decorator';
 import { Body, Put } from '@nestjs/common/decorators';
-import { ImportExcelDto } from './dto';
+import { ImportExcelDto, UpdateExcelDto } from './dto';
+import { CreateProductDto } from '../product/dto';
 
 @ApiTags('Excel')
 @Controller('excel')
@@ -57,8 +58,26 @@ export class ExcelController {
     description: 'The data imported and saved to partiya successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() data, @Param('partiyaID') id: string) {
-    const response = await this.fileService.jsonToExcel(data, id);
-    return response;
+  async saveData(
+    @Body() data: CreateProductDto,
+    @Param('partiyaID') id: string,
+  ) {
+    const response = await this.fileService.partiyaToBaza(id, data);
+    return 'ok';
+  }
+
+  @Public()
+  @Put('/multiple/:partiyaID')
+  @ApiOperation({ summary: 'Method: imports data and save partiya' })
+  @ApiCreatedResponse({
+    description: 'The data imported and saved to partiya successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async saveDatas(
+    @Body() data: CreateProductDto[],
+    @Param('partiyaID') id: string,
+  ) {
+    const response = await this.fileService.datasToBaza(id, data);
+    return 'ok';
   }
 }

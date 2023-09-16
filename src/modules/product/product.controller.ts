@@ -104,9 +104,9 @@ export class ProductController {
   }
 
   @Post('/')
-  @ApiOperation({ summary: 'Method: creates new product' })
+  @ApiOperation({ summary: 'Method: creates new products' })
   @ApiCreatedResponse({
-    description: 'The product was created successfully',
+    description: 'The products was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateProductDto[]) {

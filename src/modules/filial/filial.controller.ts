@@ -22,6 +22,7 @@ import { PaginationDto } from '../../infra/shared/dto';
 import { Filial } from './filial.entity';
 import { CreateFilialDto, UpdateFilialDto } from './dto';
 import { UpdateResult } from 'typeorm';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Filial')
 @Controller('filial')
@@ -48,6 +49,7 @@ export class FilialController {
     return this.filialService.getOne(id);
   }
 
+  @Public()
   @Post('/')
   @ApiOperation({ summary: 'Method: creates new filial' })
   @ApiCreatedResponse({

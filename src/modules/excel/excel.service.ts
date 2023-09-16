@@ -9,12 +9,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as XLSX from 'xlsx';
 
 import { Excel } from './excel.entity';
-import { deleteFile, excelDataParser } from 'src/infra/helpers';
+import { deleteFile, excelDataParser, jsonToSheet } from 'src/infra/helpers';
 import { ValidateExcel } from 'src/infra/validators';
 import { FileService } from '../file/file.service';
 import { createWriteStream } from 'fs';
 import { Repository } from 'typeorm';
 import { PartiyaService } from '../partiya/partiya.service';
+import { ProductService } from '../product/product.service';
+import { CreateProductDto } from '../product/dto';
 
 Injectable();
 export class ExcelService {
@@ -24,12 +26,23 @@ export class ExcelService {
     private readonly fileService: FileService,
     @Inject(forwardRef(() => PartiyaService))
     private readonly partiyaService: PartiyaService,
+    private readonly productService: ProductService,
   ) {}
 
   async uploadExecl(path: string, partiya: string) {
     const response = await this.partiyaService.getOne(partiya);
     if (response.items.length) {
-      throw new HttpException('excel already exist', HttpStatus.BAD_REQUEST);
+      const oldData = await this.ExcelToJson(response.items[0].excel.path);
+      const newData = await this.ExcelToJson(path);
+      const updatedData = [...oldData, ...newData];
+      const pathExcel = await this.jsonToExcel(
+        updatedData,
+        response.items[0].id,
+      );
+      deleteFile(path);
+      console.log(pathExcel);
+      await this.update(pathExcel, response.items[0].excel.id);
+      return updatedData;
     } else {
       const data = await this.ExcelToJson(path);
       await this.create(path, partiya);
@@ -42,7 +55,6 @@ export class ExcelService {
 
     const workbook = XLSX.readFile(path);
     const worksheet = workbook.Sheets['Sheet'];
-
     const data: any[] = XLSX.utils.sheet_to_json(worksheet);
 
     ValidateExcel(data, path);
@@ -67,7 +79,7 @@ export class ExcelService {
     });
 
     if (!excel || !excel?.path)
-      throw new HttpException('data not found', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Partiya not found', HttpStatus.BAD_REQUEST);
     deleteFile(excel.path);
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(data);
@@ -82,8 +94,8 @@ export class ExcelService {
     const res = [];
     for (const item of data) {
       const img = await this.fileService.getByModelAndColor(
-        item.Model,
-        item.Color,
+        item.model,
+        item.color,
       );
       const Img = img?.url || '';
       res.push({ ...item, Img });
@@ -103,6 +115,24 @@ export class ExcelService {
       .returning('id')
       .execute();
 
+    return response;
+  }
+
+  async update(path: string, id: string) {
+    const response = this.excelRepository.update({ id }, { path });
+
+    return response;
+  }
+
+  async partiyaToBaza(partiyaId, datas: CreateProductDto) {
+    await this.jsonToExcel(datas, partiyaId);
+    const response = await this.productService.create([datas]);
+    return response;
+  }
+
+  async datasToBaza(partiyaId, datas: CreateProductDto[]) {
+    await this.jsonToExcel(datas, partiyaId);
+    const response = await this.productService.create(datas);
     return response;
   }
 }

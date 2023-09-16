@@ -19,12 +19,12 @@ const checkProperties = (data) => {
   for (const item of data) {
     const properties = Object.keys(item);
     const expectedProperties = [
-      'Collection',
-      'Model',
-      'Color',
-      'Size',
-      'Code',
-      'Count',
+      'collection',
+      'model',
+      'color',
+      'size',
+      'code',
+      'count',
     ];
 
     if (properties.length < 9) message.msg.push('You have missing propery!');
@@ -39,17 +39,17 @@ const checkProperties = (data) => {
 
 const checkType = (data) => {
   for (const item of data) {
-    if (isNaN(item.Count)) {
+    if (isNaN(item.count)) {
       message.msg.push('Count should be a number.');
     } else {
-      item.Count = item.Count * 1;
+      item.count = item.count * 1;
     }
   }
 };
 
 const checkValue = (data) => {
   const alphabet = 'ABCDEFGHIJKLMOPQRSTUVWXYZ';
-  const expectedProperties = ['Collection', 'Model', 'Size', 'Code', 'Count'];
+  const expectedProperties = ['collection', 'model', 'size', 'code', 'count'];
 
   data.forEach((item, index) => {
     const properties = Object.keys(item);
