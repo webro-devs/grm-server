@@ -125,7 +125,7 @@ export class ExcelService {
   }
 
   async partiyaToBaza(partiyaId, datas: CreateProductDto) {
-    await this.jsonToExcel(datas, partiyaId);
+    await this.jsonToExcel([datas], partiyaId);
     const response = await this.productService.create([datas]);
     return response;
   }

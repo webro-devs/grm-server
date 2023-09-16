@@ -11,7 +11,7 @@ import { CreatePartiyaDto, UpdatePartiyaDto } from './dto';
 import { deleteFile, partiyaDateSort } from '../../infra/helpers';
 import { ExcelService } from '../excel/excel.service';
 import { Repository } from 'typeorm';
-import { copyFile } from 'fs';
+import { copyFile, writeFile } from 'fs';
 
 Injectable();
 export class PartiyaService {
@@ -78,14 +78,10 @@ export class PartiyaService {
 
   async createPartiyaWithExcel(value: CreatePartiyaDto) {
     const data = await this.create(value);
-    copyFile(
-      'uploads/excel/template.xlsx',
-      `uploads/excel/${data.id}.xlsx`,
-      (err) => {
-        if (err) throw err;
-        console.log(`excel.xlsx was copied to uploads/excel/${data.id}.xlsx`);
-      },
-    );
+    writeFile(`/uploads/excel/`, 'Learn Node FS module', function (err) {
+      if (err) throw err;
+      console.log('File is created successfully.');
+    });
     this.excelRepository.create(`${data.id}`, data.id);
 
     return data;

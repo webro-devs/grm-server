@@ -63,6 +63,7 @@ export class ExcelController {
     @Param('partiyaID') id: string,
   ) {
     const response = await this.fileService.partiyaToBaza(id, data);
+    console.log(data);
     return 'ok';
   }
 
