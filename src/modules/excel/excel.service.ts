@@ -78,11 +78,14 @@ export class ExcelService {
       where: { partiya: { id } },
     });
 
+    const oldData = await this.ExcelToJson(excel.path);
+
     if (!excel || !excel?.path)
       throw new HttpException('Partiya not found', HttpStatus.BAD_REQUEST);
     deleteFile(excel.path);
     const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    const worksheet = XLSX.utils.json_to_sheet([...data, ...oldData]);
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
     const stream = XLSX.stream.to_csv(workbook);
     stream.pipe(createWriteStream(excel.path));
