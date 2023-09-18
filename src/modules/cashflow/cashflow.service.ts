@@ -26,6 +26,10 @@ export class CashflowService {
     return paginate<Cashflow>(this.cashflowRepository, options);
   }
 
+  async getByKassa(kassaId) {
+    return this.cashflowRepository.find({ where: { kassa: kassaId } });
+  }
+
   async getOne(id: string) {
     const data = await this.cashflowRepository
       .findOne({

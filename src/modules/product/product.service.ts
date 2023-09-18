@@ -33,6 +33,7 @@ export class ProductService {
           collection: true,
         },
         filial: true,
+        color: true,
       },
       where,
     });

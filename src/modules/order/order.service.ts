@@ -76,6 +76,21 @@ export class OrderService {
     return data;
   }
 
+  async getByKassaWithCach(id: string) {
+    const data = await this.orderRepository
+      .find({
+        relations: { kassa: true, casher: true, seller: true, product: true },
+        where: { kassa: { id } },
+        order: { date: 'desc' },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
+      const dataCashflow = await this.cashFlowService.getByKassa(id)
+
+    return [data, dataCashflow];
+  }
+
   async deleteOne(id: string) {
     const order = await this.orderRepository.findOne({
       where: { id },

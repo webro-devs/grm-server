@@ -11,7 +11,9 @@ import { CreatePartiyaDto, UpdatePartiyaDto } from './dto';
 import { deleteFile, partiyaDateSort } from '../../infra/helpers';
 import { ExcelService } from '../excel/excel.service';
 import { Repository } from 'typeorm';
-import { copyFile, writeFile } from 'fs';
+import * as fs from 'fs';
+import * as XLSX from 'xlsx';
+import * as path from 'path';
 
 Injectable();
 export class PartiyaService {
@@ -78,11 +80,31 @@ export class PartiyaService {
 
   async createPartiyaWithExcel(value: CreatePartiyaDto) {
     const data = await this.create(value);
-    writeFile(`/uploads/excel/`, 'Learn Node FS module', function (err) {
-      if (err) throw err;
-      console.log('File is created successfully.');
-    });
-    this.excelRepository.create(`${data.id}`, data.id);
+    const workbook = XLSX.utils.book_new();
+
+    // Add a worksheet and data
+    const worksheet = XLSX.utils.json_to_sheet([]);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet 1');
+
+    // Generate a unique filename
+    const filename = `excel_${Date.now()}.xlsx`;
+    const filePath = path.join(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      '..',
+      'uploads',
+      'excel',
+      filename,
+    );
+
+    // Write the workbook to the specified path
+    await fs.promises.writeFile(
+      filePath,
+      XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' }),
+    );
+    this.excelRepository.create(filePath, data.id);
 
     return data;
   }
