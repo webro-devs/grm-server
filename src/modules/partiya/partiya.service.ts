@@ -104,7 +104,7 @@ export class PartiyaService {
       filePath,
       XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' }),
     );
-    this.excelRepository.create(filePath, data.id);
+    this.excelRepository.create(`uploads/excel/${filename}`, data.id);
 
     return data;
   }
