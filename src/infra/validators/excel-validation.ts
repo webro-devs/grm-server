@@ -19,12 +19,12 @@ const checkProperties = (data) => {
   for (const item of data) {
     const properties = Object.keys(item);
     const expectedProperties = [
-      'collection',
+      'Collection',
       'model',
-      'color',
-      'size',
-      'code',
-      'count',
+      'Color',
+      'Size',
+      'Code',
+      'Count',
     ];
 
     if (properties.length < 9) message.msg.push('You have missing propery!');

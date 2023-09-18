@@ -63,13 +63,12 @@ export class ExcelController {
     @Param('partiyaID') id: string,
   ) {
     const response = await this.fileService.partiyaToBaza(id, data);
-    console.log(data);
-    return 'ok';
+    return response;
   }
 
   @Public()
   @Put('/multiple/:partiyaID')
-  @ApiOperation({ summary: 'Method: imports data and save partiya' })
+  @ApiOperation({ summary: 'Method: imports datas and save partiya' })
   @ApiCreatedResponse({
     description: 'The data imported and saved to partiya successfully',
   })

@@ -12,7 +12,8 @@ import { Excel } from './excel.entity';
 import { deleteFile, excelDataParser, jsonToSheet } from 'src/infra/helpers';
 import { ValidateExcel } from 'src/infra/validators';
 import { FileService } from '../file/file.service';
-import { createWriteStream } from 'fs';
+import * as fs from 'fs';
+import * as path from 'path';
 import { Repository } from 'typeorm';
 import { PartiyaService } from '../partiya/partiya.service';
 import { ProductService } from '../product/product.service';
@@ -78,17 +79,22 @@ export class ExcelService {
       where: { partiya: { id } },
     });
 
-    const oldData = await this.ExcelToJson(excel.path);
-
     if (!excel || !excel?.path)
       throw new HttpException('Partiya not found', HttpStatus.BAD_REQUEST);
+
     deleteFile(excel.path);
     const workbook = XLSX.utils.book_new();
 
-    const worksheet = XLSX.utils.json_to_sheet([...data, ...oldData]);
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-    const stream = XLSX.stream.to_csv(workbook);
-    stream.pipe(createWriteStream(excel.path));
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet');
+    const filePath = path.join(__dirname, '..', '..', '..', '..', excel.path);
+
+    // Write the workbook to the specified path
+    await fs.promises.writeFile(
+      filePath,
+      XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' }),
+    );
+    this.create(`${excel.path}`, id);
 
     return excel.path;
   }
@@ -128,13 +134,14 @@ export class ExcelService {
   }
 
   async partiyaToBaza(partiyaId, datas: CreateProductDto) {
+    // excel to json =>
     await this.jsonToExcel([datas], partiyaId);
-    const response = await this.productService.create([datas]);
-    return response;
+    // const response = await this.productService.create([datas]);
+    return 'response';
   }
 
   async datasToBaza(partiyaId, datas: CreateProductDto[]) {
-    await this.jsonToExcel(datas, partiyaId);
+    const data = await this.jsonToExcel(datas, partiyaId);
     const response = await this.productService.create(datas);
     return response;
   }

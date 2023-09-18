@@ -83,8 +83,8 @@ export class PartiyaService {
     const workbook = XLSX.utils.book_new();
 
     // Add a worksheet and data
-    const worksheet = XLSX.utils.json_to_sheet([]);
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet 1');
+    const worksheet = XLSX.utils.json_to_sheet([{}]);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet');
 
     // Generate a unique filename
     const filename = `excel_${Date.now()}.xlsx`;

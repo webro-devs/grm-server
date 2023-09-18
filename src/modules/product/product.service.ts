@@ -49,6 +49,7 @@ export class ProductService {
           collection: true,
         },
         filial: true,
+        color: true,
       },
       where,
     });
@@ -63,6 +64,7 @@ export class ProductService {
             collection: true,
           },
           filial: true,
+          color: true,
         },
       })
       .catch(() => {

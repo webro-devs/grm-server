@@ -11,7 +11,6 @@ const excelDataParser = async (data) => {
       commingPrice: 0,
       shape: '',
       style: '',
-      model: '',
       filial: '',
     };
 
