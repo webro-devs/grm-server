@@ -16,6 +16,7 @@ import { User } from '../user/user.entity';
 import { ClientOrder } from '../client-order/client-order.entity';
 import { ColumnNumericTransformer } from '../../infra/helpers';
 import { Color } from '../color/color.entity';
+import { Size } from '../size/size.entity';
 
 @Entity('product')
 export class Product {
@@ -25,15 +26,13 @@ export class Product {
   @Column()
   code: string;
 
-
-
   @Column()
   count: number;
 
   @Column()
   imgUrl: string;
 
-  @Column('text', { array: true, nullable: true })
+  @Column('jsonb')
   otherImgs: string[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
@@ -126,7 +125,7 @@ export class Product {
   })
   favoriteUsers: User[];
 
-  @ManyToOne(()=> Color, (color)=> color.products, {onDelete: "SET NULL"})
+  @ManyToOne(() => Color, (color) => color.products, { onDelete: 'SET NULL' })
   @JoinColumn()
   color: Color;
 

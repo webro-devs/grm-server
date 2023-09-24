@@ -5,7 +5,6 @@ import {
   UseInterceptors,
   UploadedFile,
   HttpStatus,
-  HttpException,
   Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -16,7 +15,7 @@ import {
   ApiConsumes,
 } from '@nestjs/swagger';
 import { ExcelService } from './excel.service';
-import { multerStorage } from '../../infra/helpers';
+import { excelDataParser, multerStorage } from '../../infra/helpers';
 import { Public } from '../auth/decorators/public.decorator';
 import { Body, Put } from '@nestjs/common/decorators';
 import { ImportExcelDto, UpdateExcelDto } from './dto';
@@ -44,11 +43,8 @@ export class ExcelController {
     @UploadedFile() file: Express.Multer.File,
     @Body() bodyData: ImportExcelDto,
   ) {
-    const data = await this.fileService.uploadExecl(
-      file.path,
-      bodyData.partiyaId,
-    );
-    return data;
+    const data = await this.fileService.uploadFile(file.path);
+    return excelDataParser(data);
   }
 
   @Public()
@@ -62,7 +58,8 @@ export class ExcelController {
     @Body() data: CreateProductDto,
     @Param('partiyaID') id: string,
   ) {
-    const response = await this.fileService.partiyaToBaza(id, data);
+    const response = await this.fileService.createProduct(id, [data]);
+
     return response;
   }
 
@@ -77,7 +74,6 @@ export class ExcelController {
     @Body() data: CreateProductDto[],
     @Param('partiyaID') id: string,
   ) {
-    const response = await this.fileService.datasToBaza(id, data);
-    return 'ok';
+    return await this.fileService.createProduct(id, data);
   }
 }

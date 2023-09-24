@@ -74,20 +74,6 @@ export class PartiyaController {
     description: 'The partiya was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() positionData: CreatePartiyaDto): Promise<Partiya> {
-    try {
-      return await this.partiyaService.create(positionData);
-    } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  @Post('/with-excel')
-  @ApiOperation({ summary: 'Method: creates new partiya' })
-  @ApiCreatedResponse({
-    description: 'The partiya was created successfully',
-  })
-  @HttpCode(HttpStatus.CREATED)
   async saveDataExc(@Body() positionData: CreatePartiyaDto): Promise<Partiya> {
     try {
       return await this.partiyaService.createPartiyaWithExcel(positionData);

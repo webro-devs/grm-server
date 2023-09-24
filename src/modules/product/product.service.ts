@@ -73,6 +73,28 @@ export class ProductService {
 
     return data;
   }
+  async getOneForExcel(id: string) {
+    const data: any = await this.productRepository
+      .findOne({
+        where: { id },
+        relations: {
+          model: {
+            collection: true,
+          },
+          filial: true,
+          color: true,
+        },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
+
+    data['color'] = data.color.title;
+    data['filial'] = data.filial.title;
+    data['collection'] = data.model.collection['title'];
+    data['model'] = data.model.title;
+    return data;
+  }
 
   async getById(id: string) {
     const data = await this.productRepository

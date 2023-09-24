@@ -125,10 +125,9 @@ class CreateProductDto {
 
   @ApiProperty({
     description: `other imgs`,
-    example: ['link', 'link', 'link'],
+    example: '["link" , "link" , "link"]',
   })
   @IsOptional()
-  @IsArray()
   otherImgs: string[];
 
   @ApiProperty({

@@ -45,7 +45,7 @@ export class PartiyaService {
         throw new NotFoundException('data not found');
       });
 
-    const response = await this.excelRepository.getPartiyaExcel(
+    const response = await this.excelRepository.readExcelFile(
       data?.excel?.path,
     );
 
@@ -80,31 +80,11 @@ export class PartiyaService {
 
   async createPartiyaWithExcel(value: CreatePartiyaDto) {
     const data = await this.create(value);
-    const workbook = XLSX.utils.book_new();
+    const filename = `uploads/excel/excel_${Date.now()}.xlsx`;
 
-    // Add a worksheet and data
-    const worksheet = XLSX.utils.json_to_sheet([{}]);
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet');
+    await this.excelRepository.createExcelFile([], filename);
 
-    // Generate a unique filename
-    const filename = `excel_${Date.now()}.xlsx`;
-    const filePath = path.join(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      '..',
-      'uploads',
-      'excel',
-      filename,
-    );
-
-    // Write the workbook to the specified path
-    await fs.promises.writeFile(
-      filePath,
-      XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' }),
-    );
-    this.excelRepository.create(`uploads/excel/${filename}`, data.id);
+    await this.excelRepository.create(`${filename}`, data.id);
 
     return data;
   }

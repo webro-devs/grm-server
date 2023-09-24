@@ -24,6 +24,8 @@ import { Color } from './color.entity';
 import { ColorService } from './color.service';
 import { PaginationDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRoleEnum } from 'src/infra/shared/enum';
 
 @ApiTags('Color')
 @Controller('color')
@@ -41,6 +43,7 @@ export class ColorController {
   }
 
   @Post('/')
+  @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: creates new color' })
   @ApiCreatedResponse({
     description: 'The color was created successfully',

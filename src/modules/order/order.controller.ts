@@ -53,7 +53,7 @@ export class OrderController {
   }
 
   @Get('order-by-kassa/:id')
-  @ApiOperation({ summary: 'Method: returns single order by id' })
+  @ApiOperation({ summary: 'Method: returns orders by kassa ID' })
   @ApiOkResponse({
     description: 'The order was returned successfully',
   })

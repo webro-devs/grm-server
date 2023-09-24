@@ -57,6 +57,16 @@ export class UserController {
     return this.userService.getOne(id);
   }
 
+  @Get('/me')
+  @ApiOperation({ summary: 'Method: returns single user by id' })
+  @ApiOkResponse({
+    description: 'The user was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async Me(@Req() request): Promise<User> {
+    return this.userService.getOne(request.user.id);
+  }
+
   @Get('/client/:id')
   @ApiOperation({ summary: 'Method: returns single client by id' })
   @ApiOkResponse({

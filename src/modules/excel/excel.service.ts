@@ -1,23 +1,15 @@
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  forwardRef,
-} from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as XLSX from 'xlsx';
 
 import { Excel } from './excel.entity';
-import { deleteFile, excelDataParser, jsonToSheet } from 'src/infra/helpers';
-import { ValidateExcel } from 'src/infra/validators';
+import { deleteFile, excelDataParser } from 'src/infra/helpers';
 import { FileService } from '../file/file.service';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Repository } from 'typeorm';
 import { PartiyaService } from '../partiya/partiya.service';
 import { ProductService } from '../product/product.service';
-import { CreateProductDto } from '../product/dto';
 
 Injectable();
 export class ExcelService {
@@ -29,94 +21,74 @@ export class ExcelService {
     private readonly partiyaService: PartiyaService,
     private readonly productService: ProductService,
   ) {}
-
-  async uploadExecl(path: string, partiya: string) {
-    const response = await this.partiyaService.getOne(partiya);
-    if (response.items.length) {
-      const oldData = await this.ExcelToJson(response.items[0].excel.path);
-      const newData = await this.ExcelToJson(path);
-      const updatedData = [...oldData, ...newData];
-      const pathExcel = await this.jsonToExcel(
-        updatedData,
-        response.items[0].id,
-      );
-      deleteFile(path);
-      console.log(pathExcel);
-      await this.update(pathExcel, response.items[0].excel.id);
-      return updatedData;
-    } else {
-      const data = await this.ExcelToJson(path);
-      await this.create(path, partiya);
-      return data;
-    }
-  }
-
-  async ExcelToJson(path: string) {
-    if (!path) return [];
-
-    const workbook = XLSX.readFile(path);
-    const worksheet = workbook.Sheets['Sheet'];
-    const data: any[] = XLSX.utils.sheet_to_json(worksheet);
-
-    ValidateExcel(data, path);
-
-    return excelDataParser(await this.setImg(data));
-  }
-
-  async getPartiyaExcel(path: string) {
-    if (!path) return [];
-
-    const workbook = XLSX.readFile(path);
-    const worksheet = workbook.Sheets['Sheet'];
-
-    const data: any[] = XLSX.utils.sheet_to_json(worksheet);
-
-    return excelDataParser(data);
-  }
-
-  async jsonToExcel(data, id: string) {
-    const excel = await this.excelRepository.findOne({
-      where: { partiya: { id } },
-    });
-
-    if (!excel || !excel?.path)
-      throw new HttpException('Partiya not found', HttpStatus.BAD_REQUEST);
-
-    deleteFile(excel.path);
+  async createExcelFile(datas, pathname) {
     const workbook = XLSX.utils.book_new();
 
-    const worksheet = XLSX.utils.json_to_sheet(data);
+    const worksheet = XLSX.utils.json_to_sheet(datas);
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet');
-    const filePath = path.join(__dirname, '..', '..', '..', '..', excel.path);
+    const filePath = path.join(__dirname, '..', '..', '..', '..', pathname);
 
-    // Write the workbook to the specified path
     await fs.promises.writeFile(
       filePath,
       XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' }),
     );
-    this.create(`${excel.path}`, id);
 
-    return excel.path;
+    return pathname;
   }
 
-  async setImg(data) {
-    const res = [];
-    for (const item of data) {
-      const img = await this.fileService.getByModelAndColor(
-        item.model,
-        item.color,
-      );
-      const Img = img?.url || '';
-      res.push({ ...item, Img });
+  async readExcelFile(path) {
+    const workbook = XLSX.readFile(path);
+    const worksheet = workbook.Sheets['Sheet'];
+    const data: any[] = XLSX.utils.sheet_to_json(worksheet);
+
+    return data;
+  }
+
+  async updateExcelFile(datas: unknown[], pathName) {
+    const workbook = XLSX.utils.book_new();
+    const oldData: any[] = await this.readExcelFile(pathName);
+    deleteFile(pathName);
+
+    const data = oldData.length > 0 ? [...datas, ...oldData] : datas;
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet');
+
+    const filePath = path.join(__dirname, '..', '..', '..', '..', pathName);
+    await fs.promises.writeFile(
+      filePath,
+      XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' }),
+    );
+
+    return datas;
+  }
+
+  async uploadFile(path) {
+    const datas = await this.readExcelFile(path);
+    deleteFile(path);
+    return excelDataParser(this.setImg(datas));
+  }
+
+  async createProduct(partiya, datas: any[]) {
+    const { data } = await this.partiyaService.getOne(partiya);
+    for (let i = 0; i < datas.length; i++) {
+      datas[i].otherImgs = JSON.stringify(datas[i].otherImgs);
+    }
+    const product = await this.productService.create(datas);
+    const products = [];
+
+    for (let i = 0; i < product.raw.length; i++) {
+      let data = await this.productService.getOneForExcel(product.raw[i].raw);
+      products.push(data);
     }
 
-    return res;
+    const updatedDatas = await this.updateExcelFile(products, data.excel.path);
+
+    return updatedDatas;
   }
 
-  async create(path: string, partiya: string) {
-    const response = this.ExcelToJson(path);
-
-    this.excelRepository
+  async create(path, partiya) {
+    const response = await this.excelRepository
       .createQueryBuilder()
       .insert()
       .into(Excel)
@@ -127,22 +99,19 @@ export class ExcelService {
     return response;
   }
 
-  async update(path: string, id: string) {
-    const response = this.excelRepository.update({ id }, { path });
+  async setImg(data) {
+    const res = [];
+    for (const item of data) {
+      if (!item.imgUrl) {
+        const img1 = await this.fileService.getByModelAndColor(
+          item.model,
+          item.color,
+        );
+        const imgUrl = img1?.url || '';
+        res.push({ ...item, imgUrl });
+      } else res.push(item);
+    }
 
-    return response;
-  }
-
-  async partiyaToBaza(partiyaId, datas: CreateProductDto) {
-    // excel to json =>
-    await this.jsonToExcel([datas], partiyaId);
-    // const response = await this.productService.create([datas]);
-    return 'response';
-  }
-
-  async datasToBaza(partiyaId, datas: CreateProductDto[]) {
-    const data = await this.jsonToExcel(datas, partiyaId);
-    const response = await this.productService.create(datas);
-    return response;
+    return res;
   }
 }
