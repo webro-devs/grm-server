@@ -47,6 +47,16 @@ export class UserController {
     return await this.userService.getAll({ ...query, route });
   }
 
+  @Get('/info/me')
+  @ApiOperation({ summary: 'Method: returns single user by id' })
+  @ApiOkResponse({
+    description: 'The user was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getme(@Req() request): Promise<User> {
+    return await this.userService.getOne(request.user.id);
+  }
+
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single user by id' })
   @ApiOkResponse({
@@ -54,17 +64,7 @@ export class UserController {
   })
   @HttpCode(HttpStatus.OK)
   async getMe(@Param('id') id: string): Promise<User> {
-    return this.userService.getOne(id);
-  }
-
-  @Get('/me')
-  @ApiOperation({ summary: 'Method: returns single user by id' })
-  @ApiOkResponse({
-    description: 'The user was returned successfully',
-  })
-  @HttpCode(HttpStatus.OK)
-  async Me(@Req() request): Promise<User> {
-    return this.userService.getOne(request.user.id);
+    return await this.userService.getOne(id);
   }
 
   @Get('/client/:id')
