@@ -29,6 +29,7 @@ import { ClientOrderModule } from './modules/client-order/client-order.module';
 import { MagazinInfoModule } from './modules/magazin-info/magazin-info.module';
 import { DataSenderModule } from './modules/data-sender/data-sender.module';
 import { CountryModule } from './modules/country/country.module';
+import { SizeModule } from './modules/size/size.module';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { CountryModule } from './modules/country/country.module';
     PartiyaModule,
     PositionModule,
     ProductModule,
+    SizeModule,
     ShapeModule,
     StyleModule,
     TransferModule,
