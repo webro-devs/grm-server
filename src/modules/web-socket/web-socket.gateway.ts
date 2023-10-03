@@ -79,4 +79,9 @@ export class GRMGateway implements OnGatewayInit {
   handleLeaveRoom(client: Socket, room: string) {
     client.leave(room);
   }
+
+  @SubscribeMessage('test')
+  test(client: Socket) {
+    this.server.to(client.id).emit('best', 'Hello world this is my word');
+  }
 }
