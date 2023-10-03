@@ -14,6 +14,7 @@ import { ColorService } from '../color/color.service';
 import { ShapeService } from '../shape/shape.service';
 import { ModelService } from '../model/model.service';
 import { CollectionService } from '../collection/collection.service';
+import { SizeService } from '../size/size.service';
 
 @Injectable()
 export class CountryService {
@@ -25,6 +26,7 @@ export class CountryService {
     private readonly shapeService: ShapeService,
     private readonly modelService: ModelService,
     private readonly collectionService: CollectionService,
+    private readonly sizeService: SizeService,
   ) {}
 
   async getAllSp() {
@@ -34,8 +36,9 @@ export class CountryService {
     const shapes = await this.shapeService.getAll();
     const models = await this.modelService.getAllModel();
     const collections = await this.collectionService.getAllData();
+    const sizes = await this.sizeService.getAll()
 
-    return { countries, styles, colors, shapes, models, collections };
+    return { countries, styles, colors, shapes, models, collections, sizes };
   }
 
   async getAll(

@@ -9,6 +9,7 @@ import { ShapeModule } from '../shape/shape.module';
 import { ColorModule } from '../color/color.module';
 import { ModelModule } from '../model/model.module';
 import { CollectionModule } from '../collection/collection.module';
+import { SizeModule } from '../size/size.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CollectionModule } from '../collection/collection.module';
     ColorModule,
     ModelModule,
     CollectionModule,
+    SizeModule,
   ],
   controllers: [CountryController],
   providers: [CountryService],
