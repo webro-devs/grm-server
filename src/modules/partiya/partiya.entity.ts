@@ -23,10 +23,15 @@ export class Partiya {
     transformer: new ColumnNumericTransformer(),
     default: 0,
   })
-  cost: number;
+  sum: number;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  date: string;
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
+  quantity: number;
 
   @Column('numeric', {
     precision: 20,
@@ -36,29 +41,8 @@ export class Partiya {
   })
   expense: number;
 
-  @Column('numeric', {
-    precision: 20,
-    scale: 2,
-    transformer: new ColumnNumericTransformer(),
-    default: 0,
-  })
-  orderQuantity: number;
-
-  @Column('numeric', {
-    precision: 20,
-    scale: 2,
-    transformer: new ColumnNumericTransformer(),
-    default: 0,
-  })
-  price: number;
-
-  @Column('numeric', {
-    precision: 20,
-    scale: 2,
-    transformer: new ColumnNumericTransformer(),
-    default: 0,
-  })
-  sum: number;
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  date: string;
 
   @OneToMany(() => Product, (product) => product.partiya)
   products: Product[];

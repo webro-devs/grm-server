@@ -49,7 +49,8 @@ export class ExcelService {
     const oldData: any[] = await this.readExcelFile(pathName);
     deleteFile(pathName);
 
-    const data = oldData.length > 0 ? [...datas, ...oldData] : datas;
+    let data = [];
+    data = oldData.length > 0 ? [...datas, ...oldData] : datas;
 
     const worksheet = XLSX.utils.json_to_sheet(data);
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet');
@@ -73,13 +74,17 @@ export class ExcelService {
     const { data } = await this.partiyaService.getOne(partiya);
     for (let i = 0; i < datas.length; i++) {
       datas[i].otherImgs = JSON.stringify(datas[i].otherImgs);
+      datas[i].otherInfos = JSON.stringify(datas[i].otherInfos);
     }
+
     const product = await this.productService.create(datas);
     const products = [];
 
     for (let i = 0; i < product.raw.length; i++) {
       let data = await this.productService.getOneForExcel(product.raw[i].raw);
-      products.push(data);
+
+      products.push({ ...data, ...JSON.parse(data.otherInfos) });
+      delete products[i].otherInfos;
     }
 
     const updatedDatas = await this.updateExcelFile(products, data.excel.path);

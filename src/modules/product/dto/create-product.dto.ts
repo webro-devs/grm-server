@@ -137,6 +137,14 @@ class CreateProductDto {
   @IsNotEmpty()
   @IsString()
   color: string;
+
+  @ApiProperty({
+    description: `collection and model infos`,
+    example:
+      '{"collection_cost: 12", "collection_m: 1000", "collection_exp: 2000", "model_cost: 20" }',
+  })
+  @IsNotEmpty()
+  otherInfos?: object;
 }
 
 export default CreateProductDto;

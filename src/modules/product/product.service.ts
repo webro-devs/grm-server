@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import {
@@ -163,6 +163,8 @@ export class ProductService {
 
   async create(value: CreateProductDto[]) {
     value = this.setXy(value);
+    console.log(value);
+
     const data = await this.productRepository
       .createQueryBuilder()
       .insert()
@@ -181,7 +183,7 @@ export class ProductService {
       value[i].y = xy[1];
       value[i].size = xy.join('x');
       value[i].totalSize = +xy[0] * +xy[1] * value[i].count;
-      value[i].price = +xy[0] * +xy[1] * value[i].priceMeter;
+      value[i].comingPrice = +xy[0] * +xy[1] * value[i].priceMeter;
     }
     return value;
   }
@@ -212,9 +214,13 @@ export class ProductService {
   }
 
   async getAllForTelegram() {
-    return await this.productRepository
-      .createQueryBuilder()
+    const products = await this.productRepository
+      .createQueryBuilder('user')
       .where('isInternetShop = :isInternetShop', { isInternetShop: true })
-      .getManyAndCount();
+      .relation('filial')
+      .of(Product)
+      .loadOne();
+
+    return { products, count: products.length };
   }
 }

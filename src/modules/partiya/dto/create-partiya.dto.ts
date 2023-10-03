@@ -10,20 +10,20 @@ class CreatePartiyaDto {
   readonly country: string;
 
   @ApiProperty({
-    description: `cost : Обошлось`,
-    example: 8.56,
+    description: `Обём : 1000²`,
+    example: 1000,
   })
   @IsNotEmpty()
   @IsNumber()
-  readonly cost: number;
+  readonly quantity: number;
 
   @ApiProperty({
-    description: `date`,
-    example: '2023-05-02 08:10:23.726769',
+    description: `sum`,
+    example: 40000,
   })
-  @IsOptional()
-  @IsString()
-  readonly date: string;
+  @IsNotEmpty()
+  @IsNumber()
+  readonly sum: number;
 
   @ApiProperty({
     description: `expense : Расход:`,
@@ -34,28 +34,12 @@ class CreatePartiyaDto {
   readonly expense: number;
 
   @ApiProperty({
-    description: `order quantity : Обём заказа:`,
-    example: 1000,
+    description: `date`,
+    example: '2023-05-02 08:10:23.726769',
   })
-  @IsNotEmpty()
-  @IsNumber()
-  readonly orderQuantity: number;
-
-  @ApiProperty({
-    description: `price : Цена`,
-    example: 8,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  readonly price: number;
-
-  @ApiProperty({
-    description: `sum`,
-    example: 40000,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  readonly sum: number;
+  @IsOptional()
+  @IsString()
+  readonly date: string;
 }
 
 export default CreatePartiyaDto;

@@ -3,28 +3,43 @@ import { Telegraf } from 'telegraf';
 const token = process.env.BOT_TOKEN;
 const app = new Telegraf(token);
 
-const telegram = async ({ imgUrl, model, color, size, shape }) => {
+const telegram = async ({
+  imgUrl,
+  model,
+  color,
+  size,
+  shape,
+  phone1,
+  phone2,
+  address,
+  addressLink,
+  title,
+  endWork,
+  startWork,
+  landmark,
+}) => {
   const chatId = process.env.CLIENT_ID;
   const text = `😍 Наши необычные ковры добавят интерьеру цвета, характер и современности вашего дома !)
 
   🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
 
-  model: ${model}🧮
-  color: ${color}💈
-  size: ${size}📐
-  Shape: ${shape}
+  Модель: ${model}🧮
+  Цвет: ${color}💈
+  Размер: ${size}📐
+  Форма: ${shape}
 
   🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
   
-  😍 Bizning Sanat Hali gilamlari sizning uyingizga rang, xarakter va zamonaviylikni qo'shadi !)
+  😍 Наши ковры ${title} добавят цвет, характер и современность в ваш дом!)
+  📌 Имя филиала: ${title}. 
+  📍 Адрес: <a href='${addressLink}'>${address}</a>.
+  📌 Ориентир: ${landmark}.
+
+  🕙 Время работы с ${startWork} до ${endWork}
+  📲 ${phone1}.
+  ☎️ ${phone2}.
   
-  📍Адрес: Улица Лабзак 103.
-  📌Ориентир: Колледж связи. 
-  🕙 Время работы с 09:00 до 20:00
-  📲 +99898-800-00-09.
-  ☎️ +99897-490-55-55.
-  
-  Telegram Chat: 🔵@SanatHali_Labzak`;
+  🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸`;
 
   imgUrl &&
     (await app.telegram.sendPhoto(

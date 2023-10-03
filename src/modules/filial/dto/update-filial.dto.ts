@@ -1,5 +1,4 @@
-import { IsArray, IsOptional, IsString } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class UpdateFilialDto {
   @ApiProperty({
@@ -12,11 +11,43 @@ class UpdateFilialDto {
 
   @ApiProperty({
     description: `address`,
-    example: 'Tashkent',
+    example: 'Toshmi',
   })
   @IsOptional()
   @IsString()
   readonly address: string;
+
+  @ApiProperty({
+    description: `address link`,
+    example: 'https://maps.app.goo.gl/KHo1x8cn5fMmXpAE6',
+  })
+  @IsOptional()
+  @IsString()
+  readonly addressLink: string;
+
+  @ApiProperty({
+    description: `landmark`,
+    example: 'Malika bozori',
+  })
+  @IsOptional()
+  @IsString()
+  readonly landmark: string;
+
+  @ApiProperty({
+    description: `phone filial`,
+    example: '+998 91 112 23 34',
+  })
+  @IsOptional()
+  @IsString()
+  readonly phone1: string;
+
+  @ApiProperty({
+    description: `second phone filial`,
+    example: '+998 92 223 34 45',
+  })
+  @IsOptional()
+  @IsString()
+  readonly phone2: string;
 
   @ApiProperty({
     description: `Starting time`,

@@ -8,12 +8,13 @@ import {
 
 import { Partiya } from './partiya.entity';
 import { CreatePartiyaDto, UpdatePartiyaDto } from './dto';
-import { deleteFile, partiyaDateSort } from '../../infra/helpers';
+import {
+  deleteFile,
+  excelDataParser,
+  partiyaDateSort,
+} from '../../infra/helpers';
 import { ExcelService } from '../excel/excel.service';
 import { Repository } from 'typeorm';
-import * as fs from 'fs';
-import * as XLSX from 'xlsx';
-import * as path from 'path';
 
 Injectable();
 export class PartiyaService {
@@ -49,7 +50,7 @@ export class PartiyaService {
       data?.excel?.path,
     );
 
-    return { data, items: response };
+    return { data, items: excelDataParser(response) };
   }
 
   async deleteOne(id: string) {

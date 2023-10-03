@@ -74,7 +74,7 @@ class ProductQueryDto {
 
   @ApiProperty({
     description: `size`,
-    example: '3x4',
+    example: '["3x4", "5x6"]',
   })
   @IsOptional()
   @IsArray()

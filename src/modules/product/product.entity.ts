@@ -132,6 +132,9 @@ export class Product {
   @OneToMany(() => ClientOrder, (clientOrder) => clientOrder.product)
   clientOrders: ClientOrder[];
 
+  @Column('jsonb')
+  otherInfos: string[];
+
   public setTotalSize() {
     this.totalSize = +this.x * +this.y * this.count;
   }

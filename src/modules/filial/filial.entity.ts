@@ -22,6 +22,18 @@ export class Filial {
   @Column()
   endWorkTime: string;
 
+  @Column()
+  addressLink: string;
+
+  @Column()
+  landmark: string;
+
+  @Column()
+  phone1: string;
+
+  @Column()
+  phone2: string;
+
   @OneToMany(() => Kassa, (kassa) => kassa.filial)
   kassa: Kassa[];
 

@@ -12,11 +12,43 @@ class CreateFilialDto {
 
   @ApiProperty({
     description: `address`,
-    example: 'Tashkent',
+    example: 'Aloqa markazi',
   })
   @IsNotEmpty()
   @IsString()
   readonly address: string;
+
+  @ApiProperty({
+    description: `address link`,
+    example: 'https://maps.app.goo.gl/KHo1x8cn5fMmXpAE6',
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly addressLink: string;
+
+  @ApiProperty({
+    description: `Landmark`,
+    example: 'Aloqa markazi',
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly landmark: string;
+
+  @ApiProperty({
+    description: `phone filial`,
+    example: '+99891 111 22 33',
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly phone1: string;
+
+  @ApiProperty({
+    description: `second phone filial`,
+    example: '+99892 111 22 33',
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly phone2: string;
 
   @ApiProperty({
     description: `Starting time`,

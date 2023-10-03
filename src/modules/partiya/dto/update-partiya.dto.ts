@@ -15,15 +15,15 @@ class UpdatePartiyaDto {
   })
   @IsOptional()
   @IsNumber()
-  readonly cost: number;
+  readonly quantity: number;
 
   @ApiProperty({
-    description: `date`,
-    example: '2023-05-02 08:10:23.726769',
+    description: `sum`,
+    example: 40000,
   })
   @IsOptional()
-  @IsString()
-  readonly date: string;
+  @IsNumber()
+  readonly sum: number;
 
   @ApiProperty({
     description: `expense : Расход:`,
@@ -34,28 +34,12 @@ class UpdatePartiyaDto {
   readonly expense: number;
 
   @ApiProperty({
-    description: `order quantity : Обём заказа:`,
-    example: 1000 + 'm^2',
+    description: `date`,
+    example: '2023-05-02 08:10:23.726769',
   })
   @IsOptional()
-  @IsNumber()
-  readonly orderQuantity: number;
-
-  @ApiProperty({
-    description: `price : Цена`,
-    example: 8,
-  })
-  @IsOptional()
-  @IsNumber()
-  readonly price: number;
-
-  @ApiProperty({
-    description: `sum`,
-    example: 40000,
-  })
-  @IsOptional()
-  @IsNumber()
-  readonly sum: number;
+  @IsString()
+  readonly date: string;
 }
 
 export default UpdatePartiyaDto;

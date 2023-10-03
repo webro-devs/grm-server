@@ -10,6 +10,15 @@ const excelDataParser = (data) => {
       imgUrl,
       m2,
       otherImgs = [],
+      collection_cost,
+      collection_exp,
+      collection_m,
+      model_cost,
+      shape,
+      style,
+      filial,
+      price,
+      commingPrice,
     } = curr;
     const datas = {
       size,
@@ -17,11 +26,11 @@ const excelDataParser = (data) => {
       code,
       count,
       imgUrl,
-      price: 0,
-      commingPrice: 0,
-      shape: '',
-      style: '',
-      filial: '',
+      price: price ? price : 0,
+      commingPrice: commingPrice ? commingPrice : 0,
+      shape: shape ? shape : '',
+      style: style ? style : '',
+      filial: filial ? filial : '',
       m2,
       otherImgs,
     };
@@ -38,6 +47,7 @@ const excelDataParser = (data) => {
       } else {
         collectionItem.models.push({
           title: model,
+          cost: model_cost,
           products: [datas],
         });
       }
@@ -46,9 +56,13 @@ const excelDataParser = (data) => {
     } else {
       acc.push({
         title: collection,
+        collection_cost,
+        collection_exp,
+        collection_m,
         models: [
           {
             title: model,
+            cost: model_cost,
             products: [datas],
           },
         ],

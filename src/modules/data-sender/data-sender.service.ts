@@ -2,23 +2,24 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import * as cron from 'node-cron';
 import { ProductService } from '../product/product.service';
+import { FilialService } from '../filial/filial.service';
 import { telegramSender } from '../../infra/helpers';
 
 @Injectable()
 export class DataSenderService implements OnModuleDestroy {
   private scheduledJobs: cron.ScheduledTask[] = [];
   index = 0;
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private readonly filialService: FilialService,
+  ) {}
 
   cronJob({ startTime = '09:00', endTime = '21:00', count = 1 }) {
-    // Define the interval for sending data (in minutes)
     const intervalMinutes = 60 / count;
 
-    // Convert start and end time to minutes from midnight
     const startMinutes = this.getTimeInMinutes(startTime);
     const endMinutes = this.getTimeInMinutes(endTime);
 
-    // Schedule the data sending task and store the scheduled jobs
     for (
       let minutes = startMinutes;
       minutes < endMinutes;
@@ -26,7 +27,7 @@ export class DataSenderService implements OnModuleDestroy {
     ) {
       const hour = Math.floor(minutes / 60);
       const minute = minutes % 60;
-      const cronExpression = `${minute} ${hour} * * *`; // Minutes Hours * * *
+      const cronExpression = `${minute} ${hour} * * *`;
       const job = cron.schedule(cronExpression, () => this.sendData());
       this.scheduledJobs.push(job);
     }
@@ -34,7 +35,6 @@ export class DataSenderService implements OnModuleDestroy {
   }
 
   onModuleDestroy() {
-    // Stop all the scheduled cron jobs when the module is destroyed
     this.scheduledJobs.forEach((job) => job.stop());
   }
 
@@ -44,15 +44,26 @@ export class DataSenderService implements OnModuleDestroy {
   }
 
   private async sendData() {
-    const [products, count] = await this.productService.getAllForTelegram();
+    const { products, count } = await this.productService.getAllForTelegram();
     if (count <= this.index) this.index = 0;
-    // Your code to send the data goes here
+    const filial = await this.filialService.getOne(
+      products[this.index].filial.id,
+    );
+
     telegramSender({
       imgUrl: products[this.index]?.imgUrl,
       color: products[this.index]?.color,
       model: products[this.index]?.model,
       shape: products[this.index]?.shape,
       size: products[this.index]?.size,
+      phone1: filial.phone1,
+      phone2: filial.phone2,
+      address: filial.address,
+      addressLink: filial.addressLink,
+      endWork: filial.endWorkTime,
+      startWork: filial.startWorkTime,
+      title: filial.title,
+      landmark: filial.landmark,
     });
     ++this.index;
   }
