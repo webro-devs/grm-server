@@ -29,7 +29,6 @@ class CreatePartiyaDto {
     description: `expense : Расход:`,
     example: 8000,
   })
-  @IsNotEmpty()
   @IsNumber()
   readonly expense: number;
 
