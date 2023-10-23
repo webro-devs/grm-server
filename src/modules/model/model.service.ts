@@ -25,6 +25,9 @@ export class ModelService {
       order: {
         title: 'ASC',
       },
+      relations: {
+        collection: true
+      }
     });
   }
 

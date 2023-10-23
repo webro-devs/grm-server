@@ -30,6 +30,9 @@ export class CollectionService {
       order: {
         title: 'ASC',
       },
+      relations: {
+        model: true,
+      },
     });
   }
 
