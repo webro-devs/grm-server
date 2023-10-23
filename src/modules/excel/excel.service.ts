@@ -78,16 +78,17 @@ export class ExcelService {
     }
 
     const product = await this.productService.create(datas);
-    const products = [];
+    let products = [];
 
     for (let i = 0; i < product.raw.length; i++) {
       let data = await this.productService.getOneForExcel(product.raw[i].raw);
 
-      products.push({ ...data, ...JSON.parse(data.otherInfos) });
+      products.push({ ...data, otherInfos: JSON.parse(data.otherInfos) });
       delete products[i].otherInfos;
     }
 
     const updatedDatas = await this.updateExcelFile(products, data.excel.path);
+    products = [];
 
     return updatedDatas;
   }
