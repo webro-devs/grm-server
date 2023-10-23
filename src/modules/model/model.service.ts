@@ -26,8 +26,8 @@ export class ModelService {
         title: 'ASC',
       },
       relations: {
-        collection: true
-      }
+        collection: true,
+      },
     });
   }
 
@@ -35,6 +35,9 @@ export class ModelService {
     return await this.modelRepository.find({
       order: {
         title: 'ASC',
+      },
+      relations: {
+        collection: true,
       },
     });
   }

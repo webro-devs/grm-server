@@ -37,7 +37,11 @@ export class CollectionService {
   }
 
   async getAllData() {
-    return await this.collectionRepository.find();
+    return await this.collectionRepository.find({
+      relations: {
+        model: true,
+      },
+    });
   }
 
   async getOne(id: string) {
