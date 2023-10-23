@@ -163,7 +163,6 @@ export class ProductService {
 
   async create(value: CreateProductDto[]) {
     value = this.setXy(value);
-    console.log(value);
 
     const data = await this.productRepository
       .createQueryBuilder()
@@ -172,6 +171,8 @@ export class ProductService {
       .values(value as unknown as Product)
       .returning('id')
       .execute();
+
+    console.log(data);
 
     return data;
   }
