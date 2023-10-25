@@ -54,7 +54,9 @@ export class AccountingService {
 
   async getRemainingProducts() {
     const data = await this.productService.getRemainingProductsForAllFilial();
-    return data;
+    const remainingSize = data.map(p=>p.remainingSize).reduce((a,b)=>a+b)
+    const remainingSum = data.map(p=>p.remainingSum).reduce((a,b)=>a+b)
+    return {remainingSize,remainingSum};
   }
 
   async getRemainingProductsByCollection() {
