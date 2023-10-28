@@ -6,7 +6,7 @@ class ImportExcelDto {
     type: 'string',
     format: 'binary',
   })
-  readonly file: Express.Multer.File;
+  readonly file?: any;
 }
 
 export default ImportExcelDto;

@@ -1,41 +1,25 @@
 import {
-  IsOptional,
+  IsNotEmpty,
   IsString,
   IsNumber,
+  IsOptional,
   IsArray,
-  IsBoolean,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-class UpdateProductDto {
+class CreateProductExcDto {
   @ApiProperty({
     description: `Carpet code`,
     example: '2346290837462098',
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   code: string;
-
-  @ApiProperty({
-    description: `Carpet color`,
-    example: 'yellow',
-  })
-  @IsOptional()
-  @IsString()
-  color: string;
-
-  @ApiProperty({
-    description: `Carpet date`,
-    example: '2023-05-02 08:10:23.726769',
-  })
-  @IsOptional()
-  @IsString()
-  date: string;
 
   @ApiProperty({
     description: `Carpet count`,
     example: 3,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
   count: number;
 
@@ -43,39 +27,23 @@ class UpdateProductDto {
     description: `Carpet image url`,
     example: 'https://carpet.jpg',
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   imgUrl: string;
-
-  @ApiProperty({
-    description: `Carpet price`,
-    example: 140,
-  })
-  @IsOptional()
-  @IsNumber()
-  price: number;
-
-  @ApiProperty({
-    description: `Carpet coming price`,
-    example: 100,
-  })
-  @IsOptional()
-  @IsNumber()
-  comingPrice: number;
 
   @ApiProperty({
     description: `Carpet shape`,
     example: 'square',
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   shape: string;
 
   @ApiProperty({
     description: `Carpet size`,
-    example: '2x3',
+    example: '200x300',
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   size: string;
 
@@ -83,41 +51,76 @@ class UpdateProductDto {
     description: `Carpet style`,
     example: 'classic',
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   style: string;
 
   @ApiProperty({
     description: `Carpet filial id`,
-    example: 'uuid',
+    example: 'UUID',
   })
   @IsOptional()
   @IsString()
-  filial: string;
+  filial?: string;
 
   @ApiProperty({
     description: `Carpet model id`,
-    example: 'uuid',
+    example: 'UUID',
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   model: string;
 
   @ApiProperty({
-    description: `other imgs`,
-    example: ['link', 'link', 'link'],
+    description: `Carpet partiya id`,
+    example: 'UUID',
   })
   @IsOptional()
-  @IsArray()
+  @IsString()
+  partiya: string;
+
+  @IsOptional()
+  @IsNumber()
+  x: number;
+
+  @IsOptional()
+  @IsNumber()
+  y: number;
+
+  @IsOptional()
+  @IsNumber()
+  totalSize: number;
+
+  @ApiProperty({
+    description: `other imgs`,
+    example: '["link" , "link" , "link"]',
+  })
+  @IsOptional()
   otherImgs: string[];
 
   @ApiProperty({
-    description: `isMetric`,
-    example: true,
+    description: `Carpet color`,
+    example: 'yellow',
   })
-  @IsOptional()
-  @IsBoolean()
-  isMetric: boolean;
+  @IsNotEmpty()
+  @IsString()
+  color: string;
+
+  @ApiProperty({
+    description: `Carpet color`,
+    example: 'yellow',
+  })
+  @IsNotEmpty()
+  @IsString()
+  collection: string;
+
+  @ApiProperty({
+    description: `M2`,
+    example: 9,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  m2: number;
 }
 
-export default UpdateProductDto;
+export default CreateProductExcDto;

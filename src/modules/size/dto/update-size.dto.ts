@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-class UpdateColorDto {
+class UpdateSizeDto {
   @ApiProperty({
     description: `Carpet size 1..sm`,
     example: 'title: 100x500',
@@ -10,4 +10,4 @@ class UpdateColorDto {
   readonly title: string;
 }
 
-export default UpdateColorDto;
+export default UpdateSizeDto;

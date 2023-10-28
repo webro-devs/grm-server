@@ -89,15 +89,15 @@ class CreateProductDto {
 
   @ApiProperty({
     description: `Carpet filial id`,
-    example: 'uuid',
+    example: 'UUID',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  filial: string;
+  filial?: string;
 
   @ApiProperty({
     description: `Carpet model id`,
-    example: 'uuid',
+    example: 'UUID',
   })
   @IsNotEmpty()
   @IsString()
@@ -105,7 +105,7 @@ class CreateProductDto {
 
   @ApiProperty({
     description: `Carpet partiya id`,
-    example: 'uuid',
+    example: 'UUID',
   })
   @IsOptional()
   @IsString()
@@ -137,14 +137,6 @@ class CreateProductDto {
   @IsNotEmpty()
   @IsString()
   color: string;
-
-  @ApiProperty({
-    description: `collection and model infos`,
-    example:
-      '{"collection_cost": 12, "collection_m": 1000, "collection_exp": 2000, "model_cost": 20 }',
-  })
-  @IsNotEmpty()
-  otherInfos?: object;
 }
 
 export default CreateProductDto;

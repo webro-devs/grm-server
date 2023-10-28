@@ -115,7 +115,9 @@ export class Product {
   @JoinColumn()
   model: Model;
 
-  @ManyToOne(() => Partiya, (partiya) => partiya.products)
+  @ManyToOne(() => Partiya, (partiya) => partiya.products, {
+    onDelete: 'SET NULL',
+  })
   @JoinColumn()
   partiya: Partiya;
 
@@ -131,9 +133,6 @@ export class Product {
 
   @OneToMany(() => ClientOrder, (clientOrder) => clientOrder.product)
   clientOrders: ClientOrder[];
-
-  @Column('jsonb')
-  otherInfos: string[];
 
   public setTotalSize() {
     this.totalSize = +this.x * +this.y * this.count;

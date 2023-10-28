@@ -50,7 +50,25 @@ export class PartiyaService {
       data?.excel?.path,
     );
 
-    return { data, items: excelDataParser(response) };
+    for (let i = 0; i < response.length; i++) {
+      response[i].color = JSON.parse(response[i].color);
+      response[i].model = JSON.parse(response[i].model);
+      response[i].size = JSON.parse(response[i].size);
+      response[i].shape = JSON.parse(response[i].shape);
+      response[i].style = JSON.parse(response[i].style);
+      response[i].otherImgs = JSON.parse(response[i].otherImgs);
+    }
+
+    const constructedDatas = excelDataParser(response);
+    for (let i = 0; i < constructedDatas.length; i++) {
+      constructedDatas[i].collection_exp =
+        data.expense || 0 / constructedDatas.length;
+    }
+
+    return {
+      ...data,
+      items: constructedDatas,
+    };
   }
 
   async deleteOne(id: string) {

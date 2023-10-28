@@ -21,7 +21,6 @@ import { FileModule } from './modules/file/file.module';
 import { ModelModule } from './modules/model/model.module';
 import { GrmSocketModule } from './modules/web-socket/web-socket.module';
 import { TransferModule } from './modules/transfer/transfer.module';
-import { ColorModule } from './modules/color/color.module';
 import { ExcelModule } from './modules/excel/excel.module';
 import { AccountingModule } from './modules/accounting/accounting.module';
 import { ClientRequestModule } from './modules/client-request/client-request.module';
@@ -30,6 +29,7 @@ import { MagazinInfoModule } from './modules/magazin-info/magazin-info.module';
 import { DataSenderModule } from './modules/data-sender/data-sender.module';
 import { CountryModule } from './modules/country/country.module';
 import { SizeModule } from './modules/size/size.module';
+import { ColorModule } from './modules/color/color.module';
 
 @Module({
   imports: [

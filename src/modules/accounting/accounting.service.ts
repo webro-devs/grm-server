@@ -54,9 +54,13 @@ export class AccountingService {
 
   async getRemainingProducts() {
     const data = await this.productService.getRemainingProductsForAllFilial();
-    const remainingSize = data.map(p=>p.remainingSize).reduce((a,b)=>a+b)
-    const remainingSum = data.map(p=>p.remainingSum).reduce((a,b)=>a+b)
-    return {remainingSize,remainingSum};
+    const remainingSize = data
+      .map((p) => p.remainingSize)
+      .reduce((a, b) => a + b);
+    const remainingSum = data
+      .map((p) => p.remainingSum)
+      .reduce((a, b) => a + b);
+    return { remainingSize, remainingSum };
   }
 
   async getRemainingProductsByCollection() {
@@ -71,6 +75,11 @@ export class AccountingService {
 
   async getInternetShopSum(where) {
     const data = await this.clientOrderService.getInternetShopSumByRange(where);
+    return data;
+  }
+
+  async getTotal() {
+    const data = { terminal: 50000, summ: 100000 };
     return data;
   }
 }

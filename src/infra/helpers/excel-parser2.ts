@@ -1,23 +1,24 @@
 const excelDataParser = (data) => {
   const transformedObj = data.reduce((acc, curr) => {
     const {
+      collection,
       model,
       size,
       color,
       code,
       count,
       imgUrl,
-      m2 = 0,
+      m2,
       otherImgs = [],
       collection_exp = 0,
       model_cost = 0,
       shape,
       style,
-      filial,
-      price = 0,
+      filial = '',
+      price,
       commingPrice = 0,
       priceMeter = 0,
-      id = '',
+      id,
     } = curr;
     const datas = {
       id,

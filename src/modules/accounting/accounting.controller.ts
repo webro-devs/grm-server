@@ -93,4 +93,18 @@ export class AccountingController {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  @Get('/remaining-sums')
+  @ApiOperation({ summary: 'Method: returns remaining orders' })
+  @ApiOkResponse({
+    description: 'Remaining products returned successfully!',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getRemainingSums() {
+    try {
+      return await this.accountingService.getTotal();
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

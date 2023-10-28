@@ -46,6 +46,20 @@ export class ModelService {
     const data = await this.modelRepository
       .findOne({
         where: { id },
+        relations: { collection: true },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
+
+    return data;
+  }
+
+  async getOneByName(title: string) {
+    const data = await this.modelRepository
+      .findOne({
+        where: { title },
+        relations: { collection: true },
       })
       .catch(() => {
         throw new NotFoundException('data not found');

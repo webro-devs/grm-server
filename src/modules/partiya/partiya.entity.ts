@@ -23,22 +23,6 @@ export class Partiya {
     transformer: new ColumnNumericTransformer(),
     default: 0,
   })
-  sum: number;
-
-  @Column('numeric', {
-    precision: 20,
-    scale: 2,
-    transformer: new ColumnNumericTransformer(),
-    default: 0,
-  })
-  quantity: number;
-
-  @Column('numeric', {
-    precision: 20,
-    scale: 2,
-    transformer: new ColumnNumericTransformer(),
-    default: 0,
-  })
   expense: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

@@ -37,6 +37,18 @@ export class SizeService {
     return data;
   }
 
+  async getOneByName(title: string) {
+    const data = await this.sizeRepository
+      .findOne({
+        where: { title },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
+
+    return data;
+  }
+
   async deleteOne(id: string) {
     const response = await this.sizeRepository.delete(id).catch(() => {
       throw new NotFoundException('data not found');

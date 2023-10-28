@@ -37,6 +37,18 @@ export class ShapeService {
     return data;
   }
 
+  async getOneByName(title: string) {
+    const data = await this.shapeRepository
+      .findOne({
+        where: { title },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
+
+    return data;
+  }
+
   async deleteOne(id: string) {
     const response = await this.shapeRepository.delete(id).catch(() => {
       throw new NotFoundException('data not found');

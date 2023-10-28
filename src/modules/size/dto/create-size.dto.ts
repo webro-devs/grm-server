@@ -1,13 +1,13 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-class CreateColorDto {
+class CreateSizeDto {
   @ApiProperty({
-    description: `Carpet size 1..sm `,
-    example: 'title: 100x500',
+    description: `Carpet size 1xx sm `,
+    example: '100x500',
   })
   @IsNotEmpty()
   @IsString()
   readonly title: string;
 }
 
-export default CreateColorDto;
+export default CreateSizeDto;
