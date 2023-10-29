@@ -191,14 +191,19 @@ export class ExcelService {
               : JSON.stringify(excelData[ind].filial);
 
           excelData[ind].style =
-            typeof excelData[ind].filial == 'string'
-              ? excelData[ind].filial
-              : JSON.stringify(excelData[ind].filial);
+            typeof excelData[ind].style == 'string'
+              ? excelData[ind].style
+              : JSON.stringify(excelData[ind].style);
 
           excelData[ind].size =
-            typeof excelData[ind].filial == 'string'
-              ? excelData[ind].filial
-              : JSON.stringify(excelData[ind].filial);
+            typeof excelData[ind].size == 'string'
+              ? excelData[ind].size
+              : JSON.stringify(excelData[ind].size);
+
+          excelData[ind].shape =
+            typeof excelData[ind].shape == 'string'
+              ? excelData[ind].shape
+              : JSON.stringify(excelData[ind].shape);
 
           excelData[ind].model =
             typeof excelData[ind].model == 'string'
