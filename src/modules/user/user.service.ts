@@ -94,6 +94,7 @@ export class UserService {
         relations: {
           position: true,
           filial: true,
+          sellerOrders: true,
         },
       })
       .catch(() => {

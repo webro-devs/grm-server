@@ -41,22 +41,45 @@ export class ExcelController {
   )
   @HttpCode(HttpStatus.CREATED)
   async createExcel(
-    @UploadedFile() file: any,
-    @Body() bodyData?: ImportExcelDto,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() bodyData: ImportExcelDto,
   ) {
-    console.log('asdasd');
-    // const data = await this.fileService.uploadFile(file.path);
-    // const reconstructed = await this.fileService.setModules(data);
-    // const created = await this.fileService.createProduct(id, reconstructed);
-    // const constructedDatas = excelDataParser(created.updatedDatas);
+    const data = await this.fileService.readExcelFile(file.path);
+    console.log(bodyData);
 
-    // for (let i = 0; i < constructedDatas.length; i++) {
-    //   constructedDatas[i].collection_exp =
-    //     created.expense || 0 / constructedDatas.length || 0;
-    // }
-
-    return 'constructedDatas';
+    return data;
   }
+
+  // @Public()
+  // @Post('/')
+  // @ApiConsumes('multipart/form-data')
+  // @ApiOperation({ summary: 'Method: imports excel file and returns json data' })
+  // @ApiCreatedResponse({
+  //   description: 'The excel file imported and converted to json successfully',
+  // })
+  // @UseInterceptors(
+  //   FileInterceptor('file', {
+  //     storage: multerStorage('uploads/excel'),
+  //   }),
+  // )
+  // @HttpCode(HttpStatus.CREATED)
+  // async createExcel(
+  //   @UploadedFile() file: any,
+  //   @Body() bodyData?: ImportExcelDto,
+  // ) {
+  //   console.log('asdasd');
+  //   // const data = await this.fileService.uploadFile(file.path);
+  //   // const reconstructed = await this.fileService.setModules(data);
+  //   // const created = await this.fileService.createProduct(id, reconstructed);
+  //   // const constructedDatas = excelDataParser(created.updatedDatas);
+
+  //   // for (let i = 0; i < constructedDatas.length; i++) {
+  //   //   constructedDatas[i].collection_exp =
+  //   //     created.expense || 0 / constructedDatas.length || 0;
+  //   // }
+
+  //   return 'constructedDatas';
+  // }
 
   @Public()
   @Put('/:partiyaID')
