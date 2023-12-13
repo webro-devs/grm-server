@@ -7,7 +7,7 @@ export class Collection {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar')
+  @Column('varchar', {unique: true})
   title: string;
 
   @OneToMany(() => Model, (model) => model.collection)

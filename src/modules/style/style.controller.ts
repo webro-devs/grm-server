@@ -26,6 +26,7 @@ import { PaginationDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from '../../infra/shared/enum';
+import { DuplicateFilter } from '../../infra/validators';
 
 @ApiTags('Style')
 @Controller('style')
@@ -50,7 +51,14 @@ export class StyleController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateStyleDto): Promise<Style> {
-    return await this.styleService.create(data);
+    const response = await this.styleService.create(data);
+    if(!(response instanceof Style) && response?.error){
+      // @ts-ignore
+      throw new DuplicateFilter(response.message);
+    }else {
+      // @ts-ignore
+      return response;
+    }
   }
 
   @Patch('/:id')

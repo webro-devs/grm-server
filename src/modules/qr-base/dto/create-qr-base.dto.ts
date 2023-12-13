@@ -2,16 +2,8 @@ import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreateQrBaseDto {
   @ApiProperty({
-    description: `title`,
-    example: 'pentagon',
-  })
-  @IsNotEmpty()
-  @IsString()
-  readonly title: string;
-
-  @ApiProperty({
     description: `Qr code`,
-    example: '13543154',
+    example: '123456789',
   })
   @IsNotEmpty()
   @IsString()
@@ -56,6 +48,22 @@ class CreateQrBaseDto {
   @IsNotEmpty()
   @IsString()
   style: string;
+
+  @ApiProperty({
+    description: `color`,
+    example: 'UUID',
+  })
+  @IsNotEmpty()
+  @IsString()
+  color: string;
+
+  @ApiProperty({
+    description: `model`,
+    example: 'UUID',
+  })
+  @IsNotEmpty()
+  @IsString()
+  model: string;
 }
 
 export default CreateQrBaseDto;

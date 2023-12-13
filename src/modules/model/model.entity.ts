@@ -14,7 +14,7 @@ export class Model {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar')
+  @Column('varchar', {unique: true})
   title: string;
 
   @ManyToOne(() => Collection, (collection) => collection.model)

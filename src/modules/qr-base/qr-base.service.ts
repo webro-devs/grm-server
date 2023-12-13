@@ -9,6 +9,7 @@ import {
 import { CreateQrBaseDto, UpdateQrBaseDto } from './dto';
 import { QrBase } from './qr-base.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Product } from '../product/product.entity';
 
 @Injectable()
 export class QrBaseService {
@@ -67,7 +68,14 @@ export class QrBaseService {
   }
 
   async create(value: CreateQrBaseDto) {
-    const data = this.qrBaseRepository.create(value);
-    return await this.qrBaseRepository.save(data);
+    const data = this.qrBaseRepository
+      .createQueryBuilder()
+      .insert()
+      .into(QrBase)
+      .values(value as unknown as QrBase)
+      .returning('id')
+      .execute();
+
+    return data;
   }
 }

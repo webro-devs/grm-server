@@ -5,6 +5,6 @@ export class Shape {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar')
+  @Column('varchar', {unique: true})
   title: string;
 }
