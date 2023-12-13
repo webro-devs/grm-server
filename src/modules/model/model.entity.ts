@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Collection } from '../collection/collection.entity';
 import { Product } from '../product/product.entity';
+import { QrBase } from '../qr-base/qr-base.entity';
 
 @Entity('model')
 export class Model {
@@ -21,4 +22,7 @@ export class Model {
 
   @OneToMany(() => Product, (product) => product.model)
   products: Product[];
+
+  @OneToMany(() => QrBase, (qrBase) => qrBase.model)
+  qrBase: QrBase[];
 }

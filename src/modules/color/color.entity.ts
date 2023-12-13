@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Product } from '../product/product.entity';
+import { QrBase } from '../qr-base/qr-base.entity';
 
 @Entity('color')
 export class Color {
@@ -14,4 +15,7 @@ export class Color {
 
   @OneToMany(() => Product, (product) => product.color)
   products: Product[];
+
+  @OneToMany(() => QrBase, (qrBase) => qrBase.color)
+  qrBase: QrBase[];
 }
