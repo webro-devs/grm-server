@@ -68,7 +68,7 @@ export class QrBaseService {
   }
 
   async create(value: CreateQrBaseDto) {
-    const data = this.qrBaseRepository
+    const data = await this.qrBaseRepository
       .createQueryBuilder()
       .insert()
       .into(QrBase)
