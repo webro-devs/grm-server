@@ -30,6 +30,7 @@ import { DataSenderModule } from './modules/data-sender/data-sender.module';
 import { CountryModule } from './modules/country/country.module';
 import { SizeModule } from './modules/size/size.module';
 import { ColorModule } from './modules/color/color.module';
+import { QrBaseModule } from './modules/qr-base/qr-base.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { ColorModule } from './modules/color/color.module';
     PartiyaModule,
     PositionModule,
     ProductModule,
+    QrBaseModule,
     SizeModule,
     ShapeModule,
     StyleModule,
