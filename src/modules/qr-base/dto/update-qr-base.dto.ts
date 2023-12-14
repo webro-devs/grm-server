@@ -1,9 +1,9 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class UpdateQrBaseDto {
   @ApiProperty({
     description: `Qr code`,
-    example: '13543154',
+    example: '123456789',
   })
   @IsOptional()
   @IsString()
@@ -48,5 +48,21 @@ class UpdateQrBaseDto {
   @IsOptional()
   @IsString()
   style: string;
+
+  @ApiProperty({
+    description: `color`,
+    example: 'UUID',
+  })
+  @IsOptional()
+  @IsString()
+  color: string;
+
+  @ApiProperty({
+    description: `model`,
+    example: 'UUID',
+  })
+  @IsOptional()
+  @IsString()
+  model: string;
 }
 export default UpdateQrBaseDto;

@@ -62,6 +62,11 @@ export class StyleService {
   }
 
   async create(value: CreateStyleDto) {
+    const style = this.styleRepository.findOne({where: { title: value.title}});
+    if(!style){
+      return {error: true, message: 'you can not duplicate style!'};
+    }
+
     const data = this.styleRepository.create(value);
     return await this.styleRepository.save(data);
   }

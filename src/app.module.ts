@@ -31,6 +31,7 @@ import { CountryModule } from './modules/country/country.module';
 import { SizeModule } from './modules/size/size.module';
 import { ColorModule } from './modules/color/color.module';
 import { QrBaseModule } from './modules/qr-base/qr-base.module';
+import { IsUniqueConstraint } from './infra/shared/decorators/is-unique.constrain';
 
 @Module({
   imports: [
@@ -75,5 +76,6 @@ import { QrBaseModule } from './modules/qr-base/qr-base.module';
     TransferModule,
     UserModule,
   ],
+  providers: [IsUniqueConstraint],
 })
 export class AppModule {}

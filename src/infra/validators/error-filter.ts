@@ -17,7 +17,8 @@ class ErrorFilter implements ExceptionFilter {
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
-      message: exception.message,
+      status: exception?.message,
+      message: exception['response']?.message,
     });
   }
 }
