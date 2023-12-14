@@ -22,8 +22,6 @@ export class QrBaseController {
   })
   @HttpCode(HttpStatus.OK)
   async getAll(): Promise<QrBase[]> {
-    return this.qrBaseService.getAll();
-  }
 
   @Get('/:id')
   @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
