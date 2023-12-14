@@ -23,6 +23,15 @@ export class QrBaseService {
       order: {
         date: 'ASC',
       },
+      relations: {
+        model: true,
+        color: true,
+        collection: true,
+        size: true,
+        shape: true,
+        style: true,
+        country: true,
+      },
     });
   }
 
@@ -30,7 +39,15 @@ export class QrBaseService {
     const data = await this.qrBaseRepository
       .findOne({
         where: { id },
-      })
+        relations: {
+          model: true,
+          color: true,
+          collection: true,
+          size: true,
+          shape: true,
+          style: true,
+          country: true,
+        },},)
       .catch(() => {
         throw new NotFoundException('data not found');
       });
@@ -42,6 +59,16 @@ export class QrBaseService {
     const data = await this.qrBaseRepository
       .findOne({
         where: { code },
+        relations: {
+          model: true,
+          color: true,
+          collection: true,
+          size: true,
+          shape: true,
+          style: true,
+          country: true,
+        },
+
       })
       .catch(() => {
         throw new NotFoundException('data not found');

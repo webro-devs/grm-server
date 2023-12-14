@@ -13,7 +13,7 @@ class CreateQrBaseDto {
 
   @ApiProperty({
     description: `Country`,
-    example: 'Uzbekistan',
+    example: 'UUID',
   })
   @IsNotEmpty()
   @IsString()
@@ -21,7 +21,7 @@ class CreateQrBaseDto {
 
   @ApiProperty({
     description: `Collection`,
-    example: 'pentagon',
+    example: 'UUID',
   })
   @IsNotEmpty()
   @IsString()
@@ -29,7 +29,7 @@ class CreateQrBaseDto {
 
   @ApiProperty({
     description: `Size`,
-    example: '200x300',
+    example: 'UUID',
   })
   @IsNotEmpty()
   @IsString()
@@ -37,7 +37,7 @@ class CreateQrBaseDto {
 
   @ApiProperty({
     description: `Shape`,
-    example: 'Pentagon',
+    example: 'UUID',
   })
   @IsNotEmpty()
   @IsString()
@@ -45,7 +45,7 @@ class CreateQrBaseDto {
 
   @ApiProperty({
     description: `Style`,
-    example: 'Classic',
+    example: 'UUID',
   })
   @IsNotEmpty()
   @IsString()

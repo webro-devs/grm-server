@@ -11,7 +11,7 @@ class UpdateQrBaseDto {
 
   @ApiProperty({
     description: `Country`,
-    example: 'Uzbekistan',
+    example: 'UUID',
   })
   @IsOptional()
   @IsString()
@@ -19,7 +19,7 @@ class UpdateQrBaseDto {
 
   @ApiProperty({
     description: `Collection`,
-    example: 'pentagon',
+    example: 'UUID',
   })
   @IsOptional()
   @IsString()
@@ -27,7 +27,7 @@ class UpdateQrBaseDto {
 
   @ApiProperty({
     description: `Size`,
-    example: '200x300',
+    example: 'UUID',
   })
   @IsOptional()
   @IsString()
@@ -35,7 +35,7 @@ class UpdateQrBaseDto {
 
   @ApiProperty({
     description: `Shape`,
-    example: 'Pentagon',
+    example: 'UUID',
   })
   @IsOptional()
   @IsString()
@@ -43,7 +43,7 @@ class UpdateQrBaseDto {
 
   @ApiProperty({
     description: `Style`,
-    example: 'Classic',
+    example: 'UUID',
   })
   @IsOptional()
   @IsString()
