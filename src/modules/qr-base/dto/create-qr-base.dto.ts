@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsUnique } from 'src/infra/shared/decorators/is-unique.decorator';
 class CreateQrBaseDto {
   @ApiProperty({
     description: `Qr code`,
@@ -7,6 +8,7 @@ class CreateQrBaseDto {
   })
   @IsNotEmpty()
   @IsString()
+  @IsUnique('qrbase')
   code: string;
 
   @ApiProperty({

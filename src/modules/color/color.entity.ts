@@ -7,7 +7,7 @@ export class Color {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar', {unique: true})
+  @Column('varchar')
   title: string;
 
   @Column({ type: 'varchar', nullable: true })

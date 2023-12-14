@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsUnique } from 'src/infra/shared/decorators/is-unique.decorator';
 class CreateCountryDto {
   @ApiProperty({
     description: `title`,
@@ -7,6 +8,7 @@ class CreateCountryDto {
   })
   @IsNotEmpty()
   @IsString()
+  @IsUnique('country')
   readonly title: string;
 }
 

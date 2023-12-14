@@ -13,7 +13,7 @@ export class QrBase {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar', {unique: true})
+  @Column('varchar')
   code: string;
 
   @Column()

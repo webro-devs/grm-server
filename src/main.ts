@@ -6,11 +6,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { AccessTokenUserGuard } from './modules/auth/passport-stratagies/access-token-user/access-token-user.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { ErrorFilter } from './infra/validators';
+import { useContainer } from 'class-validator';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['log', 'warn', 'error'],
   });
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   app.enableCors({
     origin: true,

@@ -37,7 +37,7 @@ export class CollectionController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
-      return await this.collectionService.getAll({ ...query, route });
+    return await this.collectionService.getAll({ ...query, route });
   }
 
   @Get('/remaining-products')
@@ -47,7 +47,7 @@ export class CollectionController {
   })
   @HttpCode(HttpStatus.OK)
   async getRemainingProductsByCollection() {
-      return await this.collectionService.remainingProductsByCollection();
+    return await this.collectionService.remainingProductsByCollection();
   }
 
   @Get('/:id')
@@ -67,7 +67,7 @@ export class CollectionController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateCollectionDto): Promise<Collection> {
-      return await this.collectionService.create(data);
+    return await this.collectionService.create(data);
   }
 
   @Patch('/:id')

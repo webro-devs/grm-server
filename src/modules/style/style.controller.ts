@@ -26,7 +26,6 @@ import { PaginationDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from '../../infra/shared/enum';
-import { DuplicateFilter } from '../../infra/validators';
 
 @ApiTags('Style')
 @Controller('style')

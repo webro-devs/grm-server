@@ -5,6 +5,6 @@ export class Country {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar', {unique: true})
+  @Column('varchar')
   title: string;
 }
