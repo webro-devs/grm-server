@@ -32,13 +32,23 @@ import { UserRoleEnum } from '../../infra/shared/enum';
 export class QrBaseController {
   constructor(private readonly qrBaseService: QrBaseService) {}
 
+  @Get('/')
+  @ApiOperation({ summary: 'Method: returns single QrBase by id' })
+  @ApiOkResponse({
+    description: 'The QrBase was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getAll(@Param('id') id: string): Promise<QrBase[]> {
+    return this.qrBaseService.getAll();
+  }
+
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single QrBase by id' })
   @ApiOkResponse({
     description: 'The QrBase was returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getMe(@Param('id') id: string): Promise<QrBase> {
+  async getOne(@Param('id') id: string): Promise<QrBase> {
     return this.qrBaseService.getOne(id);
   }
 
