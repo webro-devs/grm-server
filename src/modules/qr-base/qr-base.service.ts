@@ -19,13 +19,10 @@ export class QrBaseService {
 
   async getAll(
     options: IPaginationOptions,
-    where?
   ): Promise<Pagination<QrBase>> {
-    delete  where.page
-    delete  where.limit
     return paginate<QrBase>(this.qrBaseRepository, options, {
       order: {
-        date: 'ASC',
+        date: 'DESC',
       },
       relations: {
         model: true,
@@ -36,10 +33,6 @@ export class QrBaseService {
         style: true,
         country: true,
       },
-      where: {
-        ...where,
-      ...(where.code && { code: ILike(`%${where.code}%`) })
-      }
     })
   }
 

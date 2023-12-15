@@ -20,6 +20,7 @@ class QrBaseQueryDto {
   @ApiProperty({
     description: `Code`,
     example: "13535751",
+    required: false
   })
   @IsOptional()
   @IsString()
@@ -27,7 +28,7 @@ class QrBaseQueryDto {
 
   @ApiProperty({
     description: `Model`,
-    example: '1236',
+    example: '1236',required: false
   })
   @IsOptional()
   @IsString()
@@ -35,7 +36,7 @@ class QrBaseQueryDto {
 
   @ApiProperty({
     description: `Collection`,
-    example: 'Sana Hali',
+    example: 'Sana Hali',required: false
   })
   @IsOptional()
   @IsString()
@@ -43,7 +44,7 @@ class QrBaseQueryDto {
 
   @ApiProperty({
     description: `shape`,
-    example: 'pentagon',
+    example: 'pentagon',required: false
   })
   @IsOptional()
   @IsString()
@@ -51,7 +52,7 @@ class QrBaseQueryDto {
 
   @ApiProperty({
     description: `size`,
-    example: '200x300',
+    example: '200x300',required: false
   })
   @IsOptional()
   @IsString()
@@ -59,7 +60,7 @@ class QrBaseQueryDto {
 
   @ApiProperty({
     description: `style`,
-    example: 'Classic',
+    example: 'Classic',required: false
   })
   @IsOptional()
   @IsString()
@@ -67,7 +68,7 @@ class QrBaseQueryDto {
 
   @ApiProperty({
     description: `limit`,
-    example: 15,
+    example: 15,required: false
   })
   @IsOptional()
   @IsNumber()
@@ -76,7 +77,7 @@ class QrBaseQueryDto {
 
   @ApiProperty({
     description: `Page`,
-    example: 1,
+    example: 1,required: false
   })
   @IsOptional()
   @IsNumber()
