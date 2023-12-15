@@ -1,5 +1,5 @@
 import { NotFoundException, Injectable } from '@nestjs/common';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, Repository, ILike } from 'typeorm';
 import {
   IPaginationOptions,
   Pagination,
@@ -9,7 +9,6 @@ import {
 import { CreateQrBaseDto, UpdateQrBaseDto } from './dto';
 import { QrBase } from './qr-base.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from '../product/product.entity';
 
 @Injectable()
 export class QrBaseService {
@@ -18,8 +17,13 @@ export class QrBaseService {
     private readonly qrBaseRepository: Repository<QrBase>,
   ) {}
 
-  async getAll() {
-    return await this.qrBaseRepository.find({
+  async getAll(
+    options: IPaginationOptions,
+    where?
+  ): Promise<Pagination<QrBase>> {
+    delete  where.page
+    delete  where.limit
+    return paginate<QrBase>(this.qrBaseRepository, options, {
       order: {
         date: 'ASC',
       },
@@ -32,7 +36,11 @@ export class QrBaseService {
         style: true,
         country: true,
       },
-    });
+      where: {
+        ...where,
+      ...(where.code && { code: ILike(`%${where.code}%`) })
+      }
+    })
   }
 
   async getOne(id: string) {
