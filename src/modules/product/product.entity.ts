@@ -52,6 +52,14 @@ export class Product {
     transformer: new ColumnNumericTransformer(),
     default: 0,
   })
+  price2: number;
+
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   priceMeter: number;
 
   @Column('numeric', {
