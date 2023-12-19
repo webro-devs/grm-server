@@ -33,7 +33,7 @@ class CreateProductExcDto {
 
   @ApiProperty({
     description: `Carpet shape`,
-    example: 'square',
+    example: 'UUID',
   })
   @IsNotEmpty()
   @IsString()
@@ -41,7 +41,7 @@ class CreateProductExcDto {
 
   @ApiProperty({
     description: `Carpet size`,
-    example: '200x300',
+    example: 'UUID',
   })
   @IsNotEmpty()
   @IsString()
@@ -49,7 +49,7 @@ class CreateProductExcDto {
 
   @ApiProperty({
     description: `Carpet style`,
-    example: 'classic',
+    example: 'UUID',
   })
   @IsNotEmpty()
   @IsString()
@@ -108,7 +108,7 @@ class CreateProductExcDto {
 
   @ApiProperty({
     description: `Carpet color`,
-    example: 'yellow',
+    example: 'UUID',
   })
   @IsNotEmpty()
   @IsString()
@@ -121,6 +121,22 @@ class CreateProductExcDto {
   @IsNotEmpty()
   @IsNumber()
   m2: number;
+
+  @ApiProperty({
+    description: `M2`,
+    example: 9,
+  })
+  @IsOptional()
+  @IsNumber()
+  price: number;
+
+  @ApiProperty({
+    description: `M2`,
+    example: 9,
+  })
+  @IsOptional()
+  @IsNumber()
+  commingPrice: number;
 }
 
 export default CreateProductExcDto;
