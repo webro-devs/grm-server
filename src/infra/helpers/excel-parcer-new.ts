@@ -4,8 +4,9 @@ function convertInputToOutput(
   input: InputProduct[],
   expenseAll: number,
 ): OutputProduct[] {
+  
   const collections: { [id: string]: OutputProduct } = {};
-
+  let totalM2AllCollections = 0;
   input.forEach((inputProduct) => {
     const {
       collection,
@@ -17,22 +18,24 @@ function convertInputToOutput(
       commingPrice,
       otherImgs,
     } = inputProduct;
-    const m2 = eval(size.title.replace(/[^0-9x]/g, '')) / 10000;
+    const m2 = eval(size.title.match(/\d+\.*\d*/g).join('*')) / 10000;
+    // Track total m2 across all collections
+    totalM2AllCollections += m2;
 
     if (!collections[collection.id]) {
       collections[collection.id] = {
         id: collection.id,
         title: collection.title,
-        m2: m2,
-        expense: (m2 * expenseAll) / 6.25,
+        m2: 0,
+        expense: 0,
         commingSum: 0,
         models: [],
       };
     }
 
+    collections[collection.id].m2 += m2;
+
     const collectionOutput = collections[collection.id];
-    collectionOutput.commingSum +=
-      (commingPrice - collectionOutput.expense) / m2;
 
     const modelIndex = collectionOutput.models.findIndex(
       (m) => m.id === model.id,
@@ -41,8 +44,8 @@ function convertInputToOutput(
       collectionOutput.models.push({
         id: model.id,
         title: model.title,
-        commingPrice: commingPrice,
-        priceMeter: priceMeter,
+        commingPrice: commingPrice || 0,
+        priceMeter: priceMeter || 0,
         products: [],
       });
     }
@@ -56,10 +59,10 @@ function convertInputToOutput(
       code: inputProduct.code,
       count: count,
       img: inputProduct.img,
-      price: (priceMeter + price2) * m2,
-      price2: price2,
-      priceMeter: priceMeter,
-      commingPrice: commingPrice,
+      price: (priceMeter + price2) * m2 || 0,
+      price2: price2 || 0,
+      priceMeter: priceMeter || 0,
+      commingPrice: commingPrice || 0,
       filial: inputProduct.filial,
       partiya: inputProduct.partiya,
       otherImgs: otherImgs,
