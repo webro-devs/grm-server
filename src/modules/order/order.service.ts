@@ -350,6 +350,7 @@ export class OrderService {
       x,
       y: product.y,
       partiya: product.partiya.id || null,
+      price2: product.price2
     };
 
     await this.productService.create([newProduct]);

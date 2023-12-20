@@ -50,7 +50,7 @@ export class ExcelService {
     return pathname;
   }
 
-  async readExcelFile(path) {
+  readExcelFile(path) {
     const workbook = XLSX.readFile(path);
     const worksheet = workbook.Sheets['Sheet'];
     const data: any[] = XLSX.utils.sheet_to_json(worksheet);
@@ -61,7 +61,7 @@ export class ExcelService {
   async updateExcelFile(newData, pathName, restrict: boolean = false) {
     const workbook = XLSX.utils.book_new();
     let oldData: any[] = [];
-    restrict ? (oldData = []) : (oldData = await this.readExcelFile(pathName));
+    restrict ? (oldData = []) : (oldData = this.readExcelFile(pathName));
     deleteFile(pathName);
 
     for (let i = 0; i < newData.length; i++) {
@@ -90,9 +90,9 @@ export class ExcelService {
   }
 
   async uploadFile(path) {
-    const datas = await this.readExcelFile(path);
+    const datas = this.readExcelFile(path);
     deleteFile(path);
-    return excelDataParser(datas);
+    return excelDataParser(datas, 0);
   }
 
   async createProduct(
@@ -104,7 +104,7 @@ export class ExcelService {
   ) {
     const { excel, expense } = await this.partiyaService.getOne(partiya);
     if (toDataBase) {
-      const excelDatas = await this.readExcelFile(excel.path);
+      const excelDatas = this.readExcelFile(excel.path);
       for (const excelData of excelDatas) {
         datas.push({
           ...excelData,
@@ -141,6 +141,7 @@ export class ExcelService {
             shape: JSON.stringify(datas[i].shape),
             size: JSON.stringify(datas[i].size),
             style: JSON.stringify(datas[i].style),
+            platte: JSON.stringify(datas[i].platte),
             filial: datas[i].filial.id,
           });
         }
@@ -167,6 +168,7 @@ export class ExcelService {
           shape: JSON.stringify(datas[i].shape),
           size: JSON.stringify(datas[i].size),
           style: JSON.stringify(datas[i].style),
+          platte: JSON.stringify(datas[i].platte),
           otherImgs: JSON.stringify(datas[i].otherImgs),
         });
       }

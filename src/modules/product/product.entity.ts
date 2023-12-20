@@ -17,6 +17,7 @@ import { ClientOrder } from '../client-order/client-order.entity';
 import { ColumnNumericTransformer } from '../../infra/helpers';
 import { Color } from '../color/color.entity';
 import { Size } from '../size/size.entity';
+import { Platte } from '../platte/platte.entity';
 
 @Entity('product')
 export class Product {
@@ -138,6 +139,12 @@ export class Product {
   @ManyToOne(() => Color, (color) => color.products, { onDelete: 'SET NULL' })
   @JoinColumn()
   color: Color;
+
+  @ManyToOne(() => Platte, (platte) => platte.products, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn()
+  platte: Platte;
 
   @OneToMany(() => ClientOrder, (clientOrder) => clientOrder.product)
   clientOrders: ClientOrder[];

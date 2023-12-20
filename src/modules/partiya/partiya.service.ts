@@ -59,7 +59,7 @@ export class PartiyaService {
       response[i].otherImgs = JSON.parse(response[i].otherImgs);
     }
 
-    const constructedDatas = excelDataParser(response);
+    const constructedDatas = excelDataParser(response, 0);
     for (let i = 0; i < constructedDatas.length; i++) {
       constructedDatas[i].collection_exp =
         data.expense || 0 / constructedDatas.length;
