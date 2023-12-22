@@ -37,12 +37,27 @@ export class FileService {
     return response;
   }
 
+  async deleteByUrl(url: string) {
+    const file = await this.getByUrl(url);
+    const response = await this.fileRepository.delete(file.id).catch(() => {
+      throw new NotFoundException('data not found');
+    });
+
+    return response;
+  }
+
   async getAll(options: IPaginationOptions): Promise<Pagination<File>> {
     return paginate<File>(this.fileRepository, options);
   }
 
   async getByModel(model: string) {
     const response = await this.fileRepository.find({ where: { model } });
+
+    return response;
+  }
+
+  async getByUrl(url: string) {
+    const response = await this.fileRepository.findOne({ where: { url } });
 
     return response;
   }

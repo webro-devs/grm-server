@@ -71,7 +71,7 @@ export class ProductService {
         },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Product not found');
       });
 
     return data;
@@ -89,7 +89,7 @@ export class ProductService {
         },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Product not found');
       });
     return data;
   }
@@ -103,7 +103,7 @@ export class ProductService {
         },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Product not found');
       });
 
     return data;
@@ -119,7 +119,7 @@ export class ProductService {
 
   async deleteOne(id: string) {
     const response = await this.productRepository.delete(id).catch(() => {
-      throw new NotFoundException('data not found');
+      throw new NotFoundException('Product not found');
     });
     return response;
   }

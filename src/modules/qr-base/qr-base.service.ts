@@ -50,7 +50,7 @@ export class QrBaseService {
           country: true,
         },},)
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Qr-code not found');
       });
 
     return data;
@@ -72,7 +72,7 @@ export class QrBaseService {
 
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Qr-code not found');
       });
 
     return data;
@@ -80,7 +80,7 @@ export class QrBaseService {
 
   async deleteOne(id: string) {
     const response = await this.qrBaseRepository.delete(id).catch(() => {
-      throw new NotFoundException('data not found');
+      throw new NotFoundException('Qr-code not found');
     });
     return response;
   }

@@ -31,7 +31,7 @@ export class PlatteService {
         where: { id },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Palette not found');
       });
 
     return data;
@@ -43,7 +43,7 @@ export class PlatteService {
         where: { title },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Palette not found');
       });
 
     return data;
@@ -51,7 +51,7 @@ export class PlatteService {
 
   async deleteOne(id: string) {
     const response = await this.colorRepository.delete(id).catch(() => {
-      throw new NotFoundException('data not found');
+      throw new NotFoundException('Palette not found');
     });
     return response;
   }

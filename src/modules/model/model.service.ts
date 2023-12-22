@@ -49,7 +49,7 @@ export class ModelService {
         relations: { collection: true },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Model not found');
       });
 
     return data;
@@ -62,7 +62,7 @@ export class ModelService {
         relations: { collection: true },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Model not found');
       });
 
     return data;
@@ -70,7 +70,7 @@ export class ModelService {
 
   async deleteOne(id: string) {
     const response = await this.modelRepository.delete(id).catch(() => {
-      throw new NotFoundException('data not found');
+      throw new NotFoundException('Model not found');
     });
     return response;
   }

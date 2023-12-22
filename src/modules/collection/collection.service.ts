@@ -65,7 +65,7 @@ export class CollectionService {
         where: { title },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('collection not found');
       });
 
     return data;
@@ -73,7 +73,7 @@ export class CollectionService {
 
   async deleteOne(id: string) {
     const response = await this.collectionRepository.delete(id).catch(() => {
-      throw new NotFoundException('data not found');
+      throw new NotFoundException('collection not found');
     });
     return response;
   }

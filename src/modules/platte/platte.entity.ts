@@ -10,9 +10,6 @@ export class Platte {
   @Column('varchar')
   title: string;
 
-  @Column({ type: 'varchar', nullable: true })
-  code: string;
-
   @OneToMany(() => Product, (product) => product.platte)
   products: Product[];
 

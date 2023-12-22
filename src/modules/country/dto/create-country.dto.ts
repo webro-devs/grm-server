@@ -4,7 +4,7 @@ import { IsUnique } from 'src/infra/shared/decorators/is-unique.decorator';
 class CreateCountryDto {
   @ApiProperty({
     description: `title`,
-    example: 'classic',
+    example: 'Uzbekistan',
   })
   @IsNotEmpty()
   @IsString()

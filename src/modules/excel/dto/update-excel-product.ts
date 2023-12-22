@@ -35,7 +35,7 @@ class UpdateProductExcelDto {
 
   @IsOptional()
   @IsNumber()
-  price: number;
+  price2: number;
 
   @IsOptional()
   @IsNumber()
@@ -46,29 +46,33 @@ class UpdateProductExcelDto {
   comingPrice: number;
 
   @IsOptional()
-  @IsString()
+  @IsNumber()
+  priceMeter: number;
+
+  @IsOptional()
   shape: string;
 
   @IsOptional()
-  @IsString()
   size: string;
 
   @IsOptional()
-  @IsString()
   style: string;
 
   @IsOptional()
   model: object;
 
   @IsOptional()
+  plette: object;
+
+  @IsOptional()
   @IsArray()
   otherImgs: string[];
 
   @IsOptional()
-  @IsBoolean()
-  isMetric: boolean;
-
-  @IsOptional()
   @IsNumber()
   m2: number;
+
+  @IsOptional()
+  @IsBoolean()
+  isMetric: boolean;
 }
