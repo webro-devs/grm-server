@@ -7,14 +7,14 @@ import {
 } from 'nestjs-typeorm-paginate';
 import { FindOptionsWhere, Repository } from 'typeorm';
 
-import { Platte } from './platte.entity';
+import { Palette } from './platte.entity';
 import { CreatePlatteDto, UpdatePlatteDto } from './dto';
 
 Injectable();
 export class PlatteService {
   constructor(
-    @InjectRepository(Platte)
-    private readonly colorRepository: Repository<Platte>,
+    @InjectRepository(Palette)
+    private readonly colorRepository: Repository<Palette>,
   ) {}
 
   async getAll() {

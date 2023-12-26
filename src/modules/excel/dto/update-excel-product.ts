@@ -8,6 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 
 export default class UpdateProductsArrayDto {
   @IsArray()
@@ -18,6 +19,10 @@ export default class UpdateProductsArrayDto {
 }
 
 class UpdateProductExcelDto {
+  @ApiProperty({
+    description: `Carpet id`,
+    example: 1,
+  })
   @IsNotEmpty()
   @IsNumber()
   id: number;
@@ -26,6 +31,10 @@ class UpdateProductExcelDto {
   @IsString()
   code: string;
 
+  @ApiProperty({
+    description: `Carpet color.`,
+    example: 'UUID',
+  })
   @IsOptional()
   color: object;
 
@@ -43,8 +52,16 @@ class UpdateProductExcelDto {
 
   @IsOptional()
   @IsNumber()
+  country: number;
+
+  @IsOptional()
+  @IsNumber()
   comingPrice: number;
 
+  @ApiProperty({
+    description: `Carpet price by meter.`,
+    example: 15,
+  })
   @IsOptional()
   @IsNumber()
   priceMeter: number;
@@ -59,10 +76,13 @@ class UpdateProductExcelDto {
   style: string;
 
   @IsOptional()
+  collection: string;
+
+  @IsOptional()
   model: object;
 
   @IsOptional()
-  plette: object;
+  palette: object;
 
   @IsOptional()
   @IsArray()

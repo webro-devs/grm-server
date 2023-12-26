@@ -17,8 +17,8 @@ import {
 import { ExcelService } from './excel.service';
 import { multerStorage } from '../../infra/helpers';
 import { Public } from '../auth/decorators/public.decorator';
-import { Body, Put } from '@nestjs/common/decorators';
-import { ImportExcelDto } from './dto';
+import { Body, Get, Put } from '@nestjs/common/decorators';
+import { ImportExcelDto, UpdateExcelDto, UpdateProductExcelDto } from './dto';
 import CreateProductExcDto from './dto/createProduct-excel';
 
 @ApiTags('Excel')
@@ -63,6 +63,57 @@ export class ExcelController {
     @Body() data: CreateProductExcDto,
   ) {
     const response = await this.fileService.addProductToPartiya([data], id);
+
+    return response;
+  }
+
+  @Public()
+  @Put('/single/:id')
+  @ApiOperation({
+    summary: 'Method: imports data and update products in the excel',
+  })
+  @ApiCreatedResponse({
+    description: 'The data imported and saved to partiya successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async updateProduct(
+    @Param('partiyaID') id: string,
+    @Body() data: UpdateProductExcelDto,
+  ) {
+    const response = await this.fileService.updateProductsPartiya({
+      newData: data.products,
+      partiyaId: id,
+    });
+
+    return response;
+  }
+
+  @Public()
+  @Get('/:id')
+  @ApiOperation({
+    summary: 'Method: imports data and update products in the excel',
+  })
+  @ApiCreatedResponse({
+    description: 'The data imported and saved to partiya successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async GetProducts(@Param('partiyaID') id: string) {
+    const response = await this.fileService.readProducts(id);
+
+    return response;
+  }
+
+  @Public()
+  @Post('/product/:id')
+  @ApiOperation({
+    summary: 'Method: imports data and update products in the excel',
+  })
+  @ApiCreatedResponse({
+    description: 'The data imported and saved to partiya successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async CreateProducts(@Param('partiyaID') id: string) {
+    const response = await this.fileService.createProduct(id);
 
     return response;
   }

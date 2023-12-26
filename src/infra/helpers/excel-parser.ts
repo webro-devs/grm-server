@@ -18,6 +18,8 @@ const excelDataParser = (data, expense) => {
       commingPrice = 0,
       priceMeter = 0,
       price2 = 0,
+      palette,
+      country = 'пустой',
     } = curr;
     const m2 =
       (eval(size.title.match(/\d+\.*\d*/g).join('*')) / 10000) * count || 0;
@@ -40,6 +42,8 @@ const excelDataParser = (data, expense) => {
       priceMeter,
       price2,
       price: (priceMeter + price2) * m2,
+      palette,
+      country
     };
 
     const collectionItem = acc.find((item) => item.title === collection.title);

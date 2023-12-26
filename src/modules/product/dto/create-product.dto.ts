@@ -16,6 +16,14 @@ class CreateProductDto {
   code: string;
 
   @ApiProperty({
+    description: `Carpet country`,
+    example: 'USA',
+  })
+  @IsNotEmpty()
+  @IsString()
+  country: string;
+
+  @ApiProperty({
     description: `Carpet date`,
     example: '2023-05-02 08:10:23.726769',
   })
@@ -54,6 +62,14 @@ class CreateProductDto {
   @IsOptional()
   @IsNumber()
   price2: number;
+
+  @ApiProperty({
+    description: `Carpet palette`,
+    example: 140,
+  })
+  @IsOptional()
+  @IsNumber()
+  palette: string;
 
   @ApiProperty({
     description: `Carpet meter price`,

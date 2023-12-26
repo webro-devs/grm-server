@@ -4,6 +4,7 @@ import {
   IsNumber,
   IsOptional,
   IsArray,
+  IsBoolean,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreateProductExcDto {
@@ -47,12 +48,12 @@ class CreateProductExcDto {
   shape: string;
 
   @ApiProperty({
-    description: `Carpet plette`,
+    description: `Carpet palette`,
     example: 'UUID',
   })
   @IsNotEmpty()
   @IsString()
-  plette: string;
+  palette: string;
 
   @ApiProperty({
     description: `Carpet size`,
@@ -77,6 +78,14 @@ class CreateProductExcDto {
   @IsNotEmpty()
   @IsString()
   color: string;
+
+  @ApiProperty({
+    description: `Carpet Country`,
+    example: 'USA',
+  })
+  @IsNotEmpty()
+  @IsString()
+  country: string;
 
   @ApiProperty({
     description: `Carpet model id`,
@@ -125,6 +134,14 @@ class CreateProductExcDto {
   @IsOptional()
   @IsNumber()
   priceMeter: number;
+
+  @ApiProperty({
+    description: `Is meteric`,
+    example: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isMetric: boolean;
 }
 
 export default CreateProductExcDto;

@@ -43,14 +43,10 @@ export class ModelService {
   }
 
   async getOne(id: string) {
-    const data = await this.modelRepository
-      .findOne({
-        where: { id },
-        relations: { collection: true },
-      })
-      .catch(() => {
-        throw new NotFoundException('Model not found');
-      });
+    const data = await this.modelRepository.findOne({
+      where: { id },
+      relations: { collection: true },
+    });
 
     return data;
   }

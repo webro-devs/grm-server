@@ -138,6 +138,8 @@ export class TransferService {
       y: product.y,
       partiya: product.partiya.id,
       price2: product.price2,
+      palette: product.palette.id,
+      country: product.country,
     };
 
     await this.productService.create([newProduct]);

@@ -28,6 +28,9 @@ export class Partiya {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: string;
 
+  @Column({ nullable: true, default: false })
+  check: boolean;
+
   @OneToMany(() => Product, (product) => product.partiya)
   products: Product[];
 
