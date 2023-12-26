@@ -16,6 +16,14 @@ class UpdateProductDto {
   code: string;
 
   @ApiProperty({
+    description: `Carpet country`,
+    example: 'Uzbekistan',
+  })
+  @IsOptional()
+  @IsString()
+  country: string;
+
+  @ApiProperty({
     description: `Carpet color`,
     example: 'yellow',
   })

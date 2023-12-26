@@ -14,6 +14,7 @@ import { ShapeModule } from '../shape/shape.module';
 import { SizeModule } from '../size/size.module';
 import { StyleModule } from '../style/style.module';
 import { FilialModule } from '../filial/filial.module';
+import { PlatteModule } from '../platte/platte.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { FilialModule } from '../filial/filial.module';
     SizeModule,
     StyleModule,
     FilialModule,
+    PlatteModule,
   ],
   controllers: [ExcelController],
   providers: [ExcelService],

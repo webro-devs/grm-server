@@ -4,18 +4,29 @@ class UpdatePartiyaDto {
   @ApiProperty({
     description: `country`,
     example: 'Uzbekistan',
+    required: false,
   })
   @IsOptional()
   @IsString()
-  readonly country: string;
+  readonly country?: string;
 
   @ApiProperty({
     description: `expense : Расход:`,
     example: 8000,
+    required: false,
   })
   @IsOptional()
   @IsNumber()
-  readonly expense: number;
+  readonly expense?: number;
+
+  @ApiProperty({
+    description: `already sended`,
+    example: false,
+    required: false,
+  })
+  @IsOptional()
+  @IsNumber()
+  readonly check?: boolean;
 }
 
 export default UpdatePartiyaDto;

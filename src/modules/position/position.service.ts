@@ -34,7 +34,7 @@ export class PositionService {
         where: { id },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Position not found');
       });
 
     return data;
@@ -42,7 +42,7 @@ export class PositionService {
 
   async deleteOne(id: string) {
     const response = await this.positionRepository.delete(id).catch(() => {
-      throw new NotFoundException('data not found');
+      throw new NotFoundException('Position not found');
     });
     return response;
   }

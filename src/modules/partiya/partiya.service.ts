@@ -46,20 +46,9 @@ export class PartiyaService {
         throw new NotFoundException('data not found');
       });
 
-    const response = await this.excelRepository.readExcelFile(
-      data?.excel?.path,
-    );
+    const response = await this.excelRepository.readExcel(data?.excel?.path);
 
-    for (let i = 0; i < response.length; i++) {
-      response[i].color = JSON.parse(response[i].color);
-      response[i].model = JSON.parse(response[i].model);
-      response[i].size = JSON.parse(response[i].size);
-      response[i].shape = JSON.parse(response[i].shape);
-      response[i].style = JSON.parse(response[i].style);
-      response[i].otherImgs = JSON.parse(response[i].otherImgs);
-    }
-
-    const constructedDatas = excelDataParser(response, 0);
+    const constructedDatas = response;
     for (let i = 0; i < constructedDatas.length; i++) {
       constructedDatas[i].collection_exp =
         data.expense || 0 / constructedDatas.length;
@@ -78,7 +67,7 @@ export class PartiyaService {
         relations: { excel: true },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Partiya not found');
       });
 
     deleteFile(data?.excel?.path);

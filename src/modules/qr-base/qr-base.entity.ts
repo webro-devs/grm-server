@@ -12,7 +12,7 @@ import { Shape } from '../shape/shape.entity';
 import { Size } from '../size/size.entity';
 import { Collection } from '../collection/collection.entity';
 import { Country } from '../country/country.entity';
-import { Platte } from '../platte/platte.entity';
+import { Palette } from '../platte/platte.entity';
 
 @Entity('qrbase')
 export class QrBase {
@@ -53,7 +53,7 @@ export class QrBase {
   @JoinColumn()
   color: Color;
 
-  @ManyToOne(() => Platte, (platte) => platte.qrBase, { onDelete: 'SET NULL' })
+  @ManyToOne(() => Palette, (palette) => palette.qrBase, { onDelete: 'SET NULL' })
   @JoinColumn()
-  platte: QrBase;
+  palette: QrBase;
 }

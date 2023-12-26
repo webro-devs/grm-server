@@ -58,7 +58,7 @@ export class CountryService {
         where: { id },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Country not found');
       });
 
     return data;
@@ -66,7 +66,7 @@ export class CountryService {
 
   async deleteOne(id: string) {
     const response = await this.countryRepository.delete(id).catch(() => {
-      throw new NotFoundException('data not found');
+      throw new NotFoundException('Country not found');
     });
     return response;
   }

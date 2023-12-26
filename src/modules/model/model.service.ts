@@ -43,14 +43,10 @@ export class ModelService {
   }
 
   async getOne(id: string) {
-    const data = await this.modelRepository
-      .findOne({
-        where: { id },
-        relations: { collection: true },
-      })
-      .catch(() => {
-        throw new NotFoundException('data not found');
-      });
+    const data = await this.modelRepository.findOne({
+      where: { id },
+      relations: { collection: true },
+    });
 
     return data;
   }
@@ -62,7 +58,7 @@ export class ModelService {
         relations: { collection: true },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Model not found');
       });
 
     return data;
@@ -70,7 +66,7 @@ export class ModelService {
 
   async deleteOne(id: string) {
     const response = await this.modelRepository.delete(id).catch(() => {
-      throw new NotFoundException('data not found');
+      throw new NotFoundException('Model not found');
     });
     return response;
   }

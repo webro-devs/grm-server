@@ -20,15 +20,15 @@ import {
 } from '@nestjs/swagger';
 
 import { CreatePlatteDto, UpdatePlatteDto } from './dto';
-import { Platte } from './platte.entity';
+import { Palette } from './platte.entity';
 import { PlatteService } from './platte.service';
 import { PaginationDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from 'src/infra/shared/enum';
 
-@ApiTags('Platte')
-@Controller('platte')
+@ApiTags('Palette')
+@Controller('palette')
 export class PlatteController {
   constructor(private readonly platteService: PlatteService) {}
 
@@ -38,7 +38,7 @@ export class PlatteController {
     description: 'The platte was returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getMe(@Param('id') id: string): Promise<Platte> {
+  async getMe(@Param('id') id: string): Promise<Palette> {
     return this.platteService.getOne(id);
   }
 
@@ -49,7 +49,7 @@ export class PlatteController {
     description: 'The platte was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() data: CreatePlatteDto): Promise<Platte> {
+  async saveData(@Body() data: CreatePlatteDto): Promise<Palette> {
     return await this.platteService.create(data);
   }
 

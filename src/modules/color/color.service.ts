@@ -25,14 +25,17 @@ export class ColorService {
     });
   }
 
-  async getOne(id: string) {
-    const data = await this.colorRepository
-      .findOne({
+  async getOne(id: string, excel = false) {
+    if (excel) {
+      const data = await this.colorRepository.findOne({
         where: { id },
-      })
-      .catch(() => {
-        throw new NotFoundException('data not found');
       });
+
+      return data;
+    }
+    const data = await this.colorRepository.findOne({
+      where: { id },
+    });
 
     return data;
   }
@@ -43,7 +46,7 @@ export class ColorService {
         where: { title },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Color not found');
       });
 
     return data;
@@ -51,7 +54,7 @@ export class ColorService {
 
   async deleteOne(id: string) {
     const response = await this.colorRepository.delete(id).catch(() => {
-      throw new NotFoundException('data not found');
+      throw new NotFoundException('Color not found');
     });
     return response;
   }

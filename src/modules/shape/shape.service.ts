@@ -31,7 +31,7 @@ export class ShapeService {
         where: { id },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Shape not found');
       });
 
     return data;
@@ -43,7 +43,7 @@ export class ShapeService {
         where: { title },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Shape not found');
       });
 
     return data;
@@ -51,7 +51,7 @@ export class ShapeService {
 
   async deleteOne(id: string) {
     const response = await this.shapeRepository.delete(id).catch(() => {
-      throw new NotFoundException('data not found');
+      throw new NotFoundException('Shape not found');
     });
     return response;
   }

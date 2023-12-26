@@ -16,8 +16,7 @@ import { User } from '../user/user.entity';
 import { ClientOrder } from '../client-order/client-order.entity';
 import { ColumnNumericTransformer } from '../../infra/helpers';
 import { Color } from '../color/color.entity';
-import { Size } from '../size/size.entity';
-import { Platte } from '../platte/platte.entity';
+import { Palette } from '../platte/platte.entity';
 
 @Entity('product')
 export class Product {
@@ -28,9 +27,12 @@ export class Product {
   code: string;
 
   @Column()
-  count: number;
+  country: string;
 
   @Column()
+  count: number;
+
+  @Column({nullable: true})
   imgUrl: string;
 
   @Column('jsonb')
@@ -140,11 +142,11 @@ export class Product {
   @JoinColumn()
   color: Color;
 
-  @ManyToOne(() => Platte, (platte) => platte.products, {
+  @ManyToOne(() => Palette, (palette) => palette.products, {
     onDelete: 'SET NULL',
   })
   @JoinColumn()
-  platte: Platte;
+  palette: Palette;
 
   @OneToMany(() => ClientOrder, (clientOrder) => clientOrder.product)
   clientOrders: ClientOrder[];

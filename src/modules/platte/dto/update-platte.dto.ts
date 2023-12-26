@@ -1,22 +1,16 @@
 import { IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsUnique } from 'src/infra/shared/decorators/is-unique.decorator';
 
-class UpdateColorDto {
+class UpdatePaletteDto {
   @ApiProperty({
-    description: `color title`,
-    example: 'Yellow',
+    description: `palette title`,
+    example: 'Hi-tech',
   })
   @IsOptional()
   @IsString()
+  @IsUnique('platte')
   readonly title: string;
-
-  @ApiProperty({
-    description: `color code`,
-    example: '#fe2389',
-  })
-  @IsOptional()
-  @IsString()
-  readonly code: string;
 }
 
-export default UpdateColorDto;
+export default UpdatePaletteDto;

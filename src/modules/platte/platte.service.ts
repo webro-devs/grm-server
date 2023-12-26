@@ -7,14 +7,14 @@ import {
 } from 'nestjs-typeorm-paginate';
 import { FindOptionsWhere, Repository } from 'typeorm';
 
-import { Platte } from './platte.entity';
+import { Palette } from './platte.entity';
 import { CreatePlatteDto, UpdatePlatteDto } from './dto';
 
 Injectable();
 export class PlatteService {
   constructor(
-    @InjectRepository(Platte)
-    private readonly colorRepository: Repository<Platte>,
+    @InjectRepository(Palette)
+    private readonly colorRepository: Repository<Palette>,
   ) {}
 
   async getAll() {
@@ -31,7 +31,7 @@ export class PlatteService {
         where: { id },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Palette not found');
       });
 
     return data;
@@ -43,7 +43,7 @@ export class PlatteService {
         where: { title },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Palette not found');
       });
 
     return data;
@@ -51,7 +51,7 @@ export class PlatteService {
 
   async deleteOne(id: string) {
     const response = await this.colorRepository.delete(id).catch(() => {
-      throw new NotFoundException('data not found');
+      throw new NotFoundException('Palette not found');
     });
     return response;
   }

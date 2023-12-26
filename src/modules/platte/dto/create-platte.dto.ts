@@ -2,7 +2,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsUnique } from 'src/infra/shared/decorators/is-unique.decorator';
 
-class CreatePlatteDto {
+class CreatePaletteDto {
   @ApiProperty({
     description: `title`,
     example: 'Gulliy',
@@ -11,15 +11,6 @@ class CreatePlatteDto {
   @IsString()
   @IsUnique('platte')
   readonly title: string;
-
-  @ApiProperty({
-    description: `code`,
-    example: 'fe89',
-  })
-  @IsNotEmpty()
-  @IsString()
-  @IsUnique('platte')
-  readonly code: string;
 }
 
-export default CreatePlatteDto;
+export default CreatePaletteDto;

@@ -51,13 +51,7 @@ export class StyleController {
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateStyleDto): Promise<Style> {
     const response = await this.styleService.create(data);
-    if(!(response instanceof Style) && response?.error){
-      // @ts-ignore
-      throw new DuplicateFilter(response.message);
-    }else {
-      // @ts-ignore
-      return response;
-    }
+    return response;
   }
 
   @Patch('/:id')

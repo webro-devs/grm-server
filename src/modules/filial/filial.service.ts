@@ -60,4 +60,25 @@ export class FilialService {
     const data = this.filialRepository.create(value);
     return await this.filialRepository.save(data);
   }
+
+  async findOrCreateFilialByTitle(title: string): Promise<Filial> {
+    let response = await this.filialRepository.findOne({ where: { title } });
+
+    if (!response) {
+      const data = {
+        title,
+        address: 'Baza',
+        startWorkTime: '00:00',
+        endWorkTime: '23:59',
+        addressLink: 'https://maps.app.goo.gl/fdoNS4WeGJR7pgJm6',
+        landmark: 'Evos',
+        phone1: '+99897-777-77-77',
+        phone2: '+99898-888-88-88',
+      };
+      response = this.filialRepository.create(data);
+      await this.filialRepository.save(response);
+    }
+
+    return response;
+  }
 }

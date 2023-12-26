@@ -71,7 +71,7 @@ export class ProductService {
         },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Product not found');
       });
 
     return data;
@@ -89,7 +89,7 @@ export class ProductService {
         },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Product not found');
       });
     return data;
   }
@@ -103,7 +103,7 @@ export class ProductService {
         },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Product not found');
       });
 
     return data;
@@ -119,7 +119,7 @@ export class ProductService {
 
   async deleteOne(id: string) {
     const response = await this.productRepository.delete(id).catch(() => {
-      throw new NotFoundException('data not found');
+      throw new NotFoundException('Product not found');
     });
     return response;
   }
@@ -176,11 +176,13 @@ export class ProductService {
   setXy(value: CreateProductDto[]): CreateProductDto[] {
     for (let i = 0; i < value.length; i++) {
       const xy = sizeParser(value[i].size);
-      value[i].x = xy[0];
-      value[i].y = xy[1];
-      value[i].size = xy.join('x');
-      value[i].totalSize = +xy[0] * +xy[1] * value[i].count;
-      value[i].price = +xy[0] * +xy[1] * value[i].priceMeter;
+      value[i].x = xy[0] / 100;
+      value[i].y = xy[1] / 100;
+      value[i].totalSize =
+        (eval(value[i].size.match(/\d+\.*\d*/g).join('*')) / 10000) *
+        value[i].count;
+      value[i].price =
+        value[i].x * value[i].y * (value[i].priceMeter + value[i].price2);
     }
     return value;
   }

@@ -50,6 +50,16 @@ export class FileController {
     return await this.fileService.getByModel(model);
   }
 
+  @Get('/:url')
+  @ApiOperation({ summary: 'Method: returns single Shape by id' })
+  @ApiOkResponse({
+    description: 'The Shape was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getMe(@Param('url') url: string): Promise<File> {
+    return this.fileService.getByUrl(url);
+  }
+
   @Public()
   @Post('/')
   @ApiOperation({ summary: 'Method: create file' })
@@ -82,5 +92,15 @@ export class FileController {
   @HttpCode(HttpStatus.OK)
   async name(@Param('id') id: string) {
     return await this.fileService.delete(id);
+  }
+
+  @Delete('/:url')
+  @ApiOperation({ summary: 'Method: delete file' })
+  @ApiOkResponse({
+    description: 'The File were deleted successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async deleteByUrl(@Param('url') url: string) {
+    return await this.fileService.deleteByUrl(url);
   }
 }

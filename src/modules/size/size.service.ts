@@ -31,7 +31,7 @@ export class SizeService {
         where: { id },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Size not found');
       });
 
     return data;
@@ -43,7 +43,7 @@ export class SizeService {
         where: { title },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Size not found');
       });
 
     return data;
@@ -51,7 +51,7 @@ export class SizeService {
 
   async deleteOne(id: string) {
     const response = await this.sizeRepository.delete(id).catch(() => {
-      throw new NotFoundException('data not found');
+      throw new NotFoundException('Size not found');
     });
     return response;
   }

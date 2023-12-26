@@ -86,7 +86,7 @@ export class OrderService {
       .catch(() => {
         throw new NotFoundException('data not found');
       });
-      const dataCashflow = await this.cashFlowService.getByKassa(id)
+    const dataCashflow = await this.cashFlowService.getByKassa(id);
 
     return [data, dataCashflow];
   }
@@ -350,7 +350,9 @@ export class OrderService {
       x,
       y: product.y,
       partiya: product.partiya.id || null,
-      price2: product.price2
+      price2: product.price2,
+      palette: product.palette.id,
+      country: product.country,
     };
 
     await this.productService.create([newProduct]);
