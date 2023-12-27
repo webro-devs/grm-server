@@ -9,7 +9,7 @@ class CreatePaletteDto {
   })
   @IsNotEmpty()
   @IsString()
-  @IsUnique('platte')
+  @IsUnique('palette')
   readonly title: string;
 }
 

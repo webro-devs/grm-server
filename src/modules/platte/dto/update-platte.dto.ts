@@ -9,7 +9,7 @@ class UpdatePaletteDto {
   })
   @IsOptional()
   @IsString()
-  @IsUnique('platte')
+  @IsUnique('palette')
   readonly title: string;
 }
 
