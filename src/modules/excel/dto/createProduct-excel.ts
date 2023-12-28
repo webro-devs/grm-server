@@ -27,14 +27,16 @@ class CreateProductExcDto {
   @ApiProperty({
     description: `Carpet image url`,
     example: 'https://carpet.jpg',
+    required: false
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   imgUrl: string;
 
   @ApiProperty({
     description: `other imgs`,
     example: '["link" , "link" , "link"]',
+    required: false
   })
   @IsOptional()
   otherImgs: string[];
@@ -82,8 +84,9 @@ class CreateProductExcDto {
   @ApiProperty({
     description: `Carpet Country`,
     example: 'USA',
+    required: false
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   country: string;
 
@@ -114,6 +117,7 @@ class CreateProductExcDto {
   @ApiProperty({
     description: `plus price`,
     example: 5,
+    required: false
   })
   @IsOptional()
   @IsNumber()
@@ -122,6 +126,7 @@ class CreateProductExcDto {
   @ApiProperty({
     description: `comming price`,
     example: 10,
+    required: false
   })
   @IsOptional()
   @IsNumber()
@@ -130,6 +135,7 @@ class CreateProductExcDto {
   @ApiProperty({
     description: `price meter`,
     example: 15,
+    required: false
   })
   @IsOptional()
   @IsNumber()
@@ -138,6 +144,7 @@ class CreateProductExcDto {
   @ApiProperty({
     description: `Is meteric`,
     example: false,
+    required: false
   })
   @IsOptional()
   @IsBoolean()

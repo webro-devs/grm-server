@@ -121,7 +121,7 @@ export class ExcelService {
     let products = this.setJson(productsBuffer);
     const filial = await this.filialService.findOrCreateFilialByTitle('baza');
 
-    products = this.setProperty(products, filial.id);
+    products = this.setProperty(products, filial.id, partiya.country);
     const response = await this.productService.create(products);
     await this.partiyaService.change({ check: true }, partiya.id);
 
@@ -233,7 +233,7 @@ export class ExcelService {
     return products;
   }
 
-  setProperty(products, filialId) {
+  setProperty(products, filialId, country?) {
     for (let product of products) {
       delete product.collection;
       delete product.id;
@@ -244,6 +244,7 @@ export class ExcelService {
       product.palette = product.palette.id;
       product.size = product.size.title;
       product.filial = filialId;
+      product.country = country;
     }
     return products;
   }
