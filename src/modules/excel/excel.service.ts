@@ -244,7 +244,7 @@ export class ExcelService {
       product.palette = product.palette.id;
       product.size = product.size.title;
       product.filial = filialId;
-      product.country = country;
+      product.country = country || 'пустой';
     }
     return products;
   }
