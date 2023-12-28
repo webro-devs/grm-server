@@ -8,11 +8,7 @@ import {
 
 import { Partiya } from './partiya.entity';
 import { CreatePartiyaDto, UpdatePartiyaDto } from './dto';
-import {
-  deleteFile,
-  excelDataParser,
-  partiyaDateSort,
-} from '../../infra/helpers';
+import { deleteFile, partiyaDateSort } from '../../infra/helpers';
 import { ExcelService } from '../excel/excel.service';
 import { Repository } from 'typeorm';
 
@@ -21,11 +17,20 @@ export class PartiyaService {
   constructor(
     @InjectRepository(Partiya)
     private readonly partiyaRepository: Repository<Partiya>,
-    private readonly excelRepository: ExcelService,
+    private readonly excelService: ExcelService,
   ) {}
 
   async getAll(options: IPaginationOptions): Promise<Pagination<Partiya>> {
-    return paginate<Partiya>(this.partiyaRepository, options, {});
+    const partiya = await paginate<Partiya>(this.partiyaRepository, options, {
+      relations: {
+        excel: true,
+      },
+      order: { date: 'DESC' },
+    });
+
+    const response = await this.processInputData(partiya);
+    //@ts-ignore
+    return response;
   }
 
   async getAllByDateRange() {
@@ -46,17 +51,11 @@ export class PartiyaService {
         throw new NotFoundException('data not found');
       });
 
-    const response = await this.excelRepository.readExcel(data?.excel?.path);
-
-    const constructedDatas = response;
-    for (let i = 0; i < constructedDatas.length; i++) {
-      constructedDatas[i].collection_exp =
-        data.expense || 0 / constructedDatas.length;
-    }
+    const response = this.excelService.readExcel(data?.excel?.path);
 
     return {
       ...data,
-      items: constructedDatas,
+      items: response,
     };
   }
 
@@ -90,10 +89,58 @@ export class PartiyaService {
     const data = await this.create(value);
     const filename = `uploads/excel/excel_${Date.now()}.xlsx`;
 
-    await this.excelRepository.createExcelFile([], filename);
+    await this.excelService.createExcelFile([], filename);
 
-    await this.excelRepository.create(`${filename}`, data.id);
+    await this.excelService.create(`${filename}`, data.id);
 
     return data;
+  }
+
+  // utils:
+  async processInputData(input) {
+    input.items.forEach(async (item, index) => {
+      try {
+        const processedItem = this.processItem(item);
+        const calc = this.calculateTotals(processedItem.excel);
+        delete processedItem.excel;
+        processedItem['price'] =
+          calc.totalM2 * calc.commingPrice - processedItem.expense || 0;
+        processedItem['m2'] = calc.totalM2 || 0;
+        processedItem['commingPrice'] =
+          processedItem['price'] / calc.totalM2 || 0;
+
+        input.items[index] = processedItem;
+      } catch (error) {
+        console.error(`Error processing item: ${error.message}`);
+      }
+    });
+
+    return input;
+  }
+
+  calculateTotals(data) {
+    return data.reduce(
+      (totals, currentItem) => {
+        totals.totalM2 +=
+          (eval(currentItem.size.title.match(/\d+\.*\d*/g).join('*')) / 10000) *
+          currentItem.count;
+        totals.commingPrice = currentItem.commingPrice;
+        return totals;
+      },
+      { totalM2: 0, commingPrice: 0 },
+    );
+  }
+
+  processItem(item) {
+    try {
+      const excelData = this.excelService.readExcel(item.excel.path);
+      return {
+        ...item,
+        excel: this.excelService.setJson(excelData),
+      };
+    } catch (error) {
+      console.error(`Error processing ${item.excel}: ${error.message}`);
+      return { ...item, excel: [] };
+    }
   }
 }
