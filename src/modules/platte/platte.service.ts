@@ -14,11 +14,11 @@ Injectable();
 export class PlatteService {
   constructor(
     @InjectRepository(Palette)
-    private readonly colorRepository: Repository<Palette>,
+    private readonly paletteRepository: Repository<Palette>,
   ) {}
 
   async getAll() {
-    return await this.colorRepository.find({
+    return await this.paletteRepository.find({
       order: {
         title: 'ASC',
       },
@@ -26,7 +26,7 @@ export class PlatteService {
   }
 
   async getOne(id: string) {
-    const data = await this.colorRepository
+    const data = await this.paletteRepository
       .findOne({
         where: { id },
       })
@@ -38,7 +38,7 @@ export class PlatteService {
   }
 
   async getOneByName(title: string) {
-    const data = await this.colorRepository
+    const data = await this.paletteRepository
       .findOne({
         where: { title },
       })
@@ -50,19 +50,30 @@ export class PlatteService {
   }
 
   async deleteOne(id: string) {
-    const response = await this.colorRepository.delete(id).catch(() => {
+    const response = await this.paletteRepository.delete(id).catch(() => {
       throw new NotFoundException('Palette not found');
     });
     return response;
   }
 
   async change(value: UpdatePlatteDto, id: string) {
-    const response = await this.colorRepository.update({ id }, value);
+    const response = await this.paletteRepository.update({ id }, value);
     return response;
   }
 
   async create(value: CreatePlatteDto) {
-    const data = this.colorRepository.create(value);
-    return await this.colorRepository.save(data);
+    const data = this.paletteRepository.create(value);
+    return await this.paletteRepository.save(data);
+  }
+
+  async findOrCreate(title) {
+    const response = await this.paletteRepository.findOne({
+      where: { title },
+    });
+
+    if (!response) {
+      return (await this.create(title)).id;
+    }
+    return response.id;
   }
 }

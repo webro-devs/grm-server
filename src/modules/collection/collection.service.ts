@@ -118,4 +118,15 @@ export class CollectionService {
     }
     return result;
   }
+
+  async findOrCreate(title) {
+    const response = await this.collectionRepository.findOne({
+      where: { title },
+    });
+
+    if (!response) {
+      return (await this.create(title)).id;
+    }
+    return response.id;
+  }
 }

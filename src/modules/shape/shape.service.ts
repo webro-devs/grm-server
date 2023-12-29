@@ -65,4 +65,15 @@ export class ShapeService {
     const data = this.shapeRepository.create(value);
     return await this.shapeRepository.save(data);
   }
+
+  async findOrCreate(title) {
+    const response = await this.shapeRepository.findOne({
+      where: { title },
+    });
+
+    if (!response) {
+      return (await this.create(title)).id;
+    }
+    return response.id;
+  }
 }

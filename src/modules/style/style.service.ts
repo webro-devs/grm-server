@@ -65,4 +65,15 @@ export class StyleService {
     const data = this.styleRepository.create(value);
     return await this.styleRepository.save(data);
   }
+
+  async findOrCreate(title) {
+    const response = await this.styleRepository.findOne({
+      where: { title },
+    });
+
+    if (!response) {
+      return (await this.create(title)).id;
+    }
+    return response.id;
+  }
 }

@@ -65,4 +65,15 @@ export class SizeService {
     const data = this.sizeRepository.create(value);
     return await this.sizeRepository.save(data);
   }
+
+  async findOrCreate(title) {
+    const response = await this.sizeRepository.findOne({
+      where: { title },
+    });
+
+    if (!response) {
+      return (await this.create(title)).id;
+    }
+    return response.id;
+  }
 }

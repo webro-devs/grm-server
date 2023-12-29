@@ -91,4 +91,15 @@ export class ModelService {
       .execute();
     return response;
   }
+
+  async findOrCreate(title, collection) {
+    const response = await this.modelRepository.findOne({
+      where: { title },
+    });
+
+    if (!response) {
+      return (await this.create({ collection, title })).raw[0].id;
+    }
+    return response.id;
+  }
 }

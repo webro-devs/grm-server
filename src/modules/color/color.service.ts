@@ -68,4 +68,15 @@ export class ColorService {
     const data = this.colorRepository.create(value);
     return await this.colorRepository.save(data);
   }
+
+  async findOrCreate(title) {
+    const response = await this.colorRepository.findOne({
+      where: { title },
+    });
+
+    if (!response) {
+      return (await this.create({title, code: "#f00000"})).id;
+    }
+    return response.id;
+  }
 }
