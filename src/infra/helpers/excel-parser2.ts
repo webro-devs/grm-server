@@ -22,6 +22,7 @@ const excelDataParser = (products, rasxod) => {
           ...(acc?.[curr?.collection]?.models || []),
           [curr?.model]: {
             title: curr?.model.title,
+            costMeter: curr?.priceMeter,
             kv:
               (acc?.[curr?.collection]?.models?.[curr?.model]?.kv || 0) +
               curr?.kvInNumber,
