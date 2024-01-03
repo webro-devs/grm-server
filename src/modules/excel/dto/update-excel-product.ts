@@ -44,7 +44,7 @@ class UpdateProductExcelDto {
 
   @IsOptional()
   @IsNumber()
-  price2: number;
+  secondPrice: number;
 
   @IsOptional()
   @IsNumber()
@@ -57,6 +57,10 @@ class UpdateProductExcelDto {
   @IsOptional()
   @IsNumber()
   comingPrice: number;
+
+  @IsOptional()
+  @IsNumber()
+  collectionPrice: number;
 
   @ApiProperty({
     description: `Carpet price by meter.`,
@@ -95,4 +99,8 @@ class UpdateProductExcelDto {
   @IsOptional()
   @IsBoolean()
   isMetric: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isEdited: boolean;
 }

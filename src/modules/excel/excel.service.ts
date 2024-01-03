@@ -8,7 +8,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as XLSX from 'xlsx';
 
 import { Excel } from './excel.entity';
-import { deleteFile, excelDataParser } from 'src/infra/helpers';
+import {
+  deleteFile,
+  excelDataParser,
+  excelDataParser2,
+} from 'src/infra/helpers';
 import { FileService } from '../file/file.service';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -96,20 +100,40 @@ export class ExcelService {
     partiyaId: string,
   ) {
     const partiya = await this.partiyaService.getOne(partiyaId);
-    if (partiya && partiya?.excel) {
-      let data = [];
-      const oldProducts = this.readExcel(partiya.excel.path);
-      let maxId = this.getMaxId(oldProducts);
-      for (const product of products) {
-        data.push({ id: ++maxId, ...product });
-      }
-      data = await this.setModules(data, true);
-      data = this.setString(data);
-      let response = await this.updateExcelFile(partiya.excel.path, data);
-      response = this.setJson(response);
+    const path = partiya.excel.path;
+    const oldProducts = this.readExcel(path);
+    let maxId = this.getMaxId(oldProducts);
 
-      return excelDataParser(response, partiya.expense || 0);
-    }
+    products = products.map((e) => ({ ...e, isEdited: false, secondPrice: 0 }));
+    products = this.setString(await this.setModules(products, true));
+    products = this.setId(maxId, products);
+    products = this.setJson(await this.updateExcelFile(path, products));
+    return excelDataParser(products, partiya.expense);
+  }
+
+  async addProductIfNotExist(
+    products: CreateProductExcelDto[],
+    partiyaId: string,
+  ) {
+    const partiya = await this.partiyaService.getOne(partiyaId);
+    const oldDatas = this.setJson(this.readExcel(partiya.excel.path));
+
+    products = await this.setModules(products);
+    const totalM2 =
+      oldDatas.reduce(
+        (total, obj) =>
+          total +
+          (eval(obj.size['title'].match(/\d+\.*\d*/g).join('*')) / 10000) *
+            obj.count,
+        0,
+      ) +
+      oldDatas.reduce(
+        (total, obj) =>
+          total +
+          (eval(obj.size['title'].match(/\d+\.*\d*/g).join('*')) / 10000) *
+            obj.count,
+        0,
+      );
   }
 
   async createProduct(partiyaId) {
@@ -119,6 +143,9 @@ export class ExcelService {
     }
     const productsBuffer = this.readExcel(partiya.excel.path);
     let products = this.setJson(productsBuffer);
+    products = this.setPrice(products, partiya.expense);
+    console.log(JSON.stringify(products, null, 4));
+
     const filial = await this.filialService.findOrCreateFilialByTitle('baza');
 
     products = this.setProperty(products, filial.id, partiya.country);
@@ -168,6 +195,33 @@ export class ExcelService {
   }
 
   // utils:
+  async findProduct(collection, model, path) {
+    let products = this.readExcel(path);
+    products = this.setJson(products);
+    return products.find(
+      (e) => e.collection.id == collection && e.model.id == model,
+    );
+  }
+
+  setPrice(products = [], expense = 0) {
+    const fullKv = products.reduce(
+      (total, obj) =>
+        total +
+        (eval(obj.size.title.match(/\d+\.*\d*/g).join('*')) / 10000) *
+          obj.count,
+      0,
+    );
+    const expenseByKv = expense / fullKv;
+    products = products.map((pr) => {
+      pr.commingPrice = expenseByKv + pr.collectionPrice;
+      delete pr.collectionPrice;
+      delete pr.isEdited;
+      return pr;
+    });
+
+    return products;
+  }
+
   getMaxId(oldProducts: Array<{ id: number }>) {
     let maxId = 0;
     if (oldProducts.length > 0) {
@@ -176,6 +230,20 @@ export class ExcelService {
       }
     }
     return maxId;
+  }
+
+  getTotalM2ByCollection(collection, products) {
+    products = this.setJson(products).filter(
+      (e) => e.collection.id === collection,
+    );
+
+    return products.reduce(
+      (total, obj) =>
+        total +
+        (eval(obj.size.title.match(/\d+\.*\d*/g).join('*')) / 10000) *
+          obj.count,
+      0,
+    );
   }
 
   async setModules(datas, byId = false) {
@@ -277,6 +345,14 @@ export class ExcelService {
       product.size = JSON.parse(product.size);
     }
     return products;
+  }
+
+  setId(maxId, data) {
+    data.forEach((_, index: number) => {
+      data[index].id = ++maxId;
+    });
+
+    return data;
   }
 
   async setCollection(data, toggle) {

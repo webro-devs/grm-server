@@ -17,15 +17,17 @@ const excelDataParser = (data, expense) => {
       filial = '',
       commingPrice = 0,
       priceMeter = 0,
-      price2 = 0,
+      secondPrice = 0,
       palette,
       country = 'пустой',
+      isEdite = false,
     } = curr;
     const m2 =
       (eval(size.title.match(/\d+\.*\d*/g).join('*')) / 10000) * count || 0;
     allM2 += m2;
 
     const datas = {
+      isEdite,
       id,
       size,
       color,
@@ -40,10 +42,10 @@ const excelDataParser = (data, expense) => {
       m2,
       otherImgs,
       priceMeter,
-      price2,
-      price: (priceMeter + price2) * m2,
+      secondPrice,
+      price: (priceMeter + secondPrice) * m2,
       palette,
-      country
+      country,
     };
 
     const collectionItem = acc.find((item) => item.title === collection.title);
@@ -54,6 +56,7 @@ const excelDataParser = (data, expense) => {
       );
 
       if (modelItem) {
+        modelItem.m2 += m2;
         modelItem.products.push(datas);
         collectionItem.collection_m += m2;
       } else {
@@ -62,10 +65,11 @@ const excelDataParser = (data, expense) => {
           title: model.title,
           cost: priceMeter,
           commingPrice: commingPrice,
+          m2: m2,
           products: [datas],
         });
-        collectionItem.collection_m += m2;
       }
+      collectionItem.collection_m += m2;
     } else {
       acc.push({
         id: collection.id,
@@ -79,6 +83,7 @@ const excelDataParser = (data, expense) => {
             title: model.title,
             cost: priceMeter,
             commingPrice: commingPrice,
+            m2: m2,
             products: [datas],
           },
         ],
@@ -87,17 +92,7 @@ const excelDataParser = (data, expense) => {
 
     return acc;
   }, []);
-
-  for (const collection of transformedObj) {
-    collection.collection_exp = (collection.collection_m * expense) / allM2;
-    collection.collection_cost =
-      (collection.models[0].commingPrice * collection.collection_m -
-        collection.collection_exp) /
-      collection.collection_m;
-    collection.price =
-      collection.models[0].commingPrice * collection.collection_m -
-      collection.collection_exp;
-  }
+  transformedObj.forEach((el, index) => {});
 
   return transformedObj;
 };

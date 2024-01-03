@@ -69,7 +69,7 @@ class UpdateProductDto {
   })
   @IsOptional()
   @IsNumber()
-  price2: number;
+  secondPrice: number;
 
   @ApiProperty({
     description: `Carpet coming price`,

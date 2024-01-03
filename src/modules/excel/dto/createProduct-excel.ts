@@ -3,7 +3,6 @@ import {
   IsString,
   IsNumber,
   IsOptional,
-  IsArray,
   IsBoolean,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -27,7 +26,7 @@ class CreateProductExcDto {
   @ApiProperty({
     description: `Carpet image url`,
     example: 'https://carpet.jpg',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -36,7 +35,7 @@ class CreateProductExcDto {
   @ApiProperty({
     description: `other imgs`,
     example: '["link" , "link" , "link"]',
-    required: false
+    required: false,
   })
   @IsOptional()
   otherImgs: string[];
@@ -84,7 +83,7 @@ class CreateProductExcDto {
   @ApiProperty({
     description: `Carpet Country`,
     example: 'USA',
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -114,28 +113,26 @@ class CreateProductExcDto {
   @IsString()
   partiya: string;
 
-  @ApiProperty({
-    description: `plus price`,
-    example: 5,
-    required: false
-  })
   @IsOptional()
   @IsNumber()
-  price2: number;
+  secondPrice: number;
 
-  @ApiProperty({
-    description: `comming price`,
-    example: 10,
-    required: false
-  })
   @IsOptional()
   @IsNumber()
   commingPrice: number;
 
   @ApiProperty({
+    description: `Collection price`,
+    example: '8',
+  })
+  @IsOptional()
+  @IsNumber()
+  collectionPrice: number;
+
+  @ApiProperty({
     description: `price meter`,
     example: 15,
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsNumber()
@@ -144,11 +141,15 @@ class CreateProductExcDto {
   @ApiProperty({
     description: `Is meteric`,
     example: false,
-    required: false
+    required: false,
   })
   @IsOptional()
   @IsBoolean()
   isMetric: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isEdited: boolean;
 }
 
 export default CreateProductExcDto;

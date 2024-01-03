@@ -350,7 +350,7 @@ export class OrderService {
       x,
       y: product.y,
       partiya: product.partiya.id || null,
-      price2: product.price2,
+      secondPrice: product.secondPrice,
       palette: product.palette.id,
       country: product.country,
     };

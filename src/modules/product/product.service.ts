@@ -182,7 +182,7 @@ export class ProductService {
         (eval(value[i].size.match(/\d+\.*\d*/g).join('*')) / 10000) *
         value[i].count;
       value[i].price =
-        value[i].x * value[i].y * (value[i].priceMeter + value[i].price2);
+        value[i].x * value[i].y * (value[i].priceMeter + value[i].secondPrice);
     }
     return value;
   }

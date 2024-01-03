@@ -137,7 +137,7 @@ export class TransferService {
       x: product.x,
       y: product.y,
       partiya: product.partiya.id,
-      price2: product.price2,
+      secondPrice: product.secondPrice,
       palette: product.palette.id,
       country: product.country,
     };

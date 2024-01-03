@@ -4,7 +4,6 @@ function convertInputToOutput(
   input: InputProduct[],
   expenseAll: number,
 ): OutputProduct[] {
-  
   const collections: { [id: string]: OutputProduct } = {};
   let totalM2AllCollections = 0;
   input.forEach((inputProduct) => {
@@ -13,7 +12,7 @@ function convertInputToOutput(
       model,
       size,
       count,
-      price2,
+      secondPrice,
       priceMeter,
       commingPrice,
       otherImgs,
@@ -59,8 +58,8 @@ function convertInputToOutput(
       code: inputProduct.code,
       count: count,
       img: inputProduct.img,
-      price: (priceMeter + price2) * m2 || 0,
-      price2: price2 || 0,
+      price: (priceMeter + secondPrice) * m2 || 0,
+      secondPrice: secondPrice || 0,
       priceMeter: priceMeter || 0,
       commingPrice: commingPrice || 0,
       filial: inputProduct.filial,

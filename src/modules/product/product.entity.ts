@@ -32,7 +32,7 @@ export class Product {
   @Column()
   count: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   imgUrl: string;
 
   @Column('jsonb')
@@ -55,7 +55,7 @@ export class Product {
     transformer: new ColumnNumericTransformer(),
     default: 0,
   })
-  price2: number;
+  secondPrice: number;
 
   @Column('numeric', {
     precision: 20,

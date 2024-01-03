@@ -178,6 +178,47 @@ export class ExcelService {
     }
   }
 
+  // async addProductToPartiya(
+  //   products: CreateProductExcelDto[],
+  //   partiyaId: string,
+  // ) {
+  //   const partiya = await this.partiyaService.getOne(partiyaId);
+  //   if (partiya && partiya?.excel) {
+  //     let data = [];
+  //     const oldProducts = this.setJson(this.readExcel(partiya.excel.path));
+  //     let maxId = this.getMaxId(oldProducts);
+  //     for (const product of products) {
+  //       const findProduct = oldProducts.find(
+  //         (e) =>
+  //           e.collection.id == product.collection &&
+  //           e.model.id == product.model,
+  //       );
+
+  //       if (findProduct) {
+  //         product.commingPrice = findProduct?.comingPrice;
+  //         product.priceMeter = findProduct?.priceMeter;
+  //         product.secondPrice = 0;
+  //       } else {
+  //         product.commingPrice = 0;
+  //         product.priceMeter = 0;
+  //         product.secondPrice = 0;
+  //       }
+  //       product.isEdite = false;
+
+  //       data.push({ id: ++maxId, ...product });
+  //     }
+  //     data = await this.setModules(data, true);
+  //     data = [...data, ...oldProducts];
+
+  //     // data = this.setString(data);
+
+  //     // let response = await this.updateExcelFile(partiya.excel.path, data);
+  //     // response = this.setJson(response);
+
+  //     // return excelDataParser(response, partiya.expense || 0);
+  //   }
+  // }
+
   async updateProduct(datas, partiyaId) {
     const { excel } = await this.partiyaService.getOne(partiyaId);
     const excelData = await this.readExcelFile(excel.path);

@@ -27,7 +27,7 @@ export interface InputProduct {
   code: string;
   count: number;
   img: string;
-  price2: number;
+  secondPrice: number;
   priceMeter: number;
   commingPrice: number;
   filial: string;
@@ -74,7 +74,7 @@ interface OutputProductDetail {
   count: number;
   img: string;
   price: number;
-  price2: number;
+  secondPrice: number;
   priceMeter: number;
   commingPrice: number;
   filial: string;
