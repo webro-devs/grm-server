@@ -95,6 +95,27 @@ export class ExcelController {
   }
 
   @Public()
+  @Put('/productFull/:id')
+  @ApiOperation({
+    summary: 'Method: imports data and update products in the excel',
+  })
+  @ApiCreatedResponse({
+    description: 'The data imported and saved to partiya successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async updateProductFull(
+    @Param('id') id: string,
+    @Body() data: UpdateProductExcelDto,
+  ) {
+    const response = await this.fileService.updateProductsPartiya({
+      newData: data.products,
+      partiyaId: id,
+    });
+
+    return response;
+  }
+
+  @Public()
   @Get('/:id')
   @ApiOperation({
     summary: 'Method: imports data and update products in the excel',
