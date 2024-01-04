@@ -208,6 +208,24 @@ export class ExcelService {
     return excelDataParser(updatedData, partiya.expense);
   }
 
+  async updateCostProduct({ newData, partiyaId }) {
+    const partiya = await this.partiyaService.getOne(partiyaId);
+    const products = this.readExcel(partiya.excel.path);
+    newData.forEach((newItem) => {
+      const index = products.findIndex((item) => item.id === newItem.id);
+      if (index !== -1) {
+        products[index].isEdited = true;
+        products[index].priceMeter = newData.priceMeter;
+      } else {
+        throw new BadRequestException('Product not found');
+      }
+    });
+
+    this.updateExcelFile(partiya.excel.path, products, true);
+
+    return 'product updated!';
+  }
+
   async updateExcelFile(pathName, newData, restrict: boolean = false) {
     const workbook = XLSX.utils.book_new();
     let oldData: any[] = [];

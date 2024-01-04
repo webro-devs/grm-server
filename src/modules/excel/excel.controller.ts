@@ -18,7 +18,13 @@ import { ExcelService } from './excel.service';
 import { multerStorage } from '../../infra/helpers';
 import { Public } from '../auth/decorators/public.decorator';
 import { Body, Get, Put } from '@nestjs/common/decorators';
-import { ImportExcelDto, UpdateCollectionCostDto, UpdateExcelDto, UpdateModelCostDto, UpdateProductExcelDto } from './dto';
+import {
+  ImportExcelDto,
+  UpdateCollectionCostDto,
+  UpdateExcelDto,
+  UpdateModelCostDto,
+  UpdateProductExcelDto,
+} from './dto';
 import CreateProductExcDto from './dto/createProduct-excel';
 
 @ApiTags('Excel')
@@ -80,7 +86,7 @@ export class ExcelController {
     @Param('id') id: string,
     @Body() data: UpdateProductExcelDto,
   ) {
-    const response = await this.fileService.updateProductsPartiya({
+    const response = await this.fileService.updateCostProduct({
       newData: data.products,
       partiyaId: id,
     });
@@ -126,7 +132,10 @@ export class ExcelController {
     description: '',
   })
   @HttpCode(HttpStatus.OK)
-  async updateCollectionCost(@Param('id') id: string, @Body() data: UpdateCollectionCostDto) {
+  async updateCollectionCost(
+    @Param('id') id: string,
+    @Body() data: UpdateCollectionCostDto,
+  ) {
     const response = await this.fileService.updateCollectionCost(
       id,
       data.collectionId,
@@ -144,7 +153,10 @@ export class ExcelController {
     description: '',
   })
   @HttpCode(HttpStatus.OK)
-  async updateModelCost(@Param('id') id: string, @Body() data: UpdateModelCostDto) {
+  async updateModelCost(
+    @Param('id') id: string,
+    @Body() data: UpdateModelCostDto,
+  ) {
     const response = await this.fileService.updateModelCost(
       id,
       data.modelId,
