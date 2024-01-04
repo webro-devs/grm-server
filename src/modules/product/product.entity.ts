@@ -16,14 +16,13 @@ import { User } from '../user/user.entity';
 import { ClientOrder } from '../client-order/client-order.entity';
 import { ColumnNumericTransformer } from '../../infra/helpers';
 import { Color } from '../color/color.entity';
-import { Palette } from '../platte/platte.entity';
 
 @Entity('product')
 export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ nullable: true })
   code: string;
 
   @Column()
@@ -141,12 +140,6 @@ export class Product {
   @ManyToOne(() => Color, (color) => color.products, { onDelete: 'SET NULL' })
   @JoinColumn()
   color: Color;
-
-  @ManyToOne(() => Palette, (palette) => palette.products, {
-    onDelete: 'SET NULL',
-  })
-  @JoinColumn()
-  palette: Palette;
 
   @OneToMany(() => ClientOrder, (clientOrder) => clientOrder.product)
   clientOrders: ClientOrder[];

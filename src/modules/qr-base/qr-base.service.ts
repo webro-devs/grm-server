@@ -14,7 +14,6 @@ import { deleteFile } from 'src/infra/helpers';
 import { ColorService } from '../color/color.service';
 import { CollectionService } from '../collection/collection.service';
 import { CountryService } from '../country/country.service';
-import { PlatteService } from '../platte/platte.service';
 import { ModelService } from '../model/model.service';
 import { ShapeService } from '../shape/shape.service';
 import { SizeService } from '../size/size.service';
@@ -28,7 +27,6 @@ export class QrBaseService {
     private readonly colorService: ColorService,
     private readonly collectionService: CollectionService,
     private readonly countryService: CountryService,
-    private readonly paletteService: PlatteService,
     private readonly modelService: ModelService,
     private readonly shapeService: ShapeService,
     private readonly sizeService: SizeService,
@@ -124,28 +122,51 @@ export class QrBaseService {
   }
 
   async findOrCreate(codes: CreateQrBaseDto[]) {
-    for (const { code, collection, color, country, model, shape, size, style } of codes) {
+    for (const {
+      code,
+      collection,
+      color,
+      country,
+      model,
+      shape,
+      size,
+      style,
+    } of codes) {
       if (code) {
         const response = await this.qrBaseRepository.findOne({
           where: { code },
         });
-  
+
         if (!response) {
-          const data: CreateQrBaseDto = { code, collection, color, country, model, shape, size, style };
-  
-          data.collection = await this.collectionService.findOrCreate(collection);
+          const data: CreateQrBaseDto = {
+            code,
+            collection,
+            color,
+            country,
+            model,
+            shape,
+            size,
+            style,
+          };
+
+          data.collection = await this.collectionService.findOrCreate(
+            collection,
+          );
           data.color = await this.colorService.findOrCreate(color);
           data.country = await this.countryService.findOrCreate(country);
-          data.model = await this.modelService.findOrCreate(data.collection, model);
+          data.model = await this.modelService.findOrCreate(
+            data.collection,
+            model,
+          );
           data.shape = await this.shapeService.findOrCreate(shape);
           data.size = await this.sizeService.findOrCreate(size);
-          data.style = await this.styleService.findOrCreate(style || "classic");
-  
+          data.style = await this.styleService.findOrCreate(style || 'classic');
+
           await this.create(data);
         }
       }
     }
-    return "created succesfully!"
+    return 'created succesfully!';
   }
 
   // utils:

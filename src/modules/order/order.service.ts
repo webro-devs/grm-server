@@ -351,7 +351,6 @@ export class OrderService {
       y: product.y,
       partiya: product.partiya.id || null,
       secondPrice: product.secondPrice,
-      palette: product.palette.id,
       country: product.country,
     };
 

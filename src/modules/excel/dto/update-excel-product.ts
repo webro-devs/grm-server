@@ -86,9 +86,6 @@ class UpdateProductExcelDto {
   model: object;
 
   @IsOptional()
-  palette: object;
-
-  @IsOptional()
   @IsArray()
   otherImgs: string[];
 
@@ -103,4 +100,8 @@ class UpdateProductExcelDto {
   @IsOptional()
   @IsBoolean()
   isEdited: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  displayPrice: boolean;
 }

@@ -14,6 +14,7 @@ const excelDataParser = (products, rasxod) => {
     return {
       ...acc,
       [curr?.collection]: {
+        id: curr?.collection.id,
         title: curr?.collection.title,
         kv,
         rasxod: rasxodNaKv * kv,
@@ -21,8 +22,9 @@ const excelDataParser = (products, rasxod) => {
         models: {
           ...(acc?.[curr?.collection]?.models || []),
           [curr?.model]: {
+            id: curr?.model.id,
             title: curr?.model.title,
-            costMeter: curr?.priceMeter,
+            costMeter: curr?.displayPrice,
             kv:
               (acc?.[curr?.collection]?.models?.[curr?.model]?.kv || 0) +
               curr?.kvInNumber,

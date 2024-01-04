@@ -18,7 +18,6 @@ const excelDataParser = (data, expense) => {
       commingPrice = 0,
       priceMeter = 0,
       secondPrice = 0,
-      palette,
       country = 'пустой',
       isEdite = false,
     } = curr;
@@ -44,7 +43,6 @@ const excelDataParser = (data, expense) => {
       priceMeter,
       secondPrice,
       price: (priceMeter + secondPrice) * m2,
-      palette,
       country,
     };
 

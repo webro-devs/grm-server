@@ -64,14 +64,6 @@ class CreateProductDto {
   secondPrice: number;
 
   @ApiProperty({
-    description: `Carpet palette`,
-    example: 140,
-  })
-  @IsOptional()
-  @IsNumber()
-  palette: string;
-
-  @ApiProperty({
     description: `Carpet meter price`,
     example: 20,
   })

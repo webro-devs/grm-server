@@ -10,8 +10,9 @@ class CreateProductExcDto {
   @ApiProperty({
     description: `Carpet code`,
     example: '23462908374643',
+    required: false,
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   code: string;
 
@@ -22,6 +23,10 @@ class CreateProductExcDto {
   @IsNotEmpty()
   @IsNumber()
   count: number;
+
+  @IsOptional()
+  @IsNumber()
+  displayPrice: number;
 
   @ApiProperty({
     description: `Carpet image url`,
@@ -47,14 +52,6 @@ class CreateProductExcDto {
   @IsNotEmpty()
   @IsString()
   shape: string;
-
-  @ApiProperty({
-    description: `Carpet palette`,
-    example: 'UUID',
-  })
-  @IsNotEmpty()
-  @IsString()
-  palette: string;
 
   @ApiProperty({
     description: `Carpet size`,

@@ -8,7 +8,6 @@ import { ColorModule } from '../color/color.module';
 import { StyleModule } from '../style/style.module';
 import { SizeModule } from '../size/size.module';
 import { CountryModule } from '../country/country.module';
-import { PlatteModule } from '../platte/platte.module';
 import { ShapeModule } from '../shape/shape.module';
 import { ModelModule } from '../model/model.module';
 import { CollectionModule } from '../collection/collection.module';
@@ -20,7 +19,6 @@ import { CollectionModule } from '../collection/collection.module';
     StyleModule,
     SizeModule,
     CountryModule,
-    PlatteModule,
     ShapeModule,
     ModelModule,
     CollectionModule,

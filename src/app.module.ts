@@ -31,7 +31,6 @@ import { CountryModule } from './modules/country/country.module';
 import { SizeModule } from './modules/size/size.module';
 import { ColorModule } from './modules/color/color.module';
 import { QrBaseModule } from './modules/qr-base/qr-base.module';
-import { PlatteModule } from './modules/platte/platte.module';
 import { IsUniqueConstraint } from './infra/shared/decorators/is-unique.constrain';
 
 @Module({
@@ -68,7 +67,6 @@ import { IsUniqueConstraint } from './infra/shared/decorators/is-unique.constrai
     ModelModule,
     OrderModule,
     PartiyaModule,
-    PlatteModule,
     PositionModule,
     ProductModule,
     QrBaseModule,

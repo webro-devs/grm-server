@@ -8,11 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as XLSX from 'xlsx';
 
 import { Excel } from './excel.entity';
-import {
-  deleteFile,
-  excelDataParser,
-  excelDataParser2,
-} from 'src/infra/helpers';
+import { deleteFile, excelDataParser } from 'src/infra/helpers';
 import { FileService } from '../file/file.service';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -27,7 +23,6 @@ import { SizeService } from '../size/size.service';
 import { StyleService } from '../style/style.service';
 import { FilialService } from '../filial/filial.service';
 import { CreateProductExcelDto } from './dto';
-import { PlatteService } from '../platte/platte.service';
 
 Injectable();
 export class ExcelService {
@@ -45,7 +40,6 @@ export class ExcelService {
     private readonly sizeService: SizeService,
     private readonly styleService: StyleService,
     private readonly filialService: FilialService,
-    private readonly platteService: PlatteService,
   ) {}
   async create(path, partiya) {
     const response = await this.excelRepository
@@ -103,6 +97,22 @@ export class ExcelService {
     const path = partiya.excel.path;
     const oldProducts = this.readExcel(path);
     let maxId = this.getMaxId(oldProducts);
+    products.forEach((e, i) => {
+      const product = this.findProduct(
+        e.collection.indexOf,
+        e.model.indexOf,
+        path,
+      );
+      if (product) {
+        products[i].collectionPrice = product['collectionPrice'];
+        products[i].displayPrice = product['priceMeter'];
+        products[i].priceMeter = product['priceMeter'];
+      } else {
+        products[i].collectionPrice = 0;
+        products[i].priceMeter = 0;
+        products[i].displayPrice = 0;
+      }
+    });
 
     products = products.map((e) => ({ ...e, isEdited: false, secondPrice: 0 }));
     products = this.setString(await this.setModules(products, true));
@@ -194,6 +204,33 @@ export class ExcelService {
     return oldData;
   }
 
+  async updateCollectionCost(partiyaId, collectionId, cost) {
+    const partiya = await this.partiyaService.getOne(partiyaId);
+    const products = this.setJson(this.readExcel(partiya.excel.path));
+    products.forEach((product, index) => {
+      if (product.collection.id == collectionId) {
+        products[index].collectionPrice = cost;
+      }
+    });
+
+    return 'product updated!';
+  }
+
+  async updateModelCost(partiyaId, modelId, cost) {
+    const partiya = await this.partiyaService.getOne(partiyaId);
+    const products = this.setJson(this.readExcel(partiya.excel.path));
+    products.forEach((product, index) => {
+      if (product.model.id == modelId) {
+        products[index].displayPrice = cost;
+        if (!product.isEdited) {
+          products[index].priceMeter = cost;
+        }
+      }
+    });
+
+    return 'product updated!';
+  }
+
   // utils:
   async findProduct(collection, model, path) {
     let products = this.readExcel(path);
@@ -252,7 +289,6 @@ export class ExcelService {
     data = await this.setCollection(datas, toggle);
     data = await this.setModel(data, toggle);
     data = await this.setColor(data, toggle);
-    data = await this.setPalette(data, toggle);
     data = await this.setShape(data, toggle);
     data = await this.setStyle(data, toggle);
     data = await this.setSize(data, toggle);
@@ -268,7 +304,6 @@ export class ExcelService {
       model: this.setModel,
       collection: this.setCollection,
       color: this.setColor,
-      palette: this.setPalette,
       shape: this.setShape,
       style: this.setStyle,
       size: this.setSize,
@@ -294,7 +329,6 @@ export class ExcelService {
       product.color = JSON.stringify(product.color);
       product.shape = JSON.stringify(product.shape);
       product.style = JSON.stringify(product.style);
-      product.palette = JSON.stringify(product.palette);
       product.otherImgs = JSON.stringify(product.otherImgs || []);
       product.size = JSON.stringify(product.size);
     }
@@ -309,7 +343,6 @@ export class ExcelService {
       product.color = product.color.id;
       product.shape = product.shape.title;
       product.style = product.style.title;
-      product.palette = product.palette.id;
       product.size = product.size.title;
       product.filial = filialId;
       product.country = country || 'пустой';
@@ -325,7 +358,6 @@ export class ExcelService {
       if (product.color) product.color = JSON.stringify(product.color);
       if (product.shape) product.shape = JSON.stringify(product.shape);
       if (product.style) product.style = JSON.stringify(product.style);
-      if (product.palette) product.palette = JSON.stringify(product.palette);
       if (product.otherImgs)
         product.otherImgs = JSON.stringify(product.otherImgs);
       if (product.size) product.size = JSON.stringify(product.size);
@@ -340,7 +372,6 @@ export class ExcelService {
       product.color = JSON.parse(product.color);
       product.shape = JSON.parse(product.shape);
       product.style = JSON.parse(product.style);
-      product.palette = JSON.parse(product.palette);
       product.otherImgs = JSON.parse(product.otherImgs);
       product.size = JSON.parse(product.size);
     }
@@ -396,18 +427,6 @@ export class ExcelService {
         id: '#',
         title: item.color || 'пустой',
         code: '#',
-        coming: false,
-      };
-    }
-
-    return data;
-  }
-
-  async setPalette(data, toggle) {
-    for (const item of data) {
-      item.palette = (await this.platteService[toggle](item?.palette)) || {
-        id: '#',
-        title: item.palette || 'пустой',
         coming: false,
       };
     }

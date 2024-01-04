@@ -51,12 +51,7 @@ export class PartiyaService {
         throw new NotFoundException('data not found');
       });
 
-    const response = this.excelService.readExcel(data?.excel?.path);
-
-    return {
-      ...data,
-      items: response,
-    };
+    return data;
   }
 
   async deleteOne(id: string) {

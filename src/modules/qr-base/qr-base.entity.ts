@@ -12,7 +12,6 @@ import { Shape } from '../shape/shape.entity';
 import { Size } from '../size/size.entity';
 import { Collection } from '../collection/collection.entity';
 import { Country } from '../country/country.entity';
-import { Palette } from '../platte/platte.entity';
 
 @Entity('qrbase')
 export class QrBase {
@@ -52,8 +51,4 @@ export class QrBase {
   @ManyToOne(() => Color, (color) => color.qrBase, { onDelete: 'SET NULL' })
   @JoinColumn()
   color: Color;
-
-  @ManyToOne(() => Palette, (palette) => palette.qrBase, { onDelete: 'SET NULL' })
-  @JoinColumn()
-  palette: QrBase;
 }

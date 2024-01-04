@@ -59,7 +59,7 @@ export class ExcelController {
   })
   @HttpCode(HttpStatus.CREATED)
   async createProduct(
-    @Param('partiyaID') id: string,
+    @Param('id') id: string,
     @Body() data: CreateProductExcDto,
   ) {
     const response = await this.fileService.addProductToPartiya([data], id);
@@ -77,7 +77,7 @@ export class ExcelController {
   })
   @HttpCode(HttpStatus.CREATED)
   async updateProduct(
-    @Param('partiyaID') id: string,
+    @Param('id') id: string,
     @Body() data: UpdateProductExcelDto,
   ) {
     const response = await this.fileService.updateProductsPartiya({
@@ -97,7 +97,7 @@ export class ExcelController {
     description: 'The data imported and saved to partiya successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async GetProducts(@Param('partiyaID') id: string) {
+  async GetProducts(@Param('id') id: string) {
     const response = await this.fileService.readProducts(id);
 
     return response;
@@ -112,8 +112,44 @@ export class ExcelController {
     description: 'The data imported and saved to partiya successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async CreateProducts(@Param('partiyaID') id: string) {
+  async CreateProducts(@Param('id') id: string) {
     const response = await this.fileService.createProduct(id);
+
+    return response;
+  }
+
+  @Put('/collection/:id')
+  @ApiOperation({
+    summary: '',
+  })
+  @ApiCreatedResponse({
+    description: '',
+  })
+  @HttpCode(HttpStatus.GONE)
+  async updateCollectionCost(@Param('id') id: string, @Body() data) {
+    const response = await this.fileService.updateCollectionCost(
+      id,
+      data.collectionId,
+      data.cost,
+    );
+
+    return response;
+  }
+
+  @Put('/model/:id')
+  @ApiOperation({
+    summary: '',
+  })
+  @ApiCreatedResponse({
+    description: '',
+  })
+  @HttpCode(HttpStatus.GONE)
+  async updateModelCost(@Param('id') id: string, @Body() data) {
+    const response = await this.fileService.updateModelCost(
+      id,
+      data.modelId,
+      data.cost,
+    );
 
     return response;
   }
