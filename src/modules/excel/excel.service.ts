@@ -83,7 +83,6 @@ export class ExcelService {
       const worksheet = workbook.Sheets['Sheet'];
       let data: any[] = XLSX.utils.sheet_to_json(worksheet);
       data = this.setJson(data);
-      
 
       return excelDataParser(data, partiya.expense);
     }
@@ -97,13 +96,15 @@ export class ExcelService {
       const worksheet = workbook.Sheets['Sheet'];
       let data: any[] = XLSX.utils.sheet_to_json(worksheet);
       data = this.setJson(data);
-      data = data.filter(e => e.model.id == id);
+      data = data.filter((e) => e.model.id == id);
 
       if (data.length < 1) {
-        throw new BadRequestException("Model not found!")
+        throw new BadRequestException('Model not found!');
       }
 
-      return excelDataParser(data, partiya.expense)[0];
+      const response = excelDataParser(data, partiya.expense)[0];
+
+      return { collection: response.title, ...response.models[0] };
     }
     throw new BadRequestException('Partiya not found!');
   }
@@ -193,7 +194,11 @@ export class ExcelService {
     newData.forEach((newItem) => {
       const index = updatedData.findIndex((item) => item.id === newItem.id);
       if (index !== -1) {
-        updatedData[index] = { ...updatedData[index], ...newItem, isEdited: true };
+        updatedData[index] = {
+          ...updatedData[index],
+          ...newItem,
+          isEdited: true,
+        };
       } else {
         throw new BadRequestException('Product not found');
       }
@@ -239,7 +244,7 @@ export class ExcelService {
     const partiya = await this.partiyaService.getOne(partiyaId);
     const products = this.setJson(this.readExcel(partiya.excel.path));
     console.log(products);
-    
+
     products.forEach((product, index) => {
       if (product.model.id == modelId) {
         products[index].displayPrice = cost;
@@ -247,7 +252,6 @@ export class ExcelService {
           products[index].priceMeter = cost;
         }
       }
-      
     });
     this.updateExcelFile(partiya.excel.path, this.setString(products), true);
 
@@ -346,7 +350,7 @@ export class ExcelService {
   }
 
   setString(products) {
-    const data = []
+    const data = [];
     for (let product of products) {
       product.collection = JSON.stringify(product.collection);
       product.model = JSON.stringify(product.model);
@@ -355,7 +359,7 @@ export class ExcelService {
       product.style = JSON.stringify(product.style);
       product.otherImgs = JSON.stringify(product.otherImgs || []);
       product.size = JSON.stringify(product.size);
-      data.push(product)
+      data.push(product);
     }
     return data;
   }
@@ -391,7 +395,7 @@ export class ExcelService {
   }
 
   setJson(products) {
-    const data = []
+    const data = [];
     for (let product of products) {
       console.log(product);
       product.collection = JSON.parse(product.collection);
@@ -402,10 +406,10 @@ export class ExcelService {
       product.otherImgs = JSON.parse(product.otherImgs);
       product.size = JSON.parse(product.size);
       console.log(product);
-      
+
       data.push(product);
     }
-    
+
     return data;
   }
 
