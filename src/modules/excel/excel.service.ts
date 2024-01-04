@@ -205,7 +205,7 @@ export class ExcelService {
     });
     await this.updateExcelFile(partiya.excel.path, updatedData, true);
 
-    return excelDataParser(updatedData, partiya.expense);
+    return excelDataParser(this.setJson(updatedData), partiya.expense);
   }
 
   async updateCostProduct({ newData, partiyaId }) {
