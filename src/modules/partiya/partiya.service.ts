@@ -99,7 +99,7 @@ export class PartiyaService {
         const calc = this.calculateTotals(processedItem.excel);
         delete processedItem.excel;
         processedItem['price'] =
-          calc.totalM2 * calc.commingPrice - processedItem.expense || 0;
+          calc.totalM2 * calc.collectionPrice || 0;
         processedItem['m2'] = calc.totalM2 || 0;
         processedItem['commingPrice'] =
           processedItem['price'] / calc.totalM2 || 0;
@@ -119,10 +119,10 @@ export class PartiyaService {
         totals.totalM2 +=
           (eval(currentItem.size.title.match(/\d+\.*\d*/g).join('*')) / 10000) *
           currentItem.count;
-        totals.commingPrice = currentItem.commingPrice;
+        totals.collectionPrice = currentItem.collectionPrice;
         return totals;
       },
-      { totalM2: 0, commingPrice: 0 },
+      { totalM2: 0, collectionPrice: 0 },
     );
   }
 

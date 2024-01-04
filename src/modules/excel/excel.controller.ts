@@ -18,7 +18,7 @@ import { ExcelService } from './excel.service';
 import { multerStorage } from '../../infra/helpers';
 import { Public } from '../auth/decorators/public.decorator';
 import { Body, Get, Put } from '@nestjs/common/decorators';
-import { ImportExcelDto, UpdateExcelDto, UpdateProductExcelDto } from './dto';
+import { ImportExcelDto, UpdateCollectionCostDto, UpdateExcelDto, UpdateModelCostDto, UpdateProductExcelDto } from './dto';
 import CreateProductExcDto from './dto/createProduct-excel';
 
 @ApiTags('Excel')
@@ -125,8 +125,8 @@ export class ExcelController {
   @ApiCreatedResponse({
     description: '',
   })
-  @HttpCode(HttpStatus.GONE)
-  async updateCollectionCost(@Param('id') id: string, @Body() data) {
+  @HttpCode(HttpStatus.OK)
+  async updateCollectionCost(@Param('id') id: string, @Body() data: UpdateCollectionCostDto) {
     const response = await this.fileService.updateCollectionCost(
       id,
       data.collectionId,
@@ -143,13 +143,27 @@ export class ExcelController {
   @ApiCreatedResponse({
     description: '',
   })
-  @HttpCode(HttpStatus.GONE)
-  async updateModelCost(@Param('id') id: string, @Body() data) {
+  @HttpCode(HttpStatus.OK)
+  async updateModelCost(@Param('id') id: string, @Body() data: UpdateModelCostDto) {
     const response = await this.fileService.updateModelCost(
       id,
       data.modelId,
       data.cost,
     );
+
+    return response;
+  }
+
+  @Get('/model/:id/:modelId')
+  @ApiOperation({
+    summary: 'dfasdfadgafgasdfasdfasd',
+  })
+  @ApiCreatedResponse({
+    description: 'asdsfgasdfasdfasdf',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getModell(@Param('id') id: string, @Param('modelId') modelId: string) {
+    const response = await this.fileService.readProductsByModel(id, modelId);
 
     return response;
   }
