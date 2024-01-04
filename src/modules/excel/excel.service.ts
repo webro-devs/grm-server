@@ -215,7 +215,7 @@ export class ExcelService {
       const index = products.findIndex((item) => item.id === newItem.id);
       if (index !== -1) {
         products[index].isEdited = true;
-        products[index].priceMeter = newData.priceMeter;
+        products[index].priceMeter = newItem.priceMeter;
       } else {
         throw new BadRequestException('Product not found');
       }
