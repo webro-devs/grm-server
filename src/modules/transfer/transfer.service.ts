@@ -83,7 +83,6 @@ export class TransferService {
 
   async takeProduct(id: string, count: number) {
     const product = await this.productService.getById(id);
-    console.log(product);
 
     if (count > product.count) {
       throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);

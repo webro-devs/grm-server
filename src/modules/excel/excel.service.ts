@@ -86,7 +86,7 @@ export class ExcelService {
     for (const support of products) {
       if (support.model && support.collection) {
         let data = { ...support };
-        data.country = partiya.country;
+        data?.country ? data.country : (data.country = partiya.country);
         data.partiya = partiya.id;
         data.collection = await this.collectionService.findOrCreate(data.collection);
         data.model = await this.modelService.findOrCreate(data.collection['id'], data.model);
@@ -252,7 +252,7 @@ export class ExcelService {
         product.color = product?.color?.id || null;
         product.shape = product?.shape?.title || null;
         product.partiya = product?.partiya?.id || null;
-        product.country = country || 'пустой';
+        product.country ? product?.country : (product.country = country);
       }
       return products;
     } catch (error) {
