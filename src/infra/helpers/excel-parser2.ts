@@ -14,24 +14,22 @@ const excelDataParser = (products, rasxod) => {
     const collectionTitle = curr?.collection?.title || null;
     const modelTitle = curr?.model?.title || null;
 
-    console.log(curr);
-
     const collection = acc[collectionTitle] || {
       id: curr.collection.id,
       title: collectionTitle,
       kv: 0,
       rasxod: 0,
       summ: 0,
-      cost: curr.collectionPrice,
+      cost: curr.collectionPrice || 0,
       models: {},
     };
 
     const model = collection.models[modelTitle] || {
       id: curr.model.id,
       title: modelTitle,
-      costMeter: curr.displayPrice,
+      costMeter: curr.displayPrice || 0,
       kv: 0,
-      cost: curr.collectionPrice,
+      cost: curr.collectionPrice || 0,
       products: [],
     };
 
@@ -41,7 +39,7 @@ const excelDataParser = (products, rasxod) => {
     collection.models[modelTitle] = {
       ...model,
       kv: modelKv,
-      cost: rasxodNaKv + curr.collectionPrice,
+      cost: rasxodNaKv + curr.collectionPrice || 0,
       products: [...model.products, curr],
     };
 
@@ -50,8 +48,8 @@ const excelDataParser = (products, rasxod) => {
       [collectionTitle]: {
         ...collection,
         kv,
-        rasxod: rasxodNaKv * kv,
-        summ: curr.collectionPrice * kv,
+        rasxod: rasxodNaKv * kv || 0,
+        summ: curr.collectionPrice * kv || 0,
         models: {
           ...collection.models,
           [modelTitle]: collection.models[modelTitle],
