@@ -239,6 +239,10 @@ export class ExcelService {
           throw new BadRequestException('Product style must be exist!');
         }
 
+        if (product?.count < 1) {
+          throw new BadRequestException('Product count must be upper than 0!');
+        }
+
         delete product.id;
         delete product.displayPrice;
         product.filial = filialId;
