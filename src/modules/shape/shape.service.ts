@@ -70,7 +70,6 @@ export class ShapeService {
     if (!response) {
       console.log(title);
       const shape = await this.create({ title });
-      console.log('inside', shape);
 
       return shape.id;
     }
