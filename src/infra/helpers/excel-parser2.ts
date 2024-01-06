@@ -3,7 +3,7 @@ const excelDataParser = (products, rasxod) => {
 
   products = products.map((prod) => {
     const [width, height] = prod.size?.title?.match(/\d+\.*\d*/g) || [0, 0];
-    const kvInNumber = (width / 100) * (height / 100) * (prod?.count || 1);
+    const kvInNumber = (width / 100) * (height / 100) * (prod?.count || 0);
     fullKv += kvInNumber;
     return { ...prod, kvInNumber };
   });
