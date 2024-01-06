@@ -54,12 +54,15 @@ export class ExcelService {
 
   async addProductToPartiya(products: CreateProductExcelDto[], partiyaId: string) {
     const partiya = await this.partiyaService.getOne(partiyaId);
+    if (!partiya) {
+      throw new BadRequestException('Partiya not found!');
+    }
     products = products.map((e) => {
       if (!e.collection || !e.model) {
         let msg = e.collection ? 'Collection must be exist!' : 'Model must be exist!';
         throw new BadRequestException(msg);
       }
-      return { ...e, partiya: partiyaId, country: partiya.country };
+      return { ...e, partiya: partiya.id, country: partiya.country };
     });
 
     const data = await this.productExcelRepository

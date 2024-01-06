@@ -132,8 +132,8 @@ export class QrBaseService {
           data.country = await this.countryService.findOrCreate(data.country);
           data.model = await this.modelService.findOrCreate(data.collection['id'], data.model);
           data.shape = await this.shapeService.findOrCreate(data.shape);
-          data.size = await this.sizeService.findOrCreate(data.size);
-          data.style = await this.styleService.findOrCreate(data.style || 'classic');
+          data.size ? await this.sizeService.findOrCreate(data.size) : null;
+          data.style ? await this.styleService.findOrCreate(data.style) : null;
 
           await this.create(data);
         }
