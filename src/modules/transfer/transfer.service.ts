@@ -1,21 +1,7 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
-import {
-  DataSource,
-  EntityManager,
-  FindOptionsWhere,
-  Repository,
-} from 'typeorm';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { DataSource, EntityManager, FindOptionsWhere, Repository } from 'typeorm';
 import { CreateTransferDto, UpdateTransferDto } from './dto';
 
 import { Transfer } from './transfer.entity';
@@ -32,10 +18,7 @@ export class TransferService {
     private readonly userService: UserService,
     private readonly connection: DataSource,
   ) {}
-  async getAll(
-    options: IPaginationOptions,
-    where?: FindOptionsWhere<Transfer>,
-  ): Promise<Pagination<Transfer>> {
+  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Transfer>): Promise<Pagination<Transfer>> {
     return paginate<Transfer>(this.transferRepository, options, {
       relations: {
         from: true,
@@ -54,7 +37,7 @@ export class TransferService {
           from: true,
           to: true,
           transferer: true,
-          product: true,
+          product: { color: true, partiya: true, model: true },
         },
       })
       .catch(() => {
@@ -100,6 +83,8 @@ export class TransferService {
 
   async takeProduct(id: string, count: number) {
     const product = await this.productService.getById(id);
+    console.log(product);
+
     if (count > product.count) {
       throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
     }
@@ -114,12 +99,13 @@ export class TransferService {
   async checkTransfer(id: string, userId: string) {
     const transfer = await this.transferRepository.findOne({
       where: { id },
-      relations: { product: { color: true }, transferer: true, to: true },
+      relations: { product: { color: true, model: true, partiya: true }, transferer: true, to: true },
     });
+    console.log(transfer);
 
     const product = transfer.product;
     const newProduct: CreateProductDto = {
-      code: product.code,
+      code: product?.code || null,
       color: product.color.id,
       count: transfer.count,
       date: product.date,

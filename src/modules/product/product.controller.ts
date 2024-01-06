@@ -14,18 +14,9 @@ import {
   Put,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 
-import {
-  CreateProductDto,
-  UpdateInternetShopProductDto,
-  UpdateProductDto,
-} from './dto';
+import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from './dto';
 import { Product } from './product.entity';
 import { ProductService } from './product.service';
 import { ProductQueryDto } from '../../infra/shared/dto';
@@ -44,33 +35,22 @@ export class ProductController {
     description: 'The products were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getData(
-    @Query() query: ProductQueryDto,
-    @Route() route: string,
-    @Req() req,
-  ) {
-    return await this.productService.getAll(
-      { limit: query.limit, page: query.page, route },
-      req.where,
-    );
+  async getData(@Query() query: ProductQueryDto, @Route() route: string, @Req() req) {
+    return await this.productService.getAll({ limit: query.limit, page: query.page, route }, req.where);
   }
 
-  @Public()
-  @Get('/internet-shop')
-  @ApiOperation({ summary: 'Method: returns all internet shop products' })
+  @Get('/baza')
+  @ApiOperation({ summary: 'Method: returns all products' })
   @ApiOkResponse({
-    description: 'The internet shop products were returned successfully',
+    description: 'The products were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getDataFOrInternetShop(
-    @Route() route: string,
-    @Query() query: ProductQueryDto,
-    @Req() req,
-  ) {
-    return await this.productService.getAllInInternetShop(
-      { limit: query.limit, page: query.page, route },
-      { ...req.where, isInternetShop: true },
-    );
+  async getBaza(@Query() query: ProductQueryDto, @Route() route: string) {
+    return await this.productService.getBaza({
+      limit: query.limit,
+      page: query.page,
+      route,
+    });
   }
 
   @Get('/remaining-products')
@@ -120,13 +100,8 @@ export class ProductController {
     description: 'isInternetShop was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeInternetProductStatus(
-    @Body() { isInternetProduct, ids },
-  ): Promise<UpdateResult> {
-    return await this.productService.changeIsInternetShop(
-      ids,
-      isInternetProduct,
-    );
+  async changeInternetProductStatus(@Body() { isInternetProduct, ids }): Promise<UpdateResult> {
+    return await this.productService.changeIsInternetShop(ids, isInternetProduct);
   }
 
   @Patch('/:id')
@@ -135,10 +110,7 @@ export class ProductController {
     description: 'Product was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeData(
-    @Body() positionData: UpdateProductDto,
-    @Param('id') id: string,
-  ): Promise<UpdateResult> {
+  async changeData(@Body() positionData: UpdateProductDto, @Param('id') id: string): Promise<UpdateResult> {
     return await this.productService.change(positionData, id);
   }
 

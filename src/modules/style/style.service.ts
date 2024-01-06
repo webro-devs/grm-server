@@ -1,10 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 import { UpdateStyleDto, CreateStyleDto } from './dto';
 import { Style } from './style.entity';
@@ -72,7 +68,7 @@ export class StyleService {
     });
 
     if (!response) {
-      return (await this.create(title)).id;
+      return (await this.create({ title })).id;
     }
     return response.id;
   }

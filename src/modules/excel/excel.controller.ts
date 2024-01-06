@@ -1,19 +1,6 @@
-import {
-  Controller,
-  Post,
-  HttpCode,
-  UseInterceptors,
-  UploadedFile,
-  HttpStatus,
-  Param,
-} from '@nestjs/common';
+import { Controller, Post, HttpCode, UseInterceptors, UploadedFile, HttpStatus, Param } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import {
-  ApiCreatedResponse,
-  ApiTags,
-  ApiOperation,
-  ApiConsumes,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiTags, ApiOperation, ApiConsumes } from '@nestjs/swagger';
 import { ExcelService } from './excel.service';
 import { multerStorage } from '../../infra/helpers';
 import { Public } from '../auth/decorators/public.decorator';
@@ -45,10 +32,7 @@ export class ExcelController {
     }),
   )
   @HttpCode(HttpStatus.CREATED)
-  async createExcel(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() bodyData: ImportExcelDto,
-  ) {
+  async createExcel(@UploadedFile() file: Express.Multer.File, @Body() bodyData: ImportExcelDto) {
     const data = await this.fileService.readExcel(file.path);
     console.log(bodyData);
 
@@ -64,53 +48,8 @@ export class ExcelController {
     description: 'The data imported and saved to partiya successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async createProduct(
-    @Param('id') id: string,
-    @Body() data: CreateProductExcDto,
-  ) {
+  async createProduct(@Param('id') id: string, @Body() data: CreateProductExcDto) {
     const response = await this.fileService.addProductToPartiya([data], id);
-
-    return response;
-  }
-
-  @Public()
-  @Put('/single/:id')
-  @ApiOperation({
-    summary: 'Method: imports data and update products in the excel',
-  })
-  @ApiCreatedResponse({
-    description: 'The data imported and saved to partiya successfully',
-  })
-  @HttpCode(HttpStatus.CREATED)
-  async updateProduct(
-    @Param('id') id: string,
-    @Body() data: UpdateProductExcelDto,
-  ) {
-    const response = await this.fileService.updateCostProduct({
-      newData: data.products,
-      partiyaId: id,
-    });
-
-    return response;
-  }
-
-  @Public()
-  @Put('/productFull/:id')
-  @ApiOperation({
-    summary: 'Method: imports data and update products in the excel',
-  })
-  @ApiCreatedResponse({
-    description: 'The data imported and saved to partiya successfully',
-  })
-  @HttpCode(HttpStatus.CREATED)
-  async updateProductFull(
-    @Param('id') id: string,
-    @Body() data: UpdateProductExcelDto,
-  ) {
-    const response = await this.fileService.updateProductsPartiya({
-      newData: data.products,
-      partiyaId: id,
-    });
 
     return response;
   }
@@ -131,12 +70,27 @@ export class ExcelController {
   }
 
   @Public()
-  @Post('/product/:id')
+  @Put('/single/:id')
   @ApiOperation({
     summary: 'Method: imports data and update products in the excel',
   })
   @ApiCreatedResponse({
     description: 'The data imported and saved to partiya successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async updateProduct(@Param('id') id: string, @Body() data: UpdateProductExcelDto) {
+    const response = await this.fileService.updateProduct(data, id);
+
+    return response;
+  }
+
+  @Public()
+  @Post('/product/:id')
+  @ApiOperation({
+    summary: 'Method: imports data and update products in the baza',
+  })
+  @ApiCreatedResponse({
+    description: 'The data imported and saved to baza successfully',
   })
   @HttpCode(HttpStatus.CREATED)
   async CreateProducts(@Param('id') id: string) {
@@ -153,15 +107,11 @@ export class ExcelController {
     description: '',
   })
   @HttpCode(HttpStatus.OK)
-  async updateCollectionCost(
-    @Param('id') id: string,
-    @Body() data: UpdateCollectionCostDto,
-  ) {
-    const response = await this.fileService.updateCollectionCost(
-      id,
-      data.collectionId,
-      data.cost,
-    );
+  async updateCollectionCost(@Param('id') id: string, @Body() data: UpdateCollectionCostDto) {
+    const response = await this.fileService.updateCollectionCost({
+      id: data.collectionId,
+      cost: data.cost,
+    });
 
     return response;
   }
@@ -174,15 +124,11 @@ export class ExcelController {
     description: '',
   })
   @HttpCode(HttpStatus.OK)
-  async updateModelCost(
-    @Param('id') id: string,
-    @Body() data: UpdateModelCostDto,
-  ) {
-    const response = await this.fileService.updateModelCost(
-      id,
-      data.modelId,
-      data.cost,
-    );
+  async updateModelCost(@Param('id') id: string, @Body() data: UpdateModelCostDto) {
+    const response = await this.fileService.updateModelCost({
+      id: data.modelId,
+      cost: data.cost,
+    });
 
     return response;
   }

@@ -1,12 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { ActionDescEnum, ActionTypeEnum } from 'src/infra/shared/enum';
-import { FindOptionsWhere } from 'typeorm';
+import { FindOptionsWhere, InsertResult } from 'typeorm';
 
 import { Action } from './action.entity';
 import { ActionRepository } from './action.repository';
@@ -20,10 +16,10 @@ export class ActionService {
   ) {}
 
   async getAll(options: IPaginationOptions): Promise<Pagination<Action>> {
-    return paginate<Action>(this.actionRepository, options);
+    return paginate<Action>(this.actionRepository, options, { relations: { filial: true, user: true } });
   }
 
-  async create(data, user: string, filial, key: string) {
+  async create(data, user: string, filial, key: string): Promise<InsertResult> {
     const value = {
       user,
       filial,

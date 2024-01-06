@@ -1,10 +1,6 @@
 import { NotFoundException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { FindOptionsWhere, Repository } from 'typeorm';
 
 import { Model } from './model.entity';
@@ -17,10 +13,7 @@ export class ModelService {
     private readonly modelRepository: Repository<Model>,
   ) {}
 
-  async getAll(
-    options: IPaginationOptions,
-    where?: FindOptionsWhere<Model>,
-  ): Promise<Pagination<Model>> {
+  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Model>): Promise<Pagination<Model>> {
     return paginate<Model>(this.modelRepository, options, {
       order: {
         title: 'ASC',
@@ -46,6 +39,27 @@ export class ModelService {
     const data = await this.modelRepository.findOne({
       where: { id },
       relations: { collection: true },
+    });
+
+    return data;
+  }
+
+  async getOneExcel(id: string) {
+    const data = await this.modelRepository.findOne({
+      where: { id },
+      relations: { productsExcel: true },
+    });
+
+    return data;
+  }
+
+  async productByExcel(id: string) {
+    const data = await this.modelRepository.findOne({
+      where: { id },
+      relations: {
+        productsExcel: { color: true, style: true, size: true, shape: true },
+        collection: true,
+      },
     });
 
     return data;

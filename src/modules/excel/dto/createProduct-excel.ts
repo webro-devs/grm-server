@@ -49,7 +49,7 @@ class CreateProductExcDto {
     description: `Carpet shape`,
     example: 'UUID',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   shape: string;
 
@@ -57,7 +57,7 @@ class CreateProductExcDto {
     description: `Carpet size`,
     example: 'UUID',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   size: string;
 
@@ -65,7 +65,7 @@ class CreateProductExcDto {
     description: `Carpet style`,
     example: 'UUID',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   style: string;
 
@@ -73,15 +73,10 @@ class CreateProductExcDto {
     description: `Carpet color`,
     example: 'yellow',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   color: string;
 
-  @ApiProperty({
-    description: `Carpet Country`,
-    example: 'USA',
-    required: false,
-  })
   @IsOptional()
   @IsString()
   country: string;
@@ -101,18 +96,6 @@ class CreateProductExcDto {
   @IsNotEmpty()
   @IsString()
   collection: string;
-
-  @ApiProperty({
-    description: `Carpet partiya id`,
-    example: 'UUID',
-  })
-  @IsOptional()
-  @IsString()
-  partiya: string;
-
-  @IsOptional()
-  @IsNumber()
-  secondPrice: number;
 
   @IsOptional()
   @IsNumber()
@@ -135,11 +118,6 @@ class CreateProductExcDto {
   @IsNumber()
   priceMeter: number;
 
-  @ApiProperty({
-    description: `Is meteric`,
-    example: false,
-    required: false,
-  })
   @IsOptional()
   @IsBoolean()
   isMetric: boolean;

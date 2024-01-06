@@ -1,5 +1,6 @@
 {
   "singleQuote": true,
   "trailingComma": "all",
-  "format": "prettier --write ."
+  "format": "prettier --write .",
+  "printWidth": 125
 }

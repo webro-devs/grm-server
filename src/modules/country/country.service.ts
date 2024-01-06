@@ -1,10 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 import { UpdateCountryDto, CreateCountryDto } from './dto';
 import { Country } from './country.entity';
@@ -41,10 +37,7 @@ export class CountryService {
     return { countries, styles, colors, shapes, models, collections, sizes };
   }
 
-  async getAll(
-    options: IPaginationOptions,
-    where?: FindOptionsWhere<Country>,
-  ): Promise<Pagination<Country>> {
+  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Country>): Promise<Pagination<Country>> {
     return paginate<Country>(this.countryRepository, options, {
       order: {
         title: 'ASC',
@@ -87,7 +80,7 @@ export class CountryService {
     });
 
     if (!response) {
-      return (await this.create(title)).id;
+      return (await this.create({ title })).id;
     }
     return response.id;
   }

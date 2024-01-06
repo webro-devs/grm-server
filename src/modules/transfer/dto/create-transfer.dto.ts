@@ -48,14 +48,6 @@ class CreateTransferDto {
   @IsNotEmpty()
   @IsString()
   readonly product: string;
-
-  @ApiProperty({
-    description: `transferer`,
-    example: 'uuid',
-  })
-  @IsOptional()
-  @IsString()
-  readonly transferer: string;
 }
 
 export default CreateTransferDto;

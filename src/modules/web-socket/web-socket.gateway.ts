@@ -12,6 +12,7 @@ import { TransferService } from '../transfer/transfer.service';
 import { CashflowService } from '../cashflow/cashflow.service';
 import { ProductService } from '../product/product.service';
 import { KassaService } from '../kassa/kassa.service';
+import { ActionService } from '../action/action.service';
 
 @WebSocketGateway()
 export class GRMGateway implements OnGatewayInit {
@@ -21,6 +22,7 @@ export class GRMGateway implements OnGatewayInit {
     private readonly transferService: TransferService,
     private readonly orderService: OrderService,
     private readonly kassaService: KassaService,
+    private readonly actionService: ActionService,
   ) {}
   @WebSocketServer()
   server: Server;
@@ -40,18 +42,14 @@ export class GRMGateway implements OnGatewayInit {
   }
 
   @SubscribeMessage('ordered-product')
-  async orderProduct(
-    @MessageBody() body: { orderId: string; filialId: string },
-  ) {
+  async orderProduct(@MessageBody() body: { orderId: string; filialId: string }) {
     const order = await this.orderService.getById(body.orderId);
     const kassa = await this.kassaService.GetOpenKassa(body.filialId);
     kassa?.['id'] ? this.server.to(kassa['id']).emit('get-order', order) : null;
   }
 
   @SubscribeMessage('check-order')
-  async sendKassaSum(
-    @MessageBody() body: { kassaId: string; orderId: string },
-  ) {
+  async sendKassaSum(@MessageBody() body: { kassaId: string; orderId: string }) {
     const kassaSum = await this.kassaService.getKassaSum(body.kassaId);
     const order = await this.orderService.getById(body.orderId);
     this.server.to(body.kassaId).emit('kassaSum', kassaSum);
@@ -64,8 +62,16 @@ export class GRMGateway implements OnGatewayInit {
     this.server.emit('bossCashFlow', cashflow);
   }
 
+  @SubscribeMessage('action')
+  async Action() {
+    const action = await this.actionService.getAll({ limit: 20, page: 1 });
+    this.server.emit('userActions', action);
+  }
+
   @SubscribeMessage('transfer')
   async transfer(@MessageBody() id: string) {
+    console.log(id);
+
     const transfer = await this.transferService.getById(id);
     this.server.emit('transfer', transfer);
   }

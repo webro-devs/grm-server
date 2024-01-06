@@ -1,10 +1,6 @@
 import { NotFoundException, Injectable } from '@nestjs/common';
 import { FindOptionsWhere, Repository, ILike } from 'typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as XLSX from 'xlsx';
 
@@ -122,45 +118,22 @@ export class QrBaseService {
   }
 
   async findOrCreate(codes: CreateQrBaseDto[]) {
-    for (const {
-      code,
-      collection,
-      color,
-      country,
-      model,
-      shape,
-      size,
-      style,
-    } of codes) {
-      if (code) {
+    for (const support of codes) {
+      if (support.code) {
         const response = await this.qrBaseRepository.findOne({
-          where: { code },
+          where: { code: support.code },
         });
 
         if (!response) {
-          const data: CreateQrBaseDto = {
-            code,
-            collection,
-            color,
-            country,
-            model,
-            shape,
-            size,
-            style,
-          };
+          let data = { ...support };
 
-          data.collection = await this.collectionService.findOrCreate(
-            collection,
-          );
-          data.color = await this.colorService.findOrCreate(color);
-          data.country = await this.countryService.findOrCreate(country);
-          data.model = await this.modelService.findOrCreate(
-            data.collection,
-            model,
-          );
-          data.shape = await this.shapeService.findOrCreate(shape);
-          data.size = await this.sizeService.findOrCreate(size);
-          data.style = await this.styleService.findOrCreate(style || 'classic');
+          data.collection = await this.collectionService.findOrCreate(data.collection);
+          data.color = await this.colorService.findOrCreate(data.color);
+          data.country = await this.countryService.findOrCreate(data.country);
+          data.model = await this.modelService.findOrCreate(data.collection['id'], data.model);
+          data.shape = await this.shapeService.findOrCreate(data.shape);
+          data.size = await this.sizeService.findOrCreate(data.size);
+          data.style = await this.styleService.findOrCreate(data.style || 'classic');
 
           await this.create(data);
         }

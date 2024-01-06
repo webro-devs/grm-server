@@ -12,12 +12,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 
 import { CreateColorDto, UpdateColorDto } from './dto';
 import { Color } from './color.entity';
@@ -59,10 +54,7 @@ export class ColorController {
     description: 'Color was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeData(
-    @Body() CollectionData: UpdateColorDto,
-    @Param('id') id: string,
-  ): Promise<UpdateResult> {
+  async changeData(@Body() CollectionData: UpdateColorDto, @Param('id') id: string): Promise<UpdateResult> {
     return await this.colorService.change(CollectionData, id);
   }
 

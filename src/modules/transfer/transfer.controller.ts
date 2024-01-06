@@ -1,23 +1,6 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  HttpStatus,
-  Delete,
-  Patch,
-  Param,
-  Get,
-  Query,
-  Req,
-} from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, Delete, Patch, Param, Get, Query, Req } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { TransferService } from './transfer.service';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { PaginationDto } from '../../infra/shared/dto';
@@ -67,14 +50,11 @@ export class TransferController {
     description: 'Transfer was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeData(
-    @Body() data: UpdateTransferDto,
-    @Param('id') id: string,
-  ): Promise<UpdateResult> {
+  async changeData(@Body() data: UpdateTransferDto, @Param('id') id: string): Promise<UpdateResult> {
     return await this.transferService.change(data, id);
   }
 
-  @Roles(UserRoleEnum.CASHIER, UserRoleEnum.MANAGER)
+  @Roles(UserRoleEnum.CASHIER, UserRoleEnum.MANAGER, UserRoleEnum.BOSS)
   @Patch('/accept/:id')
   @ApiOperation({ summary: 'Method: checking transfer' })
   @ApiOkResponse({

@@ -1,23 +1,6 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
 import { InsertResult, UpdateResult } from 'typeorm';
-import {
-  ApiConsumes,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { CreateQrBaseDto, UpdateQrBaseDto, ImportQrBaseDto } from './dto';
 import { QrBase } from './qr-base.entity';
@@ -80,10 +63,7 @@ export class QrBaseController {
     description: 'Qr-Base was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeData(
-    @Body() data: UpdateQrBaseDto,
-    @Param('id') id: string,
-  ): Promise<UpdateResult> {
+  async changeData(@Body() data: UpdateQrBaseDto, @Param('id') id: string): Promise<UpdateResult> {
     return await this.qrBaseService.change(data, id);
   }
 
@@ -111,12 +91,8 @@ export class QrBaseController {
     }),
   )
   @HttpCode(HttpStatus.CREATED)
-  async createExcel(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() bodyData: ImportQrBaseDto,
-  ) {
+  async createExcel(@UploadedFile() file: Express.Multer.File, @Body() bodyData: ImportQrBaseDto) {
     const data: CreateQrBaseDto[] = this.qrBaseService.readExcel(file.path);
-    console.table(data);
 
     return await this.qrBaseService.findOrCreate(data);
   }

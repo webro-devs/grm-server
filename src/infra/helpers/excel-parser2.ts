@@ -2,7 +2,7 @@ const excelDataParser = (products, rasxod) => {
   let fullKv = 0;
 
   products = products.map((prod) => {
-    const [width, height] = prod.size.title.match(/\d+\.*\d*/g);
+    const [width, height] = prod.size?.title?.match(/\d+\.*\d*/g) || [0, 0];
     const kvInNumber = (width / 100) * (height / 100) * (prod?.count || 1);
     fullKv += kvInNumber;
     return { ...prod, kvInNumber };
@@ -11,8 +11,10 @@ const excelDataParser = (products, rasxod) => {
   const rasxodNaKv = rasxod / fullKv;
 
   const res = products.reduce((acc, curr) => {
-    const collectionTitle = curr?.collection.title;
-    const modelTitle = curr?.model.title;
+    const collectionTitle = curr?.collection?.title || null;
+    const modelTitle = curr?.model?.title || null;
+
+    console.log(curr);
 
     const collection = acc[collectionTitle] || {
       id: curr.collection.id,

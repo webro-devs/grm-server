@@ -5,32 +5,10 @@ import {
   IsArray,
   IsBoolean,
   IsNotEmpty,
-  ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-export default class UpdateProductsArrayDto {
-  @ApiProperty({
-    description: `products`,
-    example: { products: [] },
-  })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => UpdateProductExcelDto)
-  @IsOptional() // Make the entire array optional
-  products?: UpdateProductExcelDto[];
-}
-
 class UpdateProductExcelDto {
-  @ApiProperty({
-    description: `Carpet id`,
-    example: 1,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  id: number;
-
   @IsOptional()
   @IsString()
   code: string;
@@ -108,4 +86,10 @@ class UpdateProductExcelDto {
   @IsOptional()
   @IsBoolean()
   displayPrice: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  cost: boolean;
 }
+
+export default UpdateProductExcelDto;

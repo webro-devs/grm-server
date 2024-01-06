@@ -12,12 +12,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 
 import { CreateCollectionDto, UpdateCollectionDto } from './dto';
 import { Collection } from './collection.entity';
@@ -38,6 +33,16 @@ export class CollectionController {
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
     return await this.collectionService.getAll({ ...query, route });
+  }
+
+  @Get('/internet-shop')
+  @ApiOperation({ summary: 'Method: returns all Collections' })
+  @ApiOkResponse({
+    description: 'The collections were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getDataInternetShop(@Route() route: string, @Query() query: PaginationDto) {
+    return await this.collectionService.getAllInternetShop({ ...query, route });
   }
 
   @Get('/remaining-products')
@@ -76,10 +81,7 @@ export class CollectionController {
     description: 'Collection was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeData(
-    @Body() CollectionData: UpdateCollectionDto,
-    @Param('id') id: string,
-  ): Promise<UpdateResult> {
+  async changeData(@Body() CollectionData: UpdateCollectionDto, @Param('id') id: string): Promise<UpdateResult> {
     return await this.collectionService.change(CollectionData, id);
   }
 

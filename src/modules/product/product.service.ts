@@ -1,17 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { Product } from './product.entity';
-import {
-  CreateProductDto,
-  UpdateInternetShopProductDto,
-  UpdateProductDto,
-} from './dto';
+import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from './dto';
 import { sizeParser } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 import { ModelService } from '../model/model.service';
@@ -26,26 +18,7 @@ export class ProductService {
     private readonly modelService: ModelService,
   ) {}
 
-  async getAll(
-    options: IPaginationOptions,
-    where?: FindOptionsWhere<Product>,
-  ): Promise<Pagination<Product>> {
-    return paginate<Product>(this.productRepository, options, {
-      relations: {
-        model: {
-          collection: true,
-        },
-        filial: true,
-        color: true,
-      },
-      where,
-    });
-  }
-
-  async getAllInInternetShop(
-    options: IPaginationOptions,
-    where?: FindOptionsWhere<Product>,
-  ): Promise<Pagination<Product>> {
+  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Product>): Promise<Pagination<Product>> {
     return paginate<Product>(this.productRepository, options, {
       relations: {
         model: {
@@ -76,6 +49,27 @@ export class ProductService {
 
     return data;
   }
+
+  async getBaza({ limit, page, route }) {
+    const [products, totalCount] = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.model', 'model')
+      .leftJoinAndSelect('product.filial', 'filial')
+      .leftJoinAndSelect('product.color', 'color')
+      .where('filial.title = :title', { title: 'baza' })
+      .take(limit)
+      .skip((page - 1) * limit)
+      .getManyAndCount();
+
+    return {
+      data: products,
+      totalCount,
+      route,
+      currentPage: page,
+      totalPages: Math.ceil(totalCount / limit),
+    };
+  }
+
   async getOneForExcel(id: string) {
     const data: any = await this.productRepository
       .findOne({
@@ -110,10 +104,7 @@ export class ProductService {
   }
 
   async getMoreByIds(ids: string[]) {
-    const data = await this.productRepository
-      .createQueryBuilder()
-      .where('id IN(:...ids)', { ids })
-      .getMany();
+    const data = await this.productRepository.createQueryBuilder().where('id IN(:...ids)', { ids }).getMany();
     return data;
   }
 
@@ -145,10 +136,7 @@ export class ProductService {
     return response;
   }
 
-  async changeInternetShopProduct(
-    value: UpdateInternetShopProductDto,
-    id: string,
-  ) {
+  async changeInternetShopProduct(value: UpdateInternetShopProductDto, id: string) {
     const response = await this.productRepository
       .createQueryBuilder()
       .update()
@@ -178,11 +166,8 @@ export class ProductService {
       const xy = sizeParser(value[i].size);
       value[i].x = xy[0] / 100;
       value[i].y = xy[1] / 100;
-      value[i].totalSize =
-        (eval(value[i].size.match(/\d+\.*\d*/g).join('*')) / 10000) *
-        value[i].count;
-      value[i].price =
-        value[i].x * value[i].y * (value[i].priceMeter + value[i].secondPrice);
+      value[i].totalSize = (eval(value[i].size.match(/\d+\.*\d*/g).join('*')) / 10000) * value[i].count;
+      value[i].price = value[i].x * value[i].y * (value[i].priceMeter + value[i].secondPrice);
     }
     return value;
   }
@@ -190,15 +175,9 @@ export class ProductService {
     const data = await this.productRepository.find({
       where,
     });
-    const remainingSum = data.length
-      ? data.map((p) => p.price * p.count).reduce((a, b) => a + b)
-      : 0;
-    const remainingSize = data.length
-      ? data.map((p) => p.totalSize).reduce((a, b) => a + b)
-      : 0;
-    const count = data.length
-      ? data.map((p) => p.count).reduce((a, b) => a + b)
-      : 0;
+    const remainingSum = data.length ? data.map((p) => p.price * p.count).reduce((a, b) => a + b) : 0;
+    const remainingSize = data.length ? data.map((p) => p.totalSize).reduce((a, b) => a + b) : 0;
+    const count = data.length ? data.map((p) => p.count).reduce((a, b) => a + b) : 0;
     return { remainingSize, remainingSum, count };
   }
 

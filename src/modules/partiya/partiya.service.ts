@@ -1,10 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 import { Partiya } from './partiya.entity';
 import { CreatePartiyaDto, UpdatePartiyaDto } from './dto';
@@ -54,6 +50,28 @@ export class PartiyaService {
     return data;
   }
 
+  async getOneProds(id: string) {
+    const data = await this.partiyaRepository
+      .findOne({
+        where: { id },
+        relations: {
+          productsExcel: {
+            collection: true,
+            model: true,
+            color: true,
+            size: true,
+            shape: true,
+            style: true,
+          },
+        },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
+
+    return data;
+  }
+
   async deleteOne(id: string) {
     const data = await this.partiyaRepository
       .findOne({
@@ -82,11 +100,6 @@ export class PartiyaService {
 
   async createPartiyaWithExcel(value: CreatePartiyaDto) {
     const data = await this.create(value);
-    const filename = `uploads/excel/excel_${Date.now()}.xlsx`;
-
-    await this.excelService.createExcelFile([], filename);
-
-    await this.excelService.create(`${filename}`, data.id);
 
     return data;
   }
@@ -95,14 +108,12 @@ export class PartiyaService {
   async processInputData(input) {
     input.items.forEach(async (item, index) => {
       try {
-        const processedItem = this.processItem(item);
-        const calc = this.calculateTotals(processedItem.excel);
+        const processedItem = await this.processItem(item.id);
+        const calc = this.allcalculateTotals(processedItem.excel);
         delete processedItem.excel;
-        processedItem['price'] =
-          calc.totalM2 * calc.collectionPrice || 0;
+        processedItem['price'] = calc.totalM2 * calc.collectionPrice || 0;
         processedItem['m2'] = calc.totalM2 || 0;
-        processedItem['commingPrice'] =
-          processedItem['price'] / calc.totalM2 || 0;
+        processedItem['commingPrice'] = processedItem['price'] / calc.totalM2 || 0;
 
         input.items[index] = processedItem;
       } catch (error) {
@@ -113,12 +124,10 @@ export class PartiyaService {
     return input;
   }
 
-  calculateTotals(data) {
+  allcalculateTotals(data) {
     return data.reduce(
       (totals, currentItem) => {
-        totals.totalM2 +=
-          (eval(currentItem.size.title.match(/\d+\.*\d*/g).join('*')) / 10000) *
-          currentItem.count;
+        totals.totalM2 += (eval(currentItem.size.title.match(/\d+\.*\d*/g).join('*')) / 10000) * currentItem.count;
         totals.collectionPrice = currentItem.collectionPrice;
         return totals;
       },
@@ -126,12 +135,12 @@ export class PartiyaService {
     );
   }
 
-  processItem(item) {
+  async processItem(item) {
     try {
-      const excelData = this.excelService.readExcel(item.excel.path);
+      const excelData = await this.excelService.readExcel(item);
       return {
         ...item,
-        excel: this.excelService.setJson(excelData),
+        excel: excelData.productsExcel,
       };
     } catch (error) {
       console.error(`Error processing ${item.excel}: ${error.message}`);

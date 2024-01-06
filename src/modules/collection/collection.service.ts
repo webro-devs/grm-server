@@ -1,15 +1,6 @@
-import {
-  NotFoundException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { NotFoundException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { FindOptionsWhere, Repository } from 'typeorm';
 
 import { Collection } from './collection.entity';
@@ -22,16 +13,31 @@ export class CollectionService {
     private readonly collectionRepository: Repository<Collection>,
   ) {}
 
-  async getAll(
-    options: IPaginationOptions,
-    where?: FindOptionsWhere<Collection>,
-  ): Promise<Pagination<Collection>> {
+  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Collection>): Promise<Pagination<Collection>> {
     return paginate<Collection>(this.collectionRepository, options, {
       order: {
         title: 'ASC',
       },
       relations: {
         model: true,
+      },
+    });
+  }
+
+  async getAllInternetShop(
+    options: IPaginationOptions,
+    where?: FindOptionsWhere<Collection>,
+  ): Promise<Pagination<Collection>> {
+    return await paginate<Collection>(this.collectionRepository, options, {
+      order: {
+        title: 'ASC',
+      },
+      relations: {
+        model: { products: { color: true } },
+      },
+      where: {
+        ...(where && where),
+        model: { products: { isInternetShop: true } },
       },
     });
   }
@@ -50,6 +56,21 @@ export class CollectionService {
         where: { id },
         relations: {
           model: true,
+        },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
+
+    return data;
+  }
+
+  async getOneExcel(id: string) {
+    const data = await this.collectionRepository
+      .findOne({
+        where: { id },
+        relations: {
+          productsExcel: true,
         },
       })
       .catch(() => {
@@ -99,15 +120,9 @@ export class CollectionService {
         remainingCount = 0;
       for (let j = 0; j < data[i].model.length; j++) {
         const products = data[i].model[j].products;
-        remainingSum += products.length
-          ? products.map((p) => +p.price * p.count).reduce((a, b) => a + b)
-          : 0;
-        remainingSize += products.length
-          ? products.map((p) => +p.totalSize).reduce((a, b) => a + b)
-          : 0;
-        remainingCount += products.length
-          ? products.map((p) => p.count).reduce((a, b) => a + b)
-          : 0;
+        remainingSum += products.length ? products.map((p) => +p.price * p.count).reduce((a, b) => a + b) : 0;
+        remainingSize += products.length ? products.map((p) => +p.totalSize).reduce((a, b) => a + b) : 0;
+        remainingCount += products.length ? products.map((p) => p.count).reduce((a, b) => a + b) : 0;
       }
       result.push({
         remainingCount,
@@ -125,7 +140,8 @@ export class CollectionService {
     });
 
     if (!response) {
-      return (await this.create(title)).id;
+      const res = await this.create({ title });
+      return res.id;
     }
     return response.id;
   }

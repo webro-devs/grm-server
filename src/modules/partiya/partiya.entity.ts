@@ -1,13 +1,8 @@
-import {
-  Column,
-  Entity,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Excel } from '../excel/excel.entity';
 import { Product } from '../product/product.entity';
 import { ColumnNumericTransformer } from '../../infra/helpers';
+import { ProductExcel } from '../excel/excel-product.entity';
 
 @Entity('partiya')
 export class Partiya {
@@ -38,4 +33,7 @@ export class Partiya {
     onDelete: 'SET NULL',
   })
   excel: Excel;
+
+  @OneToMany(() => ProductExcel, (product) => product.partiya)
+  productsExcel: ProductExcel[];
 }

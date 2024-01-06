@@ -2,6 +2,7 @@ import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Excel } from './excel.entity';
+import { ProductExcel } from './excel-product.entity';
 import { ExcelService } from './excel.service';
 import { ExcelController } from './excel.controller';
 import { FileModule } from '../file/file.module';
@@ -17,7 +18,7 @@ import { FilialModule } from '../filial/filial.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Excel]),
+    TypeOrmModule.forFeature([Excel, ProductExcel]),
     FileModule,
     forwardRef(() => PartiyaModule),
     ProductModule,

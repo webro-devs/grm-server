@@ -1,10 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { Filial } from './filial.entity';
 import { CreateFilialDto, UpdateFilialDto } from './dto';
@@ -16,10 +12,7 @@ export class FilialService {
     private readonly filialRepository: Repository<Filial>,
   ) {}
 
-  async getAll(
-    options: IPaginationOptions,
-    where?: FindOptionsWhere<Filial>,
-  ): Promise<Pagination<Filial>> {
+  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Filial>): Promise<Pagination<Filial>> {
     return paginate<Filial>(this.filialRepository, options, {
       order: {
         title: 'ASC',
@@ -39,6 +32,19 @@ export class FilialService {
       })
       .catch(() => {
         throw new NotFoundException('data not found');
+      });
+
+    return data;
+  }
+
+  async getBaza() {
+    const data = await this.filialRepository
+      .findOne({
+        where: { title: 'baza' },
+        relations: { products: { model: true, color: true } },
+      })
+      .catch(() => {
+        throw new NotFoundException('Baza not found');
       });
 
     return data;

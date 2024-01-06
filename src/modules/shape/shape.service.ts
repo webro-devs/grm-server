@@ -1,10 +1,6 @@
 import { NotFoundException, Injectable } from '@nestjs/common';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 import { UpdateShapeDto, CreateShapeDto } from './dto';
 import { Shape } from './shape.entity';
@@ -72,7 +68,7 @@ export class ShapeService {
     });
 
     if (!response) {
-      return (await this.create(title)).id;
+      return (await this.create({ title })).id;
     }
     return response.id;
   }

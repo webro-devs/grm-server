@@ -1,13 +1,8 @@
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Collection } from '../collection/collection.entity';
 import { Product } from '../product/product.entity';
 import { QrBase } from '../qr-base/qr-base.entity';
+import { ProductExcel } from '../excel/excel-product.entity';
 
 @Entity('model')
 export class Model {
@@ -25,4 +20,7 @@ export class Model {
 
   @OneToMany(() => QrBase, (qrBase) => qrBase.model)
   qrBase: QrBase[];
+
+  @OneToMany(() => ProductExcel, (product) => product.model)
+  productsExcel: ProductExcel[];
 }

@@ -1,10 +1,6 @@
 import { NotFoundException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { FindOptionsWhere, Repository } from 'typeorm';
 
 import { Size } from './size.entity';
@@ -72,7 +68,7 @@ export class SizeService {
     });
 
     if (!response) {
-      return (await this.create(title)).id;
+      return (await this.create({ title })).id;
     }
     return response.id;
   }

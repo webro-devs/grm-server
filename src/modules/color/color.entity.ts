@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Product } from '../product/product.entity';
 import { QrBase } from '../qr-base/qr-base.entity';
+import { ProductExcel } from '../excel/excel-product.entity';
 
 @Entity('color')
 export class Color {
@@ -18,4 +19,7 @@ export class Color {
 
   @OneToMany(() => QrBase, (qrBase) => qrBase.color)
   qrBase: QrBase[];
+
+  @OneToMany(() => ProductExcel, (product) => product.color)
+  productsExcel: ProductExcel[];
 }
