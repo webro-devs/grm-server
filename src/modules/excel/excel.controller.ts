@@ -29,7 +29,7 @@ export class ExcelController {
   async createExcel(@UploadedFile() file: Express.Multer.File, @Body() bodyData: ImportExcelDto) {
     const data = this.fileService.readExcelFile(file.path);
 
-    return await this.fileService.addProductToPartiya(data, bodyData.partiyaId);
+    return await this.fileService.addProductToPartiyaWithExcel(data, bodyData.partiyaId);
   }
 
   @Public()

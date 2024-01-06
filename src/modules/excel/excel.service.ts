@@ -76,6 +76,42 @@ export class ExcelService {
     return data;
   }
 
+  async addProductToPartiyaWithExcel(products: CreateProductExcelDto[], partiyaId: string) {
+    const partiya = await this.partiyaService.getOne(partiyaId);
+    if (!partiya) {
+      throw new BadRequestException('Partiya not found!');
+    }
+    const prod = [];
+
+    for (const support of products) {
+      if (support.model && support.collection) {
+        let data = { ...support };
+        data.country = partiya.country;
+        data.collection = await this.collectionService.findOrCreate(data.collection);
+        data.model = await this.modelService.findOrCreate(data.collection['id'], data.model);
+        data.color ? await this.colorService.findOrCreate(data.color) : null;
+        data.shape ? await this.shapeService.findOrCreate(data.shape) : null;
+        data.size ? await this.sizeService.findOrCreate(data.size) : null;
+        data.style ? await this.styleService.findOrCreate(data.style) : null;
+        
+        prod.push(data);
+      } else {
+        let msg = support.collection ? 'Collection must be exist!' : 'Model must be exist!';
+        throw new BadRequestException(msg);
+      }
+    }
+
+    const data = await this.productExcelRepository
+      .createQueryBuilder()
+      .insert()
+      .into(ProductExcel)
+      .values(products as unknown as ProductExcel)
+      .returning('id')
+      .execute();
+
+    return data;
+  }
+
   async readProducts(partiyaId: string) {
     const partiya = await this.partiyaService.getOne(partiyaId);
     if (partiya) {
