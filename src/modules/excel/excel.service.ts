@@ -1,9 +1,10 @@
 import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as XLSX from 'xlsx';
 
 import { Excel } from './excel.entity';
 import { ProductExcel } from './excel-product.entity';
-import { excelDataParser } from 'src/infra/helpers';
+import { deleteFile, excelDataParser } from 'src/infra/helpers';
 import { FileService } from '../file/file.service';
 import { Repository } from 'typeorm';
 import { PartiyaService } from '../partiya/partiya.service';
@@ -42,9 +43,22 @@ export class ExcelService {
     return data;
   }
 
+  readExcelFile(path: string) {
+    const workbook = XLSX.readFile(path);
+    const worksheet = workbook.Sheets['Sheet'];
+    const data: any[] = XLSX.utils.sheet_to_json(worksheet);
+    deleteFile(path);
+
+    return data;
+  }
+
   async addProductToPartiya(products: CreateProductExcelDto[], partiyaId: string) {
     const partiya = await this.partiyaService.getOne(partiyaId);
     products = products.map((e) => {
+      if (!e.collection || !e.model) {
+        let msg = e.collection ? 'Collection must be exist!' : 'Model must be exist!';
+        throw new BadRequestException(msg);
+      }
       return { ...e, partiya: partiyaId, country: partiya.country };
     });
 

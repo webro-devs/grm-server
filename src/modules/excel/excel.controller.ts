@@ -2,16 +2,10 @@ import { Controller, Post, HttpCode, UseInterceptors, UploadedFile, HttpStatus, 
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiCreatedResponse, ApiTags, ApiOperation, ApiConsumes } from '@nestjs/swagger';
 import { ExcelService } from './excel.service';
-import { multerStorage } from '../../infra/helpers';
+import { deleteFile, multerStorage } from '../../infra/helpers';
 import { Public } from '../auth/decorators/public.decorator';
 import { Body, Get, Put } from '@nestjs/common/decorators';
-import {
-  ImportExcelDto,
-  UpdateCollectionCostDto,
-  UpdateExcelDto,
-  UpdateModelCostDto,
-  UpdateProductExcelDto,
-} from './dto';
+import { ImportExcelDto, UpdateCollectionCostDto, UpdateExcelDto, UpdateModelCostDto, UpdateProductExcelDto } from './dto';
 import CreateProductExcDto from './dto/createProduct-excel';
 
 @ApiTags('Excel')
@@ -33,10 +27,9 @@ export class ExcelController {
   )
   @HttpCode(HttpStatus.CREATED)
   async createExcel(@UploadedFile() file: Express.Multer.File, @Body() bodyData: ImportExcelDto) {
-    const data = await this.fileService.readExcel(file.path);
-    console.log(bodyData);
+    const data = this.fileService.readExcelFile(file.path);
 
-    return data;
+    return await this.fileService.addProductToPartiya(data, bodyData.partiyaId);
   }
 
   @Public()
