@@ -66,7 +66,6 @@ export class ShapeService {
     const response = await this.shapeRepository.findOne({
       where: { title },
     });
-    console.log('outside', response.id);
 
     if (!response) {
       console.log(title);
