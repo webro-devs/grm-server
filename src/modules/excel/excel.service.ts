@@ -62,7 +62,8 @@ export class ExcelService {
         let msg = e.collection ? 'Collection must be exist!' : 'Model must be exist!';
         throw new BadRequestException(msg);
       }
-      return { ...e, partiya: partiya.id, country: partiya.country };
+      const count = e.count < 1 ? 1 : e.count;
+      return { ...e, partiya: partiya.id, country: partiya.country, count };
     });
 
     const data = await this.productExcelRepository
@@ -86,14 +87,22 @@ export class ExcelService {
     for (const support of products) {
       if (support.model && support.collection) {
         let data = { ...support };
+
+        const collection = await this.collectionService.getOneByName(data.collection);
+        const model = await this.modelService.getOneByName(data.model);
+        if (!collection) {
+          throw new BadRequestException('collection not found!');
+        }
+        if (!model) {
+          throw new BadRequestException('model not found!');
+        }
         data?.country ? data.country : (data.country = partiya.country);
         data.partiya = partiya.id;
-        data.collection = await this.collectionService.findOrCreate(data.collection);
-        data.model = await this.modelService.findOrCreate(data.collection['id'], data.model);
-        data.color ? (data.color = await this.colorService.findOrCreate(data.color)) : (data.color = null);
-        data.shape ? (data.shape = await this.shapeService.findOrCreate(data.shape)) : (data.shape = null);
-        data.size ? (data.size = await this.sizeService.findOrCreate(data.size)) : (data.size = null);
-        data.style ? (data.style = await this.styleService.findOrCreate(data.style)) : (data.style = null);
+        data.color = (await this.colorService.getOneByName(data.color))?.id || null;
+        data.shape = (await this.shapeService.getOneByName(data.shape))?.id || null;
+        data.size = (await this.sizeService.getOneByName(data.size))?.id || null;
+        data.style = (await this.styleService.getOneByName(data.style))?.id || null;
+        data.count = data.count < 1 ? 1 : data.count;
 
         prod.push(data);
       } else {
