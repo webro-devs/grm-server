@@ -89,11 +89,11 @@ export class ExcelService {
         data.country = partiya.country;
         data.collection = await this.collectionService.findOrCreate(data.collection);
         data.model = await this.modelService.findOrCreate(data.collection['id'], data.model);
-        data.color ? await this.colorService.findOrCreate(data.color) : null;
-        data.shape ? await this.shapeService.findOrCreate(data.shape) : null;
-        data.size ? await this.sizeService.findOrCreate(data.size) : null;
-        data.style ? await this.styleService.findOrCreate(data.style) : null;
-        
+        data.color ? (data.color = await this.colorService.findOrCreate(data.color)) : (data.color = null);
+        data.shape ? (data.shape = await this.shapeService.findOrCreate(data.shape)) : (data.shape = null);
+        data.size ? (data.size = await this.sizeService.findOrCreate(data.size)) : (data.size = null);
+        data.style ? (data.style = await this.styleService.findOrCreate(data.style)) : (data.style = null);
+
         prod.push(data);
       } else {
         let msg = support.collection ? 'Collection must be exist!' : 'Model must be exist!';
@@ -105,7 +105,7 @@ export class ExcelService {
       .createQueryBuilder()
       .insert()
       .into(ProductExcel)
-      .values(products as unknown as ProductExcel)
+      .values(prod as unknown as ProductExcel)
       .returning('id')
       .execute();
 

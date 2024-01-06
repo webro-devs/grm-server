@@ -66,9 +66,14 @@ export class ShapeService {
     const response = await this.shapeRepository.findOne({
       where: { title },
     });
+    console.log('outside', response.id);
 
     if (!response) {
-      return (await this.create({ title })).id;
+      console.log(title);
+      const shape = await this.create({ title });
+      console.log('inside', shape);
+
+      return shape.id;
     }
     return response.id;
   }

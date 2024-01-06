@@ -44,7 +44,7 @@ export class PartiyaService {
         },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('Partiya not found!');
       });
 
     return data;

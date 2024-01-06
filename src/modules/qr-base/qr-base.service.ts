@@ -128,12 +128,12 @@ export class QrBaseService {
           let data = { ...support };
 
           data.collection = await this.collectionService.findOrCreate(data.collection);
-          data.color = await this.colorService.findOrCreate(data.color);
           data.country = await this.countryService.findOrCreate(data.country);
           data.model = await this.modelService.findOrCreate(data.collection['id'], data.model);
-          data.shape = await this.shapeService.findOrCreate(data.shape);
-          data.size ? await this.sizeService.findOrCreate(data.size) : null;
-          data.style ? await this.styleService.findOrCreate(data.style) : null;
+          data.color ? (data.color = await this.colorService.findOrCreate(data.color)) : (data.color = null);
+          data.shape ? (data.shape = await this.shapeService.findOrCreate(data.shape)) : (data.shape = null);
+          data.size ? (data.size = await this.sizeService.findOrCreate(data.size)) : (data.size = null);
+          data.style ? (data.style = await this.styleService.findOrCreate(data.style)) : (data.style = null);
 
           await this.create(data);
         }
