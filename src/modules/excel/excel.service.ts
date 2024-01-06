@@ -124,7 +124,7 @@ export class ExcelService {
   }
 
   async updateCollectionCost(newData: { id: string; cost: number }) {
-    const collection = await this.collectionService.getOneExcel(newData[0].id);
+    const collection = await this.collectionService.getOneExcel(newData.id);
 
     if (!collection) {
       throw new Error('Collection not found');
@@ -136,13 +136,13 @@ export class ExcelService {
     await this.productExcelRepository
       .createQueryBuilder()
       .update(ProductExcel)
-      .set({ collectionPrice: newData[0].cost }) // Set the updated value
+      .set({ collectionPrice: newData.cost }) // Set the updated value
       .whereInIds(productIds) // Update products with matching IDs
       .execute();
   }
 
   async updateModelCost(newData: { id: string; cost: number }) {
-    const collection = await this.modelService.getOneExcel(newData[0].id);
+    const collection = await this.modelService.getOneExcel(newData.id);
 
     if (!collection) {
       throw new Error('Model not found');
@@ -156,7 +156,7 @@ export class ExcelService {
     await this.productExcelRepository
       .createQueryBuilder()
       .update(ProductExcel)
-      .set({ displayPrice: newData[0].cost }) // Set the updated value
+      .set({ displayPrice: newData.cost }) // Set the updated value
       .whereInIds(productIds) // Update products with matching IDs
       .execute();
   }
