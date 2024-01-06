@@ -1,10 +1,4 @@
-import {
-  IsNotEmpty,
-  IsString,
-  IsNumber,
-  IsOptional,
-  IsBoolean,
-} from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsOptional, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreateProductExcDto {
   @ApiProperty({
@@ -125,6 +119,10 @@ class CreateProductExcDto {
   @IsOptional()
   @IsBoolean()
   isEdited: boolean;
+
+  @IsOptional()
+  @IsString()
+  partiya: string;
 }
 
 export default CreateProductExcDto;

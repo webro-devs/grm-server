@@ -87,6 +87,7 @@ export class ExcelService {
       if (support.model && support.collection) {
         let data = { ...support };
         data.country = partiya.country;
+        data.partiya = partiya.id;
         data.collection = await this.collectionService.findOrCreate(data.collection);
         data.model = await this.modelService.findOrCreate(data.collection['id'], data.model);
         data.color ? (data.color = await this.colorService.findOrCreate(data.color)) : (data.color = null);
