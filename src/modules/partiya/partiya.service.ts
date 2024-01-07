@@ -98,22 +98,6 @@ export class PartiyaService {
 
   // utils:
   async processInputData(input) {
-    // await input.items.forEach(async (item, index) => {
-    //   try {
-    //     const processedItem = await this.processItem(item);
-
-    //     const calc = this.allcalculateTotals(processedItem.excel);
-    //     delete processedItem.excel;
-    //     processedItem['price'] = calc.totalM2 * calc.collectionPrice || 0;
-    //     processedItem['m2'] = calc.totalM2 || 0;
-    //     processedItem['commingPrice'] = processedItem['price'] / calc.totalM2 || 0;
-    //     console.log('processed item===>', processedItem);
-    //     item = processedItem;
-    //     console.log(`\input item i:${index}===> `, item);
-    //   } catch (error) {
-    //     console.error(`Error processing item: ${error.message}`);
-    //   }
-    // });
     const data = [];
     for (let i = 0; i < input.items.length; i++) {
       const element = input.items[i];
@@ -128,17 +112,38 @@ export class PartiyaService {
     return input;
   }
 
-  allcalculateTotals(data) {
-    return data.reduce(
-      (totals, currentItem) => {
-        totals.totalM2 += (eval(currentItem.size.title.match(/\d+\.*\d*/g).join('*')) / 10000) * currentItem.count;
-        totals.collectionPrice = currentItem.collectionPrice;
-        return totals;
+  allcalculateTotals(products) {
+    const collections = {};
+
+    products.forEach((product) => {
+      const { size, collection, collectionPrice } = product;
+      const totalM2 = (eval(size.title.match(/\d+\.*\d*/g).join('*')) / 10000) * product?.count;
+
+      if (!collections[collection?.title]) {
+        collections[collection?.title] = {
+          totalM2: 0,
+          collectionPrice,
+        };
+      }
+
+      collections[collection].totalM2 += totalM2;
+    });
+
+    const totalPricesByCollection = Object.entries(collections).map(([collection, data]) => {
+      const totalPrice = data['totalM2'] * data['collectionPrice'];
+      return { price: totalPrice || 0, m2: data['totalM2'] };
+    });
+    const partiya = totalPricesByCollection.reduce(
+      (pre, curr) => {
+        return { totalM2: pre.totalM2 + curr.m2, collectionPrice: pre.collectionPrice + curr.price };
       },
-      { totalM2: 0, collectionPrice: 0 },
+      { totalM2: 0, collectionPrice: 0 } as { totalM2: number; collectionPrice: number },
     );
+
+    return partiya;
   }
 
+  // totals.totalM2 += (eval(currentItem.size.title.match(/\d+\.*\d*/g).join('*')) / 10000) * currentItem.count;
   async processItem(item) {
     try {
       const excelData = await this.getOneProds(item.id);
