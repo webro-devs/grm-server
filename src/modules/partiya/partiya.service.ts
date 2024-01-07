@@ -126,7 +126,7 @@ export class PartiyaService {
         };
       }
 
-      collections[collection].totalM2 += totalM2;
+      collections[collection.title].totalM2 += totalM2;
     });
 
     const totalPricesByCollection = Object.entries(collections).map(([collection, data]) => {
