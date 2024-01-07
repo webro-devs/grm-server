@@ -94,7 +94,7 @@ export class ExcelController {
   }
 
   @Public()
-  @Post('/product/:id')
+  @Post('/qr-code/:id')
   @ApiOperation({
     summary: 'Method: imports data and update products in the baza',
   })
@@ -109,7 +109,7 @@ export class ExcelController {
   }
 
   @Public()
-  @Get('/qr-code/:code')
+  @Get('/qr-code/:id/:code')
   @ApiOperation({
     summary: 'Method: imports data and update products in the baza',
   })
@@ -117,8 +117,8 @@ export class ExcelController {
     description: 'The data imported and saved to baza successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async CHechQr(@Param('code') code: string) {
-    const response = await this.fileService.checkProductCode({ code });
+  async CHechQr(@Param('code') code: string, @Param('id') id: string) {
+    const response = await this.fileService.checkProductCode({ code, id });
 
     return response;
   }

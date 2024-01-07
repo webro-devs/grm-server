@@ -204,14 +204,45 @@ export class ExcelService {
     return response;
   }
 
-  async checkProductCode(newData: { code: string }) {
-    const product = await this.productExcelRepository.findOne({ where: { code: newData.code } });
+  async checkProductCode(newData: { code: string; id: string }) {
+    const code = await this.qrBaseService.getOneByCode(newData.code);
+    if (!code) {
+      throw new BadRequestException('Code not exist!');
+    }
+    const product = await this.productExcelRepository.findOne({
+      relations: { partiya: true },
+      where: { code: newData.code, partiya: { id: newData.id } },
+    });
     if (product) {
       product.count += 1;
       await this.productExcelRepository.save(product);
       return 'Added Product +1';
     }
-    throw new BadRequestException('Can not find qr-code');
+    const value: CreateProductExcelDto = {
+      code: code.code,
+      collection: code?.collection?.id || null,
+      collectionPrice: 0,
+      color: code?.color?.id || null,
+      commingPrice: 0,
+      count: 1,
+      country: code?.country?.title || null,
+      displayPrice: 0,
+      imgUrl: '',
+      isEdited: false,
+      isMetric: false,
+      model: code?.model?.id,
+      otherImgs: [],
+      partiya: newData.id,
+      priceMeter: 0,
+      shape: code.shape.id || null,
+      size: code.size.id || null,
+      style: code.style.id || null,
+    };
+    const productIds = await this.addProductToPartiya([value], newData.id);
+    return await this.productExcelRepository.findOne({
+      where: { id: productIds.raw[0].id },
+      relations: { size: true, model: true, style: true, shape: true, color: true },
+    });
   }
 
   async createWithCode(newData: CreateQrBaseDto, partiyaId) {
@@ -247,9 +278,8 @@ export class ExcelService {
       size: code.size.id || null,
       style: code.style.id || null,
     };
-    await this.addProductToPartiya([Product], partiyaId);
 
-    return 'added product and qr-code!';
+    return await this.addProductToPartiya([Product], partiyaId);
   }
 
   async createProduct(partiyaId) {
