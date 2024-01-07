@@ -15,6 +15,7 @@ import { ShapeModule } from '../shape/shape.module';
 import { SizeModule } from '../size/size.module';
 import { StyleModule } from '../style/style.module';
 import { FilialModule } from '../filial/filial.module';
+import { QrBaseModule } from '../qr-base/qr-base.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { FilialModule } from '../filial/filial.module';
     SizeModule,
     StyleModule,
     FilialModule,
+    QrBaseModule,
   ],
   controllers: [ExcelController],
   providers: [ExcelService],

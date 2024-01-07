@@ -12,12 +12,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 
 import { CreatePartiyaDto, UpdatePartiyaDto } from './dto';
 import { Partiya } from './partiya.entity';
@@ -76,7 +71,7 @@ export class PartiyaController {
   @HttpCode(HttpStatus.CREATED)
   async saveDataExc(@Body() positionData: CreatePartiyaDto): Promise<Partiya> {
     try {
-      return await this.partiyaService.createPartiyaWithExcel(positionData);
+      return await this.partiyaService.create(positionData);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -88,10 +83,7 @@ export class PartiyaController {
     description: 'Partiya was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeData(
-    @Body() data: UpdatePartiyaDto,
-    @Param('id') id: string,
-  ): Promise<UpdateResult> {
+  async changeData(@Body() data: UpdatePartiyaDto, @Param('id') id: string): Promise<UpdateResult> {
     try {
       return await this.partiyaService.change(data, id);
     } catch (err) {

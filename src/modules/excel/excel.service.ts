@@ -17,6 +17,8 @@ import { SizeService } from '../size/size.service';
 import { StyleService } from '../style/style.service';
 import { FilialService } from '../filial/filial.service';
 import { CreateProductExcelDto } from './dto';
+import { QrBaseService } from '../qr-base/qr-base.service';
+import { CreateQrBaseDto } from '../qr-base/dto';
 
 Injectable();
 export class ExcelService {
@@ -36,6 +38,7 @@ export class ExcelService {
     private readonly sizeService: SizeService,
     private readonly styleService: StyleService,
     private readonly filialService: FilialService,
+    private readonly qrBaseService: QrBaseService,
   ) {}
   async readExcel(id: string) {
     const data = await this.partiyaService.getOneProds(id);
@@ -57,20 +60,31 @@ export class ExcelService {
     if (!partiya) {
       throw new BadRequestException('Partiya not found!');
     }
-    products = products.map((e) => {
+
+    const productPromises: CreateProductExcelDto[] = [];
+    for (const e of products) {
       if (!e.collection || !e.model) {
-        let msg = e.collection ? 'Collection must be exist!' : 'Model must be exist!';
+        let msg = e.collection ? 'Collection must exist!' : 'Model must exist!';
         throw new BadRequestException(msg);
       }
+      const price = await this.returnPrice(e.model);
       const count = e.count < 1 ? 1 : e.count;
-      return { ...e, partiya: partiya.id, country: partiya.country, count };
-    });
+      const updatedProduct: CreateProductExcelDto = {
+        ...e,
+        partiya: partiya.id,
+        country: e.country || partiya.country,
+        count,
+        ...price,
+      };
+
+      productPromises.push(updatedProduct);
+    }
 
     const data = await this.productExcelRepository
       .createQueryBuilder()
       .insert()
       .into(ProductExcel)
-      .values(products as unknown as ProductExcel)
+      .values(productPromises as unknown as ProductExcel)
       .returning('id')
       .execute();
 
@@ -103,6 +117,8 @@ export class ExcelService {
         data.size = (await this.sizeService.getOneByName(data.size))?.id || null;
         data.style = (await this.styleService.getOneByName(data.style))?.id || null;
         data.count = data.count < 1 ? 1 : data.count;
+        const price = await this.returnPrice(data.model);
+        data = { ...data, ...price };
 
         prod.push(data);
       } else {
@@ -133,6 +149,8 @@ export class ExcelService {
   }
 
   async updateCollectionCost(newData: { id: string; cost: number; partiyaId: string }) {
+    console.log(newData);
+
     const collection = await this.collectionService.getOneExcel(newData.id);
 
     if (!collection) {
@@ -140,7 +158,7 @@ export class ExcelService {
     }
 
     const productIds = collection.productsExcel.map((product) => {
-      if (product.partiya.id == newData.partiyaId) return product.id;
+      if (product?.partiya?.id == newData?.partiyaId) return product.id;
     });
 
     // Update collectionPrice for products in the collection using the product IDs
@@ -191,6 +209,52 @@ export class ExcelService {
     return response;
   }
 
+  async checkProductCode(newData: { code: string }) {
+    const product = await this.productExcelRepository.findOne({ where: { code: newData.code } });
+    if (product) {
+      product.count += 1;
+      await this.productExcelRepository.save(product);
+      return 'updated';
+    }
+    throw new BadRequestException('Can not find qr-code');
+  }
+
+  async createWithCode(newData: CreateQrBaseDto, partiyaId) {
+    const value: CreateQrBaseDto = {
+      code: newData.code,
+      collection: newData.collection,
+      color: newData.color,
+      country: newData.country,
+      model: newData.model,
+      shape: newData.shape,
+      size: newData.size,
+      style: newData.style,
+    };
+    await this.qrBaseService.create(value);
+    const code = await this.qrBaseService.getOneByCode(newData.code);
+    const Product: CreateProductExcelDto = {
+      code: code.code,
+      collection: code.collection.id,
+      collectionPrice: 0,
+      color: code.color.id || null,
+      commingPrice: 0,
+      count: 1,
+      country: code.country.title || null,
+      displayPrice: 0,
+      imgUrl: null,
+      isEdited: false,
+      isMetric: false,
+      model: code.model.id,
+      otherImgs: [],
+      partiya: partiyaId,
+      priceMeter: 0,
+      shape: code.shape.id || null,
+      size: code.size.id || null,
+      style: code.style.id || null,
+    };
+    await this.addProductToPartiya([Product], partiyaId);
+  }
+
   async createProduct(partiyaId) {
     try {
       const partiya = await this.partiyaService.getOne(partiyaId);
@@ -221,6 +285,7 @@ export class ExcelService {
     }
   }
 
+  // #utils
   setPrice(products = [], expense = 0) {
     const fullKv = products.reduce(
       (total, obj) => total + (eval(obj?.size?.title?.match(/\d+\.*\d*/g).join('*') || 0) / 10000) * obj.count,
@@ -281,6 +346,19 @@ export class ExcelService {
     }
 
     return data;
+  }
+
+  async returnPrice(
+    model,
+  ): Promise<{ collectionPrice: number; commingPrice: number; displayPrice: number; priceMeter: number }> {
+    const product = model ? await this.productExcelRepository.findOne({ where: { model: { id: model } } }) : null;
+
+    return {
+      collectionPrice: product ? product.collectionPrice : 0,
+      commingPrice: product ? product.commingPrice : 0,
+      displayPrice: product ? product.displayPrice : 0,
+      priceMeter: product ? product.displayPrice : 0,
+    };
   }
 }
 

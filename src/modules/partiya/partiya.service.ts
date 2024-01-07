@@ -98,12 +98,6 @@ export class PartiyaService {
     return await this.partiyaRepository.save(data);
   }
 
-  async createPartiyaWithExcel(value: CreatePartiyaDto) {
-    const data = await this.create(value);
-
-    return data;
-  }
-
   // utils:
   async processInputData(input) {
     input.items.forEach(async (item, index) => {

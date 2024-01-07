@@ -1,20 +1,6 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Order } from '../order/order.entity';
-import { Filial } from '../filial/filial.entity';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Partiya } from '../partiya/partiya.entity';
 import { Model } from '../model/model.entity';
-import { User } from '../user/user.entity';
-import { ClientOrder } from '../client-order/client-order.entity';
-import { ColumnNumericTransformer } from '../../infra/helpers';
 import { Color } from '../color/color.entity';
 import { Shape } from '../shape/shape.entity';
 import { Size } from '../size/size.entity';
@@ -28,6 +14,9 @@ export class ProductExcel {
 
   @Column({ nullable: true })
   code: string;
+
+  @Column({ nullable: true })
+  country: string;
 
   @Column({ nullable: true, default: 0 })
   count: number;
