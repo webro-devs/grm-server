@@ -102,10 +102,10 @@ export class PartiyaService {
     for (let i = 0; i < input.items.length; i++) {
       const element = input.items[i];
       const processedItem = await this.processItem(element);
-      const calc = this.allcalculateTotals(processedItem.excel) || { totalM2: 0, collectionPrice: 0 };
+      const calc = this.allcalculateTotals(processedItem.excel) || { m2: 0, price: 0 };
       delete input.items[i].excel;
-      input.items[i].price = calc?.totalM2 * calc?.collectionPrice || 0;
-      input.items[i].m2 = calc?.totalM2 || 0;
+      input.items[i].price = calc?.price || 0;
+      input.items[i].m2 = calc?.m2 || 0;
     }
     console.log(data);
 
@@ -135,9 +135,9 @@ export class PartiyaService {
     });
     const partiya = totalPricesByCollection.reduce(
       (pre, curr) => {
-        return { totalM2: pre.totalM2 + curr.m2, collectionPrice: pre.collectionPrice + curr.price };
+        return { m2: pre.m2 + curr.m2, price: pre.price + curr.price };
       },
-      { totalM2: 0, collectionPrice: 0 } as { totalM2: number; collectionPrice: number },
+      { m2: 0, price: 0 },
     );
 
     return partiya;
