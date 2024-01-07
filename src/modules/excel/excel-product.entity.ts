@@ -81,6 +81,7 @@ export class ProductExcel {
 
   @ManyToOne(() => Partiya, (partiya) => partiya.productsExcel, {
     onDelete: 'SET NULL',
+    nullable: false,
   })
   @JoinColumn()
   partiya: Partiya;
