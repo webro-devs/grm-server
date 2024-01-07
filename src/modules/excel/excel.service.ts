@@ -209,7 +209,7 @@ export class ExcelService {
     if (product) {
       product.count += 1;
       await this.productExcelRepository.save(product);
-      return 'updated';
+      return 'Added Product +1';
     }
     throw new BadRequestException('Can not find qr-code');
   }
@@ -248,6 +248,8 @@ export class ExcelService {
       style: code.style.id || null,
     };
     await this.addProductToPartiya([Product], partiyaId);
+
+    return 'added product and qr-code!';
   }
 
   async createProduct(partiyaId) {

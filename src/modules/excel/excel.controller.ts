@@ -7,6 +7,7 @@ import { Public } from '../auth/decorators/public.decorator';
 import { Body, Get, Put } from '@nestjs/common/decorators';
 import { ImportExcelDto, UpdateCollectionCostDto, UpdateExcelDto, UpdateModelCostDto, UpdateProductExcelDto } from './dto';
 import CreateProductExcDto from './dto/createProduct-excel';
+import { CreateQrBaseDto } from '../qr-base/dto';
 
 @ApiTags('Excel')
 @Controller('excel')
@@ -88,6 +89,36 @@ export class ExcelController {
   @HttpCode(HttpStatus.CREATED)
   async CreateProducts(@Param('id') id: string) {
     const response = await this.fileService.createProduct(id);
+
+    return response;
+  }
+
+  @Public()
+  @Post('/product/:id')
+  @ApiOperation({
+    summary: 'Method: imports data and update products in the baza',
+  })
+  @ApiCreatedResponse({
+    description: 'The data imported and saved to baza successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async CreateProductsQr(@Param('id') id: string, @Body() data: CreateQrBaseDto) {
+    const response = await this.fileService.createWithCode(data, id);
+
+    return response;
+  }
+
+  @Public()
+  @Get('/qr-code/:code')
+  @ApiOperation({
+    summary: 'Method: imports data and update products in the baza',
+  })
+  @ApiCreatedResponse({
+    description: 'The data imported and saved to baza successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async CHechQr(@Param('code') code: string) {
+    const response = await this.fileService.checkProductCode({ code });
 
     return response;
   }
