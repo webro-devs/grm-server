@@ -241,7 +241,7 @@ export class ExcelService {
     const productIds = await this.addProductToPartiya([value], newData.id);
     return await this.productExcelRepository.findOne({
       where: { id: productIds.raw[0].id },
-      relations: { size: true, model: true, style: true, shape: true, color: true },
+      relations: { size: true, model: true, style: true, shape: true, color: true, collection: true },
     });
   }
 

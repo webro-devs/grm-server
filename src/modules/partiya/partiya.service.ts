@@ -98,20 +98,34 @@ export class PartiyaService {
 
   // utils:
   async processInputData(input) {
-    input.items.forEach(async (item, index) => {
-      try {
-        const processedItem = await this.processItem(item);
-        const calc = this.allcalculateTotals(processedItem.excel);
-        delete processedItem.excel;
-        processedItem['price'] = calc.totalM2 * calc.collectionPrice || 0;
-        processedItem['m2'] = calc.totalM2 || 0;
-        processedItem['commingPrice'] = processedItem['price'] / calc.totalM2 || 0;
+    // await input.items.forEach(async (item, index) => {
+    //   try {
+    //     const processedItem = await this.processItem(item);
 
-        input.items[index] = processedItem;
-      } catch (error) {
-        console.error(`Error processing item: ${error.message}`);
-      }
-    });
+    //     const calc = this.allcalculateTotals(processedItem.excel);
+    //     delete processedItem.excel;
+    //     processedItem['price'] = calc.totalM2 * calc.collectionPrice || 0;
+    //     processedItem['m2'] = calc.totalM2 || 0;
+    //     processedItem['commingPrice'] = processedItem['price'] / calc.totalM2 || 0;
+    //     console.log('processed item===>', processedItem);
+    //     item = processedItem;
+    //     console.log(`\input item i:${index}===> `, item);
+    //   } catch (error) {
+    //     console.error(`Error processing item: ${error.message}`);
+    //   }
+    // });
+    const data = [];
+    for (let i = 0; i < input.items.length; i++) {
+      const element = input.items[i];
+      const processedItem = await this.processItem(element);
+      const calc = this.allcalculateTotals(processedItem.excel) || { totalM2: 0, collectionPrice: 0 };
+      delete input.items[i].excel;
+      input.items[i].price = calc?.totalM2 * calc?.collectionPrice || 0;
+      input.items[i].m2 = calc?.totalM2 || 0;
+      input.items[i].commingPrice = processedItem?.price / calc?.totalM2 || 0;
+      console.log('aaaa');
+    }
+    console.log(data);
 
     return input;
   }
@@ -129,14 +143,18 @@ export class PartiyaService {
 
   async processItem(item) {
     try {
-      const excelData = await this.excelService.readExcel(item.id);
+      const excelData = await this.getOneProds(item.id);
+
       return {
         ...item,
         excel: excelData.productsExcel,
+        price: 0,
+        m2: 0,
+        commingPrice: 0,
       };
     } catch (error) {
       console.error(`Error processing ${item.excel}: ${error.message}`);
-      return { ...item, excel: [] };
+      return { ...item, excel: [], price: 0, m2: 0, commingPrice: 0 };
     }
   }
 }
