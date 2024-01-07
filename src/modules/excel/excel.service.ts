@@ -16,7 +16,7 @@ import { ShapeService } from '../shape/shape.service';
 import { SizeService } from '../size/size.service';
 import { StyleService } from '../style/style.service';
 import { FilialService } from '../filial/filial.service';
-import { CreateProductExcelDto } from './dto';
+import { CreateProductExcelDto, UpdateProductExcelDto } from './dto';
 import { QrBaseService } from '../qr-base/qr-base.service';
 import { CreateQrBaseDto } from '../qr-base/dto';
 
@@ -191,12 +191,7 @@ export class ExcelService {
   }
 
   async updateProduct(value, id) {
-    const response = await this.productExcelRepository
-      .createQueryBuilder()
-      .update()
-      .set(value as unknown as ProductExcel)
-      .where('id = :id', { id })
-      .execute();
+    const response = await this.productExcelRepository.update({ id }, value);
     return response;
   }
 

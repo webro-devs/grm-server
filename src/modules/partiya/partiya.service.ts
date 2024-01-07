@@ -39,9 +39,7 @@ export class PartiyaService {
     const data = await this.partiyaRepository
       .findOne({
         where: { id },
-        relations: {
-          excel: true,
-        },
+        relations: {},
       })
       .catch(() => {
         throw new NotFoundException('Partiya not found!');
@@ -102,7 +100,7 @@ export class PartiyaService {
   async processInputData(input) {
     input.items.forEach(async (item, index) => {
       try {
-        const processedItem = await this.processItem(item.id);
+        const processedItem = await this.processItem(item);
         const calc = this.allcalculateTotals(processedItem.excel);
         delete processedItem.excel;
         processedItem['price'] = calc.totalM2 * calc.collectionPrice || 0;
@@ -131,7 +129,7 @@ export class PartiyaService {
 
   async processItem(item) {
     try {
-      const excelData = await this.excelService.readExcel(item);
+      const excelData = await this.excelService.readExcel(item.id);
       return {
         ...item,
         excel: excelData.productsExcel,
