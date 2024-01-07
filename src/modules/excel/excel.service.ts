@@ -178,7 +178,7 @@ export class ExcelService {
     }
 
     const productIds = collection.productsExcel.map((product) => {
-      if (!product.isEdited && product.partiya.id == newData.partiyaId) return product.id;
+      if (!product?.isEdited && product?.partiya?.id == newData?.partiyaId) return product.id;
     });
 
     // Update collectionPrice for products in the collection using the product IDs
