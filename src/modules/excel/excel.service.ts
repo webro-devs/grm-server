@@ -132,14 +132,16 @@ export class ExcelService {
     throw new BadRequestException('Partiya not found!');
   }
 
-  async updateCollectionCost(newData: { id: string; cost: number }) {
+  async updateCollectionCost(newData: { id: string; cost: number; partiyaId: string }) {
     const collection = await this.collectionService.getOneExcel(newData.id);
 
     if (!collection) {
       throw new Error('Collection not found');
     }
 
-    const productIds = collection.productsExcel.map((product) => product.id);
+    const productIds = collection.productsExcel.map((product) => {
+      if (product.partiya.id == newData.partiyaId) return product.id;
+    });
 
     // Update collectionPrice for products in the collection using the product IDs
     await this.productExcelRepository
@@ -150,7 +152,7 @@ export class ExcelService {
       .execute();
   }
 
-  async updateModelCost(newData: { id: string; cost: number }) {
+  async updateModelCost(newData: { id: string; cost: number; partiyaId: string }) {
     const collection = await this.modelService.getOneExcel(newData.id);
 
     if (!collection) {
@@ -158,14 +160,14 @@ export class ExcelService {
     }
 
     const productIds = collection.productsExcel.map((product) => {
-      if (!product.isEdited) return product.id;
+      if (!product.isEdited && product.partiya.id == newData.partiyaId) return product.id;
     });
 
     // Update collectionPrice for products in the collection using the product IDs
     await this.productExcelRepository
       .createQueryBuilder()
       .update(ProductExcel)
-      .set({ displayPrice: newData.cost }) // Set the updated value
+      .set({ displayPrice: newData.cost, priceMeter: newData.cost }) // Set the updated value
       .whereInIds(productIds) // Update products with matching IDs
       .execute();
   }

@@ -70,7 +70,7 @@ export class CollectionService {
       .findOne({
         where: { id },
         relations: {
-          productsExcel: true,
+          productsExcel: { partiya: true },
         },
       })
       .catch(() => {

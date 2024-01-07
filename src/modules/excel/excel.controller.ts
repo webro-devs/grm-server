@@ -104,6 +104,7 @@ export class ExcelController {
     const response = await this.fileService.updateCollectionCost({
       id: data.collectionId,
       cost: data.cost,
+      partiyaId: id,
     });
 
     return response;
@@ -121,6 +122,7 @@ export class ExcelController {
     const response = await this.fileService.updateModelCost({
       id: data.modelId,
       cost: data.cost,
+      partiyaId: id,
     });
 
     return response;

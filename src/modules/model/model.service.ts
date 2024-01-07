@@ -47,7 +47,7 @@ export class ModelService {
   async getOneExcel(id: string) {
     const data = await this.modelRepository.findOne({
       where: { id },
-      relations: { productsExcel: true },
+      relations: { productsExcel: { partiya: true } },
     });
 
     return data;
