@@ -122,8 +122,6 @@ export class PartiyaService {
       delete input.items[i].excel;
       input.items[i].price = calc?.totalM2 * calc?.collectionPrice || 0;
       input.items[i].m2 = calc?.totalM2 || 0;
-      input.items[i].commingPrice = processedItem?.price / calc?.totalM2 || 0;
-      console.log('aaaa');
     }
     console.log(data);
 
