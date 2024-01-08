@@ -115,11 +115,11 @@ export class ProductService {
     return response;
   }
 
-  async changeIsInternetShop(ids: string, isInternetShop: boolean) {
+  async changeIsInternetShop(ids: string[]) {
     const response = await this.productRepository
       .createQueryBuilder()
       .update()
-      .set({ isInternetShop })
+      .set({ isInternetShop: true })
       .where('id IN(:...ids)', { ids })
       .execute();
 

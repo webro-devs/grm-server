@@ -100,8 +100,8 @@ export class ProductController {
     description: 'isInternetShop was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeInternetProductStatus(@Body() { isInternetProduct, ids }): Promise<UpdateResult> {
-    return await this.productService.changeIsInternetShop(ids, isInternetProduct);
+  async changeInternetProductStatus(@Body() { ids }: { ids: string[] }): Promise<UpdateResult> {
+    return await this.productService.changeIsInternetShop(ids);
   }
 
   @Patch('/:id')
@@ -121,10 +121,7 @@ export class ProductController {
     description: 'Product was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeInternetProduct(
-    @Body() data: UpdateInternetShopProductDto,
-    @Param('id') id: string,
-  ): Promise<UpdateResult> {
+  async changeInternetProduct(@Body() data: UpdateInternetShopProductDto, @Param('id') id: string): Promise<UpdateResult> {
     return await this.productService.changeInternetShopProduct(data, id);
   }
 

@@ -111,7 +111,7 @@ export class CollectionService {
 
   async remainingProductsByCollection() {
     const data = await this.collectionRepository.find({
-      relations: { model: { products: true } },
+      relations: { model: { products: { filial: true } } },
     });
     let result = [];
     for (let i = 0; i < data.length; i++) {
