@@ -106,13 +106,22 @@ export class ModelService {
     return response;
   }
 
-  async findOrCreate(title, collection) {
-    const response = await this.modelRepository.findOne({
-      where: { title },
-    });
+  async findOrCreate(collection, title) {
+    console.log(title);
+    const response = await this.modelRepository.findOne({ where: { title } });
 
     if (!response) {
-      return (await this.create({ collection, title })).raw[0].id;
+      const value = { title, collection };
+
+      const responsee = this.modelRepository
+        .createQueryBuilder()
+        .insert()
+        .into(Model)
+        .values(value as unknown as Model)
+        .returning('id')
+        .execute();
+
+      return (await responsee).raw[0].id;
     }
     return response.id;
   }
