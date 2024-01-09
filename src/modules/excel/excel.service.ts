@@ -196,7 +196,7 @@ export class ExcelService {
   }
 
   async readProductsByModel(partiyaId: string, id: string) {
-    const response = await this.modelService.productByExcel(id);
+    const response = await this.modelService.productByExcel(id, partiyaId);
     //@ts-ignore
     response['products'] = response.productsExcel;
     delete response.productsExcel;

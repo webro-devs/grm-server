@@ -53,13 +53,13 @@ export class ModelService {
     return data;
   }
 
-  async productByExcel(id: string) {
+  async productByExcel(id: string, partiyaId) {
     const data = await this.modelRepository.findOne({
-      where: { id },
       relations: {
-        productsExcel: { color: true, style: true, size: true, shape: true },
+        productsExcel: { color: true, style: true, size: true, shape: true, partiya: true },
         collection: true,
       },
+      where: { id, productsExcel: { partiya: { id: partiyaId } } },
     });
 
     return data;
