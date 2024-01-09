@@ -297,6 +297,7 @@ export class ExcelService {
           color: true,
           partiya: true,
         },
+        where: { partiya: { id: partiyaId } },
       });
       products = await this.setImg(products);
       products = this.setPrice(products);
@@ -331,6 +332,7 @@ export class ExcelService {
 
   setProperty(products, filialId, country?) {
     try {
+      console.log(products);
       for (let product of products) {
         if (!product?.size?.title) {
           throw new BadRequestException('Product size must be exist!');
