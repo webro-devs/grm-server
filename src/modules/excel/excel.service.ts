@@ -234,9 +234,9 @@ export class ExcelService {
       otherImgs: [],
       partiya: newData.id,
       priceMeter: 0,
-      shape: code.shape.id || null,
-      size: code.size.id || null,
-      style: code.style.id || null,
+      shape: code?.shape?.id || null,
+      size: code?.size?.id || null,
+      style: code?.style?.id || null,
     };
     const productIds = await this.addProductToPartiya([value], newData.id);
     return await this.productExcelRepository.findOne({

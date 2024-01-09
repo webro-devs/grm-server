@@ -91,6 +91,8 @@ export class GRMGateway implements OnGatewayInit {
 
   @SubscribeMessage('test')
   test(client: Socket) {
-    this.server.to(client.id).emit('best', 'Hello world this is my word');
+    this.server.to(client.id).emit('best', 'Hello world, this is my word');
   }
 }
+
+// 10 11 12 14 16 18 19
