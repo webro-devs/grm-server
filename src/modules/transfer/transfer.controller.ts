@@ -65,13 +65,25 @@ export class TransferController {
     return await this.transferService.checkTransfer(id, req.user.id);
   }
 
+  @Roles(UserRoleEnum.CASHIER, UserRoleEnum.MANAGER, UserRoleEnum.BOSS)
+  @Patch('/reject/:id')
+  @ApiOperation({ summary: 'Method: reject transfer' })
+  @ApiOkResponse({
+    description: 'Transfer was rejected by cashier',
+  })
+  @HttpCode(HttpStatus.OK)
+  async rejectTransfer(@Param('id') id: string, @Req() req) {
+    return await this.transferService.rejectProduct(id, req.user.id);
+  }
+
   @Delete('/:id')
   @ApiOperation({ summary: 'Method: deleting transfer' })
   @ApiOkResponse({
     description: 'Transfer was deleted',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteData(@Param('id') id: string) {
+  async deleteData(@Param('id') id: string, @Req() req) {
+    await this.transferService.rejectProduct(id, req.user.id);
     return await this.transferService.deleteOne(id);
   }
 }

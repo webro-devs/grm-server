@@ -1,10 +1,4 @@
-import {
-  IsNotEmpty,
-  IsString,
-  IsNumber,
-  IsOptional,
-  IsArray,
-} from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsOptional, IsArray } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreateProductDto {
   @ApiProperty({
@@ -29,7 +23,7 @@ class CreateProductDto {
   })
   @IsOptional()
   @IsString()
-  date: string;
+  date?: string;
 
   @ApiProperty({
     description: `Carpet count`,

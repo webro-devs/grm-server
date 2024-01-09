@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Filial } from '../filial/filial.entity';
 import { Product } from '../product/product.entity';
 import { User } from '../user/user.entity';
@@ -24,6 +18,9 @@ export class Transfer {
 
   @Column({ type: 'boolean', default: false })
   isChecked: boolean = false;
+
+  @Column({ type: 'varchar', default: 'Processing' })
+  progres: string;
 
   @ManyToOne(() => Filial, (filial) => filial)
   @JoinColumn()

@@ -1,20 +1,6 @@
-import {
-  IsNotEmpty,
-  IsString,
-  IsOptional,
-  IsNumber,
-  IsBoolean,
-} from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, IsNumber, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreateOrderDto {
-  @ApiProperty({
-    description: `seller id`,
-    example: 'uuid',
-  })
-  @IsOptional()
-  @IsString()
-  readonly seller: string;
-
   @ApiProperty({
     description: `product id`,
     example: 'uuid',
@@ -42,6 +28,7 @@ class CreateOrderDto {
   @ApiProperty({
     description: `x`,
     example: 3,
+    required: false,
   })
   @IsOptional()
   @IsNumber()
@@ -50,6 +37,7 @@ class CreateOrderDto {
   @ApiProperty({
     description: `date`,
     example: '2023-05-02 08:10:23.726769',
+    required: false,
   })
   @IsOptional()
   @IsString()

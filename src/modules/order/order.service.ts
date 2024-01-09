@@ -1,21 +1,7 @@
-import {
-  HttpException,
-  HttpStatus,
-  NotFoundException,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, NotFoundException, Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
-import {
-  DataSource,
-  EntityManager,
-  FindOptionsWhere,
-  Repository,
-} from 'typeorm';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { DataSource, EntityManager, FindOptionsWhere, Repository } from 'typeorm';
 
 import { Order } from './order.entity';
 import { UpdateOrderDto, CreateOrderDto } from './dto';
@@ -23,19 +9,18 @@ import { CreateProductDto, UpdateProductDto } from '../product/dto';
 import { ProductService } from '../product/product.service';
 import { KassaService } from '../kassa/kassa.service';
 import { ActionService } from '../action/action.service';
-import {
-  CashFlowEnum,
-  CashflowExpenditureEnum,
-  OrderEnum,
-} from 'src/infra/shared/enum';
+import { CashFlowEnum, CashflowExpenditureEnum, OrderEnum } from 'src/infra/shared/enum';
 import { CashflowService } from '../cashflow/cashflow.service';
 import { Product } from '../product/product.entity';
+import { GRMGateway } from '../web-socket/web-socket.gateway';
 
 Injectable();
 export class OrderService {
   constructor(
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
+    @Inject(forwardRef(() => GRMGateway))
+    private readonly grmGetaway: GRMGateway,
     private readonly productService: ProductService,
     private readonly kassaService: KassaService,
     private readonly actionService: ActionService,
@@ -108,8 +93,7 @@ export class OrderService {
 
       kassa.plasticSum = kassa.plasticSum - order.plasticSum;
 
-      kassa.additionalProfitTotalSum =
-        kassa.additionalProfitTotalSum - order.additionalProfitSum;
+      kassa.additionalProfitTotalSum = kassa.additionalProfitTotalSum - order.additionalProfitSum;
       kassa.netProfitTotalSum = kassa.netProfitTotalSum - order.netProfitSum;
       await this.saveRepo(kassa);
     }
@@ -142,8 +126,7 @@ export class OrderService {
 
       if (order.product.isMetric) {
         if (value.x) {
-          value.additionalProfitSum =
-            value.price - order.product.priceMeter * value.x * order.product.y;
+          value.additionalProfitSum = value.price - order.product.priceMeter * value.x * order.product.y;
         }
       } else {
         value.additionalProfitSum = value.price - order.product.price;
@@ -153,10 +136,8 @@ export class OrderService {
         kassa.totalSum = kassa.totalSum - order.price;
         kassa.totalSum = kassa.totalSum + value.price;
 
-        kassa.additionalProfitTotalSum =
-          kassa.additionalProfitTotalSum - order.additionalProfitSum;
-        kassa.additionalProfitTotalSum =
-          kassa.additionalProfitTotalSum + value.additionalProfitSum;
+        kassa.additionalProfitTotalSum = kassa.additionalProfitTotalSum - order.additionalProfitSum;
+        kassa.additionalProfitTotalSum = kassa.additionalProfitTotalSum + value.additionalProfitSum;
 
         if (value.plasticSum) {
           kassa.plasticSum = kassa.plasticSum - order.plasticSum;
@@ -186,27 +167,26 @@ export class OrderService {
       product.x = product.x - value.x;
       product.setTotalSize();
       product.calculateProductPrice();
-      additionalProfitSum =
-        value.price - product.priceMeter * value.x * product.y;
-      netProfitSum =
-        (product.priceMeter - product.comingPrice) * value.x * product.y;
+      additionalProfitSum = value.price - product.priceMeter * value.x * product.y;
+      netProfitSum = (product.priceMeter - product.comingPrice) * value.x * product.y;
     } else {
       product.count = +product.count - 1;
       product.setTotalSize();
       additionalProfitSum = value.price - product.price;
-      netProfitSum =
-        (product.priceMeter - product.comingPrice) * product.x * product.y;
+      netProfitSum = (product.priceMeter - product.comingPrice) * product.x * product.y;
     }
     await this.saveRepo(product);
 
     const data = { ...value, seller: id, additionalProfitSum, netProfitSum };
-    const response = this.orderRepository
+    const response = await this.orderRepository
       .createQueryBuilder()
       .insert()
       .into(Order)
       .values(data as unknown as Order)
       .returning('id')
       .execute();
+
+    await this.grmGetaway.orderProduct({ orderId: response.raw[0].id, filialId: product.filial.id });
     return response;
   }
 
@@ -228,8 +208,7 @@ export class OrderService {
 
     kassa.netProfitTotalSum = kassa.netProfitTotalSum + order.netProfitSum;
 
-    kassa.additionalProfitTotalSum =
-      kassa.additionalProfitTotalSum + order.additionalProfitSum;
+    kassa.additionalProfitTotalSum = kassa.additionalProfitTotalSum + order.additionalProfitSum;
 
     kassa.plasticSum = kassa.plasticSum + order.plasticSum;
 
@@ -263,10 +242,7 @@ export class OrderService {
 
     await this.saveRepo(product);
 
-    return await this.orderRepository.update(
-      { id },
-      { isActive: OrderEnum.Reject },
-    );
+    return await this.orderRepository.update({ id }, { isActive: OrderEnum.Reject });
   }
 
   async returnOrder(id: string, userId: string) {
@@ -300,17 +276,8 @@ export class OrderService {
     );
   }
 
-  async addCashFlow(
-    price: number,
-    kassa: string,
-    title: string,
-    type: CashFlowEnum,
-    id: string,
-  ) {
-    await this.cashFlowService.create(
-      { price, comment: 'Возврат товара', casher: '', kassa, title, type },
-      id,
-    );
+  async addCashFlow(price: number, kassa: string, title: string, type: CashFlowEnum, id: string) {
+    await this.cashFlowService.create({ price, comment: 'Возврат товара', casher: '', kassa, title, type }, id);
   }
 
   async returnProduct(product: Product, count: number, x?: number) {

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Order } from './order.entity';
@@ -8,6 +8,7 @@ import { ProductModule } from '../product/product.module';
 import { KassaModule } from '../kassa/kassa.module';
 import { ActionModule } from '../action/action.module';
 import { CashflowModule } from '../cashflow/cashflow.module';
+import { GrmSocketModule } from '../web-socket/web-socket.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CashflowModule } from '../cashflow/cashflow.module';
     KassaModule,
     ActionModule,
     CashflowModule,
+    forwardRef(() => GrmSocketModule),
   ],
   controllers: [OrderController],
   providers: [OrderService],

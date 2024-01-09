@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { DataSource, EntityManager, FindOptionsWhere, Repository } from 'typeorm';
@@ -26,6 +26,7 @@ export class TransferService {
         transferer: true,
         product: true,
       },
+      order: { date: 'DESC' },
     });
   }
 
@@ -95,19 +96,31 @@ export class TransferService {
     });
   }
 
+  async giveProduct(id: string, count: number) {
+    const product = await this.productService.getById(id);
+
+    product.count += count;
+
+    product.setTotalSize();
+    await this.connection.transaction(async (manager: EntityManager) => {
+      await manager.save(product);
+    });
+  }
+
   async checkTransfer(id: string, userId: string) {
     const transfer = await this.transferRepository.findOne({
       where: { id },
       relations: { product: { color: true, model: true, partiya: true }, transferer: true, to: true },
     });
-    console.log(transfer);
+    if (transfer.isChecked) {
+      throw new BadRequestException('Transfer already ended!');
+    }
 
     const product = transfer.product;
     const newProduct: CreateProductDto = {
       code: product?.code || null,
       color: product.color.id,
       count: transfer.count,
-      date: product.date,
       filial: transfer.to.id,
       imgUrl: product.imgUrl,
       model: product.model.id,
@@ -126,12 +139,27 @@ export class TransferService {
       country: product.country,
     };
 
-    await this.productService.create([newProduct]);
+    console.log('newProduct===>', newProduct);
+
+    const res = await this.productService.create([newProduct]);
+    console.log('created product===>', res);
 
     const cashier = await this.userService.getOne(userId);
 
-    await this.transferRepository.update(id, { cashier });
+    await this.transferRepository.update(id, { cashier, progres: 'Accepted', isChecked: true });
 
     return 'Ok';
+  }
+
+  async rejectProduct(id: string, userId: string) {
+    const transfer = await this.transferRepository.findOne({ where: { id }, relations: { product: true } });
+    if (transfer.isChecked) {
+      throw new BadRequestException('Transfer already ended!');
+    }
+    await this.giveProduct(transfer.product.id, transfer.count);
+
+    const cashier = await this.userService.getOne(userId);
+
+    await this.transferRepository.update(id, { cashier, progres: 'Rejected', isChecked: true });
   }
 }

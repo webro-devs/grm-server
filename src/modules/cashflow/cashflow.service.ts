@@ -178,6 +178,7 @@ export class CashflowService {
         kassa.cashFlowSumShop = kassa.cashFlowSumShop + value.price;
       }
     }
+    
     if (value.type == CashFlowEnum.Consumption) {
       if (value.title == CashflowExpenditureEnum.BOSS) {
         kassa.expenditureBoss = kassa.expenditureBoss + value.price;
@@ -185,6 +186,7 @@ export class CashflowService {
         kassa.expenditureShop = kassa.expenditureShop + value.price;
       }
     }
+
     await this.connection.transaction(async (manager: EntityManager) => {
       await manager.save(kassa);
     });

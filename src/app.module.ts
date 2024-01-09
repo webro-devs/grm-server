@@ -42,8 +42,7 @@ import { IsUniqueConstraint } from './infra/shared/decorators/is-unique.constrai
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) =>
-        configService.get('database'),
+      useFactory: (configService: ConfigService) => configService.get('database'),
       inject: [ConfigService],
     }),
     ServeStaticModule.forRoot({
@@ -61,11 +60,11 @@ import { IsUniqueConstraint } from './infra/shared/decorators/is-unique.constrai
     ExcelModule,
     FileModule,
     FilialModule,
+    OrderModule,
     GrmSocketModule,
     KassaModule,
     MagazinInfoModule,
     ModelModule,
-    OrderModule,
     PartiyaModule,
     PositionModule,
     ProductModule,

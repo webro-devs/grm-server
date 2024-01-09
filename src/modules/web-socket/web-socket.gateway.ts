@@ -13,14 +13,16 @@ import { CashflowService } from '../cashflow/cashflow.service';
 import { ProductService } from '../product/product.service';
 import { KassaService } from '../kassa/kassa.service';
 import { ActionService } from '../action/action.service';
+import { Inject, forwardRef } from '@nestjs/common';
 
 @WebSocketGateway()
 export class GRMGateway implements OnGatewayInit {
   constructor(
+    @Inject(forwardRef(() => OrderService))
+    private readonly orderService: OrderService,
     private readonly productService: ProductService,
     private readonly cashflowService: CashflowService,
     private readonly transferService: TransferService,
-    private readonly orderService: OrderService,
     private readonly kassaService: KassaService,
     private readonly actionService: ActionService,
   ) {}
@@ -45,6 +47,7 @@ export class GRMGateway implements OnGatewayInit {
   async orderProduct(@MessageBody() body: { orderId: string; filialId: string }) {
     const order = await this.orderService.getById(body.orderId);
     const kassa = await this.kassaService.GetOpenKassa(body.filialId);
+
     kassa?.['id'] ? this.server.to(kassa['id']).emit('get-order', order) : null;
   }
 

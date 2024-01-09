@@ -14,7 +14,7 @@ import {
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 
-import { CreateCollectionDto, UpdateCollectionDto } from './dto';
+import { CreateCollectionDto, UpdateCollectionDto, TrCollectionDto } from './dto';
 import { Collection } from './collection.entity';
 import { CollectionService } from './collection.service';
 import { PaginationDto } from '../../infra/shared/dto';
@@ -33,6 +33,16 @@ export class CollectionController {
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: PaginationDto) {
     return await this.collectionService.getAll({ ...query, route });
+  }
+
+  @Get('/transfer-collection')
+  @ApiOperation({ summary: 'Method: returns all Collections' })
+  @ApiOkResponse({
+    description: 'The collections were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getCollectionTransfer(@Route() route: string, @Query() query: TrCollectionDto) {
+    return await this.collectionService.remainingProductsByCollectionTransfer({ ...query });
   }
 
   @Get('/internet-shop')

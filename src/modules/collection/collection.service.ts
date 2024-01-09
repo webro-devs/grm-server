@@ -134,6 +134,52 @@ export class CollectionService {
     return result;
   }
 
+  async remainingProductsByCollectionTransfer({
+    limit = 10,
+    page = 1,
+    collection,
+    filial,
+  }): Promise<Pagination<Collection>> {
+    const where = {
+      ...(collection && { id: collection }),
+      ...(filial && { model: { products: { filial: { id: filial } } } }),
+    };
+
+    const data2 = await paginate<Collection>(
+      this.collectionRepository,
+      { limit, page },
+      { relations: { model: { products: { filial: true } } }, where },
+    );
+
+    let result = [];
+    for (let i = 0; i < data2.items.length; i++) {
+      let remainingSum = 0,
+        remainingSize = 0,
+        remainingCount = 0,
+        products = [];
+      for (let j = 0; j < data2.items[i].model.length; j++) {
+        const items = data2.items[i].model[j].products;
+        remainingSum += items.length ? items.map((p) => +p.price * p.count).reduce((a, b) => a + b) : 0;
+        remainingSize += items.length ? items.map((p) => +p.totalSize).reduce((a, b) => a + b) : 0;
+        remainingCount += items.length ? items.map((p) => p.count).reduce((a, b) => a + b) : 0;
+        collection && products.push(...items);
+      }
+      result.push({
+        remainingCount,
+        remainingSize,
+        remainingSum,
+        title: data2.items[i].title,
+        ...(collection && { products }),
+      });
+    }
+
+    return {
+      items: result,
+      meta: data2?.meta,
+      links: data2?.links,
+    };
+  }
+
   async findOrCreate(title) {
     const response = await this.collectionRepository.findOne({
       where: { title },

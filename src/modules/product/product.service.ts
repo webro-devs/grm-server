@@ -28,6 +28,7 @@ export class ProductService {
         color: true,
       },
       where,
+      order: { date: 'DESC' },
     });
   }
 
