@@ -1,20 +1,6 @@
-import {
-  Req,
-  Controller,
-  Post,
-  UseGuards,
-  Body,
-  Res,
-  HttpCode,
-} from '@nestjs/common';
+import { Req, Controller, Post, UseGuards, Body, Res, HttpCode } from '@nestjs/common';
 import { Response, CookieOptions } from 'express';
-import {
-  ApiBadRequestResponse,
-  ApiForbiddenResponse,
-  ApiNoContentResponse,
-  ApiOkResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiForbiddenResponse, ApiNoContentResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto';
@@ -48,11 +34,7 @@ export class AuthController {
     description: 'New access, refresh tokens have been saved.',
   })
   @ApiBadRequestResponse({ description: 'Something went wrong from FE' })
-  async login(
-    @Req() { user }: { user: User },
-    @Res({ passthrough: true }) response: Response,
-    @Body() _: LoginDto,
-  ) {
+  async login(@Req() { user }: { user: User }, @Res({ passthrough: true }) response: Response, @Body() _: LoginDto) {
     const accessToken = this.authService.getJWT('access', user.id);
     const refreshToken = this.authService.getJWT('refresh', user.id);
     response.cookie(ACCESS_TOKEN_USER, accessToken, accessTokenOptions);
@@ -80,13 +62,12 @@ export class AuthController {
     description: 'New access, refresh tokens have been saved.',
   })
   @ApiForbiddenResponse({ description: 'Unauthorized Request' })
-  async refresh(
-    @Req() { user }: { user: User },
-    @Res({ passthrough: true }) response: Response,
-  ) {
+  async refresh(@Req() { user }: { user: User }, @Res({ passthrough: true }) response: Response) {
     const accessToken = this.authService.getJWT('access', user.id);
     const refreshToken = this.authService.getJWT('refresh', user.id);
     response.cookie(ACCESS_TOKEN_USER, accessToken, accessTokenOptions);
     response.cookie(REFRESH_TOKEN_USER, refreshToken, refreshTokenOptions);
+
+    return { accessToken, refreshToken, user };
   }
 }
