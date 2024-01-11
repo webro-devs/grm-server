@@ -4,7 +4,7 @@ import { ApiCreatedResponse, ApiTags, ApiOperation, ApiConsumes } from '@nestjs/
 import { ExcelService } from './excel.service';
 import { deleteFile, multerStorage } from '../../infra/helpers';
 import { Public } from '../auth/decorators/public.decorator';
-import { Body, Get, Put } from '@nestjs/common/decorators';
+import { Body, Delete, Get, Put } from '@nestjs/common/decorators';
 import { ImportExcelDto, UpdateCollectionCostDto, UpdateExcelDto, UpdateModelCostDto, UpdateProductExcelDto } from './dto';
 import CreateProductExcDto from './dto/createProduct-excel';
 import { CreateQrBaseDto } from '../qr-base/dto';
@@ -104,6 +104,21 @@ export class ExcelController {
   @HttpCode(HttpStatus.CREATED)
   async getOneProduct(@Param('id') id: string) {
     const response = await this.fileService.getOne(id);
+
+    return response;
+  }
+
+  @Public()
+  @Delete('/product/:id')
+  @ApiOperation({
+    summary: 'Method: Get product by id with params',
+  })
+  @ApiCreatedResponse({
+    description: 'The data come successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async DeleteProduct(@Param('id') id: string) {
+    const response = await this.fileService.delete(id);
 
     return response;
   }

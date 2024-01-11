@@ -47,9 +47,18 @@ export class ExcelService {
   }
 
   async getOne(id: string) {
-    const res = await this.productExcelRepository.findOne({ where: { id } });
+    const res = await this.productExcelRepository.findOne({
+      where: { id },
+      relations: { collection: true, model: true, color: true, partiya: true, shape: true, size: true, style: true },
+    });
 
     return res;
+  }
+
+  async delete(id: string) {
+    await this.productExcelRepository.delete(id);
+
+    return 'Deleted successfully!';
   }
 
   readExcelFile(path: string) {
