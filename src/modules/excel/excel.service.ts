@@ -46,6 +46,12 @@ export class ExcelService {
     return data;
   }
 
+  async getOne(id: string) {
+    const res = await this.productExcelRepository.findOne({ where: { id } });
+
+    return res;
+  }
+
   readExcelFile(path: string) {
     const workbook = XLSX.readFile(path);
     const worksheet = workbook.Sheets['Sheet'];

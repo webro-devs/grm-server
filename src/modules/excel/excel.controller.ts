@@ -94,6 +94,21 @@ export class ExcelController {
   }
 
   @Public()
+  @Get('/product/:id')
+  @ApiOperation({
+    summary: 'Method: imports data and update products in the baza',
+  })
+  @ApiCreatedResponse({
+    description: 'The data imported and saved to baza successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async getOneProduct(@Param('id') id: string) {
+    const response = await this.fileService.getOne(id);
+
+    return response;
+  }
+
+  @Public()
   @Post('/qr-code/:id')
   @ApiOperation({
     summary: 'Method: imports data and update products in the baza',
