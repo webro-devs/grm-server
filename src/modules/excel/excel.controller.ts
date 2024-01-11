@@ -96,10 +96,10 @@ export class ExcelController {
   @Public()
   @Get('/product/:id')
   @ApiOperation({
-    summary: 'Method: imports data and update products in the baza',
+    summary: 'Method: Get product by id with params',
   })
   @ApiCreatedResponse({
-    description: 'The data imported and saved to baza successfully',
+    description: 'The data come successfully',
   })
   @HttpCode(HttpStatus.CREATED)
   async getOneProduct(@Param('id') id: string) {
