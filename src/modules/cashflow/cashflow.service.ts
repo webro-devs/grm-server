@@ -1,10 +1,6 @@
-import { NotFoundException, Injectable } from '@nestjs/common';
+import { NotFoundException, Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { CreateCashflowDto, UpdateCashflowDto } from './dto';
 
 import { Cashflow } from './cashflow.entity';
@@ -160,37 +156,41 @@ export class CashflowService {
   }
 
   async create(value: CreateCashflowDto, id: string) {
-    const data = { ...value, casher: id };
-    const response = this.cashflowRepository
-      .createQueryBuilder()
-      .insert()
-      .into(Cashflow)
-      .values(data as unknown as Cashflow)
-      .returning('id')
-      .execute();
+    try {
+      const data = { ...value, casher: id };
+      const response = this.cashflowRepository
+        .createQueryBuilder()
+        .insert()
+        .into(Cashflow)
+        .values(data as unknown as Cashflow)
+        .returning('id')
+        .execute();
 
-    const kassa = await this.kassaService.getById(value.kassa);
-    if (value.type == CashFlowEnum.InCome) {
-      kassa.totalSum = kassa.totalSum + value.price;
-      if (value.title == CashflowComingEnum.BOSS) {
-        kassa.cashFlowSumBoss = kassa.cashFlowSumBoss + value.price;
-      } else {
-        kassa.cashFlowSumShop = kassa.cashFlowSumShop + value.price;
+      const kassa = await this.kassaService.getById(value.kassa);
+      if (value.type == CashFlowEnum.InCome) {
+        kassa.totalSum = kassa.totalSum + value.price;
+        if (value.title == CashflowComingEnum.BOSS) {
+          kassa.cashFlowSumBoss = kassa.cashFlowSumBoss + value.price;
+        } else {
+          kassa.cashFlowSumShop = kassa.cashFlowSumShop + value.price;
+        }
       }
-    }
-    
-    if (value.type == CashFlowEnum.Consumption) {
-      if (value.title == CashflowExpenditureEnum.BOSS) {
-        kassa.expenditureBoss = kassa.expenditureBoss + value.price;
-      } else {
-        kassa.expenditureShop = kassa.expenditureShop + value.price;
+
+      if (value.type == CashFlowEnum.Consumption) {
+        if (value.title == CashflowExpenditureEnum.BOSS) {
+          kassa.expenditureBoss = kassa.expenditureBoss + value.price;
+        } else {
+          kassa.expenditureShop = kassa.expenditureShop + value.price;
+        }
       }
+
+      await this.connection.transaction(async (manager: EntityManager) => {
+        await manager.save(kassa);
+      });
+
+      return response;
+    } catch (error) {
+      throw new BadRequestException(error.message);
     }
-
-    await this.connection.transaction(async (manager: EntityManager) => {
-      await manager.save(kassa);
-    });
-
-    return response;
   }
 }
