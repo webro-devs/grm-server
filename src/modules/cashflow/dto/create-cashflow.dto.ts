@@ -34,6 +34,14 @@ class CreateCashflowDto {
   @IsOptional()
   @IsString()
   readonly title: string;
+
+  @ApiProperty({
+    description: `kassa id`,
+    example: 'uuid',
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly kassa: string;
 }
 
 export default CreateCashflowDto;
