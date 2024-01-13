@@ -41,14 +41,6 @@ class UpdateCashflowDto {
   @IsOptional()
   @IsString()
   readonly title: string;
-
-  @ApiProperty({
-    description: `kassa id`,
-    example: 'uuid',
-  })
-  @IsOptional()
-  @IsString()
-  readonly kassa: string;
 }
 
 export default UpdateCashflowDto;
