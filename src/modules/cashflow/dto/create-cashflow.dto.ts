@@ -42,6 +42,14 @@ class CreateCashflowDto {
   @IsNotEmpty()
   @IsString()
   readonly kassa: string;
+
+  @ApiProperty({
+    description: `user id`,
+    example: 'uuid',
+  })
+  @IsOptional()
+  @IsString()
+  readonly casher: string;
 }
 
 export default CreateCashflowDto;

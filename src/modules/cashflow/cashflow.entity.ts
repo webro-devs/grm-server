@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Kassa } from '../kassa/kassa.entity';
 import { User } from '../user/user.entity';
 import { ColumnNumericTransformer } from '../../infra/helpers';
@@ -26,7 +19,7 @@ export class Cashflow {
   @Column('varchar')
   type: string;
 
-  @Column('varchar')
+  @Column('varchar', { nullable: true })
   comment: string;
 
   @Column('varchar', { nullable: true })
