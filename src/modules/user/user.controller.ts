@@ -13,19 +13,9 @@ import {
   Req,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 
-import {
-  CreateClientDto,
-  CreateUserDto,
-  UpdateClientDto,
-  UpdateUserDto,
-} from './dto';
+import { CreateClientDto, CreateUserDto, UpdateClientDto, UpdateUserDto } from './dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { PaginationDto } from '../../infra/shared/dto';
@@ -84,7 +74,7 @@ export class UserController {
   })
   @HttpCode(HttpStatus.OK)
   async getUserSelling(@Param('filialId') id: string): Promise<User[]> {
-    return this.userService.getUsersWithSelling(id);
+    return this.userService.getUsersWithSellingWithOrder(id);
   }
 
   @Public()
@@ -125,10 +115,7 @@ export class UserController {
     description: 'The client was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async removeFavoriteProduct(
-    @Param('productId') productId: string,
-    @Req() req,
-  ) {
+  async removeFavoriteProduct(@Param('productId') productId: string, @Req() req) {
     return await this.userService.removeFavoriteProduct(req.user.id, productId);
   }
 
@@ -138,10 +125,7 @@ export class UserController {
     description: 'User was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeData(
-    @Body() positionData: UpdateUserDto,
-    @Param('id') id: string,
-  ): Promise<UpdateResult> {
+  async changeData(@Body() positionData: UpdateUserDto, @Param('id') id: string): Promise<UpdateResult> {
     return await this.userService.change(positionData, id);
   }
 
@@ -151,10 +135,7 @@ export class UserController {
     description: 'Client was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeClient(
-    @Body() data: UpdateClientDto,
-    @Param('id') id: string,
-  ): Promise<UpdateResult> {
+  async changeClient(@Body() data: UpdateClientDto, @Param('id') id: string): Promise<UpdateResult> {
     return await this.userService.updateClient(id, data);
   }
 

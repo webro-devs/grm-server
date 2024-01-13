@@ -1,28 +1,10 @@
-import {
-  NotFoundException,
-  Injectable,
-  BadRequestException,
-} from '@nestjs/common';
+import { NotFoundException, Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  DataSource,
-  FindOptionsWhere,
-  EntityManager,
-  Repository,
-} from 'typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { DataSource, FindOptionsWhere, EntityManager, Repository } from 'typeorm';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 import { User } from './user.entity';
-import {
-  CreateClientDto,
-  CreateUserDto,
-  UpdateClientDto,
-  UpdateUserDto,
-} from './dto';
+import { CreateClientDto, CreateUserDto, UpdateClientDto, UpdateUserDto } from './dto';
 import { hashPassword, idGenerator } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 import { PositionService } from '../position/position.service';
@@ -39,10 +21,7 @@ export class UserService {
     private readonly productService: ProductService,
   ) {}
 
-  async getAll(
-    options: IPaginationOptions,
-    where?: FindOptionsWhere<User>,
-  ): Promise<Pagination<User>> {
+  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<User>): Promise<Pagination<User>> {
     return paginate<User>(this.userRepository, options, {
       order: {
         firstName: 'ASC',
@@ -87,6 +66,18 @@ export class UserService {
     return data;
   }
 
+  async getUsersWithSellingWithOrder(id: string) {
+    const users = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.sellerOrders', 'sellerOrders')
+      .where('user.filial = :id', { id })
+      .addSelect('(SELECT COUNT(*) FROM product WHERE product.orderId = sellerOrders.id)', 'sellingCount')
+      .orderBy('sellingCount', 'DESC')
+      .getMany();
+
+    return users;
+  }
+
   async getOne(id: string) {
     const data = await this.userRepository
       .findOne({
@@ -120,9 +111,7 @@ export class UserService {
       where: { id: userId },
       relations: { favoriteProducts: true },
     });
-    user.favoriteProducts = user.favoriteProducts.length
-      ? user.favoriteProducts.filter((p) => p.id != productId)
-      : [];
+    user.favoriteProducts = user.favoriteProducts.length ? user.favoriteProducts.filter((p) => p.id != productId) : [];
     await this.userRepository.save(user);
     return user;
   }
@@ -146,9 +135,7 @@ export class UserService {
 
   async create(data: CreateUserDto) {
     const login = idGenerator();
-    const filial = data.filial
-      ? await this.filialService.getOne(data.filial)
-      : null;
+    const filial = data.filial ? await this.filialService.getOne(data.filial) : null;
     const position = await this.positionService.getOne(data.position);
     const password = await hashPassword(login);
     const user = this.userRepository.create({
