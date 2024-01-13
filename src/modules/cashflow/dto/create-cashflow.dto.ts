@@ -22,7 +22,7 @@ class CreateCashflowDto {
     description: `comment`,
     example: 'for lunch',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly comment: string;
 
@@ -34,14 +34,6 @@ class CreateCashflowDto {
   @IsOptional()
   @IsString()
   readonly title: string;
-
-  @ApiProperty({
-    description: `kassa id`,
-    example: 'uuid',
-  })
-  @IsNotEmpty()
-  @IsString()
-  readonly kassa: string;
 }
 
 export default CreateCashflowDto;
