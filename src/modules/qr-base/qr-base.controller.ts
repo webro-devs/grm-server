@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
-import { InsertResult, UpdateResult } from 'typeorm';
+import { UpdateResult } from 'typeorm';
 import { ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { CreateQrBaseDto, UpdateQrBaseDto, ImportQrBaseDto } from './dto';
