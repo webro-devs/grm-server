@@ -10,6 +10,7 @@ import {
   Param,
   Get,
   Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
@@ -35,7 +36,7 @@ export class PartiyaController {
     try {
       return await this.partiyaService.getAll({ ...query, route });
     } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new BadRequestException(err.message);
     }
   }
 
