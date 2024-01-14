@@ -318,7 +318,7 @@ export class ExcelService {
       products = this.setPrice(products);
       const filial = await this.filialService.findOrCreateFilialByTitle('baza');
 
-      let productss = this.setProperty(products, filial.id, partiya.country);
+      let productss = this.setProperty(products, filial.id);
 
       const response = await this.productService.create(productss);
       await this.partiyaService.change({ check: true }, partiya.id);
@@ -345,7 +345,7 @@ export class ExcelService {
     return products;
   }
 
-  setProperty(products, filialId, country?) {
+  setProperty(products, filialId, country = 'Not found') {
     try {
       console.log(products);
       for (let product of products) {
