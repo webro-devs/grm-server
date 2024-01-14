@@ -24,8 +24,6 @@ export class PartiyaService {
       order: { date: 'DESC' },
     });
 
-    console.log('ok get all');
-
     const response = await this.processInputData(partiya);
     //@ts-ignore
     return response;
@@ -100,13 +98,15 @@ export class PartiyaService {
 
   // utils:
   async processInputData(input) {
-    console.log(input);
-
     const data = [];
     for (let i = 0; i < input.items.length; i++) {
       const element = input.items[i];
       const processedItem = await this.processItem(element);
+      console.log('proccessedItem: ', processedItem);
+
       const calc = this.allcalculateTotals(processedItem.excel) || { m2: 0, price: 0 };
+      console.log('calc: ', calc);
+
       delete input.items[i].excel;
       input.items[i].price = calc?.price || 0;
       input.items[i].m2 = calc?.m2 || 0;
@@ -118,6 +118,8 @@ export class PartiyaService {
 
   allcalculateTotals(products) {
     const collections = {};
+
+    console.log('products: ', products);
 
     products.forEach((product) => {
       const { size, collection, collectionPrice } = product;
@@ -155,8 +157,9 @@ export class PartiyaService {
   // totals.totalM2 += (eval(currentItem.size.title.match(/\d+\.*\d*/g).join('*')) / 10000) * currentItem.count;
   async processItem(item) {
     try {
-      const excelData = await this.getOneProds(item.id);
+      console.log('proccessItem: ', item);
 
+      const excelData = await this.getOneProds(item.id);
       return {
         ...item,
         excel: excelData.productsExcel,
