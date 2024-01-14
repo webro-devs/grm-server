@@ -221,6 +221,8 @@ export class ExcelService {
 
   async checkProductCode(newData: { code: string; id: string }) {
     const code = await this.qrBaseService.getOneByCode(newData.code);
+    console.log(newData.code, ' : ', code);
+
     if (!code) {
       throw new BadRequestException('Code not exist!');
     }
