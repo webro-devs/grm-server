@@ -20,6 +20,15 @@ async function bootstrap() {
   });
   app.use(cookieParser());
 
+  app.use((req, res, next) => {
+    const originalSend = res.send;
+    res.send = function (body) {
+      console.log(`Response for ${req.method} ${req.url}: ${body}`);
+      originalSend.apply(res, arguments);
+    };
+    next();
+  });
+
   app.useGlobalFilters(new ErrorFilter());
   app.useGlobalPipes(
     new ValidationPipe({
@@ -31,10 +40,7 @@ async function bootstrap() {
   );
 
   const reflector = app.get(Reflector);
-  app.useGlobalGuards(
-    new AccessTokenUserGuard(reflector),
-    new RolesGuard(reflector),
-  );
+  app.useGlobalGuards(new AccessTokenUserGuard(reflector), new RolesGuard(reflector));
 
   const config = new DocumentBuilder()
     .setTitle('GRM uz')
