@@ -7,7 +7,7 @@ import { User } from '../user/user.entity';
 export class Transfer {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @Column('varchar')
+  @Column('varchar', { default: 'Нет имя', nullable: true })
   title: string;
 
   @Column({ type: 'int' })
