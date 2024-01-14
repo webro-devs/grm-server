@@ -23,7 +23,7 @@ async function bootstrap() {
   app.use((req, res, next) => {
     const originalSend = res.send;
     res.send = function (body) {
-      console.log(`Response for ${req.method} ${req.url}: ${body}`);
+      console.log(`Response for ${req.method} ${req.url}`);
       originalSend.apply(res, arguments);
     };
     next();
