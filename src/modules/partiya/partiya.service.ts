@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
@@ -117,7 +117,12 @@ export class PartiyaService {
 
     products.forEach((product) => {
       const { size, collection, collectionPrice } = product;
-      const totalM2 = (eval(size.title.match(/\d+\.*\d*/g).join('*')) / 10000) * product?.count;
+      const sizeTitle = size.title.match(/\d+\.*\d*/g).join('*');
+      if (/^0\d*\./.test(sizeTitle)) {
+        console.log('error: ', sizeTitle);
+        return new BadRequestException(`error: ${sizeTitle}`);
+      }
+      const totalM2 = (eval(size.title.match(/\d+\.*\d*/g).join('*') || [0, 0]) / 10000 || 0) * product?.count;
 
       if (!collections[collection?.title]) {
         collections[collection?.title] = {
