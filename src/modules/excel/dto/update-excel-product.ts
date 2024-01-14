@@ -1,11 +1,4 @@
-import {
-  IsOptional,
-  IsString,
-  IsNumber,
-  IsArray,
-  IsBoolean,
-  IsNotEmpty,
-} from 'class-validator';
+import { IsOptional, IsString, IsNumber, IsArray, IsBoolean, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 class UpdateProductExcelDto {
@@ -33,8 +26,8 @@ class UpdateProductExcelDto {
   count: number;
 
   @IsOptional()
-  @IsNumber()
-  country: number;
+  @IsString()
+  country: string;
 
   @IsOptional()
   @IsNumber()
