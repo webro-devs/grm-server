@@ -117,14 +117,12 @@ export class PartiyaService {
     const collections = {};
 
     products.forEach((product, i) => {
-      console.log(i, ' : ', product);
-
       const { size, collection, collectionPrice } = product;
-      const sizeTitle = size.title.match(/\d+\.*\d*/g).join('*');
-      if (/^0\d*\./.test(sizeTitle)) {
-        console.log('error: ', sizeTitle);
-        return new BadRequestException(`error: ${sizeTitle}`);
+      if (/^0\d*\./.test(size.title)) {
+        console.log('error: ', size.title);
+        return new BadRequestException(`error: ${size.title}`);
       }
+      const sizeTitle = size.title.match(/\d+\.*\d*/g).join('*');
       const totalM2 = (eval(size.title.match(/\d+\.*\d*/g).join('*') || [0, 0]) / 10000 || 0) * product?.count;
 
       if (!collections[collection?.title]) {
