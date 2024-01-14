@@ -169,6 +169,7 @@ export class CollectionService {
         remainingSize,
         remainingSum,
         title: data2.items[i].title,
+        id: data2.items[i].id,
         ...(collection && { products }),
       });
     }
