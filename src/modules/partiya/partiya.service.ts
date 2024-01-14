@@ -24,6 +24,8 @@ export class PartiyaService {
       order: { date: 'DESC' },
     });
 
+    console.log('ok get all');
+
     const response = await this.processInputData(partiya);
     //@ts-ignore
     return response;
@@ -98,6 +100,8 @@ export class PartiyaService {
 
   // utils:
   async processInputData(input) {
+    console.log(input);
+
     const data = [];
     for (let i = 0; i < input.items.length; i++) {
       const element = input.items[i];
