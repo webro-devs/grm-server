@@ -18,14 +18,6 @@ class CreateTransferDto {
   readonly count: number;
 
   @ApiProperty({
-    description: `date`,
-    example: '2022-10-15',
-  })
-  @IsNotEmpty()
-  @IsString()
-  readonly date: string;
-
-  @ApiProperty({
     description: `from filial id`,
     example: 'uuid',
   })
