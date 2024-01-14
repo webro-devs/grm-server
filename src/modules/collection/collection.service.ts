@@ -148,7 +148,7 @@ export class CollectionService {
     const data2 = await paginate<Collection>(
       this.collectionRepository,
       { limit, page },
-      { relations: { model: { products: { filial: true } } }, where },
+      { relations: { model: { products: { filial: true, color: true, model: true } } }, where },
     );
 
     let result = [];
