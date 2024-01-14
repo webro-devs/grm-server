@@ -168,7 +168,10 @@ export class ProductService {
       value[i].x = xy[0] / 100;
       value[i].y = xy[1] / 100;
       value[i].totalSize = (eval(value[i].size.match(/\d+\.*\d*/g).join('*')) / 10000) * value[i].count;
-      value[i].price = value[i].x * value[i].y * (value[i].priceMeter + value[i].secondPrice);
+      value[i].price =
+        Number(value[i].x) ||
+        0 * Number(value[i].y) ||
+        0 * (Number(value[i].priceMeter) || 0 + Number(value[i].secondPrice) || 0);
     }
     return value;
   }
