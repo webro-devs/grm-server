@@ -24,7 +24,7 @@ export class TransferService {
         from: true,
         to: true,
         transferer: true,
-        product: true,
+        product: { color: true, partiya: true, model: true },
       },
       order: { date: 'DESC' },
     });

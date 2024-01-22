@@ -1,6 +1,6 @@
 import { NotFoundException, Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, FindOptionsWhere, EntityManager, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, EntityManager, Repository, MoreThan } from 'typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 import { User } from './user.entity';
@@ -29,6 +29,9 @@ export class UserService {
       relations: {
         position: true,
         filial: true,
+      },
+      where: {
+        role: MoreThan(0),
       },
     });
   }
