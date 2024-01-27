@@ -123,10 +123,9 @@ export class QrBaseService {
         const response = await this.qrBaseRepository.findOne({
           where: { code: support.code },
         });
+        let data = { ...support };
 
         if (!response) {
-          let data = { ...support };
-
           data.collection = await this.collectionService.findOrCreate(data.collection);
           data.country ? (data.country = await this.countryService.findOrCreate(data.country)) : (data.country = null);
           console.log(data.collection);
@@ -141,10 +140,22 @@ export class QrBaseService {
           data.style ? (data.style = await this.styleService.findOrCreate(data.style)) : (data.style = null);
 
           await this.create(data);
+        } else {
+          data?.collection && (data.collection = await this.collectionService.findOrCreate(data.collection));
+          data?.country && (data.country = await this.countryService.findOrCreate(data.country));
+          data?.collection &&
+            data?.model &&
+            (data.model = await this.modelService.findOrCreate(data.collection, data.model));
+          data?.color && (data.color = await this.colorService.findOrCreate(data.color));
+          data?.shape && (data.shape = await this.shapeService.findOrCreate(data.shape));
+          data?.size && (data.size = await this.sizeService.findOrCreate(data.size));
+          data?.style && (data.style = await this.styleService.findOrCreate(data.style));
+
+          await this.change(data, response.id);
         }
       }
     }
-    return 'created succesfully!';
+    return 'created and updated succesfully!';
   }
 
   // utils:

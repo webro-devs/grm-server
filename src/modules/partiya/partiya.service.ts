@@ -122,7 +122,6 @@ export class PartiyaService {
         console.log('error: ', size.title);
         return new BadRequestException(`error: ${size.title}`);
       }
-      const sizeTitle = size.title.match(/\d+\.*\d*/g).join('*');
       const totalM2 = (eval(size.title.match(/\d+\.*\d*/g).join('*') || [0, 0]) / 10000 || 0) * product?.count;
 
       if (!collections[collection?.title]) {

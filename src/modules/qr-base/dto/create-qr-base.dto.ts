@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsUnique } from 'src/infra/shared/decorators/is-unique.decorator';
 class CreateQrBaseDto {
@@ -66,6 +66,10 @@ class CreateQrBaseDto {
   @IsNotEmpty()
   @IsString()
   model: string;
+
+  @IsOptional()
+  @IsNumber()
+  count?: number;
 }
 
 export default CreateQrBaseDto;

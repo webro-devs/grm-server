@@ -281,7 +281,7 @@ export class ExcelService {
       collectionPrice: 0,
       color: code.color.id || null,
       commingPrice: 0,
-      count: 1,
+      count: newData.count || 0,
       country: code.country.title || null,
       displayPrice: 0,
       imgUrl: null,

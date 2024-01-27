@@ -139,10 +139,7 @@ export class TransferService {
       country: product.country,
     };
 
-    console.log('newProduct===>', newProduct);
-
     const res = await this.productService.create([newProduct]);
-    console.log('created product===>', res);
 
     const cashier = await this.userService.getOne(userId);
 
