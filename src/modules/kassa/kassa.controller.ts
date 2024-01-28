@@ -11,20 +11,18 @@ import {
   Get,
   Query,
   Req,
+  BadRequestException,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { KassaService } from './kassa.service';
 import { Kassa } from './kassa.entity';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { PaginationDto, RangeDto } from '../../infra/shared/dto';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
 import { Public } from '../auth/decorators/public.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRoleEnum } from 'src/infra/shared/enum';
 
 @ApiTags('Kassa')
 @Controller('kassa')
@@ -51,14 +49,38 @@ export class KassaController {
     return await this.kassaService.getOne(id);
   }
 
+  @Roles(UserRoleEnum.CASHIER, UserRoleEnum.BOSS)
   @Get('/open-kassa/:filialId')
   @ApiOperation({ summary: 'Method: returns single kassa' })
   @ApiOkResponse({
     description: 'The kassa was returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async opnKassa(@Param('filialId') id: string): Promise<Kassa | unknown> {
-    return await this.kassaService.GetOpenKassa(id);
+  async opnKassa(@Param('filialId') id: string, @Req() req): Promise<Kassa | unknown> {
+    const user = req.user;
+
+    if (!user?.filia?.id) {
+      throw new BadRequestException("You don't have filial!");
+    }
+
+    if (user.filial.id !== id && user.role !== UserRoleEnum.BOSS) {
+      throw new BadRequestException("It's not your filial!");
+    }
+
+    if (user.role == UserRoleEnum.BOSS) {
+      const filial = req?.body?.filial;
+      if (filial) {
+        id = req.body.filial.id;
+      } else {
+        throw new BadRequestException("Mr Boss, You don't give filial for find kassa!");
+      }
+    }
+
+    let kassa = await this.kassaService.GetOpenKassa(id);
+    if (!kassa) {
+      return await this.kassaService.create({ filial: id });
+    }
+    return kassa;
   }
 
   @Public()
@@ -101,10 +123,7 @@ export class KassaController {
   async saveData(@Body() data: CreateKassaDto) {
     const check = await this.kassaService.create(data);
     if (!check) {
-      throw new HttpException(
-        'First you Should close kassa',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('First you Should close kassa', HttpStatus.BAD_REQUEST);
     } else {
       return check;
     }
@@ -116,21 +135,39 @@ export class KassaController {
     description: 'Kassa was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeData(
-    @Body() positionData: UpdateKassaDto,
-    @Param('id') id: string,
-  ): Promise<UpdateResult> {
+  async changeData(@Body() positionData: UpdateKassaDto, @Param('id') id: string): Promise<UpdateResult> {
     return await this.kassaService.change(positionData, id);
   }
 
+  @Roles(UserRoleEnum.CASHIER, UserRoleEnum.BOSS)
   @Patch('/close-kassa/:id')
   @ApiOperation({ summary: 'Method: closing kassa' })
   @ApiOkResponse({
     description: 'Kassa was closed',
   })
   @HttpCode(HttpStatus.OK)
-  async closeKassa(@Param('id') id: string): Promise<UpdateResult> {
-    return await this.kassaService.closeKassa(id);
+  async closeKassa(@Param('id') id: string, @Req() req) {
+    const user = req.user;
+    if (!user?.filia?.id) {
+      throw new BadRequestException("You don't have filial!");
+    }
+
+    if (user.filial.id !== id && user.role !== UserRoleEnum.BOSS) {
+      throw new BadRequestException("It's not your filial!");
+    }
+
+    if (user.role == UserRoleEnum.BOSS) {
+      const filial = req?.body?.filial;
+      if (filial) {
+        id = req.body.filial.id;
+      } else {
+        throw new BadRequestException("Mr Boss, You don't give filial for find kassa!");
+      }
+    }
+
+    await this.kassaService.getOne(id);
+    await this.kassaService.closeKassa(id);
+    return await this.kassaService.create(req.user.filial.id);
   }
 
   @Delete('/:id')

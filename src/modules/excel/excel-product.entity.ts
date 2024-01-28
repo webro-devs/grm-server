@@ -80,7 +80,7 @@ export class ProductExcel {
   collection: Collection;
 
   @ManyToOne(() => Partiya, (partiya) => partiya.productsExcel, {
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     nullable: false,
   })
   @JoinColumn()

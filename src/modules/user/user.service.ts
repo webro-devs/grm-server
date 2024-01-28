@@ -2,6 +2,11 @@ import { NotFoundException, Injectable, BadRequestException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, FindOptionsWhere, EntityManager, Repository, MoreThan } from 'typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { promisify } from 'util';
+import { exec } from 'child_process';
+
+import * as shell from 'shelljs';
+import * as path from 'path';
 
 import { User } from './user.entity';
 import { CreateClientDto, CreateUserDto, UpdateClientDto, UpdateUserDto } from './dto';
@@ -13,6 +18,7 @@ import { ProductService } from '../product/product.service';
 
 Injectable();
 export class UserService {
+  private backupDir = 'backup';
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -163,5 +169,46 @@ export class UserService {
   async updateClient(id: string, value: UpdateClientDto) {
     const response = await this.userRepository.update({ id }, { ...value });
     return response;
+  }
+
+  async createBackup(): Promise<string> {
+    const execAsync = promisify(exec);
+    const username = process.env.DB_USERNAME;
+    const password = process.env.DB_PASSWORD;
+    const database = process.env.DB_NAME;
+    const backupDir = this.backupDir;
+    const backupPath = path.join(backupDir, 'backup.sql');
+    const tarFilePath = path.join(backupDir, 'backup.tar');
+
+    const env = { PGPASSWORD: password };
+
+    const pgDumpCommand = [
+      'pg_dump',
+      `--username=${username}`,
+      `--dbname=${database}`,
+      `--file=${backupPath}`,
+      '--no-owner',
+      '--password',
+    ];
+
+    shell.mkdir('-p', backupDir);
+
+    try {
+      // Execute pg_dump command
+      await execAsync(pgDumpCommand.join(' '), { env });
+
+      // Create a tar file from the SQL dump
+      await execAsync(`tar -cvf ${tarFilePath} -C ${backupDir} backup.sql`);
+
+      console.log('Backup created successfully');
+      return tarFilePath;
+    } catch (error) {
+      console.error(`Backup failed: ${error.message}`);
+      throw error;
+    }
+  }
+
+  deleteBackup(backupFilePath: string): void {
+    shell.rm(backupFilePath);
   }
 }

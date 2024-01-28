@@ -11,6 +11,8 @@ import {
   Get,
   Query,
   Req,
+  Res,
+  StreamableFile,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
@@ -21,6 +23,11 @@ import { UserService } from './user.service';
 import { PaginationDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { Public } from '../auth/decorators/public.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRoleEnum } from 'src/infra/shared/enum';
+import * as path from 'path';
+import { createReadStream, existsSync } from 'fs';
+import * as AdmZip from 'adm-zip';
 
 @ApiTags('User')
 @Controller('user')
@@ -147,5 +154,48 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
     return await this.userService.deleteOne(id);
+  }
+
+  @Roles(UserRoleEnum.BOSS)
+  @Get('/backup/basa')
+  @ApiOperation({ summary: 'Method: deleting user' })
+  @ApiOkResponse({
+    description: 'User was deleted',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async backup(@Res() res) {
+    try {
+      const pathfile = path.join(process.cwd(), 'backup');
+      if (existsSync(pathfile)) {
+        const zip = new AdmZip();
+        await zip.addLocalFolder(pathfile);
+        const response = await zip.toBuffer();
+        const fileName = 'backup.zip';
+        const fileType = 'application/zip';
+
+        res.writeHead(200, {
+          'Content-Disposition': `attachment; filename="${fileName}`,
+          'Content-Type': fileType,
+        });
+
+        return res.end(response);
+      } else return { data: null, isNaN: true };
+    } catch (error) {
+      console.error(error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Internal Server Error');
+    }
+  }
+
+  @Roles(UserRoleEnum.BOSS)
+  @Get('/backup/basaa')
+  @ApiOperation({ summary: 'Method: deleting user' })
+  @ApiOkResponse({
+    description: 'User was deleted',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async createBackup() {
+    await this.userService.createBackup();
+
+    return 'success';
   }
 }

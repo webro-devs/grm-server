@@ -1,10 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { FindOptionsWhere, Repository } from 'typeorm';
 
 import { Kassa } from './kassa.entity';
@@ -20,21 +16,16 @@ export class KassaService {
     private readonly filialService: FilialService,
   ) {}
 
-  async getAll(
-    options: IPaginationOptions,
-    where?: FindOptionsWhere<Kassa>,
-  ): Promise<Pagination<Kassa>> {
+  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Kassa>): Promise<Pagination<Kassa>> {
     return paginate<Kassa>(this.kassaRepository, options, {
       relations: { orders: true, cashflow: true },
     });
   }
 
   async getById(id: string) {
-    const data = await this.kassaRepository
-      .findOne({ where: { id } })
-      .catch(() => {
-        throw new NotFoundException('data not found');
-      });
+    const data = await this.kassaRepository.findOne({ where: { id } }).catch(() => {
+      throw new NotFoundException('data not found');
+    });
     return data;
   }
   async getOne(id: string) {
@@ -50,15 +41,21 @@ export class KassaService {
   }
 
   async GetOpenKassa(id: string) {
-    const data = await this.kassaRepository.findOne({
-      where: { isActive: true, filial: { id } },
-    });
+    const kassa = await this.kassaRepository
+      .createQueryBuilder('kassa')
+      .leftJoinAndSelect('kassa.orders', 'orders')
+      .leftJoinAndSelect('kassa.cashflows', 'cashflows')
+      .addOrderBy('orders.date', 'ASC')
+      .addOrderBy('cashflows.date', 'ASC')
+      .where('kassa.id = :id', { id })
+      .andWhere('kassa.isActive = :isActive', { isActive: true })
+      .getOne();
 
-    if (!data) {
-      return false;
+    if (kassa) {
+      kassa['cashflowAndOrders'] = this.mergeAndSortCashflowsAndOrders(kassa);
     }
 
-    return data;
+    return kassa;
   }
 
   async closeKassa(id: string) {
@@ -120,27 +117,17 @@ export class KassaService {
     if (data.length) {
       const comingSum = data.map((d) => d.totalSum).reduce((a, b) => a + b);
 
-      const goingSumBoss = data
-        .map((d) => d.expenditureBoss)
-        .reduce((a, b) => a + b);
+      const goingSumBoss = data.map((d) => d.expenditureBoss).reduce((a, b) => a + b);
 
-      const goingSumShop = data
-        .map((d) => d.expenditureShop)
-        .reduce((a, b) => a + b);
+      const goingSumShop = data.map((d) => d.expenditureShop).reduce((a, b) => a + b);
 
       const sellingSize = data.map((d) => d.totalSize).reduce((a, b) => a + b);
 
-      const cashFlowSumBoss = data
-        .map((d) => d.cashFlowSumBoss)
-        .reduce((a, b) => a + b);
+      const cashFlowSumBoss = data.map((d) => d.cashFlowSumBoss).reduce((a, b) => a + b);
 
-      const cashFlowSumShop = data
-        .map((d) => d.cashFlowSumShop)
-        .reduce((a, b) => a + b);
+      const cashFlowSumShop = data.map((d) => d.cashFlowSumShop).reduce((a, b) => a + b);
 
-      const additionalProfitTotalSum = data
-        .map((d) => d.additionalProfitTotalSum)
-        .reduce((a, b) => a + b);
+      const additionalProfitTotalSum = data.map((d) => d.additionalProfitTotalSum).reduce((a, b) => a + b);
 
       const plasticSum = data.map((d) => d.plasticSum).reduce((a, b) => a + b);
 
@@ -175,8 +162,7 @@ export class KassaService {
       where.filial = {
         id: filial.id,
       };
-      const { comingSum, goingSumShop, goingSumBoss, sellingSize, plasticSum } =
-        await this.kassaSumByFilialAndRange(where);
+      const { comingSum, goingSumShop, goingSumBoss, sellingSize, plasticSum } = await this.kassaSumByFilialAndRange(where);
       result.push({
         ...filial,
         comingSum,
@@ -187,5 +173,26 @@ export class KassaService {
       });
     }
     return result;
+  }
+
+  private mergeAndSortCashflowsAndOrders(kassa: Kassa): any[] {
+    const cashflows = kassa.cashflow.map((cashflow) => ({
+      type: 'cashflow',
+      ...cashflow,
+      date: new Date(cashflow.date),
+    }));
+
+    const orders = kassa.orders.map((order) => ({
+      type: 'order',
+      ...order,
+      date: new Date(order.date),
+    }));
+
+    const mergedArray = [...cashflows, ...orders];
+
+    // Sort the merged array by date
+    const sortedArray = mergedArray.sort((a, b) => a.date.getTime() - b.date.getTime());
+
+    return sortedArray;
   }
 }
