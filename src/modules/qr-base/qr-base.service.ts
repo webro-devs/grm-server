@@ -88,6 +88,23 @@ export class QrBaseService {
     return data;
   }
 
+  async getOneCode(code) {
+    const data = await this.qrBaseRepository.find({
+      where: { code },
+      relations: {
+        model: true,
+        color: true,
+        collection: true,
+        size: true,
+        shape: true,
+        style: true,
+        country: true,
+      },
+    });
+
+    return data;
+  }
+
   async deleteOne(id: string) {
     const response = await this.qrBaseRepository.delete(id).catch(() => {
       throw new NotFoundException('Qr-code not found');

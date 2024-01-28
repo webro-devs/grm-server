@@ -273,7 +273,10 @@ export class ExcelService {
       size: newData.size,
       style: newData.style,
     };
-    await this.qrBaseService.create(value);
+    const data = await this.qrBaseService.getOneCode(newData.code);
+    if (data.length < 1) {
+      await this.qrBaseService.create(value);
+    }
     const code = await this.qrBaseService.getOneByCode(newData.code);
     const Product: CreateProductExcelDto = {
       code: code.code,
