@@ -32,6 +32,9 @@ export class KassaService {
     const data = await this.kassaRepository
       .findOne({
         where: { id },
+        relations: {
+          filial: true,
+        },
       })
       .catch(() => {
         throw new NotFoundException('data not found');

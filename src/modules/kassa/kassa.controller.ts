@@ -152,21 +152,21 @@ export class KassaController {
     if (!user?.filial?.id) {
       throw new BadRequestException("You don't have filial!");
     }
+    const kassa = await this.kassaService.getOne(id);
 
-    if (user.filial.id !== id && user.role !== UserRoleEnum.BOSS) {
+    if (user.filial.id !== kassa.filial.id && user.role !== UserRoleEnum.BOSS) {
       throw new BadRequestException("It's not your filial!");
     }
 
     if (user.role == UserRoleEnum.BOSS) {
-      const filial = req?.body?.filial;
-      if (filial) {
-        id = req.body.filial.id;
+      const kassa = req?.body?.kassa;
+      if (kassa) {
+        id = req.body.kassa.id;
       } else {
         throw new BadRequestException("Mr Boss, You don't give filial for find kassa!");
       }
     }
 
-    await this.kassaService.getOne(id);
     await this.kassaService.closeKassa(id);
     await this.kassaService.create(req.user.filial.id);
     return await this.kassaService.GetOpenKassa(req.user.filial.id);
