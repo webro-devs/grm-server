@@ -45,9 +45,10 @@ export class KassaService {
       .createQueryBuilder('kassa')
       .leftJoinAndSelect('kassa.orders', 'orders')
       .leftJoinAndSelect('kassa.cashflow', 'cashflow')
+      .leftJoinAndSelect('kassa.filial', 'filial')
       .addOrderBy('orders.date', 'ASC')
       .addOrderBy('cashflow.date', 'ASC')
-      .where('kassa.id = :id', { id })
+      .where('kassa.filial.id = :id', { id })
       .andWhere('kassa.isActive = :isActive', { isActive: true })
       .getOne();
 
