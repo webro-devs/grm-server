@@ -149,7 +149,7 @@ export class KassaController {
   @HttpCode(HttpStatus.OK)
   async closeKassa(@Param('id') id: string, @Req() req) {
     const user = req.user;
-    if (!user?.filia?.id) {
+    if (!user?.filial?.id) {
       throw new BadRequestException("You don't have filial!");
     }
 
@@ -168,7 +168,8 @@ export class KassaController {
 
     await this.kassaService.getOne(id);
     await this.kassaService.closeKassa(id);
-    return await this.kassaService.create(req.user.filial.id);
+    await this.kassaService.create(req.user.filial.id);
+    return await this.kassaService.GetOpenKassa(req.user.filial.id);
   }
 
   @Delete('/:id')
