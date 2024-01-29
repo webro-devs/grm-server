@@ -44,7 +44,7 @@ export class KassaService {
     const kassa = await this.kassaRepository
       .createQueryBuilder('kassa')
       .leftJoinAndSelect('kassa.orders', 'orders')
-      .leftJoinAndSelect('kassa.cashflows', 'cashflows')
+      .leftJoinAndSelect('kassa.cashflow', 'cashflow')
       .addOrderBy('orders.date', 'ASC')
       .addOrderBy('cashflows.date', 'ASC')
       .where('kassa.id = :id', { id })
