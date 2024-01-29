@@ -78,7 +78,8 @@ export class KassaController {
 
     let kassa = await this.kassaService.GetOpenKassa(id);
     if (!kassa) {
-      return await this.kassaService.create({ filial: id });
+      const newKassa = await this.kassaService.create({ filial: id });
+      return await this.kassaService.GetOpenKassa(newKassa['raw'][0].id);
     }
     return kassa;
   }
