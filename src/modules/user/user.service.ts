@@ -83,6 +83,8 @@ export class UserService {
     for (const user of users) {
       user['sellerOrdersCount'] = user.sellerOrders.length;
       delete user.sellerOrders;
+      delete user.password;
+      delete user.login;
     }
 
     return users.sort((a, b) => b['sellerOrdersCount'] - a['sellerOrdersCount']);
