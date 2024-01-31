@@ -338,10 +338,10 @@ export class ExcelService {
         code: code.code,
         collection: code.collection.id,
         collectionPrice: 0,
-        color: code.color.id || null,
+        color: code?.color?.id || null,
         commingPrice: 0,
-        count: Number(newData.count) || 1,
-        country: code.country.title || null,
+        count: Number(newData?.count) || 1,
+        country: code?.country?.title || null,
         displayPrice: 0,
         imgUrl: null,
         isEdited: false,
@@ -350,9 +350,9 @@ export class ExcelService {
         otherImgs: [],
         partiya: partiyaId,
         priceMeter: 0,
-        shape: code.shape.id || null,
-        size: code.size.id || null,
-        style: code.style.id || null,
+        shape: code?.shape?.id || null,
+        size: code?.size?.id || null,
+        style: code?.style?.id || null,
       };
       products.push(Product);
     }
