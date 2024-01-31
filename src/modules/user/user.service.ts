@@ -76,13 +76,14 @@ export class UserService {
   }
 
   async getUsersWithSellingWithOrder(id: string) {
-    const users = await this.userRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.sellerOrders', 'sellerOrders')
-      .where('user.filial = :id', { id })
-      .addSelect('(SELECT COUNT(*) FROM product WHERE product.orderId = sellerOrders.id)', 'sellingCount')
-      .orderBy('sellingCount', 'DESC')
-      .getMany();
+    const users = await this.userRepository.find({
+      relations: { sellerOrders: true, filial: true },
+      where: { filial: { id }, role: 1 },
+    });
+    for (const user of users) {
+      user['sellerOrdersCount'] = user.sellerOrders.length;
+      delete user.sellerOrders;
+    }
 
     return users;
   }
