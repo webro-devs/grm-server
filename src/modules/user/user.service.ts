@@ -77,7 +77,7 @@ export class UserService {
 
   async getUsersWithSellingWithOrder(id: string) {
     const users = await this.userRepository.find({
-      relations: { sellerOrders: true, filial: true },
+      relations: { sellerOrders: true, filial: true, position: true },
       where: { filial: { id }, role: 1 },
     });
     for (const user of users) {
@@ -85,7 +85,7 @@ export class UserService {
       delete user.sellerOrders;
     }
 
-    return users;
+    return users.sort((a, b) => b['sellerOrdersCount'] - a['sellerOrdersCount']);
   }
 
   async getOne(id: string, from?, to = new Date(), collection?) {
