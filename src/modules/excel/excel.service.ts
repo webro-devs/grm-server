@@ -313,7 +313,7 @@ export class ExcelService {
     if (check.length > 0) throw new BadRequestException("Collection or Model don't come, please check your excel!");
 
     for (const newData of newDatas) {
-      if (newData.code) throw new BadRequestException('Code Not Exist!');
+      if (!newData.code) throw new BadRequestException('Code Not Exist!');
 
       const value: CreateQrBaseDto = {
         code: newData.code,
@@ -325,7 +325,9 @@ export class ExcelService {
         size: newData.size,
         style: newData.style,
       };
+
       const data = await this.qrBaseService.getOneCode(newData.code);
+      console.log(data);
 
       if (data.length < 1) {
         await this.qrBaseService.create(value);
