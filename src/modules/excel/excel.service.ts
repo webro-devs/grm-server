@@ -306,10 +306,12 @@ export class ExcelService {
     return await this.addProductToPartiya([Product], partiyaId);
   }
   async createWithCodeExcel(newDatas: CreateQrBaseDto[], partiyaId) {
+    const partiya = await this.partiyaService.getOne(partiyaId);
+    if (!partiya) throw new BadRequestException('Partiya not Found!');
     const products = [];
     const check = newDatas.filter((e) => !e?.collection || !e.model);
     if (check.length > 0) throw new BadRequestException("Collection or Model don't come, please check your excel!");
-    
+
     for (const newData of newDatas) {
       if (newData.code) throw new BadRequestException('Code Not Exist!');
 
