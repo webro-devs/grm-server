@@ -263,6 +263,8 @@ export class ExcelService {
   }
 
   async createWithCode(newData: CreateQrBaseDto, partiyaId) {
+    if (newData.code) throw new BadRequestException('Code Not Exist!');
+
     const value: CreateQrBaseDto = {
       code: newData.code,
       collection: newData.collection,
@@ -274,9 +276,11 @@ export class ExcelService {
       style: newData.style,
     };
     const data = await this.qrBaseService.getOneCode(newData.code);
+
     if (data.length < 1) {
       await this.qrBaseService.create(value);
     }
+
     const code = await this.qrBaseService.getOneByCode(newData.code);
     const Product: CreateProductExcelDto = {
       code: code.code,
@@ -300,6 +304,56 @@ export class ExcelService {
     };
 
     return await this.addProductToPartiya([Product], partiyaId);
+  }
+  async createWithCodeExcel(newDatas: CreateQrBaseDto[], partiyaId) {
+    const products = [];
+    const check = newDatas.filter((e) => !e?.collection || !e.model);
+    if (check.length > 0) throw new BadRequestException("Collection or Model don't come, please check your excel!");
+    
+    for (const newData of newDatas) {
+      if (newData.code) throw new BadRequestException('Code Not Exist!');
+
+      const value: CreateQrBaseDto = {
+        code: newData.code,
+        collection: newData.collection,
+        color: newData.color,
+        country: newData.country,
+        model: newData.model,
+        shape: newData.shape,
+        size: newData.size,
+        style: newData.style,
+      };
+      const data = await this.qrBaseService.getOneCode(newData.code);
+
+      if (data.length < 1) {
+        await this.qrBaseService.create(value);
+      }
+
+      const code = await this.qrBaseService.getOneByCode(newData.code);
+      const Product: CreateProductExcelDto = {
+        code: code.code,
+        collection: code.collection.id,
+        collectionPrice: 0,
+        color: code.color.id || null,
+        commingPrice: 0,
+        count: newData.count || 0,
+        country: code.country.title || null,
+        displayPrice: 0,
+        imgUrl: null,
+        isEdited: false,
+        isMetric: false,
+        model: code.model.id,
+        otherImgs: [],
+        partiya: partiyaId,
+        priceMeter: 0,
+        shape: code.shape.id || null,
+        size: code.size.id || null,
+        style: code.style.id || null,
+      };
+      products.push(Product);
+    }
+
+    return await this.addProductToPartiya(products, partiyaId);
   }
 
   async createProduct(partiyaId) {
