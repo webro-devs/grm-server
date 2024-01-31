@@ -170,17 +170,17 @@ export class CashflowService {
         .execute();
 
       const kassa = await this.kassaService.getById(value.kassa);
-      if (value.type == CashFlowEnum.InCome) {
+      if (value.type == 'Приход') {
         kassa.totalSum = kassa.totalSum + value.price;
-        if (value.title == CashflowComingEnum.BOSS) {
+        if (value.title == 'Босс Приход') {
           kassa.cashFlowSumBoss = kassa.cashFlowSumBoss + value.price;
         } else {
           kassa.cashFlowSumShop = kassa.cashFlowSumShop + value.price;
         }
       }
 
-      if (value.type == CashFlowEnum.Consumption) {
-        if (value.title == CashflowExpenditureEnum.BOSS) {
+      if (value.type == 'Расход') {
+        if (value.title == 'Магазин Приход') {
           kassa.expenditureBoss = kassa.expenditureBoss + value.price;
         } else {
           kassa.expenditureShop = kassa.expenditureShop + value.price;
