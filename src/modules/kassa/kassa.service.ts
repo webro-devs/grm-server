@@ -183,15 +183,15 @@ export class KassaService {
 
   private mergeAndSortCashflowsAndOrders(kassa: Kassa): any[] {
     const cashflows = kassa.cashflow.map((cashflow) => ({
-      type: 'cashflow',
       ...cashflow,
       date: new Date(cashflow.date),
+      tip: 'cashflow',
     }));
 
     const orders = kassa.orders.map((order) => ({
-      type: 'order',
       ...order,
       date: new Date(order.date),
+      tip: 'order',
     }));
 
     const mergedArray = [...cashflows, ...orders];
