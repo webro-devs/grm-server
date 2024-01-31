@@ -77,12 +77,11 @@ export class UserService {
 
   async getUsersWithSellingWithOrder(id: string) {
     const users = await this.userRepository.find({
-      relations: { sellerOrders: true, filial: true, position: true },
+      relations: { sellerOrders: { product: { color: true } }, filial: true, position: true },
       where: { filial: { id }, role: 1 },
     });
     for (const user of users) {
       user['sellerOrdersCount'] = user.sellerOrders.length;
-      delete user.sellerOrders;
       delete user.password;
       delete user.login;
     }
