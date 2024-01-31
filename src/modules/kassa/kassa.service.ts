@@ -49,6 +49,10 @@ export class KassaService {
       relations: {
         orders: {
           seller: true,
+          product: {
+            color: true,
+            model: { collection: true },
+          },
         },
         cashflow: {
           casher: true,
@@ -190,6 +194,7 @@ export class KassaService {
 
     const orders = kassa.orders.map((order) => ({
       ...order,
+      collection: order.product.model.collection,
       date: new Date(order.date),
       tip: 'order',
     }));
