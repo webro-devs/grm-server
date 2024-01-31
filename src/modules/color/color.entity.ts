@@ -14,12 +14,12 @@ export class Color {
   @Column({ type: 'varchar', nullable: true })
   code: string;
 
-  @OneToMany(() => Product, (product) => product.color)
+  @OneToMany(() => Product, (product) => product.color, { onDelete: 'SET NULL' })
   products: Product[];
 
-  @OneToMany(() => QrBase, (qrBase) => qrBase.color)
+  @OneToMany(() => QrBase, (qrBase) => qrBase.color, { onDelete: 'SET NULL' })
   qrBase: QrBase[];
 
-  @OneToMany(() => ProductExcel, (product) => product.color)
+  @OneToMany(() => ProductExcel, (product) => product.color, { onDelete: 'SET NULL' })
   productsExcel: ProductExcel[];
 }

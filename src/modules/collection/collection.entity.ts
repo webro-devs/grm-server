@@ -11,12 +11,12 @@ export class Collection {
   @Column()
   title: string;
 
-  @OneToMany(() => Model, (model) => model.collection)
+  @OneToMany(() => Model, (model) => model.collection, { onDelete: 'SET NULL' })
   model: Model[];
 
-  @OneToMany(() => QrBase, (qrBase) => qrBase.collection)
+  @OneToMany(() => QrBase, (qrBase) => qrBase.collection, { onDelete: 'SET NULL' })
   qrBase: QrBase[];
 
-  @OneToMany(() => ProductExcel, (product) => product.collection)
+  @OneToMany(() => ProductExcel, (product) => product.collection, { onDelete: 'SET NULL' })
   productsExcel: ProductExcel[];
 }

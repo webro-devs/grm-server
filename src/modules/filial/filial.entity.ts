@@ -34,18 +34,18 @@ export class Filial {
   @Column()
   phone2: string;
 
-  @OneToMany(() => Kassa, (kassa) => kassa.filial)
+  @OneToMany(() => Kassa, (kassa) => kassa.filial, { cascade: true })
   kassa: Kassa[];
 
   @OneToMany(() => User, (user) => user.filial)
   users: User[];
 
-  @OneToMany(() => Product, (product) => product.filial)
+  @OneToMany(() => Product, (product) => product.filial, { cascade: true })
   products: Product[];
 
-  @OneToMany(() => Action, (action) => action.filial)
+  @OneToMany(() => Action, (action) => action.filial, { cascade: true })
   actions: Action[];
 
-  @OneToMany(() => ClientOrder, (clientOrder) => clientOrder.filial)
+  @OneToMany(() => ClientOrder, (clientOrder) => clientOrder.filial, { cascade: true })
   clientOrders: ClientOrder[];
 }

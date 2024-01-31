@@ -11,9 +11,9 @@ export class Size {
   @Column({ type: 'varchar' })
   title: string;
 
-  @OneToMany(() => QrBase, (qrBase) => qrBase.size)
+  @OneToMany(() => QrBase, (qrBase) => qrBase.size, { onDelete: 'SET NULL' })
   qrBase: QrBase[];
 
-  @OneToMany(() => ProductExcel, (product) => product.size)
+  @OneToMany(() => ProductExcel, (product) => product.size, { onDelete: 'SET NULL' })
   productsExcel: ProductExcel[];
 }

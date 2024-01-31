@@ -60,8 +60,9 @@ export class UserController {
     description: 'The user was returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getMe(@Param('id') id: string): Promise<User> {
-    return await this.userService.getOne(id);
+  async getMe(@Param('id') id: string, @Query() query, @Req() req): Promise<User> {
+    query['collection'] = !query?.collection && req?.['user'].role == 1 ? true : query?.collection || null;
+    return await this.userService.getOne(id, query?.from || null, query.to || null, query.collection);
   }
 
   @Get('/client/:id')
@@ -160,7 +161,7 @@ export class UserController {
   @Get('/backup/basa')
   @ApiOperation({ summary: 'Method: deleting user' })
   @ApiOkResponse({
-    description: 'User was deleted',
+    description: 'created baza!',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async backup(@Res() res) {
@@ -190,7 +191,7 @@ export class UserController {
   @Get('/backup/basaa')
   @ApiOperation({ summary: 'Method: deleting user' })
   @ApiOkResponse({
-    description: 'User was deleted',
+    description: 'Database returning!',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async createBackup() {

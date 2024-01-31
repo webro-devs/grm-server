@@ -30,6 +30,9 @@ export class CashflowService {
     const data = await this.cashflowRepository
       .findOne({
         where: { id },
+        relations: {
+          casher: true,
+        },
       })
       .catch(() => {
         throw new NotFoundException('data not found');
@@ -158,7 +161,7 @@ export class CashflowService {
   async create(value: CreateCashflowDto, id: string) {
     try {
       const data = { ...value, casher: id };
-      const response = this.cashflowRepository
+      const response = await this.cashflowRepository
         .createQueryBuilder()
         .insert()
         .into(Cashflow)
@@ -188,7 +191,7 @@ export class CashflowService {
         await manager.save(kassa);
       });
 
-      return response;
+      return this.getOne(response.raw[0].id);
     } catch (error) {
       throw new BadRequestException(error.message);
     }

@@ -12,15 +12,15 @@ export class Model {
   @Column('varchar')
   title: string;
 
-  @ManyToOne(() => Collection, (collection) => collection.model)
+  @ManyToOne(() => Collection, (collection) => collection.model, { onDelete: 'SET NULL' })
   collection: Collection[];
 
-  @OneToMany(() => Product, (product) => product.model)
+  @OneToMany(() => Product, (product) => product.model, { onDelete: 'SET NULL' })
   products: Product[];
 
-  @OneToMany(() => QrBase, (qrBase) => qrBase.model)
+  @OneToMany(() => QrBase, (qrBase) => qrBase.model, { onDelete: 'SET NULL' })
   qrBase: QrBase[];
 
-  @OneToMany(() => ProductExcel, (product) => product.model)
+  @OneToMany(() => ProductExcel, (product) => product.model, { onDelete: 'SET NULL' })
   productsExcel: ProductExcel[];
 }

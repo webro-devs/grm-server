@@ -45,42 +45,31 @@ export class ProductExcel {
   @Column({ nullable: true, default: false })
   isEdited: boolean;
 
-  @ManyToOne(() => Shape, (shape) => shape.productsExcel, {
-    onDelete: 'SET NULL',
-  })
+  @ManyToOne(() => Shape, (shape) => shape.productsExcel)
   @JoinColumn()
   shape: Shape;
 
-  @ManyToOne(() => Size, (size) => size.productsExcel, { onDelete: 'SET NULL' })
+  @ManyToOne(() => Size, (size) => size.productsExcel)
   @JoinColumn()
   size: Size;
 
-  @ManyToOne(() => Style, (style) => style.productsExcel, {
-    onDelete: 'SET NULL',
-  })
+  @ManyToOne(() => Style, (style) => style.productsExcel)
   @JoinColumn()
   style: Style;
 
-  @ManyToOne(() => Color, (color) => color.productsExcel, {
-    onDelete: 'SET NULL',
-  })
+  @ManyToOne(() => Color, (color) => color.productsExcel)
   @JoinColumn()
   color: Color;
 
-  @ManyToOne(() => Model, (model) => model.productsExcel, {
-    onDelete: 'SET NULL',
-  })
+  @ManyToOne(() => Model, (model) => model.productsExcel)
   @JoinColumn()
   model: Model;
 
-  @ManyToOne(() => Collection, (collection) => collection.productsExcel, {
-    onDelete: 'SET NULL',
-  })
+  @ManyToOne(() => Collection, (collection) => collection.productsExcel)
   @JoinColumn()
   collection: Collection;
 
   @ManyToOne(() => Partiya, (partiya) => partiya.productsExcel, {
-    onDelete: 'CASCADE',
     nullable: false,
   })
   @JoinColumn()

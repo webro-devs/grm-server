@@ -1,6 +1,6 @@
 import { NotFoundException, Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, FindOptionsWhere, EntityManager, Repository, MoreThan } from 'typeorm';
+import { DataSource, FindOptionsWhere, EntityManager, Repository, MoreThan, Between, ILike, Equal } from 'typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { promisify } from 'util';
 import { exec } from 'child_process';
@@ -87,14 +87,31 @@ export class UserService {
     return users;
   }
 
-  async getOne(id: string) {
+  async getOne(id: string, from?, to = new Date(), collection?) {
+    const sellerOrders = collection
+      ? {
+          product: {
+            color: true,
+            model: { collection: true },
+          },
+        }
+      : true;
     const data = await this.userRepository
       .findOne({
-        where: { id },
+        where: {
+          id,
+          ...(from && { sellerOrders: { date: Between(from, to) } }),
+          ...(collection && { sellerOrders: { product: { model: { collection: { id: Equal(collection) } } } } }),
+        },
         relations: {
           position: true,
           filial: true,
-          sellerOrders: true,
+          sellerOrders,
+        },
+        order: {
+          sellerOrders: {
+            date: 'DESC',
+          },
         },
       })
       .catch(() => {

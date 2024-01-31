@@ -10,9 +10,9 @@ export class Style {
   @Column()
   title: string;
 
-  @OneToMany(() => QrBase, (qrBase) => qrBase.style)
+  @OneToMany(() => QrBase, (qrBase) => qrBase.style, { onDelete: 'SET NULL' })
   qrBase: QrBase[];
 
-  @OneToMany(() => ProductExcel, (product) => product.style)
+  @OneToMany(() => ProductExcel, (product) => product.style, { onDelete: 'SET NULL' })
   productsExcel: ProductExcel[];
 }

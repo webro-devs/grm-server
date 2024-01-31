@@ -24,7 +24,7 @@ export class TransferService {
         from: true,
         to: true,
         transferer: true,
-        product: { color: true, partiya: true, model: true },
+        product: { color: true, partiya: true, model: { collection: true } },
       },
       order: { date: 'DESC' },
     });
@@ -38,7 +38,7 @@ export class TransferService {
           from: true,
           to: true,
           transferer: true,
-          product: { color: true, partiya: true, model: true },
+          product: { color: true, partiya: true, model: { collection: true } },
         },
       })
       .catch(() => {
@@ -120,7 +120,7 @@ export class TransferService {
     const newProduct: CreateProductDto = {
       code: product?.code || null,
       color: product.color.id,
-      count: transfer.count,
+      count: transfer.count || 1,
       filial: transfer.to.id,
       imgUrl: product.imgUrl,
       model: product.model.id,

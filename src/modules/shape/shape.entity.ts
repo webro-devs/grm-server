@@ -10,9 +10,9 @@ export class Shape {
   @Column('varchar')
   title: string;
 
-  @OneToMany(() => QrBase, (qrBase) => qrBase.shape)
+  @OneToMany(() => QrBase, (qrBase) => qrBase.shape, { onDelete: 'SET NULL' })
   qrBase: QrBase[];
 
-  @OneToMany(() => ProductExcel, (product) => product.shape)
+  @OneToMany(() => ProductExcel, (product) => product.shape, { onDelete: 'SET NULL' })
   productsExcel: ProductExcel[];
 }

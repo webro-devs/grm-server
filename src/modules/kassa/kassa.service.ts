@@ -44,16 +44,18 @@ export class KassaService {
   }
 
   async GetOpenKassa(id: string) {
-    const kassa = await this.kassaRepository
-      .createQueryBuilder('kassa')
-      .leftJoinAndSelect('kassa.orders', 'orders')
-      .leftJoinAndSelect('kassa.cashflow', 'cashflow')
-      .leftJoinAndSelect('kassa.filial', 'filial')
-      .addOrderBy('orders.date', 'ASC')
-      .addOrderBy('cashflow.date', 'ASC')
-      .where('kassa.filial.id = :id', { id })
-      .andWhere('kassa.isActive = :isActive', { isActive: true })
-      .getOne();
+    const kassa = await this.kassaRepository.findOne({
+      where: { filial: { id }, isActive: true },
+      relations: {
+        orders: {
+          seller: true,
+        },
+        cashflow: {
+          casher: true,
+        },
+        filial: true,
+      },
+    });
 
     if (kassa) {
       kassa['cashflowAndOrders'] = this.mergeAndSortCashflowsAndOrders(kassa);
@@ -195,7 +197,7 @@ export class KassaService {
     const mergedArray = [...cashflows, ...orders];
 
     // Sort the merged array by date
-    const sortedArray = mergedArray.sort((a, b) => a.date.getTime() - b.date.getTime());
+    const sortedArray = mergedArray.sort((b, a) => a.date.getTime() - b.date.getTime());
 
     return sortedArray;
   }

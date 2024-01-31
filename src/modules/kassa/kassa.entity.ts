@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Order } from '../order/order.entity';
 import { Filial } from '../filial/filial.entity';
 import { Cashflow } from '../cashflow/cashflow.entity';
@@ -109,9 +102,9 @@ export class Kassa {
   @JoinColumn()
   filial: Filial;
 
-  @OneToMany(() => Order, (order) => order.kassa)
+  @OneToMany(() => Order, (order) => order.kassa, { cascade: true })
   orders: Order[];
 
-  @OneToMany(() => Cashflow, (cashflow) => cashflow.kassa)
+  @OneToMany(() => Cashflow, (cashflow) => cashflow.kassa, { cascade: true })
   cashflow: Cashflow[];
 }
