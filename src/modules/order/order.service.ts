@@ -59,7 +59,7 @@ export class OrderService {
     return data;
   }
 
-  async getByUser(userId, from?, to = new Date(), collcetion?) {
+  async getByUser(userId, from?, to?, collcetion?) {
     const user = await this.entityManager
       .getRepository('users')
       .findOne({ where: { id: userId }, relations: { filial: true, position: true } })
