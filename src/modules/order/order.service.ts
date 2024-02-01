@@ -1,7 +1,15 @@
-import { HttpException, HttpStatus, NotFoundException, Injectable, Inject, forwardRef } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  NotFoundException,
+  Injectable,
+  Inject,
+  forwardRef,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { DataSource, EntityManager, FindOptionsWhere, Repository } from 'typeorm';
+import { Between, DataSource, EntityManager, Equal, FindOptionsWhere, Repository } from 'typeorm';
 
 import { Order } from './order.entity';
 import { UpdateOrderDto, CreateOrderDto } from './dto';
@@ -13,6 +21,8 @@ import { CashFlowEnum, CashflowExpenditureEnum, OrderEnum } from 'src/infra/shar
 import { CashflowService } from '../cashflow/cashflow.service';
 import { Product } from '../product/product.entity';
 import { GRMGateway } from '../web-socket/web-socket.gateway';
+import { UserService } from '../user/user.service';
+import { UserModule } from '../user/user.module';
 
 Injectable();
 export class OrderService {
@@ -26,6 +36,7 @@ export class OrderService {
     private readonly actionService: ActionService,
     private readonly cashFlowService: CashflowService,
     private readonly connection: DataSource,
+    private readonly entityManager: EntityManager,
   ) {}
 
   async getAll(
@@ -46,6 +57,31 @@ export class OrderService {
         throw new NotFoundException('data not found');
       });
     return data;
+  }
+
+  async getByUser(userId, from?, to = new Date(), collcetion?) {
+    const user = await this.entityManager
+      .getRepository('users')
+      .findOne({ where: { id: userId }, relations: { filial: true, position: true } })
+      .catch(() => {
+        throw new BadRequestException('User Not Found!');
+      });
+
+    const data = await this.orderRepository.find({
+      relations: {
+        seller: true,
+        product: { model: { collection: true } },
+      },
+      where: {
+        seller: { id: userId },
+        ...(from && { date: Between(from, to) }),
+        ...(collcetion && { product: { model: { collection: { id: Equal(collcetion) } } } }),
+      },
+    });
+
+    user.sellerOrders = data || [];
+
+    return user;
   }
 
   async getByKassa(id: string) {

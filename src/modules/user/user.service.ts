@@ -1,4 +1,4 @@
-import { NotFoundException, Injectable, BadRequestException } from '@nestjs/common';
+import { NotFoundException, Injectable, BadRequestException, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, FindOptionsWhere, EntityManager, Repository, MoreThan, Between, ILike, Equal } from 'typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
@@ -15,6 +15,8 @@ import { FilialService } from '../filial/filial.service';
 import { PositionService } from '../position/position.service';
 import { UserRoleEnum } from '../../infra/shared/enum';
 import { ProductService } from '../product/product.service';
+import { OrderService } from '../order/order.service';
+import { OrderModule } from '../order/order.module';
 
 Injectable();
 export class UserService {
@@ -89,35 +91,19 @@ export class UserService {
     return users.sort((a, b) => b['sellerOrdersCount'] - a['sellerOrdersCount']);
   }
 
-  async getOne(id: string, from?, to = new Date(), collection?) {
-    const sellerOrders = collection
-      ? {
-          product: {
-            color: true,
-            model: { collection: true },
-          },
-        }
-      : true;
+  async getOne(id: string, from?: Date, to?: Date, collection?: String) {
     const data = await this.userRepository
       .findOne({
         where: {
           id,
-          ...(from && { sellerOrders: { date: Between(from, to) } }),
-          ...(collection && { sellerOrders: { product: { model: { collection: { id: Equal(collection) } } } } }),
         },
         relations: {
           position: true,
           filial: true,
-          sellerOrders,
-        },
-        order: {
-          sellerOrders: {
-            date: 'DESC',
-          },
         },
       })
       .catch(() => {
-        throw new NotFoundException('data not found');
+        throw new NotFoundException('User not found');
       });
 
     return data;
