@@ -263,7 +263,7 @@ export class ExcelService {
   }
 
   async createWithCode(newData: CreateQrBaseDto, partiyaId) {
-    if (newData.code) throw new BadRequestException('Code Not Exist!');
+    if (!newData.code) throw new BadRequestException('Code Not Exist!');
 
     const value: CreateQrBaseDto = {
       code: newData.code,
