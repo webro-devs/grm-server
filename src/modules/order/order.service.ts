@@ -70,7 +70,7 @@ export class OrderService {
     const data = await this.orderRepository.find({
       relations: {
         seller: true,
-        product: { model: { collection: true } },
+        product: { model: { collection: true }, color: true },
       },
       where: {
         seller: { id: userId },
