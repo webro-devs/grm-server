@@ -13,12 +13,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { OrderService } from './order.service';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { PaginationDto } from '../../infra/shared/dto';
@@ -42,6 +37,16 @@ export class OrderController {
     return await this.orderService.getAll({ ...query, route });
   }
 
+  @Get('/get-by-user/:id')
+  @ApiOperation({ summary: 'Method: returns all orders' })
+  @ApiOkResponse({
+    description: 'The orders were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getByUser(@Query() query, @Param('id') id: string) {
+    return await this.orderService.getByUser(id, query?.from || null, query?.to || null, query?.collcetion || null);
+  }
+
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single order by id' })
   @ApiOkResponse({
@@ -52,7 +57,7 @@ export class OrderController {
     return this.orderService.getById(id);
   }
 
-  @Get('order-by-kassa/:id')
+  @Get('/order-by-kassa/:id')
   @ApiOperation({ summary: 'Method: returns orders by kassa ID' })
   @ApiOkResponse({
     description: 'The order was returned successfully',
@@ -78,29 +83,18 @@ export class OrderController {
     description: 'Order was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeData(
-    @Body() positionData: UpdateOrderDto,
-    @Param('id') id: string,
-  ): Promise<UpdateResult> {
+  async changeData(@Body() positionData: UpdateOrderDto, @Param('id') id: string): Promise<UpdateResult> {
     return await this.orderService.change(positionData, id);
   }
 
   @Patch('/isActive/:id')
-  @Roles(
-    UserRoleEnum.BOSS,
-    UserRoleEnum.CASHIER,
-    UserRoleEnum.SUPPER_MANAGER,
-    UserRoleEnum.MANAGER,
-  )
+  @Roles(UserRoleEnum.BOSS, UserRoleEnum.CASHIER, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: updating order' })
   @ApiOkResponse({
     description: 'Order was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeIsActive(
-    @Param('id') id: string,
-    @Req() request,
-  ): Promise<UpdateResult> {
+  async changeIsActive(@Param('id') id: string, @Req() request): Promise<UpdateResult> {
     return await this.orderService.checkOrder(id, request.user.id);
   }
 
