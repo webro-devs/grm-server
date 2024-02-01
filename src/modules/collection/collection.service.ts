@@ -44,6 +44,9 @@ export class CollectionService {
 
   async getAllData() {
     return await this.collectionRepository.find({
+      order: {
+        title: 'ASC',
+      },
       relations: {
         model: true,
       },
