@@ -80,7 +80,6 @@ export class OrderService {
     });
 
     user.sellerOrders = data || [];
-
     return user;
   }
 
@@ -199,18 +198,21 @@ export class OrderService {
       throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
     }
 
-    if (value.x) {
+    if (value.isMetric) {
+      if (product.x < value.x) throw new BadRequestException('Not enough product meter!');
       product.x = product.x - value.x;
       product.setTotalSize();
       product.calculateProductPrice();
       additionalProfitSum = value.price - product.priceMeter * value.x * product.y;
       netProfitSum = (product.priceMeter - product.comingPrice) * value.x * product.y;
     } else {
-      product.count = +product.count - 1;
+      if (product.count < value.x) throw new BadRequestException('Not enough product count!');
+      product.count = +product.count - +value.x;
       product.setTotalSize();
       additionalProfitSum = value.price - product.price;
       netProfitSum = (product.priceMeter - product.comingPrice) * product.x * product.y;
     }
+    product.isMetric = value.isMetric;
     await this.saveRepo(product);
 
     const data = { ...value, seller: id, additionalProfitSum, netProfitSum };

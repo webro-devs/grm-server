@@ -18,6 +18,14 @@ class CreateOrderDto {
   readonly price: number;
 
   @ApiProperty({
+    description: `Is metric ?`,
+    example: true,
+  })
+  @IsNotEmpty()
+  @IsBoolean()
+  readonly isMetric: boolean;
+
+  @ApiProperty({
     description: `plasticSum`,
     example: 1000,
   })
@@ -30,18 +38,9 @@ class CreateOrderDto {
     example: 3,
     required: false,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
   readonly x: number;
-
-  @ApiProperty({
-    description: `date`,
-    example: '2023-05-02 08:10:23.726769',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  readonly date: string;
 
   @ApiProperty({
     description: `kassa id`,
