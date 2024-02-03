@@ -3,7 +3,7 @@ import { UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { TransferService } from './transfer.service';
 import { Route } from '../../infra/shared/decorators/route.decorator';
-import { PaginationDto } from '../../infra/shared/dto';
+import { PaginationDto, TransferQueryDto } from '../../infra/shared/dto';
 import { CreateTransferDto, UpdateTransferDto } from './dto';
 import { Transfer } from './transfer.entity';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -20,8 +20,10 @@ export class TransferController {
     description: 'The transfers were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getData(@Route() route: string, @Query() query: PaginationDto) {
-    return await this.transferService.getAll({ ...query, route });
+  async getData(@Route() route: string, @Query() query: TransferQueryDto, @Req() req) {
+    console.log(query);
+
+    return await this.transferService.getAll({ limit: query.limit, page: query.page, route }, req.where);
   }
 
   @Get('/:id')

@@ -19,14 +19,17 @@ export class TransferService {
     private readonly connection: DataSource,
   ) {}
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Transfer>): Promise<Pagination<Transfer>> {
+    console.log(where);
+
     return paginate<Transfer>(this.transferRepository, options, {
       relations: {
         from: true,
         to: true,
         transferer: true,
-        product: { color: true, partiya: true, model: { collection: true } },
+        product: { color: true, partiya: true, model: { collection: true }, filial: true },
       },
       order: { date: 'DESC' },
+      where,
     });
   }
 
