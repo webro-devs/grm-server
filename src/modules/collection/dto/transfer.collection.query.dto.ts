@@ -17,6 +17,7 @@ class PaginationCollectionDto {
   @ApiProperty({
     description: `Limit`,
     example: 20,
+    required: false,
   })
   @IsOptional()
   @IsNumber()
@@ -24,6 +25,7 @@ class PaginationCollectionDto {
   readonly limit: number;
 
   @ApiProperty({
+    required: false,
     description: `Page`,
     example: 1,
   })
