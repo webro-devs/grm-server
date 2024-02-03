@@ -8,7 +8,6 @@ class CreateQrBaseDto {
   })
   @IsNotEmpty()
   @IsString()
-  @IsUnique('qrbase')
   code: string;
 
   @ApiProperty({

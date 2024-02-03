@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Color } from '../color/color.entity';
 import { Model } from '../model/model.entity';
 import { Style } from '../style/style.entity';
@@ -18,7 +12,7 @@ export class QrBase {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar')
+  @Column('varchar', { unique: true })
   code: string;
 
   @ManyToOne(() => Country, (country) => country.qrBase)
