@@ -22,8 +22,12 @@ async function bootstrap() {
 
   app.use((req, res, next) => {
     const originalSend = res.send;
+    const now = new Date();
+    const options = { timeZone: 'Asia/Tashkent' };
+    const timeInTashkent = now.toLocaleString('en-US', options);
+
     res.send = function (body) {
-      console.log(`Response for ${req.method} ${req.url}`);
+      console.log(`[ ${timeInTashkent} ] Response for ${req.method} ${req.url}`);
       originalSend.apply(res, arguments);
     };
     next();
