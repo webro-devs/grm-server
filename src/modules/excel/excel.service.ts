@@ -360,7 +360,7 @@ export class ExcelService {
     return await this.addProductToPartiya(products, partiyaId);
   }
 
-  async createProduct(partiyaId) {
+  async createProduct(partiyaId, filialId?) {
     try {
       const partiya = await this.partiyaService.getOne(partiyaId);
       if (partiya.check) {
@@ -381,7 +381,7 @@ export class ExcelService {
       products = this.setPrice(products);
       const filial = await this.filialService.findOrCreateFilialByTitle('baza');
 
-      let productss = this.setProperty(products, filial.id);
+      let productss = this.setProperty(products, filialId ? filialId : filial.id);
 
       const response = await this.productService.create(productss);
       await this.partiyaService.change({ check: true }, partiya.id);
