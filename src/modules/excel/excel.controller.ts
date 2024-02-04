@@ -87,7 +87,7 @@ export class ExcelController {
     description: 'The data imported and saved to baza successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async CreateProducts(@Param('id') id: string, @Param('filialId') filialId: string) {
+  async CreateProducts(@Param('id') id: string, @Param('filialId') filialId?: string) {
     const response = await this.fileService.createProduct(id, filialId);
 
     return response;
