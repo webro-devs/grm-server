@@ -79,7 +79,7 @@ export class ExcelController {
   }
 
   @Public()
-  @Post('/product/:id/:filialId')
+  @Post('/product/:id')
   @ApiOperation({
     summary: 'Method: imports data and update products in the baza',
   })
@@ -87,8 +87,8 @@ export class ExcelController {
     description: 'The data imported and saved to baza successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async CreateProducts(@Param('id') id: string, @Param('filialId') filialId?: string) {
-    const response = await this.fileService.createProduct(id, filialId);
+  async CreateProducts(@Param('id') id: string, @Body() data) {
+    const response = await this.fileService.createProduct(id, data?.filial);
 
     return response;
   }

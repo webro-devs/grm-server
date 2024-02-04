@@ -360,7 +360,7 @@ export class ExcelService {
     return await this.addProductToPartiya(products, partiyaId);
   }
 
-  async createProduct(partiyaId, filialId?) {
+  async createProduct(partiyaId, filialId) {
     try {
       const partiya = await this.partiyaService.getOne(partiyaId);
       if (partiya.check) {
