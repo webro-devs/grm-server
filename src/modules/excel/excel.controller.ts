@@ -88,6 +88,8 @@ export class ExcelController {
   })
   @HttpCode(HttpStatus.CREATED)
   async CreateProducts(@Param('id') id: string, @Body() data) {
+    console.log(data);
+
     const response = await this.fileService.createProduct(id, data?.filial);
 
     return response;
