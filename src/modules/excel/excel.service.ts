@@ -381,6 +381,7 @@ export class ExcelService {
       products = this.setPrice(products);
       const filial = await this.filialService.findOrCreateFilialByTitle('baza');
 
+      return { filialId, filial };
       let productss = this.setProperty(products, filialId ? filialId : filial.id);
 
       const response = await this.productService.create(productss);
