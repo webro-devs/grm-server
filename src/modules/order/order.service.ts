@@ -44,7 +44,12 @@ export class OrderService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     where?: FindOptionsWhere<Order>,
   ): Promise<Pagination<Order>> {
-    return paginate<Order>(this.orderRepository, options);
+    return paginate<Order>(this.orderRepository, options, {
+      relations: {
+        seller: true,
+        product: { model: { collection: true }, color: true },
+      },
+    });
   }
 
   async getById(id: string) {
