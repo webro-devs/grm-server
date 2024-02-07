@@ -64,7 +64,7 @@ export class OrderService {
     return data;
   }
 
-  async getByUser(userId, from?, to?, collcetion?) {
+  async getByUser(userId, from?, to?, collcetion?, index?: number) {
     const user = await this.entityManager
       .getRepository('users')
       .findOne({ where: { id: userId }, relations: { filial: true, position: true } })
@@ -85,6 +85,7 @@ export class OrderService {
     });
 
     user.sellerOrders = data || [];
+    user.index = index;
     return user;
   }
 

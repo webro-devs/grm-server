@@ -88,7 +88,10 @@ export class UserService {
       delete user.login;
     }
 
-    return users.sort((a, b) => b['sellerOrdersCount'] - a['sellerOrdersCount']);
+    return users
+      .sort((a, b) => b['sellerOrdersCount'] - a['sellerOrdersCount'])
+      .splice(11)
+      .map((obj, index) => ({ ...obj, index: index + 1 }));
   }
 
   async getOne(id: string, from?: Date, to?: Date, collection?: String) {
