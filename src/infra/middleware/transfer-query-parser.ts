@@ -39,7 +39,7 @@ class TransferQueryParserMiddleware implements NestMiddleware {
     }
 
     if (filialId) {
-      where = { ...where, $and: [{ $or: [{ from: { id: filialId }, to: { id: filialId } }] }] };
+      where = { ...where, $or: [{ from: { id: filialId } }, { to: { id: filialId } }] };
     }
     // where.count = MoreThanOrEqual(1);
 
