@@ -69,9 +69,7 @@ export class ProductExcel {
   @JoinColumn()
   collection: Collection;
 
-  @ManyToOne(() => Partiya, (partiya) => partiya.productsExcel, {
-    nullable: false,
-  })
+  @ManyToOne(() => Partiya, (partiya) => partiya.productsExcel, { onDelete: 'CASCADE' })
   @JoinColumn()
   partiya: Partiya;
 }
