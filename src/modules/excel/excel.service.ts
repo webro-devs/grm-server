@@ -378,7 +378,7 @@ export class ExcelService {
         where: { partiya: { id: partiyaId } },
       });
       products = await this.setImg(products);
-      products = this.setPrice(products);
+      products = this.setPrice(products, partiya.expense);
       const filial = await this.filialService.findOrCreateFilialByTitle('baza');
       let productss = this.setProperty(products, filialId ? filialId : filial.id);
 
