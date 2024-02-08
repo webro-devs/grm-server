@@ -34,6 +34,6 @@ export class Partiya {
   })
   excel: Excel;
 
-  @OneToMany(() => ProductExcel, (product) => product.partiya, { cascade: true })
+  @OneToMany(() => ProductExcel, (product) => product.partiya, { cascade: true, onDelete: 'CASCADE' })
   productsExcel: ProductExcel[];
 }
