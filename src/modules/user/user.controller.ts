@@ -83,8 +83,8 @@ export class UserController {
     description: 'The users selling result was returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getUserSelling(@Param('filialId') id: string): Promise<User[]> {
-    return this.userService.getUsersWithSellingWithOrder(id);
+  async getUserSelling(@Param('filialId') id: string) {
+    return await this.userService.getUsersWithSellingWithOrder(id);
   }
 
   @Public()
