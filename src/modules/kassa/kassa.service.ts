@@ -45,7 +45,6 @@ export class KassaService {
 
   async GetOpenKassa(id: string) {
     const kassa = await this.kassaRepository.findOne({
-      where: { filial: { id }, isActive: true },
       relations: {
         orders: {
           seller: true,
@@ -59,6 +58,7 @@ export class KassaService {
         },
         filial: true,
       },
+      where: { filial: { id }, isActive: true, orders: { isActive: 'accept' } },
     });
 
     if (kassa) {
@@ -199,7 +199,7 @@ export class KassaService {
       tip: 'order',
     }));
 
-    const mergedArray = [...cashflows, ...orders.filter((e) => e.isActive)];
+    const mergedArray = [...cashflows, ...orders];
 
     // Sort the merged array by date
     const sortedArray = mergedArray.sort((b, a) => a.date.getTime() - b.date.getTime());
