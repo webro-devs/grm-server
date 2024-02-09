@@ -204,6 +204,16 @@ export class OrderService {
       throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
     }
 
+    const user = await this.entityManager
+      .getRepository('users')
+      .findOne({ where: { id: id }, relations: { filial: true } })
+      .catch(() => {
+        throw new BadRequestException('User Not Found!');
+      });
+
+    const filial = user.filial.id;
+    const kassa = await this.kassaService.GetOpenKassa(filial);
+
     if (value.isMetric) {
       if (product.x < value.x) throw new BadRequestException('Not enough product meter!');
       product.x = product.x - value.x;
@@ -221,7 +231,7 @@ export class OrderService {
     product.isMetric = value.isMetric;
     await this.saveRepo(product);
 
-    const data = { ...value, seller: id, additionalProfitSum, netProfitSum };
+    const data = { ...value, seller: id, additionalProfitSum, netProfitSum, kassa: value.kassa || kassa.id };
     const response = await this.orderRepository
       .createQueryBuilder()
       .insert()
