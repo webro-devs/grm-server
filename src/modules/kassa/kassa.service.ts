@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, Not, Repository } from 'typeorm';
 
 import { Kassa } from './kassa.entity';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
@@ -58,7 +58,7 @@ export class KassaService {
         },
         filial: true,
       },
-      where: { filial: { id }, isActive: true, orders: { isActive: 'accept' } },
+      where: { filial: { id }, isActive: true, orders: { isActive: Not('reject') } },
     });
 
     if (kassa) {
