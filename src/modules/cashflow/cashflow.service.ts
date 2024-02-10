@@ -160,7 +160,7 @@ export class CashflowService {
 
   async create(value: CreateCashflowDto, id: string) {
     try {
-      const data = { ...value, casher: id };
+      const data = { ...value, casher: id, price: Math.abs(value.price) };
       const response = await this.cashflowRepository
         .createQueryBuilder()
         .insert()

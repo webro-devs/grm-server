@@ -13,7 +13,6 @@ class CreateCashflowDto {
   })
   @IsNotEmpty()
   @IsNumber()
-  @Transform(parseTextToAbs)
   readonly price: number;
 
   @ApiProperty({
