@@ -181,7 +181,7 @@ export class CashflowService {
 
       if (value.type == 'Расход') {
         if (kassa.totalSum < value.price) throw new BadRequestException('You dont have enough money!');
-        if (value.title == 'Магазин Приход') {
+        if (value.title == 'Магазин Расход') {
           kassa.expenditureBoss = kassa.expenditureBoss + value.price;
         } else {
           kassa.expenditureShop = kassa.expenditureShop + value.price;
