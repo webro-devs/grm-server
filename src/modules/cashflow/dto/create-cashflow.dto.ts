@@ -1,6 +1,11 @@
 import { IsNotEmpty, IsString, IsOptional, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { CashFlowEnum } from '../../../infra/shared/enum';
+import { Transform, TransformFnParams } from 'class-transformer';
+
+function parseTextToAbs({ key, value }: TransformFnParams) {
+  return Math.abs(value);
+}
 class CreateCashflowDto {
   @ApiProperty({
     description: `price`,
@@ -8,6 +13,7 @@ class CreateCashflowDto {
   })
   @IsNotEmpty()
   @IsNumber()
+  @Transform(parseTextToAbs)
   readonly price: number;
 
   @ApiProperty({
