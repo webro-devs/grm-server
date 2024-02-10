@@ -398,7 +398,7 @@ export class ExcelService {
     );
     const expenseByKv = expense / fullKv;
     products = products.map((pr) => {
-      pr.commingPrice = expenseByKv + pr.collectionPrice;
+      pr.comingPrice = expenseByKv + pr.collectionPrice;
       delete pr.collectionPrice;
       delete pr.isEdited;
       return pr;
