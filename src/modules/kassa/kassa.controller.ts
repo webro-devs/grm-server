@@ -81,7 +81,7 @@ export class KassaController {
       const newKassa = await this.kassaService.create({ filial: id });
       kassa = await this.kassaService.GetOpenKassa(newKassa['raw'][0].id);
     }
-    kassa['income'] = Number(kassa.cashFlowSumBoss) + Number(kassa.cashFlowSumShop);
+    kassa['income'] = kassa.totalSum;
     kassa['expense'] = Number(kassa.expenditureBoss) + Number(kassa.expenditureShop);
     return kassa;
   }
