@@ -29,6 +29,7 @@ import { Public } from '../auth/decorators/public.decorator';
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
+  @Public()
   @Get('/')
   @ApiOperation({ summary: 'Method: returns all products' })
   @ApiOkResponse({
