@@ -81,7 +81,9 @@ export class KassaController {
     console.log('kassa 1:', kassa);
 
     if (!kassa || !kassa?.id) {
-      await this.kassaService.create({ filial: id });
+      const res = await this.kassaService.create({ filial: id });
+      console.log(res);
+
       kassa = await this.kassaService.GetOpenKassa(id);
     }
 
