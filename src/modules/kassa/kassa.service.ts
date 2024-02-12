@@ -199,7 +199,7 @@ export class KassaService {
       tip: 'order',
     }));
 
-    const mergedArray = [...cashflows, ...orders];
+    const mergedArray = [...cashflows, ...orders.filter((e) => e.isActive == 'accept' || e.isActive == 'progress')];
 
     // Sort the merged array by date
     const sortedArray = mergedArray.sort((b, a) => a.date.getTime() - b.date.getTime());
