@@ -216,7 +216,7 @@ export class OrderService {
 
     if (value.isMetric) {
       if (product.y < value.x) throw new BadRequestException('Not enough product meter!');
-      product.x = product.y - value.x;
+      product.y = product.y - value.x;
       product.setTotalSize();
       product.calculateProductPrice();
       additionalProfitSum = value.price - product.priceMeter * value.x * product.y;
