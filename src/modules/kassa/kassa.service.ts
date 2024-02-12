@@ -58,7 +58,7 @@ export class KassaService {
         },
         filial: true,
       },
-      where: { filial: { id }, isActive: true, orders: { isActive: Not('reject') } },
+      where: { filial: { id }, isActive: true },
     });
 
     if (kassa) {
