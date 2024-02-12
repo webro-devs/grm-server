@@ -75,13 +75,18 @@ export class KassaController {
         throw new BadRequestException("Mr Boss, You don't give filial for find kassa!");
       }
     }
+    console.log('user', user);
 
     let kassa = await this.kassaService.GetOpenKassa(id);
+    console.log('kassa 1:', kassa);
+
     if (!kassa || !kassa?.id) {
       const newKassa = await this.kassaService.create({ filial: id });
       kassa = await this.kassaService.GetOpenKassa(newKassa['raw'][0].id);
     }
-    kassa['income'] = kassa.totalSum || 0;
+
+    console.log('kassa 2', kassa);
+    kassa['income'] = kassa?.totalSum || 0;
     kassa['expense'] = Number(kassa.expenditureBoss) + Number(kassa.expenditureShop);
     return kassa;
   }
