@@ -215,6 +215,7 @@ export class OrderService {
     const kassa = await this.kassaService.GetOpenKassa(filial);
 
     if (value.isMetric) {
+      console.log(product);
       if (product.x < value.x) throw new BadRequestException('Not enough product meter!');
       product.x = product.x - value.x;
       product.setTotalSize();
