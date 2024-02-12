@@ -50,18 +50,23 @@ class ProductQueryParserMiddleware implements NestMiddleware {
         price: LessThanOrEqual(endPrice),
       };
     }
+
     if (style) {
-      where.style = style;
+      where.style = In(style);
     }
+
     if (size?.length) {
       where.size = In(size);
     }
+
     if (shape) {
-      where.shape = shape;
+      where.shape = In(shape);
     }
+
     if (color) {
-      where.color = color;
+      where.color = { title: In(color) };
     }
+
     if (collectionId) {
       where.model = {
         collection: {
@@ -69,20 +74,24 @@ class ProductQueryParserMiddleware implements NestMiddleware {
         },
       };
     }
+
     if (modelId) {
       where.model = where?.model || {};
       where.model.id = modelId;
     }
+
     if (filialId) {
       where.filial = {
         id: filialId,
       };
     }
+
     if (partiyaId) {
       where.partiya = {
         id: partiyaId,
       };
     }
+    
     if (isMetric) {
       where.isMetric = true;
     }

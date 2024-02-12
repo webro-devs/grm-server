@@ -4,7 +4,6 @@ import {
   Body,
   HttpCode,
   HttpStatus,
-  HttpException,
   Delete,
   Patch,
   Param,

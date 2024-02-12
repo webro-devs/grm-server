@@ -1,12 +1,4 @@
-import {
-  IsArray,
-  isArray,
-  IsBoolean,
-  isNumber,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsArray, isArray, IsBoolean, isNumber, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { BadRequestException } from '@nestjs/common';
@@ -66,10 +58,11 @@ class ProductQueryDto {
 
   @ApiProperty({
     description: `style`,
-    example: 'classic',
+    example: '["Modern", "Classic"]',
   })
   @IsOptional()
-  @IsString()
+  @IsArray()
+  @Transform(parseTextToArray)
   readonly style;
 
   @ApiProperty({
@@ -83,18 +76,20 @@ class ProductQueryDto {
 
   @ApiProperty({
     description: `shape`,
-    example: 'square',
+    example: '["Triangle", "Square"]',
   })
   @IsOptional()
-  @IsString()
+  @IsArray()
+  @Transform(parseTextToArray)
   readonly shape;
 
   @ApiProperty({
     description: `color`,
-    example: 'red',
+    example: '["Red", "Yellow"]',
   })
   @IsOptional()
-  @IsString()
+  @IsArray()
+  @Transform(parseTextToArray)
   readonly color;
 
   @ApiProperty({

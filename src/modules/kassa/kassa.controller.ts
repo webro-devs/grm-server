@@ -77,11 +77,11 @@ export class KassaController {
     }
 
     let kassa = await this.kassaService.GetOpenKassa(id);
-    if (!kassa) {
+    if (!kassa || !kassa?.id) {
       const newKassa = await this.kassaService.create({ filial: id });
       kassa = await this.kassaService.GetOpenKassa(newKassa['raw'][0].id);
     }
-    kassa['income'] = kassa.totalSum;
+    kassa['income'] = kassa.totalSum || 0;
     kassa['expense'] = Number(kassa.expenditureBoss) + Number(kassa.expenditureShop);
     return kassa;
   }
