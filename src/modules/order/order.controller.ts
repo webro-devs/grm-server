@@ -11,6 +11,7 @@ import {
   Get,
   Query,
   Req,
+  ForbiddenException,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
@@ -50,7 +51,13 @@ export class OrderController {
     const day = String(date.getDate()).padStart(2, '0');
 
     query.to = !query?.to ? `${year}-${month}-${day}` : query.to;
-    return await this.orderService.getByUser(id, query?.from || null, query?.to, query?.collcetion || null, query.index || 1);
+    return await this.orderService.getByUser(
+      id,
+      query?.from || null,
+      query?.to,
+      query?.collcetion || null,
+      query.index || 1,
+    );
   }
 
   @Get('/:id')
@@ -80,6 +87,9 @@ export class OrderController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateOrderDto, @Req() request) {
+    if (!request?.user?.id) {
+      throw new ForbiddenException('Not Authorized!');
+    }
     return await this.orderService.create(data, request.user.id);
   }
 
