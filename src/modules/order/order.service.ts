@@ -85,6 +85,7 @@ export class OrderService {
     });
 
     user.sellerOrders = data.filter((e) => e.isActive != 'reject') || [];
+    user.sellerOrdersCount = user?.sellerOrders?.length || 0;
     user.index = index;
     return user;
   }
