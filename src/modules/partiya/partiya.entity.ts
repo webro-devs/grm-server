@@ -12,6 +12,9 @@ export class Partiya {
   @Column()
   country: string;
 
+  @Column({ nullable: true })
+  title: string;
+
   @Column('numeric', {
     precision: 20,
     scale: 2,

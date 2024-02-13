@@ -10,6 +10,14 @@ class CreatePartiyaDto {
   readonly country: string;
 
   @ApiProperty({
+    description: `title`,
+    example: 'Calipso partiyasi',
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly title: string;
+
+  @ApiProperty({
     description: `expense : Расход:`,
     example: 8000,
   })

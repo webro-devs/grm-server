@@ -11,6 +11,15 @@ class UpdatePartiyaDto {
   readonly country?: string;
 
   @ApiProperty({
+    description: `title`,
+    example: 'Better uchun',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  readonly title?: string;
+
+  @ApiProperty({
     description: `expense : Расход:`,
     example: 8000,
     required: false,
