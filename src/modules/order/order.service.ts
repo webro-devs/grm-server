@@ -21,8 +21,6 @@ import { CashFlowEnum, CashflowExpenditureEnum, OrderEnum } from 'src/infra/shar
 import { CashflowService } from '../cashflow/cashflow.service';
 import { Product } from '../product/product.entity';
 import { GRMGateway } from '../web-socket/web-socket.gateway';
-import { UserService } from '../user/user.service';
-import { UserModule } from '../user/user.module';
 
 Injectable();
 export class OrderService {
@@ -39,16 +37,14 @@ export class OrderService {
     private readonly entityManager: EntityManager,
   ) {}
 
-  async getAll(
-    options: IPaginationOptions,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    where?: FindOptionsWhere<Order>,
-  ): Promise<Pagination<Order>> {
+  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Product>): Promise<Pagination<Order>> {
     return paginate<Order>(this.orderRepository, options, {
       relations: {
         seller: true,
-        product: { model: { collection: true }, color: true },
+        product: { model: { collection: true }, color: true, filial: true },
       },
+      where,
+      order: { date: 'DESC' },
     });
   }
 
@@ -329,7 +325,7 @@ export class OrderService {
       CashFlowEnum.Consumption,
       userId,
     );
-    return "ok"
+    return 'ok';
   }
 
   async addCashFlow(price: number, kassa: string, title: string, type: CashFlowEnum, id: string) {

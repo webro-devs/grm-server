@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Order } from './order.entity';
@@ -9,6 +9,7 @@ import { KassaModule } from '../kassa/kassa.module';
 import { ActionModule } from '../action/action.module';
 import { CashflowModule } from '../cashflow/cashflow.module';
 import { GrmSocketModule } from '../web-socket/web-socket.module';
+import { OrderQueryParserMiddleware } from 'src/infra/middleware';
 
 @Module({
   imports: [
@@ -23,4 +24,8 @@ import { GrmSocketModule } from '../web-socket/web-socket.module';
   providers: [OrderService],
   exports: [OrderService],
 })
-export class OrderModule {}
+export class OrderModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(OrderQueryParserMiddleware).forRoutes({ path: '/order', method: RequestMethod.GET });
+  }
+}

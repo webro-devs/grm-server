@@ -17,7 +17,7 @@ import { UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { OrderService } from './order.service';
 import { Route } from '../../infra/shared/decorators/route.decorator';
-import { PaginationDto } from '../../infra/shared/dto';
+import { OrderQueryDto, PaginationDto } from '../../infra/shared/dto';
 import { CreateOrderDto, UpdateOrderDto } from './dto';
 import { Order } from './order.entity';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -34,8 +34,8 @@ export class OrderController {
     description: 'The orders were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getData(@Route() route: string, @Query() query: PaginationDto) {
-    return await this.orderService.getAll({ ...query, route });
+  async getData(@Route() route: string, @Query() query: OrderQueryDto, @Req() req) {
+    return await this.orderService.getAll({ limit: query.limit, page: query.page, route }, req.where);
   }
 
   @Get('/get-by-user/:id')
