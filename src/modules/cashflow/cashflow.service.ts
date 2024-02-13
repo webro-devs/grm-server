@@ -170,6 +170,7 @@ export class CashflowService {
         .execute();
 
       const kassa = await this.kassaService.getById(value.kassa);
+      console.log('Before', kassa);
       if (value.type == 'Приход') {
         kassa.totalSum = kassa.totalSum + value.price;
         if (value.title == 'Босс Приход') {
@@ -187,6 +188,8 @@ export class CashflowService {
           kassa.expenditureBoss = kassa.expenditureBoss + value.price;
         }
       }
+
+      console.log('after', kassa);
 
       await this.connection.transaction(async (manager: EntityManager) => {
         await manager.save(kassa);
