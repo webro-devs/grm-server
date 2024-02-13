@@ -329,6 +329,7 @@ export class OrderService {
       CashFlowEnum.Consumption,
       userId,
     );
+    return "ok"
   }
 
   async addCashFlow(price: number, kassa: string, title: string, type: CashFlowEnum, id: string) {
