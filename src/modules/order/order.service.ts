@@ -312,7 +312,7 @@ export class OrderService {
       },
     });
 
-    await this.returnProduct(order.product, 1, order.x);
+    await this.returnProduct(order.product, order.x, order.x);
 
     await this.addCashFlow(
       order.price - order.additionalProfitSum,
