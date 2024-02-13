@@ -90,7 +90,7 @@ export class UserService {
 
     return users
       .sort((a, b) => b['sellerOrdersCount'] - a['sellerOrdersCount'])
-      .splice(11)
+      .splice(0, 11)
       .map((obj, index) => ({ ...obj, index: index + 1 }));
   }
 
