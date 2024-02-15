@@ -16,6 +16,9 @@ export class Filial {
   @Column({ nullable: true })
   name: string;
 
+  @Column({ nullable: true })
+  telegram: string;
+
   @Column()
   address: string;
 

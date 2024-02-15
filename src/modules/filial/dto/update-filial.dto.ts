@@ -18,6 +18,14 @@ class UpdateFilialDto {
   readonly name: string;
 
   @ApiProperty({
+    description: `telegram link`,
+    example: '',
+  })
+  @IsOptional()
+  @IsString()
+  readonly telegram: string;
+
+  @ApiProperty({
     description: `address`,
     example: 'Toshmi',
   })

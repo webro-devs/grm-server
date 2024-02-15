@@ -19,6 +19,14 @@ class CreateFilialDto {
   readonly name: string;
 
   @ApiProperty({
+    description: `telegram link`,
+    example: '',
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly telegram: string;
+
+  @ApiProperty({
     description: `address`,
     example: 'Aloqa markazi',
   })
