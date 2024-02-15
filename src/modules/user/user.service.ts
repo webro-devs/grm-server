@@ -82,7 +82,9 @@ export class UserService {
       relations: { sellerOrders: { product: { color: true } }, filial: true, position: true },
       where: { filial: { id }, role: 1 },
     });
+    
     for (const user of users) {
+      console.log(user);
       user['sellerOrdersCount'] = user.sellerOrders.length;
       delete user.password;
       delete user.login;
