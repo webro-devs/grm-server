@@ -127,12 +127,14 @@ export class CollectionService {
         remainingSize += products.length ? products.map((p) => +p.totalSize).reduce((a, b) => a + b) : 0;
         remainingCount += products.length ? products.map((p) => p.count).reduce((a, b) => a + b) : 0;
       }
-      result.push({
-        remainingCount,
-        remainingSize,
-        remainingSum,
-        title: data[i].title,
-      });
+      if (remainingSize > 0) {
+        result.push({
+          remainingCount,
+          remainingSize,
+          remainingSum,
+          title: data[i].title,
+        });
+      }
     }
     return result;
   }
