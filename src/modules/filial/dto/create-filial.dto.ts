@@ -11,6 +11,14 @@ class CreateFilialDto {
   readonly title: string;
 
   @ApiProperty({
+    description: `name`,
+    example: 'ozimizi filiallar nomi',
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly name: string;
+
+  @ApiProperty({
     description: `address`,
     example: 'Aloqa markazi',
   })

@@ -10,6 +10,14 @@ class UpdateFilialDto {
   readonly title: string;
 
   @ApiProperty({
+    description: `name`,
+    example: 'ozimizi filial',
+  })
+  @IsOptional()
+  @IsString()
+  readonly name: string;
+
+  @ApiProperty({
     description: `address`,
     example: 'Toshmi',
   })

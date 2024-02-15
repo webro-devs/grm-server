@@ -13,6 +13,9 @@ export class Filial {
   @Column()
   title: string;
 
+  @Column({ nullable: true })
+  name: string;
+
   @Column()
   address: string;
 
