@@ -76,7 +76,6 @@ export class OrderService {
       where: {
         seller: { id: userId },
         ...(from && { date: Between(from, to) }),
-        ...(collcetion && { product: { model: { collection: { id: Equal(collcetion) } } } }),
       },
     });
 
@@ -305,6 +304,9 @@ export class OrderService {
         product: {
           filial: true,
           color: true,
+          model: {
+            collection: true,
+          },
         },
         kassa: true,
       },
@@ -316,9 +318,10 @@ export class OrderService {
     await this.addCashFlow(
       order.price + order.plasticSum,
       order.kassa.id,
-      CashflowExpenditureEnum.BOSS,
+      CashflowExpenditureEnum.SHOP,
       CashFlowEnum.Consumption,
       userId,
+      `${order.product.model.collection[0].title} | ${order.product.model.title} | ${order.x}`,
     );
 
     await this.orderRepository.update({ id: order.id }, { isActive: OrderEnum.Reject });
@@ -326,8 +329,8 @@ export class OrderService {
     return 'ok';
   }
 
-  async addCashFlow(price: number, kassa: string, title: string, type: CashFlowEnum, id: string) {
-    await this.cashFlowService.create({ price, comment: 'Возврат товара', casher: '', kassa, title, type }, id);
+  async addCashFlow(price: number, kassa: string, title: string, type: CashFlowEnum, id: string, comment?) {
+    await this.cashFlowService.create({ price, comment: comment || 'Возврат товара', casher: '', kassa, title, type }, id);
   }
 
   async returnProduct(product: Product, count: number, x?: number) {
