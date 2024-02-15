@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { Between, DataSource, EntityManager, Equal, FindOptionsWhere, Repository } from 'typeorm';
+import { Between, DataSource, EntityManager, Equal, FindOptionsWhere, Not, Repository } from 'typeorm';
 
 import { Order } from './order.entity';
 import { UpdateOrderDto, CreateOrderDto } from './dto';
@@ -43,7 +43,7 @@ export class OrderService {
         seller: true,
         product: { model: { collection: true }, color: true, filial: true },
       },
-      where,
+      where: { ...where, isActive: Not('reject') },
       order: { date: 'DESC' },
     });
   }
@@ -287,13 +287,13 @@ export class OrderService {
       product.calculateProductPrice();
       product.setTotalSize();
     } else {
-      product.count += 1;
+      product.count += data.x;
       product.setTotalSize();
     }
 
     await this.saveRepo(product);
 
-    return await this.orderRepository.update({ id }, { isActive: OrderEnum.Reject });
+    return await this.orderRepository.delete({ id });
   }
 
   async returnOrder(id: string, userId: string) {
@@ -325,6 +325,9 @@ export class OrderService {
       CashFlowEnum.Consumption,
       userId,
     );
+
+    await this.orderRepository.update({ id: order.id }, { isActive: OrderEnum.Reject });
+
     return 'ok';
   }
 
