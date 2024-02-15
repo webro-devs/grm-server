@@ -280,6 +280,7 @@ export class OrderService {
       where: { id },
       relations: { product: true },
     });
+    if (data.isActive === OrderEnum.Reject) throw new BadRequestException('Already Rejected');
     const product = data.product;
 
     if (product.isMetric) {
@@ -308,6 +309,7 @@ export class OrderService {
       },
     });
 
+    if (order.isActive === OrderEnum.Reject) throw new BadRequestException('Already Rejected!');
     await this.returnProduct(order.product, order.x, order.x);
 
     await this.addCashFlow(
