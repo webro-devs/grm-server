@@ -51,6 +51,8 @@ export class OrderController {
     const day = String(date.getDate()).padStart(2, '0');
 
     query.to = !query?.to ? `${year}-${month}-${day}` : query.to;
+    console.log(query);
+
     return await this.orderService.getByUser(
       id,
       query?.from || null,
