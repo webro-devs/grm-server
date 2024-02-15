@@ -80,6 +80,7 @@ export class OrderService {
       },
     });
 
+    user.sellerOrders = data || [];
     user.sellerOrdersCount = user?.sellerOrders?.length || 0;
     user.index = index;
     return user;
@@ -312,13 +313,7 @@ export class OrderService {
     if (order.isActive === OrderEnum.Reject) throw new BadRequestException('Already Rejected!');
     await this.returnProduct(order.product, order.x, order.x);
 
-    await this.addCashFlow(
-      order.price,
-      order.kassa.id,
-      CashflowExpenditureEnum.BOSS,
-      CashFlowEnum.Consumption,
-      userId,
-    );
+    await this.addCashFlow(order.price, order.kassa.id, CashflowExpenditureEnum.BOSS, CashFlowEnum.Consumption, userId);
 
     await this.orderRepository.update({ id: order.id }, { isActive: OrderEnum.Reject });
 
