@@ -80,7 +80,6 @@ export class OrderService {
       },
     });
 
-    user.sellerOrders = data.filter((e) => e.isActive != 'reject') || [];
     user.sellerOrdersCount = user?.sellerOrders?.length || 0;
     user.index = index;
     return user;
@@ -213,11 +212,12 @@ export class OrderService {
 
     if (value.isMetric) {
       if (product.y < value.x) throw new BadRequestException('Not enough product meter!');
-      product.y = product.y - value.x;
+      const cost = value.x / 100;
+      product.y = product.y - cost;
       product.setTotalSize();
       product.calculateProductPrice();
-      additionalProfitSum = value.price - product.priceMeter * value.x * product.y;
-      netProfitSum = (product.priceMeter - product.comingPrice) * value.x * product.y;
+      additionalProfitSum = value.price - product.priceMeter * cost * product.y;
+      netProfitSum = (product.priceMeter - product.comingPrice) * cost * product.y;
     } else {
       if (product.count < value.x) throw new BadRequestException('Not enough product count!');
       product.count = +product.count - +value.x;
@@ -313,17 +313,9 @@ export class OrderService {
     await this.returnProduct(order.product, order.x, order.x);
 
     await this.addCashFlow(
-      order.price - order.additionalProfitSum,
+      order.price,
       order.kassa.id,
       CashflowExpenditureEnum.BOSS,
-      CashFlowEnum.Consumption,
-      userId,
-    );
-
-    await this.addCashFlow(
-      order.additionalProfitSum,
-      order.kassa.id,
-      CashflowExpenditureEnum.SHOP,
       CashFlowEnum.Consumption,
       userId,
     );

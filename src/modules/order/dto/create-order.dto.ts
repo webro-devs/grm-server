@@ -3,15 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { BadRequestException } from '@nestjs/common';
 
-function parseXValue({ key, value }: TransformFnParams) {
-  const int = Number(value / 100);
-  if (isNaN(int)) {
-    throw new BadRequestException(
-      `${key} should be integer. Or pagination query string may be absent, then the page=1, limit=10 will be used.`,
-    );
-  }
-  return int;
-}
 class CreateOrderDto {
   @ApiProperty({
     description: `product id`,
@@ -52,7 +43,6 @@ class CreateOrderDto {
   })
   @IsNotEmpty()
   @IsNumber()
-  @Transform(parseXValue)
   readonly x: number;
 
   @ApiProperty({
