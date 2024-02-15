@@ -4,7 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 class CreateFilialDto {
   @ApiProperty({
     description: `title`,
-    example: 'Carpet center',
+    example: '',
   })
   @IsNotEmpty()
   @IsString()
@@ -12,7 +12,7 @@ class CreateFilialDto {
 
   @ApiProperty({
     description: `name`,
-    example: 'ozimizi filiallar nomi',
+    example: '',
   })
   @IsNotEmpty()
   @IsString()
@@ -28,7 +28,7 @@ class CreateFilialDto {
 
   @ApiProperty({
     description: `address`,
-    example: 'Aloqa markazi',
+    example: '',
   })
   @IsNotEmpty()
   @IsString()
@@ -36,7 +36,7 @@ class CreateFilialDto {
 
   @ApiProperty({
     description: `address link`,
-    example: 'https://maps.app.goo.gl/KHo1x8cn5fMmXpAE6',
+    example: '',
   })
   @IsNotEmpty()
   @IsString()
@@ -44,7 +44,7 @@ class CreateFilialDto {
 
   @ApiProperty({
     description: `Landmark`,
-    example: 'Aloqa markazi',
+    example: '',
   })
   @IsNotEmpty()
   @IsString()
@@ -52,7 +52,7 @@ class CreateFilialDto {
 
   @ApiProperty({
     description: `phone filial`,
-    example: '+99891 111 22 33',
+    example: '+998',
   })
   @IsNotEmpty()
   @IsString()
@@ -60,7 +60,7 @@ class CreateFilialDto {
 
   @ApiProperty({
     description: `second phone filial`,
-    example: '+99892 111 22 33',
+    example: '+998',
   })
   @IsNotEmpty()
   @IsString()
@@ -68,7 +68,7 @@ class CreateFilialDto {
 
   @ApiProperty({
     description: `Starting time`,
-    example: '9:00',
+    example: '08:00',
   })
   @IsNotEmpty()
   @IsString()
