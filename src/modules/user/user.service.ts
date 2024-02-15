@@ -83,7 +83,7 @@ export class UserService {
       where: { filial: { id }, role: 1 },
     });
     for (const user of users) {
-      user['sellerOrdersCount'] = user.sellerOrders.filter((e) => e.isActive != 'reject').length;
+      user['sellerOrdersCount'] = user.sellerOrders.filter((e) => e.isActive).length;
       delete user.password;
       delete user.login;
     }
