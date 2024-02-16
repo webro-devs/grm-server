@@ -307,6 +307,7 @@ export class OrderService {
           model: {
             collection: true,
           },
+          partiya: true
         },
         kassa: true,
       },
