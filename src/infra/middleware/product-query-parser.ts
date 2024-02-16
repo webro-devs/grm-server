@@ -100,6 +100,7 @@ class ProductQueryParserMiddleware implements NestMiddleware {
     if (search) {
       search = search.split('+').join(' ');
       where = {
+        filial: filialId,
         search,
         fields: true,
       };

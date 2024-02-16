@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, FindOptionsWhere, Repository } from 'typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
@@ -20,10 +20,13 @@ export class ProductService {
 
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Product>) {
     if (where['fields']) {
+      if (!where?.filial) throw new BadRequestException('Filial should be exist!');
       const querybuilder = this.productRepository.createQueryBuilder('product');
       querybuilder.andWhere(
         new Brackets((cb) => {
-          cb.where('LOWER(product.shape) LIKE LOWER(:search)', { search: `%${where['search']}%` })
+          cb.where('filial.id = :filial', { filial: where.filial })
+            .andWhere('product.count > 0')
+            .orWhere('LOWER(product.shape) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             .orWhere('LOWER(collection.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             .orWhere('LOWER(product.size) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             .orWhere('LOWER(model.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
