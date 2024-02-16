@@ -307,14 +307,16 @@ export class OrderService {
           model: {
             collection: true,
           },
-          partiya: true
+          partiya: true,
         },
         kassa: true,
       },
     });
 
     if (order.isActive === OrderEnum.Reject) throw new BadRequestException('Already Rejected!');
-    await this.returnProduct(order.product, order.x, order.x);
+    // await this.returnProduct(order.product, order.x, order.x);
+
+    console.log(order);
 
     await this.addCashFlow(
       order.price + order.plasticSum,
@@ -322,7 +324,7 @@ export class OrderService {
       CashflowExpenditureEnum.SHOP,
       CashFlowEnum.Consumption,
       userId,
-      `${order.product.model.collection[0].title} | ${order.product.model.title} | ${order.x}`,
+      `${order?.product?.model?.collection[0]?.title} | ${order.product.model.title} | ${order.x}`,
     );
 
     await this.orderRepository.update({ id: order.id }, { isActive: OrderEnum.Reject });
