@@ -100,12 +100,12 @@ class ProductQueryParserMiddleware implements NestMiddleware {
     if (search) {
       where = [
         { filial: { id: filialId } },
-        { style: ILike(search) },
-        { size: ILike(search) },
-        { shape: ILike(search) },
-        { color: { title: ILike(search) } },
-        { model: { collection: { title: ILike(search) } } },
-        { model: { title: ILike(search) } },
+        { style: ILike(`%${search}%`) },
+        { size: ILike(`%${search}%`) },
+        { shape: ILike(`%${search}%`) },
+        { color: { title: ILike(`%${search}%`) } },
+        { model: { collection: { title: ILike(`%${search}%`) } } },
+        { model: { title: ILike(`%${search}%`) } },
       ];
     }
 
