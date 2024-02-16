@@ -77,8 +77,7 @@ class ProductQueryParserMiddleware implements NestMiddleware {
     }
 
     if (modelId) {
-      where.model = where?.model || {};
-      where.model.id = modelId;
+      where.model = { id: modelId };
     }
 
     if (filialId) {
