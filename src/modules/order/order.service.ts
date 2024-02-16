@@ -314,7 +314,7 @@ export class OrderService {
     });
 
     if (order.isActive === OrderEnum.Reject) throw new BadRequestException('Already Rejected!');
-    // await this.returnProduct(order.product, order.x, order.x);
+    await this.returnProduct(order.product, order.x, order.x);
 
     console.log(order);
 
