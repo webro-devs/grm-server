@@ -28,13 +28,14 @@ export class ProductService {
             .orWhere('LOWER(collection.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             .orWhere('LOWER(product.size) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             .orWhere('LOWER(model.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
-            .orWhere('LOWER(product.style) LIKE LOWER(:search)', { search: `%${where['search']}%` });
+            .orWhere('LOWER(product.style) LIKE LOWER(:search)', { search: `%${where['search']}%` })
+            .andWhere('filial.id = :filial', { filial: where.filial });
         }),
       );
       querybuilder
         .leftJoinAndSelect('product.model', 'model')
         .leftJoinAndSelect('model.collection', 'collection')
-        .leftJoinAndSelect('product.filial', 'filial', 'filial.id = :filial', { filial: where.filial })
+        .leftJoinAndSelect('product.filial', 'filial')
         .getMany();
 
       return paginate(querybuilder, options);
