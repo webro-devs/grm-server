@@ -31,9 +31,9 @@ export class ProductService {
         }),
       );
       querybuilder
-        .leftJoin('product.model', 'model')
-        .leftJoin('model.collection', 'collection')
-        .leftJoin('product.filial', 'filial')
+        .leftJoinAndSelect('product.model', 'model')
+        .leftJoinAndSelect('model.collection', 'collection')
+        .leftJoinAndSelect('product.filial', 'filial')
         .getMany();
 
       return paginate(querybuilder, options);
