@@ -1,17 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  HttpStatus,
-  Delete,
-  Patch,
-  Param,
-  Get,
-  Query,
-  Req,
-  Put,
-} from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, Delete, Patch, Param, Get, Query, Req, Put } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 
@@ -36,6 +23,8 @@ export class ProductController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Query() query: ProductQueryDto, @Route() route: string, @Req() req) {
+    console.log(query);
+
     return await this.productService.getAll({ limit: query.limit, page: query.page, route }, req.where);
   }
 
