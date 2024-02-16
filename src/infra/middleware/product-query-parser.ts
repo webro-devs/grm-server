@@ -96,11 +96,12 @@ class ProductQueryParserMiddleware implements NestMiddleware {
     if (isMetric) {
       where.isMetric = true;
     }
+    where.count = MoreThanOrEqual(1);
 
     if (search) {
       search = search.split('+').join(' ');
       where = [
-        { filial: { id: Equal(filialId) } },
+        { filial: { id: Equal(filialId) }, count: MoreThanOrEqual(1) },
         {
           size: ILike(`%${search}%`),
           shape: ILike(`%${search}%`),
@@ -108,8 +109,6 @@ class ProductQueryParserMiddleware implements NestMiddleware {
         },
       ];
     }
-
-    where.count = MoreThanOrEqual(1);
 
     req.where = where;
     req.relations = relations;
