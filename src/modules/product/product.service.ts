@@ -26,11 +26,11 @@ export class ProductService {
       querybuilder.andWhere(
         new Brackets((cb) => {
           cb.where('product.count > 0')
-            .orWhere('LOWER(product.shape) LIKE LOWER(:search)', { search: `%${where['search']}%` })
-            .orWhere('LOWER(collection.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
-            .orWhere('LOWER(product.size) LIKE LOWER(:search)', { search: `%${where['search']}%` })
-            .orWhere('LOWER(model.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
-            .orWhere('LOWER(product.style) LIKE LOWER(:search)', { search: `%${where['search']}%` });
+            .where('LOWER(product.shape) LIKE LOWER(:search)', { search: `%${where['search']}%` })
+            .where('LOWER(collection.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
+            .where('LOWER(product.size) LIKE LOWER(:search)', { search: `%${where['search']}%` })
+            .where('LOWER(model.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
+            .where('LOWER(product.style) LIKE LOWER(:search)', { search: `%${where['search']}%` });
         }),
       );
       querybuilder
