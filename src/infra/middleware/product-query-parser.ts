@@ -105,7 +105,6 @@ class ProductQueryParserMiddleware implements NestMiddleware {
           { size: ILike(`%${search}%`) },
           { shape: ILike(`%${search}%`) },
           { model: { collection: { title: ILike(`%${search}%`) } } },
-          { model: { title: ILike(`%${search}%`) } },
         ],
       ];
     }
