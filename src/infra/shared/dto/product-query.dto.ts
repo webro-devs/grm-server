@@ -125,6 +125,14 @@ class ProductQueryDto {
   readonly partiyaId;
 
   @ApiProperty({
+    description: `search`,
+    example: '...',
+  })
+  @IsOptional()
+  @IsString()
+  readonly search;
+
+  @ApiProperty({
     description: `Limit`,
     example: 20,
   })

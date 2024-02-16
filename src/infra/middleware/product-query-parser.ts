@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
-import { Between, In, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { Between, ILike, In, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { ProductQueryDto } from '../shared/dto';
 
 @Injectable()
@@ -22,6 +22,7 @@ class ProductQueryParserMiddleware implements NestMiddleware {
       filialId,
       partiyaId,
       isMetric,
+      search,
     }: ProductQueryDto = req.query;
 
     if (startDate && endDate) {
@@ -91,9 +92,21 @@ class ProductQueryParserMiddleware implements NestMiddleware {
         id: partiyaId,
       };
     }
-    
+
     if (isMetric) {
       where.isMetric = true;
+    }
+
+    if (search) {
+      where = [
+        { filial: { id: filialId } },
+        { style: ILike(search) },
+        { size: ILike(search) },
+        { shape: ILike(search) },
+        { color: { title: ILike(search) } },
+        { model: { collection: { title: ILike(search) } } },
+        { model: { title: ILike(search) } },
+      ];
     }
 
     where.count = MoreThanOrEqual(1);
