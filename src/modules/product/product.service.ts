@@ -22,10 +22,9 @@ export class ProductService {
     if (where['fields']) {
       if (!where?.filial) throw new BadRequestException('Filial should be exist!');
       const querybuilder = this.productRepository.createQueryBuilder('product');
-      querybuilder.where(
+      querybuilder.andWhere(
         new Brackets((cb) => {
-          cb.where('product.count > 0')
-            .orWhere('LOWER(product.shape) LIKE LOWER(:search)', { search: `%${where['search']}%` })
+          cb.where('LOWER(product.shape) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             .orWhere('LOWER(collection.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             .orWhere('LOWER(product.size) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             .orWhere('LOWER(model.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
