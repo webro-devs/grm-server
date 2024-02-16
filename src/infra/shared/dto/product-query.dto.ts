@@ -14,6 +14,7 @@ function parsePaginationQuery({ key, value }: TransformFnParams) {
 }
 
 function parseTextToArray({ key, value }: TransformFnParams) {
+  value.replaceAll("%22", "\"")
   const arr = value ? JSON.parse(value) : '';
   if (!isArray(arr)) {
     throw new BadRequestException(`${key} should be array`);
