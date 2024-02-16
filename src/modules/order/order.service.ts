@@ -77,6 +77,7 @@ export class OrderService {
         seller: { id: userId },
         ...(from && { date: Between(from, to) }),
       },
+      order: { date: 'DESC' },
     });
 
     user.sellerOrders = data || [];
@@ -315,8 +316,6 @@ export class OrderService {
 
     if (order.isActive === OrderEnum.Reject) throw new BadRequestException('Already Rejected!');
     await this.returnProduct(order.product, order.x, order.x);
-
-    console.log(order);
 
     await this.addCashFlow(
       order.price + order.plasticSum,
