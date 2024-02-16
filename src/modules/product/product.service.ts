@@ -24,11 +24,11 @@ export class ProductService {
       const querybuilder = this.productRepository.createQueryBuilder('product');
       querybuilder.andWhere(
         new Brackets((cb) => {
-          cb.where('LOWER(product.shape) LIKE LOWER(:search)', { search: `%${where['search']}%` })
+          cb.orWhere('LOWER(product.shape) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             .andWhere('LOWER(collection.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
-            .andWhere('LOWER(product.size) LIKE LOWER(:search)', { search: `%${where['search']}%` })
+            .orWhere('LOWER(product.size) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             .andWhere('LOWER(model.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
-            .andWhere('LOWER(product.style) LIKE LOWER(:search)', { search: `%${where['search']}%` })
+            .orWhere('LOWER(product.style) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             .andWhere('filial.id = :filial', { filial: where.filial });
         }),
       );
