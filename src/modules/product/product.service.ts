@@ -26,7 +26,7 @@ export class ProductService {
           cb.where('LOWER(product.shape) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             // .orWhere('LOWER(product.shape) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             .orWhere('LOWER(product.size) LIKE LOWER(:search)', { search: `%${where['search']}%` })
-            // .orWhere('LOWER(product.model.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
+            .orWhere('LOWER(model.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             .orWhere('LOWER(product.style) LIKE LOWER(:search)', { search: `%${where['search']}%` });
         }),
       );
