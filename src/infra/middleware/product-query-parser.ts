@@ -53,21 +53,19 @@ class ProductQueryParserMiddleware implements NestMiddleware {
     }
 
     if (style) {
-      where.style = In(style);
+      where.style = In(JSON.parse(style));
     }
 
     if (size?.length) {
-      console.log(JSON.parse(size));
-
       where.size = In(JSON.parse(size));
     }
 
     if (shape) {
-      where.shape = In(shape);
+      where.shape = In(JSON.parse(shape));
     }
 
     if (color) {
-      where.color = { title: In(color) };
+      where.color = { title: In(JSON.parse(color)) };
     }
 
     if (collectionId) {
@@ -102,11 +100,8 @@ class ProductQueryParserMiddleware implements NestMiddleware {
     if (search) {
       search = search.split('+').join(' ');
       where = {
-        ...(filialId && { filial: { id: Equal(filialId) } }),
-        count: MoreThanOrEqual(1),
-        size: Like(`%${search}%`),
-        shape: Like(`%${search}%`),
-        model: { collection: { title: Like(`%${search}%`) } },
+        search,
+        fields: true,
       };
     }
 

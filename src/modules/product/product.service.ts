@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { Brackets, FindOptionsWhere, Repository } from 'typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { Product } from './product.entity';
 import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from './dto';
@@ -18,8 +18,26 @@ export class ProductService {
     private readonly modelService: ModelService,
   ) {}
 
-  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Product>): Promise<Pagination<Product>> {
-    console.log(where);
+  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Product>) {
+    if (where['fields']) {
+      const querybuilder = this.productRepository.createQueryBuilder('product');
+      querybuilder.andWhere(
+        new Brackets((cb) => {
+          cb.where('LOWER(product.shape) LIKE LOWER(:search)', { search: `%${where['search']}%` })
+            // .orWhere('LOWER(product.shape) LIKE LOWER(:search)', { search: `%${where['search']}%` })
+            .orWhere('LOWER(product.size) LIKE LOWER(:search)', { search: `%${where['search']}%` })
+            // .orWhere('LOWER(product.model.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
+            .orWhere('LOWER(product.style) LIKE LOWER(:search)', { search: `%${where['search']}%` });
+        }),
+      );
+      querybuilder
+        .leftJoin('product.model', 'model')
+        .leftJoin('model.collection', 'collection')
+        .leftJoin('product.filial', 'filial')
+        .getMany();
+
+      return paginate(querybuilder, options);
+    }
 
     return paginate<Product>(this.productRepository, options, {
       relations: {
