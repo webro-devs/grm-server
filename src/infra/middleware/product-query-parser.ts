@@ -100,14 +100,13 @@ class ProductQueryParserMiddleware implements NestMiddleware {
 
     if (search) {
       search = search.split('+').join(' ');
-      where = [
-        { filial: { id: Equal(filialId) }, count: MoreThanOrEqual(1) },
-        {
-          size: Like(`%${search}%`),
-          shape: Like(`%${search}%`),
-          model: { collection: { title: Like(`%${search}%`) } },
-        },
-      ];
+      where = {
+        ...(filialId && { filial: { id: Equal(filialId) } }),
+        count: MoreThanOrEqual(1),
+        size: Like(`%${search}%`),
+        shape: Like(`%${search}%`),
+        model: { collection: { title: Like(`%${search}%`) } },
+      };
     }
 
     req.where = where;
