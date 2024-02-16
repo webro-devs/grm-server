@@ -36,9 +36,8 @@ export class ProductService {
         .leftJoinAndSelect('model.collection', 'collection')
         .leftJoinAndSelect('product.filial', 'filial')
         .getMany();
-      const res = await paginate(querybuilder, options);
 
-      return { ...res, items: res.items.filter((e) => e.filial.id == where.filial) };
+      return paginate(querybuilder, options);
     }
 
     return paginate<Product>(this.productRepository, options, {
