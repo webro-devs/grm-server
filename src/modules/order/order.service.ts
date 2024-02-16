@@ -321,7 +321,7 @@ export class OrderService {
     await this.addCashFlow(
       order.price + order.plasticSum,
       order.kassa.id,
-      CashflowExpenditureEnum.SHOP,
+      'Возврат',
       CashFlowEnum.Consumption,
       userId,
       `${order?.product?.model?.collection['title']} | ${order?.product?.model?.title} | ${order.x}`,
