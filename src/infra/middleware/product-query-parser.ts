@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
-import { Between, ILike, In, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { Between, Equal, ILike, In, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { ProductQueryDto } from '../shared/dto';
 
 @Injectable()
@@ -100,7 +100,7 @@ class ProductQueryParserMiddleware implements NestMiddleware {
     if (search) {
       search = search.split('+').join(' ');
       where = [
-        { filial: { id: filialId } },
+        { filial: { id: Equal(filialId) } },
         [
           { style: ILike(`%${search}%`) },
           { size: ILike(`%${search}%`) },
