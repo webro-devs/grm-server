@@ -19,6 +19,8 @@ export class ProductService {
   ) {}
 
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Product>): Promise<Pagination<Product>> {
+    console.log(where);
+
     return paginate<Product>(this.productRepository, options, {
       relations: {
         model: {

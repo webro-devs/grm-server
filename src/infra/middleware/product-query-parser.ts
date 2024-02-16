@@ -57,7 +57,9 @@ class ProductQueryParserMiddleware implements NestMiddleware {
     }
 
     if (size?.length) {
-      where.size = In(size);
+      console.log(JSON.parse(size));
+
+      where.size = In(JSON.parse(size));
     }
 
     if (shape) {
