@@ -34,7 +34,7 @@ export class ProductService {
       querybuilder
         .leftJoinAndSelect('product.model', 'model')
         .leftJoinAndSelect('model.collection', 'collection')
-        .leftJoinAndSelect('product.filial', 'filial')
+        .leftJoinAndSelect('product.filial', 'filial', 'filial.id = :filial', { filial: where.filial })
         .getMany();
 
       return paginate(querybuilder, options);
