@@ -8,7 +8,7 @@ class ProductQueryParserMiddleware implements NestMiddleware {
   use(req, res: Response, next: NextFunction) {
     let where: any = {};
     let relations: any = {};
-    const {
+    let {
       startDate,
       endDate,
       startPrice,
@@ -98,6 +98,7 @@ class ProductQueryParserMiddleware implements NestMiddleware {
     }
 
     if (search) {
+      search = search.split('+').join(' ');
       where = [
         { filial: { id: filialId } },
         [
