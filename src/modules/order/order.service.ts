@@ -324,7 +324,7 @@ export class OrderService {
       CashflowExpenditureEnum.SHOP,
       CashFlowEnum.Consumption,
       userId,
-      `${order?.product?.model?.collection[0]?.title} | ${order.product.model.title} | ${order.x}`,
+      `${order?.product?.model?.collection.at(0)?.title} | ${order?.product?.model?.title} | ${order.x}`,
     );
 
     await this.orderRepository.update({ id: order.id }, { isActive: OrderEnum.Reject });
