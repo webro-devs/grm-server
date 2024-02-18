@@ -126,6 +126,7 @@ export class KassaService {
         isActive: true,
       },
     });
+    console.log(data);
 
     if (data.length) {
       const comingSum = data.map((d) => d.totalSum).reduce((a, b) => a + b);

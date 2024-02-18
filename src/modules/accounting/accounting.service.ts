@@ -26,10 +26,11 @@ export class AccountingService {
     }
 
     for (let filial of allFilial) {
-      !where?.filial?.id &&
-        (where.filial = {
+      if (!where?.filial?.id) {
+        where.filial = {
           id: filial.id,
-        });
+        };
+      }
 
       const {
         comingSum,
@@ -57,6 +58,7 @@ export class AccountingService {
         goingSumShop,
         goingSumBoss,
       });
+      if (where?.filial) break;
     }
 
     if (total) {
