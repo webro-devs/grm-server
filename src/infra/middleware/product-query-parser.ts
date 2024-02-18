@@ -53,7 +53,11 @@ class ProductQueryParserMiddleware implements NestMiddleware {
     }
 
     if (style) {
-      where.style = In(JSON.parse(style));
+      const ddd = JSON.parse(style);
+      where.style = In(ddd);
+      if (ddd.length == 0) {
+        delete where.style;
+      }
     }
 
     if (size?.length) {
@@ -65,11 +69,19 @@ class ProductQueryParserMiddleware implements NestMiddleware {
     }
 
     if (shape) {
-      where.shape = In(JSON.parse(shape));
+      let ddd = JSON.parse(shape);
+      where.shape = In(ddd);
+      if (ddd.length == 0) {
+        delete where.shape;
+      }
     }
 
     if (color) {
-      where.color = { title: In(JSON.parse(color)) };
+      const ddd = JSON.parse(color);
+      where.color = { title: In(ddd) };
+      if (ddd.length == 0) {
+        delete where.color;
+      }
     }
 
     if (collectionId) {
