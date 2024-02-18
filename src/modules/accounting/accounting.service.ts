@@ -19,12 +19,11 @@ export class AccountingService {
   async getFullAccounting(where) {
     const result = [];
     const allFilial = await this.filialService.getAllFilial();
-    const filial = where?.filial?.id || false;
     let total = false;
     if (where?.total) {
       total = true;
+      delete where.total;
     }
-    delete where.total;
 
     for (let filial of allFilial) {
       !where?.filial?.id &&
@@ -60,7 +59,7 @@ export class AccountingService {
       });
     }
 
-    if (!filial && total) {
+    if (total) {
       return result.reduce(
         (prev, el) => {
           return { total: prev.total + el.total, plastic: prev.plastic + el.plasticSum };
