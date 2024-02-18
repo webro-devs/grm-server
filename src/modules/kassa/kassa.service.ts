@@ -5,7 +5,6 @@ import { FindOptionsWhere, Not, Repository } from 'typeorm';
 
 import { Kassa } from './kassa.entity';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
-import { CashFlowEnum } from '../../infra/shared/enum';
 import { FilialService } from '../filial/filial.service';
 
 Injectable();
@@ -172,7 +171,6 @@ export class KassaService {
     const data = await this.kassaRepository.find({
       where: { filial: { id: where.filial.id } },
     });
-    console.log('KASSAS ===>', data);
 
     if (data.length) {
       const kassa = data.reduce(
@@ -250,14 +248,12 @@ export class KassaService {
     const cashflows = kassa.cashflow.map((cashflow) => ({
       ...cashflow,
       date: new Date(cashflow.date),
-      tip: 'cashflow',
     }));
 
     const orders = kassa.orders.map((order) => ({
       ...order,
       collection: order.product.model.collection,
       date: new Date(order.date),
-      tip: 'order',
     }));
 
     const mergedArray = [...cashflows, ...orders.filter((e) => e.isActive != 'reject')];

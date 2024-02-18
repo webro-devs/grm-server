@@ -4,6 +4,8 @@ import { FilialService } from '../filial/filial.service';
 import { ProductService } from '../product/product.service';
 import { CollectionService } from '../collection/collection.service';
 import { ClientOrderService } from '../client-order/client-order.service';
+import { paginateArray } from 'src/infra/helpers';
+import { EntityManager } from 'typeorm';
 
 Injectable();
 export class AccountingService {
@@ -14,6 +16,7 @@ export class AccountingService {
     private readonly productService: ProductService,
     private readonly collectionService: CollectionService,
     private readonly clientOrderService: ClientOrderService,
+    private readonly entityManager: EntityManager,
   ) {}
 
   async getFullAccounting(where) {
@@ -34,7 +37,6 @@ export class AccountingService {
         };
       }
 
-      console.log('FILIALS: ===>', where);
       const {
         comingSum,
         goingSumBoss,
@@ -108,4 +110,47 @@ export class AccountingService {
     const data = { terminal: 50000, summ: 100000 };
     return data;
   }
+
+  async getKassaActions(where) {
+    const order = this.entityManager
+      .getRepository('order')
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.casher', 'casher')
+      .leftJoinAndSelect('order.kassa', 'kassa')
+      .leftJoin('kassa.filial', 'filial')
+      .addSelect('("order")', 'tip = ordere');
+    if (where.filial) {
+      order.where('filial.id = :filial', { filial: where.filial });
+    }
+    const orders = await order.getManyAndCount();
+
+    const cashflow = await this.entityManager
+      .getRepository('cashflow')
+      .createQueryBuilder('cashflow')
+      .leftJoinAndSelect('cashflow.casher', 'casher')
+      .leftJoinAndSelect('cashflow.kassa', 'kassa')
+      .leftJoin('kassa.filial', 'filial')
+      .addSelect('(cashflow)', 'tip');
+
+    if (where.filial) {
+      cashflow.where('filial.id = :filial', { filial: where.filial });
+    }
+    const cashflows = await cashflow.getManyAndCount();
+
+    const items = paginateArray([...orders[0], ...cashflows[0]], where.page, where.limit);
+    const result = {
+      //@ts-ignore
+      items: items.sort((a, b) => new Date(a.date) - new Date(b.date)),
+      meta: {
+        totalItems: orders[1] + cashflows[1],
+        itemCount: items.length,
+        itemsPerPage: where.limit,
+        totalPages: Math.ceil((orders[1] + cashflows[1]) / where.limit),
+        currentPage: where.page,
+      },
+    };
+
+    return result;
+  }
+
 }

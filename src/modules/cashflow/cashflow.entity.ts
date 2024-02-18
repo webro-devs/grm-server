@@ -19,6 +19,9 @@ export class Cashflow {
   @Column('varchar')
   type: string;
 
+  @Column({ default: 'cashflow' })
+  tip: string;
+
   @Column('varchar', { nullable: true })
   comment: string;
 

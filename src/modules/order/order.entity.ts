@@ -1,11 +1,5 @@
 import { OrderEnum } from 'src/infra/shared/enum';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Kassa } from '../kassa/kassa.entity';
 import { Product } from '../product/product.entity';
 import { User } from '../user/user.entity';
@@ -56,6 +50,9 @@ export class Order {
 
   @Column({ type: 'decimal', nullable: true })
   discountPercentage: number;
+
+  @Column({ default: 'order' })
+  tip: string;
 
   @Column('numeric', {
     precision: 20,

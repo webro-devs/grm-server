@@ -44,9 +44,7 @@ export class AccountingController {
   @HttpCode(HttpStatus.OK)
   async getKassaSumForFilialByRange(@Req() req, @Query() query: RangeDto) {
     try {
-      return await this.accountingService.getKassaSumForAllFilialByRange(
-        req.where,
-      );
+      return await this.accountingService.getKassaSumForAllFilialByRange(req.where);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -106,5 +104,19 @@ export class AccountingController {
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  @Get('/order-cashflow')
+  @ApiOperation({ summary: 'Method: returns all kassa' })
+  @ApiOkResponse({
+    description: 'The kassa were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async kassaData(@Query() query) {
+    return await this.accountingService.getKassaActions({
+      limit: query.limit || 10,
+      page: query.page || 1,
+      filial: query.filial,
+    });
   }
 }
