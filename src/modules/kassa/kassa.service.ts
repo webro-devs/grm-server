@@ -170,7 +170,7 @@ export class KassaService {
 
   async kassaTotal(where) {
     const data = await this.kassaRepository.find({
-      where,
+      where: { filial: { id: where.filial } },
     });
 
     if (data.length) {
@@ -178,25 +178,25 @@ export class KassaService {
         (
           prev,
           {
-            totalSum = 0,
-            expenditureBoss = 0,
-            expenditureShop = 0,
-            totalSize = 0,
-            additionalProfitTotalSum = 0,
-            cashFlowSumBoss = 0,
-            cashFlowSumShop = 0,
-            plasticSum = 0,
+            totalSum,
+            expenditureBoss,
+            expenditureShop,
+            totalSize,
+            additionalProfitTotalSum,
+            cashFlowSumBoss,
+            cashFlowSumShop,
+            plasticSum,
           },
         ) => {
           return {
-            comingSum: totalSum + prev.comingSum,
-            goingSumBoss: expenditureBoss + prev.goingSumBoss,
-            goingSumShop: expenditureShop + prev.goingSumShop,
-            sellingSize: totalSize + prev.sellingSize,
-            additionalProfitTotalSum: additionalProfitTotalSum + prev.additionalProfitTotalSum,
-            cashFlowSumBoss: cashFlowSumBoss + prev.cashFlowSumBoss,
-            cashFlowSumShop: cashFlowSumShop + prev.cashFlowSumShop,
-            plasticSum: plasticSum + prev.plasticSum,
+            comingSum: totalSum || 0 + prev.comingSum,
+            goingSumBoss: expenditureBoss || 0 + prev.goingSumBoss,
+            goingSumShop: expenditureShop || 0 + prev.goingSumShop,
+            sellingSize: totalSize || 0 + prev.sellingSize,
+            additionalProfitTotalSum: additionalProfitTotalSum || 0 + prev.additionalProfitTotalSum,
+            cashFlowSumBoss: cashFlowSumBoss || 0 + prev.cashFlowSumBoss,
+            cashFlowSumShop: cashFlowSumShop || 0 + prev.cashFlowSumShop,
+            plasticSum: plasticSum || 0 + prev.plasticSum,
           };
         },
         {

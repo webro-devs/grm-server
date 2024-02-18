@@ -24,7 +24,6 @@ export class AccountingService {
 
     if (where?.total) {
       total = true;
-      where.isActive = true;
       delete where.total;
     }
 
@@ -44,7 +43,11 @@ export class AccountingService {
         cashFlowSumBoss,
         cashFlowSumShop,
         plasticSum,
-      } = await this.kassaService.kassaTotal(where);
+      } = await this.kassaService.kassaTotal({
+        filial: { id: where.filial.id },
+        ...(where?.isActive && { isActive: true }),
+      });
+
       const { remainingSize, remainingSum } = await this.productService.remainingProducts({
         filial: { id: filial.id },
       });
