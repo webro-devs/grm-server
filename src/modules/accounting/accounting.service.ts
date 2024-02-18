@@ -128,11 +128,6 @@ export class AccountingService {
       .leftJoinAndSelect('cashflow.kassa', 'kassa')
       .leftJoin('kassa.filial', 'filial');
 
-    if (where.filial) {
-      order.where('filial.id = :filial', { filial: where.filial });
-      cashflow.where('filial.id = :filial', { filial: where.filial });
-    }
-
     if (where.type === 'income') {
       order.where('LOWER(order.isActive) LIKE LOWER(:progres)', { progres: '%ccep%' });
       cashflow.where('LOWER(cashflow.type) LIKE LOWER(:progres)', { progres: '%их%' });
@@ -141,6 +136,11 @@ export class AccountingService {
     if (where.type === 'expense') {
       order.where('LOWER(order.isActive) LIKE LOWER(:type)', { type: '%ejec%' });
       cashflow.where('LOWER(cashflow.type) LIKE LOWER(:type)', { type: '%сх%' });
+    }
+
+    if (where.filial) {
+      order.andWhere('filial.id = :filial', { filial: where.filial });
+      cashflow.andWhere('filial.id = :filial', { filial: where.filial });
     }
 
     const orders = await order.getManyAndCount();
