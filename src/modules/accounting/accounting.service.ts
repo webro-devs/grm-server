@@ -21,12 +21,14 @@ export class AccountingService {
     const allFilial = await this.filialService.getAllFilial();
     let total = false;
     const haveFilial = where?.filial?.id || false;
+
     if (where?.total) {
       total = true;
+      where.isActive = true;
       delete where.total;
     }
 
-    for (let filial of allFilial) {
+    for await (let filial of allFilial) {
       if (!where?.filial?.id) {
         where.filial = {
           id: filial.id,
@@ -42,7 +44,7 @@ export class AccountingService {
         cashFlowSumBoss,
         cashFlowSumShop,
         plasticSum,
-      } = await this.kassaService.kassaSumByFilialAndRange(where);
+      } = await this.kassaService.kassaTotal(where);
       const { remainingSize, remainingSum } = await this.productService.remainingProducts({
         filial: { id: filial.id },
       });
@@ -59,7 +61,7 @@ export class AccountingService {
         goingSumShop,
         goingSumBoss,
       });
-      
+
       if (haveFilial) break;
     }
 

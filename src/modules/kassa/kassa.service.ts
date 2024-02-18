@@ -126,7 +126,6 @@ export class KassaService {
         isActive: true,
       },
     });
-    console.log(data);
 
     if (data.length) {
       const comingSum = data.map((d) => d.totalSum).reduce((a, b) => a + b);
@@ -155,6 +154,63 @@ export class KassaService {
         cashFlowSumShop,
         plasticSum,
       };
+    } else {
+      return {
+        comingSum: 0,
+        goingSumBoss: 0,
+        goingSumShop: 0,
+        sellingSize: 0,
+        additionalProfitTotalSum: 0,
+        cashFlowSumBoss: 0,
+        cashFlowSumShop: 0,
+        plasticSum: 0,
+      };
+    }
+  }
+
+  async kassaTotal(where) {
+    const data = await this.kassaRepository.find({
+      where,
+    });
+
+    if (data.length) {
+      const kassa = data.reduce(
+        (
+          prev,
+          {
+            totalSum = 0,
+            expenditureBoss = 0,
+            expenditureShop = 0,
+            totalSize = 0,
+            additionalProfitTotalSum = 0,
+            cashFlowSumBoss = 0,
+            cashFlowSumShop = 0,
+            plasticSum = 0,
+          },
+        ) => {
+          return {
+            comingSum: totalSum + prev.comingSum,
+            goingSumBoss: expenditureBoss + prev.goingSumBoss,
+            goingSumShop: expenditureShop + prev.goingSumShop,
+            sellingSize: totalSize + prev.sellingSize,
+            additionalProfitTotalSum: additionalProfitTotalSum + prev.additionalProfitTotalSum,
+            cashFlowSumBoss: cashFlowSumBoss + prev.cashFlowSumBoss,
+            cashFlowSumShop: cashFlowSumShop + prev.cashFlowSumShop,
+            plasticSum: plasticSum + prev.plasticSum,
+          };
+        },
+        {
+          comingSum: 0,
+          goingSumBoss: 0,
+          goingSumShop: 0,
+          sellingSize: 0,
+          additionalProfitTotalSum: 0,
+          cashFlowSumBoss: 0,
+          cashFlowSumShop: 0,
+          plasticSum: 0,
+        },
+      );
+      return kassa;
     } else {
       return {
         comingSum: 0,
