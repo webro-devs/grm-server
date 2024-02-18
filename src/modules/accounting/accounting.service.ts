@@ -60,7 +60,7 @@ export class AccountingService {
       });
     }
 
-    if (filial && total) {
+    if (!filial && total) {
       return result.reduce(
         (prev, el) => {
           return { total: prev.total + el.total, plastic: prev.plastic + el.plasticSum };
