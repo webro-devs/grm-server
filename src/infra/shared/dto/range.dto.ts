@@ -26,7 +26,7 @@ class RangeDto {
 
   @ApiProperty({
     description: `filial`,
-    example: 'false',
+    example: 'UUID',
     required: false,
   })
   @IsOptional()
