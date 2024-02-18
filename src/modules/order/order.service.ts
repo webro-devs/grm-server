@@ -325,7 +325,7 @@ export class OrderService {
       CashFlowEnum.Consumption,
       userId,
       `${order?.product?.model?.collection['title']} | ${order?.product?.model?.title} | ${order.product.size} | ${
-        order.product.isMetric ? order.x * 100 : order.x
+        order.product.isMetric ? 'x' + order.x * 100 : order.x
       } | ${order.product.shape}`,
     );
 
