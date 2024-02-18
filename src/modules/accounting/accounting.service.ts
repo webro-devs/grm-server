@@ -118,15 +118,15 @@ export class AccountingService {
       .createQueryBuilder('order')
       .leftJoinAndSelect('order.casher', 'casher')
       .leftJoinAndSelect('order.kassa', 'kassa')
-      .leftJoin('kassa.filial', 'filial');
+      .leftJoin('kassa.filial', 'filial')
+      .where('order.isActive != :progres', { progres: 'progress' });
 
     const cashflow = await this.entityManager
       .getRepository('cashflow')
       .createQueryBuilder('cashflow')
       .leftJoinAndSelect('cashflow.casher', 'casher')
       .leftJoinAndSelect('cashflow.kassa', 'kassa')
-      .leftJoin('kassa.filial', 'filial')
-      .addSelect('(cashflow)', 'tip');
+      .leftJoin('kassa.filial', 'filial');
 
     if (where.filial) {
       order.where('filial.id = :filial', { filial: where.filial });
@@ -139,8 +139,8 @@ export class AccountingService {
     }
 
     if (where.type === 'expense') {
-      order.where('order.isActive = :progres', { progres: 'reject' });
-      cashflow.where('cashflow.type = :progres', { progres: 'Расход' });
+      order.where('order.isActive = :type', { type: 'reject' });
+      cashflow.where('cashflow.type = :type', { type: 'Расход' });
     }
 
     const orders = await order.getManyAndCount();
