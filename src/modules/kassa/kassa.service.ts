@@ -170,8 +170,9 @@ export class KassaService {
 
   async kassaTotal(where) {
     const data = await this.kassaRepository.find({
-      where: { filial: { id: where.filial } },
+      where: { filial: { id: where.filial.id } },
     });
+    console.log('KASSAS ===>', data);
 
     if (data.length) {
       const kassa = data.reduce(

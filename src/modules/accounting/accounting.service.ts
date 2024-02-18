@@ -34,6 +34,7 @@ export class AccountingService {
         };
       }
 
+      console.log('FILIALS: ===>', where);
       const {
         comingSum,
         goingSumBoss,
@@ -49,7 +50,7 @@ export class AccountingService {
       });
 
       const { remainingSize, remainingSum } = await this.productService.remainingProducts({
-        filial: { id: filial.id },
+        filial: { id: where.filial.id },
       });
 
       result.push({
@@ -64,6 +65,7 @@ export class AccountingService {
         goingSumShop,
         goingSumBoss,
       });
+      delete where.filial.id;
 
       if (haveFilial) break;
     }

@@ -198,10 +198,21 @@ export class ProductService {
     const data = await this.productRepository.find({
       where,
     });
-    const remainingSum = data.length ? data.map((p) => p.price * p.count).reduce((a, b) => a + b) : 0;
-    const remainingSize = data.length ? data.map((p) => p.totalSize).reduce((a, b) => a + b) : 0;
-    const count = data.length ? data.map((p) => p.count).reduce((a, b) => a + b) : 0;
-    return { remainingSize, remainingSum, count };
+
+    if (data.length) {
+      return data.reduce(
+        (prev, { price, count, totalSize }) => {
+          return {
+            remainingSize: totalSize || 0 + prev.remainingSize,
+            remainingSum: price * count || 0 + prev.remainingSum,
+            count: count || 0 + prev.count,
+          };
+        },
+        { remainingSize: 0, remainingSum: 0, count: 0 },
+      );
+    } else {
+      return { remainingSize: 0, remainingSum: 0, count: 0 };
+    }
   }
 
   async getRemainingProductsForAllFilial() {
