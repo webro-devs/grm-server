@@ -316,14 +316,17 @@ export class OrderService {
 
     if (order.isActive === OrderEnum.Reject) throw new BadRequestException('Already Rejected!');
     await this.returnProduct(order.product, order.x, order.x);
+    const kassa = await this.kassaService.GetOpenKassa(order.product.filial.id);
 
     await this.addCashFlow(
       order.price + order.plasticSum,
-      order.kassa.id,
+      kassa.id,
       'Возврат',
       CashFlowEnum.Consumption,
       userId,
-      `${order?.product?.model?.collection['title']} | ${order?.product?.model?.title} | ${order.x}`,
+      `${order?.product?.model?.collection['title']} | ${order?.product?.model?.title} | ${order.product.size} | ${
+        order.product.isMetric ? order.x * 100 : order.x
+      } | ${order.product.shape}`,
     );
 
     await this.orderRepository.update({ id: order.id }, { isActive: OrderEnum.Reject });
