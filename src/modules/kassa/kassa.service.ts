@@ -256,7 +256,7 @@ export class KassaService {
       date: new Date(order.date),
     }));
 
-    const mergedArray = [...cashflows, ...orders.filter((e) => e.isActive != 'reject')];
+    const mergedArray = [...cashflows, ...orders];
 
     // Sort the merged array by date
     const sortedArray = mergedArray.sort((b, a) => a.date.getTime() - b.date.getTime());

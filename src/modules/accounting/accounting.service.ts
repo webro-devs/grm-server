@@ -121,26 +121,25 @@ export class AccountingService {
       .leftJoin('kassa.filial', 'filial')
       .where('order.isActive != :progres', { progres: 'progress' });
 
-    const cashflow = await this.entityManager
+    const cashflow = this.entityManager
       .getRepository('cashflow')
       .createQueryBuilder('cashflow')
       .leftJoinAndSelect('cashflow.casher', 'casher')
-      .leftJoinAndSelect('cashflow.kassa', 'kassa')
-      .leftJoin('kassa.filial', 'filial');
+      .leftJoinAndSelect('cashflow.kassa', 'kassa');
 
     if (where.filial) {
-      order.where('filial.id = :filial', { filial: where.filial });
+      order.leftJoin('kassa.filial', 'filial').where('filial.id = :filial', { filial: where.filial });
       cashflow.where('filial.id = :filial', { filial: where.filial });
     }
 
     if (where.type === 'income') {
-      order.where('order.isActive = :progres', { progres: 'accept' });
-      cashflow.where('cashflow.type = :progres', { progres: 'Приход' });
+      order.where('LOWER(order.isActive) LIKE LOWER(:progres)', { progres: '%ccep%' });
+      cashflow.where('LOWER(cashflow.type) LIKE LOWER(:progres)', { progres: '%их%' });
     }
 
     if (where.type === 'expense') {
-      order.where('order.isActive = :type', { type: 'reject' });
-      cashflow.where('cashflow.type = :type', { type: 'Расход' });
+      order.where('LOWER(order.isActive) LIKE LOWER(:type)', { type: '%ejec%' });
+      cashflow.where('LOWER(cashflow.type) LIKE LOWER(:type)', { type: '%сх%' });
     }
 
     const orders = await order.getManyAndCount();
