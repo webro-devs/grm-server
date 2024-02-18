@@ -6,7 +6,7 @@ import { Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 class KassaQueryParserMiddleware implements NestMiddleware {
   use(req, res: Response, next: NextFunction) {
     let where: any = {};
-    const { startDate, endDate, filial } = req.query;
+    const { startDate, endDate, filial, total } = req.query;
 
     if (startDate && endDate) {
       where = {
@@ -25,6 +25,9 @@ class KassaQueryParserMiddleware implements NestMiddleware {
       where.filial = {
         id: filial,
       };
+    }
+    if (total) {
+      where.total = true;
     }
 
     req.where = where;

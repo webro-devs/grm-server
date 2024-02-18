@@ -121,7 +121,10 @@ export class KassaService {
 
   async kassaSumByFilialAndRange(where) {
     const data = await this.kassaRepository.find({
-      where,
+      where: {
+        ...where,
+        isActive: true,
+      },
     });
 
     if (data.length) {

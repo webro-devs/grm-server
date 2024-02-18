@@ -19,11 +19,19 @@ export class AccountingService {
   async getFullAccounting(where) {
     const result = [];
     const allFilial = await this.filialService.getAllFilial();
+    const filial = where?.filial?.id || false;
+    let total = false;
+    if (where?.total) {
+      total = true;
+    }
+    delete where.total;
 
     for (let filial of allFilial) {
-      where.filial = {
-        id: filial.id,
-      };
+      !where?.filial?.id &&
+        (where.filial = {
+          id: filial.id,
+        });
+
       const {
         comingSum,
         goingSumBoss,
@@ -32,34 +40,42 @@ export class AccountingService {
         additionalProfitTotalSum,
         cashFlowSumBoss,
         cashFlowSumShop,
+        plasticSum,
       } = await this.kassaService.kassaSumByFilialAndRange(where);
-      const { remainingSize, remainingSum } =
-        await this.productService.remainingProducts({
-          filial: { id: filial.id },
-        });
+      const { remainingSize, remainingSum } = await this.productService.remainingProducts({
+        filial: { id: filial.id },
+      });
 
       result.push({
         name: filial.title,
         remainingSize,
         remainingSum,
         sellingSize,
+        total: cashFlowSumBoss + cashFlowSumShop + plasticSum,
         kassaSum: comingSum - additionalProfitTotalSum - cashFlowSumShop,
         sellingSum: comingSum,
+        plasticSum,
         goingSumShop,
         goingSumBoss,
       });
     }
+
+    if (filial && total) {
+      return result.reduce(
+        (prev, el) => {
+          return { total: prev.total + el.total, plastic: prev.plastic + el.plasticSum };
+        },
+        { total: 0, plastic: 0 },
+      );
+    }
+
     return result;
   }
 
   async getRemainingProducts() {
     const data = await this.productService.getRemainingProductsForAllFilial();
-    const remainingSize = data
-      .map((p) => p.remainingSize)
-      .reduce((a, b) => a + b);
-    const remainingSum = data
-      .map((p) => p.remainingSum)
-      .reduce((a, b) => a + b);
+    const remainingSize = data.map((p) => p.remainingSize).reduce((a, b) => a + b);
+    const remainingSum = data.map((p) => p.remainingSum).reduce((a, b) => a + b);
     return { remainingSize, remainingSum };
   }
 
