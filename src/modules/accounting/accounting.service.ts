@@ -125,10 +125,11 @@ export class AccountingService {
       .getRepository('cashflow')
       .createQueryBuilder('cashflow')
       .leftJoinAndSelect('cashflow.casher', 'casher')
-      .leftJoinAndSelect('cashflow.kassa', 'kassa');
+      .leftJoinAndSelect('cashflow.kassa', 'kassa')
+      .leftJoin('kassa.filial', 'filial');
 
     if (where.filial) {
-      order.leftJoin('kassa.filial', 'filial').where('filial.id = :filial', { filial: where.filial });
+      order.where('filial.id = :filial', { filial: where.filial });
       cashflow.where('filial.id = :filial', { filial: where.filial });
     }
 
