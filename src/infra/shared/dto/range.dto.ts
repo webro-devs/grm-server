@@ -15,6 +15,22 @@ class RangeDto {
   })
   @IsOptional()
   readonly endDate: string;
+
+  @ApiProperty({
+    description: `total`,
+    example: 'false',
+    required: false,
+  })
+  @IsOptional()
+  readonly total: string;
+
+  @ApiProperty({
+    description: `filial`,
+    example: 'false',
+    required: false,
+  })
+  @IsOptional()
+  readonly filial: string;
 }
 
 export default RangeDto;
