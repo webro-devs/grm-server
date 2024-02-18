@@ -16,6 +16,7 @@ import { ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { AccountingService } from './accounting.service';
 import { RangeDto } from '../../infra/shared/dto';
 import { Public } from '../auth/decorators/public.decorator';
+import { OrderCashflowDto } from './dto';
 
 @ApiTags('Accounting')
 @Controller('accounting')
@@ -112,11 +113,7 @@ export class AccountingController {
     description: 'The kassa were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async kassaData(@Query() query) {
-    return await this.accountingService.getKassaActions({
-      limit: query.limit || 10,
-      page: query.page || 1,
-      filial: query.filial,
-    });
+  async kassaData(@Query() query: OrderCashflowDto) {
+    return await this.accountingService.getKassaActions(query);
   }
 }

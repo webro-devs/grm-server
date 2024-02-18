@@ -6,6 +6,7 @@ import { CollectionService } from '../collection/collection.service';
 import { ClientOrderService } from '../client-order/client-order.service';
 import { paginateArray } from 'src/infra/helpers';
 import { EntityManager } from 'typeorm';
+import { OrderCashflowDto } from './dto';
 
 Injectable();
 export class AccountingService {
@@ -111,18 +112,13 @@ export class AccountingService {
     return data;
   }
 
-  async getKassaActions(where) {
+  async getKassaActions(where: OrderCashflowDto) {
     const order = this.entityManager
       .getRepository('order')
       .createQueryBuilder('order')
       .leftJoinAndSelect('order.casher', 'casher')
       .leftJoinAndSelect('order.kassa', 'kassa')
-      .leftJoin('kassa.filial', 'filial')
-      .addSelect('("order")', 'tip = ordere');
-    if (where.filial) {
-      order.where('filial.id = :filial', { filial: where.filial });
-    }
-    const orders = await order.getManyAndCount();
+      .leftJoin('kassa.filial', 'filial');
 
     const cashflow = await this.entityManager
       .getRepository('cashflow')
@@ -133,8 +129,21 @@ export class AccountingService {
       .addSelect('(cashflow)', 'tip');
 
     if (where.filial) {
+      order.where('filial.id = :filial', { filial: where.filial });
       cashflow.where('filial.id = :filial', { filial: where.filial });
     }
+
+    if (where.type === 'income') {
+      order.where('order.isActive = :progres', { progres: 'accept' });
+      cashflow.where('cashflow.type = :progres', { progres: 'Приход' });
+    }
+
+    if (where.type === 'expense') {
+      order.where('order.isActive = :progres', { progres: 'reject' });
+      cashflow.where('cashflow.type = :progres', { progres: 'Расход' });
+    }
+
+    const orders = await order.getManyAndCount();
     const cashflows = await cashflow.getManyAndCount();
 
     const items = paginateArray([...orders[0], ...cashflows[0]], where.page, where.limit);
@@ -144,7 +153,7 @@ export class AccountingService {
       meta: {
         totalItems: orders[1] + cashflows[1],
         itemCount: items.length,
-        itemsPerPage: where.limit,
+        itemsPerPage: where?.limit,
         totalPages: Math.ceil((orders[1] + cashflows[1]) / where.limit),
         currentPage: where.page,
       },
@@ -152,5 +161,4 @@ export class AccountingService {
 
     return result;
   }
-
 }
