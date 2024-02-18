@@ -141,7 +141,7 @@ export class KassaService {
 
       const cashFlowSumShop = data.map((d) => d.cashFlowSumShop).reduce((a, b) => a + b);
 
-      const additionalProfitTotalSum = data.map((d) => d.additionalProfitTotalSum).reduce((a, b) => a + b);
+      const additionalProfitTotalSum = data.map((d) => d.additionalProfitTotalSum || 0).reduce((a, b) => a + b);
 
       const plasticSum = data.map((d) => d.plasticSum).reduce((a, b) => a + b);
 

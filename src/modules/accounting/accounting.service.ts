@@ -20,6 +20,7 @@ export class AccountingService {
     const result = [];
     const allFilial = await this.filialService.getAllFilial();
     let total = false;
+    const haveFilial = where?.filial?.id || false;
     if (where?.total) {
       total = true;
       delete where.total;
@@ -58,7 +59,8 @@ export class AccountingService {
         goingSumShop,
         goingSumBoss,
       });
-      if (where?.filial) break;
+      
+      if (haveFilial) break;
     }
 
     if (total) {
