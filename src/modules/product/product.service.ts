@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, EntityManager, FindOptionsWhere, Repository } from 'typeorm';
+import { Brackets, DataSource, EntityManager, FindOptionsWhere, Repository } from 'typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { Product } from './product.entity';
 import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from './dto';
@@ -17,6 +17,7 @@ export class ProductService {
     private readonly filialService: FilialService,
     private readonly modelService: ModelService,
     private readonly entityManager: EntityManager,
+    private readonly connection: DataSource,
   ) {}
 
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Product>) {
@@ -25,18 +26,17 @@ export class ProductService {
       const querybuilder = this.productRepository.createQueryBuilder('product');
       querybuilder.andWhere(
         new Brackets((cb) => {
-          cb.where('LOWER(product.shape) LIKE LOWER(:search)', { search: `%${where['search']}%` })
-            .orWhere('LOWER(collection.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
-            .orWhere('LOWER(product.size) LIKE LOWER(:search)', { search: `%${where['search']}%` })
-            .orWhere('LOWER(model.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
-            .orWhere('LOWER(product.style) LIKE LOWER(:search)', { search: `%${where['search']}%` })
-            .andWhere('filial.id = :filial', { filial: where.filial });
+          cb.where('LOWER(product.slug) LIKE LOWER(:search)', { search: `%${where['search']}%` }).andWhere(
+            'filial.id = :filial',
+            { filial: where.filial },
+          );
         }),
       );
       querybuilder
         .leftJoinAndSelect('product.model', 'model')
         .leftJoinAndSelect('model.collection', 'collection')
         .leftJoinAndSelect('product.filial', 'filial')
+        .orderBy('product.date', 'DESC')
         .getMany();
 
       return paginate(querybuilder, options);
@@ -70,6 +70,9 @@ export class ProductService {
       .catch(() => {
         throw new NotFoundException('Product not found');
       });
+    data.setSlug();
+
+    await this.saveRepo(data);
 
     return data;
   }
@@ -271,5 +274,11 @@ export class ProductService {
     }
 
     return ids;
+  }
+
+  async saveRepo(data: any) {
+    await this.connection.transaction(async (manager: EntityManager) => {
+      await manager.save(data);
+    });
   }
 }
