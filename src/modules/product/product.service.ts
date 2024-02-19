@@ -136,7 +136,7 @@ export class ProductService {
     const query = 'SELECT MAX(price) AS maxPrice FROM product';
     const result = await this.productRepository.query(query);
 
-    return result[0].maxPrice;
+    return result;
   }
 
   async deleteOne(id: string) {
