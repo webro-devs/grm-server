@@ -74,12 +74,18 @@ export class AccountingService {
     }
 
     if (total) {
-      return result.reduce(
-        (prev, el) => {
-          return { total: prev.total + el.total, plastic: prev.plastic + el.plasticSum };
+      const total = result.reduce(
+        (acc, curr) => {
+          Object.keys(curr).forEach((key) => {
+            if (key !== 'name') {
+              acc[key] = (acc[key] || 0) + curr[key];
+            }
+          });
+          return acc;
         },
-        { total: 0, plastic: 0 },
+        { name: 'total' },
       );
+      return total;
     }
 
     return result;
