@@ -29,7 +29,7 @@ export class ProductService {
             .orWhere('LOWER(product.size) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             .orWhere('LOWER(model.title) LIKE LOWER(:search)', { search: `%${where['search']}%` })
             .orWhere('LOWER(product.style) LIKE LOWER(:search)', { search: `%${where['search']}%` })
-            .where('filial.id = :filial', { filial: where.filial });
+            .andWhere('filial.id = :filial', { filial: where.filial });
         }),
       );
       querybuilder
