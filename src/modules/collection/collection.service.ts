@@ -1,7 +1,7 @@
-import { NotFoundException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { NotFoundException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, MoreThanOrEqual, Repository } from 'typeorm';
 
 import { Collection } from './collection.entity';
 import { CreateCollectionDto, UpdateCollectionDto } from './dto';
@@ -153,7 +153,10 @@ export class CollectionService {
     const data2 = await paginate<Collection>(
       this.collectionRepository,
       { limit, page },
-      { relations: { model: { products: { filial: true, color: true, model: true } } }, where },
+      {
+        relations: { model: { products: { filial: true, color: true, model: true } } },
+        where: { ...where, model: { products: { count: MoreThanOrEqual(1) } } },
+      },
     );
 
     let result = [];
