@@ -135,7 +135,7 @@ export class ProductService {
   }
 
   async getMaxPrice(): Promise<number> {
-    const query = 'SELECT MAX(price) AS maxPrice FROM product';
+    const query = 'SELECT MAX("priceMeter") AS maxPrice FROM product';
     const result = await this.productRepository.query(query);
 
     return result[0];
