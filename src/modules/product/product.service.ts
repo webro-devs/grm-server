@@ -72,7 +72,7 @@ export class ProductService {
       });
     data.setSlug();
 
-    await this.saveRepo(data);
+    await this.productRepository.save(data);
 
     return data;
   }
@@ -205,6 +205,7 @@ export class ProductService {
     }
     return value;
   }
+
   async remainingProducts(where) {
     const data = await this.productRepository.find({
       where,
@@ -274,11 +275,5 @@ export class ProductService {
     }
 
     return ids;
-  }
-
-  async saveRepo(data: any) {
-    await this.connection.transaction(async (manager: EntityManager) => {
-      await manager.save(data);
-    });
   }
 }
