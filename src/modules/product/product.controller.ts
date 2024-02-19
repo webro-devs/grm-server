@@ -42,6 +42,16 @@ export class ProductController {
     });
   }
 
+  @Get('/max-price')
+  @ApiOperation({ summary: 'Method: returns all products' })
+  @ApiOkResponse({
+    description: 'The products were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getMaxPrice() {
+    return await this.productService.getMaxPrice();
+  }
+
   @Get('/remaining-products')
   @ApiOperation({ summary: 'Method: returns remaining ofp products' })
   @ApiOkResponse({

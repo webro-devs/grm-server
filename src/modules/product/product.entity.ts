@@ -1,13 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Order } from '../order/order.entity';
 import { Filial } from '../filial/filial.entity';
 import { Partiya } from '../partiya/partiya.entity';
@@ -105,6 +96,9 @@ export class Product {
   @Column()
   style: string;
 
+  @Column({ nullable: true })
+  slug: string;
+
   @Column({ type: 'boolean', default: false })
   isInternetShop: boolean = false;
 
@@ -150,5 +144,34 @@ export class Product {
 
   public calculateProductPrice() {
     this.price = this.x * this.y * this.priceMeter;
+  }
+
+  public setSlug() {
+    let slug = [];
+    if (this.model.title) {
+      slug.push(this.model?.title);
+    }
+    if (this.color?.title) {
+      slug.push(this.color.title);
+    }
+    if (this.shape) {
+      slug.push(this.shape);
+    }
+    if (this.model?.collection?.title) {
+      slug.push(this.model.collection.title);
+    }
+    if (this.style) {
+      slug.push(this.style);
+    }
+    if (this.size) {
+      slug.push(this.size);
+    }
+    if (this.country) {
+      slug.push(this.country);
+    }
+    if (this.code) {
+      slug.push(this.code);
+    }
+    this.slug = slug.join(' ');
   }
 }

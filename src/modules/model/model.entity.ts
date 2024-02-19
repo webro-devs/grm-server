@@ -13,7 +13,7 @@ export class Model {
   title: string;
 
   @ManyToOne(() => Collection, (collection) => collection.model, { onDelete: 'SET NULL' })
-  collection: Collection[];
+  collection: Collection;
 
   @OneToMany(() => Product, (product) => product.model, { onDelete: 'SET NULL' })
   products: Product[];

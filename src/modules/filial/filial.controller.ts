@@ -1,21 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Patch,
-  HttpCode,
-  Query,
-  Body,
-  Param,
-  Delete,
-  HttpStatus,
-} from '@nestjs/common';
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { Controller, Get, Post, Patch, HttpCode, Query, Body, Param, Delete, HttpStatus } from '@nestjs/common';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { FilialService } from './filial.service';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { PaginationDto } from '../../infra/shared/dto';
@@ -66,10 +50,7 @@ export class FilialController {
     description: 'Filial was changed',
   })
   @HttpCode(HttpStatus.OK)
-  async changeData(
-    @Body() data: UpdateFilialDto,
-    @Param('id') id: string,
-  ): Promise<UpdateResult> {
+  async changeData(@Body() data: UpdateFilialDto, @Param('id') id: string): Promise<UpdateResult> {
     return await this.filialService.change(data, id);
   }
 

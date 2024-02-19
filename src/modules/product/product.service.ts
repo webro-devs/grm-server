@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, FindOptionsWhere, Repository } from 'typeorm';
+import { Brackets, EntityManager, FindOptionsWhere, Repository } from 'typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { Product } from './product.entity';
 import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from './dto';
@@ -16,6 +16,7 @@ export class ProductService {
     private readonly productRepository: Repository<Product>,
     private readonly filialService: FilialService,
     private readonly modelService: ModelService,
+    private readonly entityManager: EntityManager,
   ) {}
 
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Product>) {
@@ -129,6 +130,13 @@ export class ProductService {
   async getMoreByIds(ids: string[]) {
     const data = await this.productRepository.createQueryBuilder().where('id IN(:...ids)', { ids }).getMany();
     return data;
+  }
+
+  async getMaxPrice(): Promise<number> {
+    const query = 'SELECT MAX(price) AS maxPrice FROM product';
+    const result = await this.productRepository.query(query);
+
+    return result[0].maxPrice;
   }
 
   async deleteOne(id: string) {
