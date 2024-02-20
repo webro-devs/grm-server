@@ -124,6 +124,10 @@ export class AccountingService {
       .createQueryBuilder('order')
       .leftJoinAndSelect('order.casher', 'casher')
       .leftJoinAndSelect('order.kassa', 'kassa')
+      .leftJoinAndSelect('order.product', 'product')
+      .leftJoinAndSelect('product.color', 'color')
+      .leftJoinAndSelect('product.model', 'model')
+      .leftJoinAndSelect('model.collection', 'collection')
       .leftJoin('kassa.filial', 'filial')
       .where('order.isActive != :progres', { progres: 'progress' });
 
@@ -155,7 +159,7 @@ export class AccountingService {
     const items = paginateArray([...orders[0], ...cashflows[0]], where.page, where.limit);
     const result = {
       //@ts-ignore
-      items: items.sort((a, b) => new Date(a.date) - new Date(b.date)),
+      items: items.sort((b, a) => new Date(a.date) - new Date(b.date)),
       meta: {
         totalItems: orders[1] + cashflows[1],
         itemCount: items.length,
