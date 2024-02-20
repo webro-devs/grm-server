@@ -3,13 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { BadRequestException } from '@nestjs/common';
 
-function checkType({ key, value }: TransformFnParams) {
-  if (value !== 'income' && value !== 'expense') {
-    throw new BadRequestException(`${key} should be income or expense.`);
-  }
-  return value;
-}
-
 class CreateColorDto {
   @ApiProperty({
     description: `limit`,
@@ -42,7 +35,6 @@ class CreateColorDto {
   })
   @IsOptional()
   @IsString()
-  @Transform(checkType)
   readonly type: string;
 
   constructor() {
