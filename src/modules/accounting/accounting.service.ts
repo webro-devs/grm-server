@@ -123,6 +123,7 @@ export class AccountingService {
       .getRepository('order')
       .createQueryBuilder('order')
       .leftJoinAndSelect('order.casher', 'casher')
+      .leftJoinAndSelect('order.seller', 'seller')
       .leftJoinAndSelect('order.kassa', 'kassa')
       .leftJoinAndSelect('order.product', 'product')
       .leftJoinAndSelect('product.color', 'color')
