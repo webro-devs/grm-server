@@ -61,7 +61,7 @@ export class AccountingService {
         remainingSize,
         remainingSum,
         sellingSize,
-        total: cashFlowSumBoss + cashFlowSumShop + plasticSum,
+        total: goingSumBoss - goingSumShop - (cashFlowSumBoss + cashFlowSumShop + plasticSum),
         kassaSum: comingSum - additionalProfitTotalSum - cashFlowSumShop,
         sellingSum: comingSum,
         plasticSum,
