@@ -112,10 +112,12 @@ export class CollectionService {
     return await this.collectionRepository.save(data);
   }
 
-  async remainingProductsByCollection() {
+  async remainingProductsByCollection(query) {
     const data = await this.collectionRepository.find({
       relations: { model: { products: { filial: true } } },
+      where: query.filial ? { model: { products: { filial: { id: query.filial } } } } : {},
     });
+
     let result = [];
     for (let i = 0; i < data.length; i++) {
       let remainingSum = 0,

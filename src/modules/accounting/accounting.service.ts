@@ -98,8 +98,8 @@ export class AccountingService {
     return { remainingSize, remainingSum };
   }
 
-  async getRemainingProductsByCollection() {
-    const data = await this.collectionService.remainingProductsByCollection();
+  async getRemainingProductsByCollection(query) {
+    const data = await this.collectionService.remainingProductsByCollection(query);
     return data;
   }
 
