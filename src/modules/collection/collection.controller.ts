@@ -61,8 +61,8 @@ export class CollectionController {
     description: 'The remaining products were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getRemainingProductsByCollection() {
-    return await this.collectionService.remainingProductsByCollection();
+  async getRemainingProductsByCollection(@Query() query) {
+    return await this.collectionService.remainingProductsByCollection(query);
   }
 
   @Get('/:id')

@@ -115,7 +115,7 @@ export class CollectionService {
   async remainingProductsByCollection(query) {
     const data = await this.collectionRepository.find({
       relations: { model: { products: { filial: true } } },
-      where: query.filial ? { model: { products: { filial: { id: query.filial } } } } : {},
+      where: query?.filial ? { model: { products: { filial: { id: query.filial } } } } : {},
     });
 
     let result = [];
