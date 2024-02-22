@@ -211,15 +211,12 @@ export class ProductService {
     });
 
     if (data.length) {
-      console.log(data);
-      
       return data.reduce(
-        (prev, { price, count, totalSize }) => {
-          return {
-            remainingSize: totalSize || 0 + prev.remainingSize,
-            remainingSum: price * count || 0 + prev.remainingSum,
-            count: count || 0 + prev.count,
-          };
+        (acc, item) => {
+          acc.remainingSize += item.totalSize || 0;
+          acc.count += item.count || 0;
+          acc.remainingSum += item.price || 0;
+          return acc;
         },
         { remainingSize: 0, remainingSum: 0, count: 0 },
       );
