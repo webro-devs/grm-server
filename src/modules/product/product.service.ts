@@ -211,6 +211,8 @@ export class ProductService {
     });
 
     if (data.length) {
+      console.log(data);
+      
       return data.reduce(
         (prev, { price, count, totalSize }) => {
           return {
