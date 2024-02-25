@@ -29,7 +29,7 @@ export class ActionController {
   constructor(private readonly actionService: ActionService) {}
 
   @Get('/')
-  @Roles(UserRoleEnum.BOSS)
+  @Roles(UserRoleEnum.BOSS, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: returns single color by id' })
   @ApiOkResponse({
     description: 'The action was returned successfully',
@@ -46,11 +46,6 @@ export class ActionController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateActionDto, @Req() req): Promise<InsertResult> {
-    return await this.actionService.create(
-      { info: 'ashdjashdkj' },
-      req.user.id,
-      'e5a5e4b8-b1d2-419a-b283-d19da945a6e3',
-      'transfer',
-    );
+    return await this.actionService.create(data.info, data.user, data.filial, data.type);
   }
 }

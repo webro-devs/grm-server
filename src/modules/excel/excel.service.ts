@@ -19,12 +19,14 @@ import { FilialService } from '../filial/filial.service';
 import { CreateProductExcelDto, UpdateProductExcelDto } from './dto';
 import { QrBaseService } from '../qr-base/qr-base.service';
 import { CreateQrBaseDto } from '../qr-base/dto';
+import { ActionService } from '../action/action.service';
 
 Injectable();
 export class ExcelService {
   constructor(
     @InjectRepository(Excel)
     private readonly excelRepository: Repository<Excel>,
+    private readonly actionService: ActionService,
     @InjectRepository(ProductExcel)
     private readonly productExcelRepository: Repository<ProductExcel>,
     private readonly fileService: FileService,
@@ -360,12 +362,23 @@ export class ExcelService {
     return await this.addProductToPartiya(products, partiyaId);
   }
 
-  async createProduct(partiyaId, filialId) {
+  async createProduct(partiyaId, filialId, user) {
     try {
       const partiya = await this.partiyaService.getOne(partiyaId);
       if (partiya.check) {
         throw new BadRequestException('Partiya already sended to filials');
       }
+      const partiya_infos = {
+        title: partiya.title || 'Default title',
+        meter: partiya.m2 || 0,
+      };
+      await this.actionService.create(
+        partiya.items[0],
+        user.id,
+        null,
+        'partiya_send',
+        `${partiya_infos.title} с ${partiya_infos.meter} м²`,
+      );
       let products = await this.productExcelRepository.find({
         relations: {
           size: true,

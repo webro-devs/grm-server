@@ -4,7 +4,7 @@ import { ApiCreatedResponse, ApiTags, ApiOperation, ApiConsumes } from '@nestjs/
 import { ExcelService } from './excel.service';
 import { deleteFile, multerStorage } from '../../infra/helpers';
 import { Public } from '../auth/decorators/public.decorator';
-import { Body, Delete, Get, Put } from '@nestjs/common/decorators';
+import { Body, Delete, Get, Put, Req } from '@nestjs/common/decorators';
 import { ImportExcelDto, UpdateCollectionCostDto, UpdateExcelDto, UpdateModelCostDto, UpdateProductExcelDto } from './dto';
 import CreateProductExcDto from './dto/createProduct-excel';
 import { CreateQrBaseDto } from '../qr-base/dto';
@@ -87,10 +87,10 @@ export class ExcelController {
     description: 'The data imported and saved to baza successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async CreateProducts(@Param('id') id: string, @Body() data) {
+  async CreateProducts(@Param('id') id: string, @Body() data, @Req() req) {
     console.log(data);
 
-    const response = await this.fileService.createProduct(id, data?.filial);
+    const response = await this.fileService.createProduct(id, data?.filial, req.user);
 
     return response;
   }

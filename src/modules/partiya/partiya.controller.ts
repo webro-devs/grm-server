@@ -11,6 +11,7 @@ import {
   Get,
   Query,
   BadRequestException,
+  Req,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
@@ -20,6 +21,9 @@ import { Partiya } from './partiya.entity';
 import { PartiyaService } from './partiya.service';
 import { PaginationDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
+import { ActionService } from '../action/action.service';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRoleEnum } from 'src/infra/shared/enum';
 
 @ApiTags('Partiya')
 @Controller('partiya')
@@ -65,14 +69,15 @@ export class PartiyaController {
   }
 
   @Post('/')
+  @Roles(UserRoleEnum.BOSS, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: creates new partiya' })
   @ApiCreatedResponse({
     description: 'The partiya was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveDataExc(@Body() positionData: CreatePartiyaDto): Promise<Partiya> {
+  async saveDataExc(@Body() positionData: CreatePartiyaDto, @Req() req): Promise<Partiya> {
     try {
-      return await this.partiyaService.create(positionData);
+      return await this.partiyaService.create(positionData, req.user);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -87,6 +92,20 @@ export class PartiyaController {
   async changeData(@Body() data: UpdatePartiyaDto, @Param('id') id: string): Promise<UpdateResult> {
     try {
       return await this.partiyaService.change(data, id);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Patch('/expense/:id')
+  @ApiOperation({ summary: 'Method: updating partiya' })
+  @ApiOkResponse({
+    description: 'Partiya was changed',
+  })
+  @HttpCode(HttpStatus.OK)
+  async changeexpense(@Body() data: UpdatePartiyaDto, @Param('id') id: string, @Req() req): Promise<UpdateResult> {
+    try {
+      return await this.partiyaService.changeExp(data.expense, id, req.user);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

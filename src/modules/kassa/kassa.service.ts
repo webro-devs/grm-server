@@ -6,6 +6,7 @@ import { FindOptionsWhere, Not, Repository } from 'typeorm';
 import { Kassa } from './kassa.entity';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
 import { FilialService } from '../filial/filial.service';
+import { ActionService } from '../action/action.service';
 
 Injectable();
 export class KassaService {
@@ -13,6 +14,7 @@ export class KassaService {
     @InjectRepository(Kassa)
     private readonly kassaRepository: Repository<Kassa>,
     private readonly filialService: FilialService,
+    private readonly actionService: ActionService,
   ) {}
 
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Kassa>): Promise<Pagination<Kassa>> {
@@ -67,11 +69,13 @@ export class KassaService {
     return kassa;
   }
 
-  async closeKassa(id: string) {
+  async closeKassa(id: string, user) {
     const response = await this.kassaRepository.update(id, {
       isActive: false,
       endDate: new Date(),
     });
+    const _kassa = await this.kassaRepository.findOne({ where: { id }, relations: { filial: true } });
+    await this.actionService.create(_kassa, user.id, _kassa.filial.id, 'close_kassa', `$${_kassa.totalSum}`);
     return response;
   }
 

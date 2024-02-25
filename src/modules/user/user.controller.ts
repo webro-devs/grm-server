@@ -35,6 +35,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('/')
+  @Roles(UserRoleEnum.BOSS, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: returns all users' })
   @ApiOkResponse({
     description: 'The users were returned successfully',
@@ -87,15 +88,15 @@ export class UserController {
     return await this.userService.getUsersWithSellingWithOrder(id);
   }
 
-  @Public()
   @Post('/')
+  @Roles(UserRoleEnum.BOSS, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: creates new user' })
   @ApiCreatedResponse({
     description: 'The user was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() data: CreateUserDto) {
-    return await this.userService.create(data);
+  async saveData(@Body() data: CreateUserDto, @Req() req) {
+    return await this.userService.create(data, req.user);
   }
 
   @Public()

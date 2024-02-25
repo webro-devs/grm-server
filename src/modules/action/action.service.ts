@@ -19,14 +19,18 @@ export class ActionService {
     return paginate<Action>(this.actionRepository, options, { relations: { filial: true, user: true } });
   }
 
-  async create(data, user: string, filial, key: string): Promise<InsertResult> {
+  async create(data, user: string, filial, key: string, additional?: string): Promise<InsertResult> {
     const value = {
       user,
-      filial,
+      ...(filial && { filial }),
       desc: ActionDescEnum[key],
       type: ActionTypeEnum[key],
       info: data,
     };
+    
+    if (additional) {
+      value.desc = value.desc + ' ' + additional;
+    }
 
     const response = await this.actionRepository
       .createQueryBuilder()

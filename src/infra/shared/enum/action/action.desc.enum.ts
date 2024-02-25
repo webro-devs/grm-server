@@ -1,13 +1,19 @@
 enum ActionDescEnum {
-  order_pass = 'Подтвердил продажу товара',
-  order_reject = 'Отменил продажу товара',
   user_create = 'Создал пользователя',
   user_delete = 'Удалил пользователя',
   user_update = 'Отредактировал пользователя',
-  partiya = 'Создал новую партию',
-  transfer = 'Трансфер продуктами по флиалам',
+  partiya_create = 'Создал новую партию!',
+  partiya_update = 'Партия завершена!',
+  partiya_Send = 'Партия завершена!!',
+  transfer_create = 'Сделал трансфер.',
   excel = 'Импортировано из файла Excel',
-  product = 'Создан новый продукт',
+  close_kassa = 'Закрыл кассу в размере',
+  add_income_cashflow_boss = 'Добавил Бос приход в размере',
+  add_income_cashflow_shop = 'Добавил Магазин приход в размере',
+  add_expense_cashflow_boss = 'Добавил Бос расход в размере',
+  add_expense_cashflow_shop = 'Добавил Магазин расход в размере',
+  accept_order = 'Подтвердил продажу в размере',
+  return_order = 'Принял возврат товара',
 }
 
 export default ActionDescEnum;

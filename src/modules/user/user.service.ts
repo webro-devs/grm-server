@@ -17,6 +17,7 @@ import { UserRoleEnum } from '../../infra/shared/enum';
 import { ProductService } from '../product/product.service';
 import { OrderService } from '../order/order.service';
 import { OrderModule } from '../order/order.module';
+import { ActionService } from '../action/action.service';
 
 Injectable();
 export class UserService {
@@ -27,6 +28,7 @@ export class UserService {
     private readonly filialService: FilialService,
     private readonly positionService: PositionService,
     private readonly productService: ProductService,
+    private readonly actionService: ActionService,
   ) {}
 
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<User>): Promise<Pagination<User>> {
@@ -82,7 +84,7 @@ export class UserService {
       relations: { sellerOrders: { product: { color: true } }, filial: true, position: true },
       where: { filial: { id }, role: 1 },
     });
-    
+
     for (const user of users) {
       console.log(user);
       user['sellerOrdersCount'] = user.sellerOrders.length;
@@ -152,19 +154,31 @@ export class UserService {
     return response;
   }
 
-  async create(data: CreateUserDto) {
+  async create(data: CreateUserDto, user) {
     const login = idGenerator();
     const filial = data.filial ? await this.filialService.getOne(data.filial) : null;
+    let user_infos = '';
+    if (data.role == UserRoleEnum.SELLER) {
+      user_infos = 'продавец для флиала';
+    } else if (data.role == UserRoleEnum.CASHIER) {
+      user_infos = 'кассир для флиала';
+    } else if (data.role == UserRoleEnum.SUPPER_MANAGER) {
+      user_infos = 'i-manager для';
+    }
+
+    await this.actionService.create(data, user.id, data.filial, 'user_create', `${user_infos} ${filial.title}`);
     const position = await this.positionService.getOne(data.position);
     const password = await hashPassword(login);
-    const user = this.userRepository.create({
+    const _user = this.userRepository.create({
       ...data,
       login,
       filial,
       position,
       password,
     });
-    return await this.userRepository.save(user);
+
+    const _User = await this.userRepository.save(_user);
+    return _User;
   }
 
   async createClient(data: CreateClientDto) {

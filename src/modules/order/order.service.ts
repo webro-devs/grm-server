@@ -245,7 +245,7 @@ export class OrderService {
   async checkOrder(id: string, casher: string) {
     const order = await this.orderRepository.findOne({
       where: { id },
-      relations: { kassa: true, product: true },
+      relations: { kassa: { filial: true }, product: true },
     });
 
     const kassa = await this.kassaService.getById(order.kassa.id);
@@ -273,6 +273,7 @@ export class OrderService {
       .where('id = :id', { id })
       .execute();
 
+    await this.actionService.create({ ...order, isActive: OrderEnum.Accept }, casher, order.kassa.filial.id, 'accept_order');
     return response;
   }
 
@@ -330,6 +331,12 @@ export class OrderService {
     );
 
     await this.orderRepository.update({ id: order.id }, { isActive: OrderEnum.Reject });
+    await this.actionService.create(
+      { ...order, isActive: OrderEnum.Reject },
+      userId,
+      order.product.filial.id,
+      'return_order',
+    );
 
     return 'ok';
   }

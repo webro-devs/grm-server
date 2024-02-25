@@ -7,6 +7,7 @@ import { CreatePartiyaDto, UpdatePartiyaDto } from './dto';
 import { deleteFile, partiyaDateSort } from '../../infra/helpers';
 import { ExcelService } from '../excel/excel.service';
 import { Repository } from 'typeorm';
+import { ActionService } from '../action/action.service';
 
 Injectable();
 export class PartiyaService {
@@ -14,6 +15,7 @@ export class PartiyaService {
     @InjectRepository(Partiya)
     private readonly partiyaRepository: Repository<Partiya>,
     private readonly excelService: ExcelService,
+    private readonly actionService: ActionService,
   ) {}
 
   async getAll(options: IPaginationOptions): Promise<Pagination<Partiya>> {
@@ -39,13 +41,13 @@ export class PartiyaService {
     const data = await this.partiyaRepository
       .findOne({
         where: { id },
-        relations: {},
+        relations: { excel: true },
       })
       .catch(() => {
         throw new NotFoundException('Partiya not found!');
       });
 
-    return data;
+    return (await this.processInputData({ items: [data] })).items[0];
   }
 
   async getOneProds(id: string) {
@@ -91,7 +93,15 @@ export class PartiyaService {
     return response;
   }
 
-  async create(value: CreatePartiyaDto) {
+  async changeExp(value, id: string, user) {
+    const response = await this.partiyaRepository.update({ id }, { expense: value });
+    const partiya = await this.partiyaRepository.findOne({ where: { id } });
+    await this.actionService.create(partiya, user.id, null, 'update_partiya', `${partiya.title}. $${partiya.expense}`);
+    return response;
+  }
+
+  async create(value: CreatePartiyaDto, user) {
+    await this.actionService.create(value, user.id, null, 'partiya_create');
     const data = this.partiyaRepository.create(value);
     return await this.partiyaRepository.save(data);
   }

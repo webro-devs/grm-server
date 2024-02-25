@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsObject, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreateActionDto {
   @ApiProperty({
@@ -38,7 +38,7 @@ class CreateActionDto {
     example: 'object',
   })
   @IsNotEmpty()
-  @IsString()
+  @IsObject()
   readonly info: object;
 }
 

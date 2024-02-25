@@ -26,9 +26,10 @@ export class ProductService {
       const querybuilder = this.productRepository.createQueryBuilder('product');
       querybuilder.andWhere(
         new Brackets((cb) => {
-          cb.where('LOWER(product.slug) LIKE LOWER(:search)', { search: `%${where['search']}%` })
-            .andWhere('filial.id = :filial', { filial: where.filial })
-            .andWhere('filial.title != :title', { title: 'baza' });
+          cb.where('LOWER(product.slug) LIKE LOWER(:search)', { search: `%${where['search']}%` }).andWhere(
+            'filial.id = :filial',
+            { filial: where.filial },
+          );
         }),
       );
       querybuilder

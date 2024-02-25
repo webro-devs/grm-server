@@ -8,6 +8,7 @@ import { KassaService } from '../kassa/kassa.service';
 import { CashFlowEnum, CashflowExpenditureEnum } from '../../infra/shared/enum';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import CashflowComingEnum from '../../infra/shared/enum/cashflow/cashflow-coming';
+import { ActionService } from '../action/action.service';
 
 Injectable();
 export class CashflowService {
@@ -16,6 +17,7 @@ export class CashflowService {
     private readonly cashflowRepository: Repository<Cashflow>,
     private readonly kassaService: KassaService,
     private readonly connection: DataSource,
+    private readonly actionService: ActionService,
   ) {}
 
   async getAll(options: IPaginationOptions): Promise<Pagination<Cashflow>> {
@@ -170,12 +172,14 @@ export class CashflowService {
         .execute();
 
       const kassa = await this.kassaService.getById(value.kassa);
-      console.log('Before', kassa);
+
       if (value.type == 'Приход') {
         kassa.totalSum = kassa.totalSum + value.price;
         if (value.title == 'Босс Приход') {
+          await this.actionService.create(data, id, kassa.filial.id, 'add_income_cashflow_boss', `$${value.price}`);
           kassa.cashFlowSumBoss = kassa.cashFlowSumBoss + value.price;
         } else {
+          await this.actionService.create(data, id, kassa.filial.id, 'add_income_cashflow_shop', `$${value.price}`);
           kassa.cashFlowSumShop = kassa.cashFlowSumShop + value.price;
         }
       }
@@ -183,13 +187,13 @@ export class CashflowService {
       if (value.type == 'Расход') {
         if (kassa.totalSum < value.price) throw new BadRequestException('You dont have enough money!');
         if (value.title == 'Магазин Расход') {
+          await this.actionService.create(data, id, kassa.filial.id, 'add_expense_cashflow_shop', `$${value.price}`);          
           kassa.expenditureShop = kassa.expenditureShop + value.price;
         } else {
+          await this.actionService.create(data, id, kassa.filial.id, 'add_expense_cashflow_boss', `$${value.price}`);
           kassa.expenditureBoss = kassa.expenditureBoss + value.price;
         }
       }
-
-      console.log('after', kassa);
 
       await this.connection.transaction(async (manager: EntityManager) => {
         await manager.save(kassa);

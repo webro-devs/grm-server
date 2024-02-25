@@ -1,13 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserRoleType } from '../../infra/shared/type';
 import { Position } from '../position/position.entity';
@@ -23,6 +14,9 @@ import { Transfer } from '../transfer/transfer.entity';
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ type: 'boolean', nullable: true, default: false })
+  isActive: boolean;
 
   @Column({ type: 'varchar', nullable: true })
   avatar: string;

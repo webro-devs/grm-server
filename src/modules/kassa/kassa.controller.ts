@@ -172,7 +172,7 @@ export class KassaController {
       }
     }
 
-    await this.kassaService.closeKassa(id);
+    await this.kassaService.closeKassa(id, req.user);
     await this.kassaService.create({ filial: user.filial.id });
     return await this.kassaService.GetOpenKassa(req.user.filial.id);
   }

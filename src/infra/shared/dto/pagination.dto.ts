@@ -35,6 +35,7 @@ class PaginationDto {
   @ApiProperty({
     description: `IsActive`,
     example: true,
+    required: false,
   })
   @IsOptional()
   @IsString()

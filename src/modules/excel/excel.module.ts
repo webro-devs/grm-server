@@ -16,10 +16,12 @@ import { SizeModule } from '../size/size.module';
 import { StyleModule } from '../style/style.module';
 import { FilialModule } from '../filial/filial.module';
 import { QrBaseModule } from '../qr-base/qr-base.module';
+import { ActionModule } from '../action/action.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Excel, ProductExcel]),
+    ActionModule,
     FileModule,
     forwardRef(() => PartiyaModule),
     ProductModule,

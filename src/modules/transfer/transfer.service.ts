@@ -8,6 +8,8 @@ import { Transfer } from './transfer.entity';
 import { ProductService } from '../product/product.service';
 import { CreateProductDto } from '../product/dto';
 import { UserService } from '../user/user.service';
+import { ActionService } from '../action/action.service';
+import { FilialService } from '../filial/filial.service';
 
 Injectable();
 export class TransferService {
@@ -17,6 +19,8 @@ export class TransferService {
     private readonly productService: ProductService,
     private readonly userService: UserService,
     private readonly connection: DataSource,
+    private readonly actionService: ActionService,
+    private readonly filialService: FilialService,
   ) {}
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Transfer>): Promise<Pagination<Transfer>> {
     console.log(where);
@@ -69,9 +73,11 @@ export class TransferService {
   }
 
   async create(values: CreateTransferDto[], id: string) {
+    let size = 0;
     if (values.length) {
       await Promise.all(
         values.map(async (value) => {
+          size += (await this.takeSize(value.product, value.count)) || 0;
           await this.takeProduct(value.product, value.count);
           await this.transferRepository
             .createQueryBuilder()
@@ -82,7 +88,16 @@ export class TransferService {
             .execute();
         }),
       );
+      const filial_1 = await this.filialService.getOne(values[0].from);
+      const filial_2 = await this.filialService.getOne(values[0].to);
+      await this.actionService.create({}, id, values[0].from, `С ${filial_1.title} на ${filial_2.title} м².`);
     }
+  }
+
+  async takeSize(id: string, count: number) {
+    const product = await this.productService.getById(id);
+
+    return product.x * product.y * count;
   }
 
   async takeProduct(id: string, count: number) {

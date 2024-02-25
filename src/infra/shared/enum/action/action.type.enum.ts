@@ -1,13 +1,19 @@
 enum ActionTypeEnum {
-  order_pass = 'order pass',
-  order_reject = 'order reject',
   user_create = 'user create',
   user_delete = 'user delete',
-  user_update = 'user update',
-  partiya = 'partiya',
-  transfer = 'transfer',
+  user_update = 'user updete',
+  partiya_create = 'create partiya',
+  partiya_update = 'update partiya',
+  partiya_Send = 'end partiya',
+  transfer_create = 'transfer',
   excel = 'excel',
-  product = 'product',
+  close_kassa = 'close kassa',
+  add_income_cashflow_boss = 'cashflow',
+  add_income_cashflow_shop = 'cashflow',
+  add_expense_cashflow_boss = 'cashflow',
+  add_expense_cashflow_shop = 'cashflow',
+  accept_order = 'order',
+  return_order = 'order',
 }
 
 export default ActionTypeEnum;
