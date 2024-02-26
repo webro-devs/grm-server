@@ -6,6 +6,7 @@ enum ActionDescEnum {
   partiya_update = 'Партия завершена!',
   partiya_Send = 'Партия завершена!!',
   transfer_create = 'Сделал трансфер.',
+  transfer_accept = 'Кассир принял трансфер.',
   excel = 'Импортировано из файла Excel',
   close_kassa = 'Закрыл кассу в размере',
   add_income_cashflow_boss = 'Добавил Бос приход в размере',

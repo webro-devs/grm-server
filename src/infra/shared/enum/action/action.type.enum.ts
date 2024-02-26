@@ -6,6 +6,7 @@ enum ActionTypeEnum {
   partiya_update = 'update partiya',
   partiya_Send = 'end partiya',
   transfer_create = 'transfer',
+  transfer_accept = 'transfer',
   excel = 'excel',
   close_kassa = 'close kassa',
   add_income_cashflow_boss = 'cashflow',

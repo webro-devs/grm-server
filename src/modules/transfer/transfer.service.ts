@@ -169,6 +169,8 @@ export class TransferService {
 
     await this.transferRepository.update(id, { cashier, progres: 'Accepted', isChecked: true });
 
+    await this.actionService.create({ ...transfer, progres: 'Accepted' }, cashier.id, cashier.filial.id, 'transfer_accept');
+
     return 'Ok';
   }
 
