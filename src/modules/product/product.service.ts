@@ -7,7 +7,6 @@ import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from
 import { sizeParser } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 import { ModelService } from '../model/model.service';
-import { PartiyaService } from '../partiya/partiya.service';
 
 Injectable();
 export class ProductService {
@@ -30,6 +29,10 @@ export class ProductService {
             'filial.id = :filial',
             { filial: where.filial },
           );
+
+          if (_user.role < 3) {
+            cb.andWhere('filial.title != :filial', { filial: 'baza' });
+          }
         }),
       );
       querybuilder
