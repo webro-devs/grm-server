@@ -95,7 +95,7 @@ export class TransferService {
         id,
         values[0].from,
         'transfer_create',
-        `С ${filial_1.title} на ${filial_2.title} ${size}м².`,
+        `С ${filial_1.title} на ${filial_2.title} ${Number(size).toFixed(2)}м².`,
       );
     }
   }
