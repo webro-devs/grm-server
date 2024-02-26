@@ -16,7 +16,9 @@ export class ActionService {
   ) {}
 
   async getAll(options: IPaginationOptions): Promise<Pagination<Action>> {
-    return paginate<Action>(this.actionRepository, options, { relations: { filial: true, user: true } });
+    return paginate<Action>(this.actionRepository, options, {
+      relations: { filial: true, user: { filial: true, position: true } },
+    });
   }
 
   async create(data, user: string, filial, key: string, additional?: string): Promise<InsertResult> {
@@ -27,7 +29,7 @@ export class ActionService {
       type: ActionTypeEnum[key],
       info: data,
     };
-    
+
     if (additional) {
       value.desc = value.desc + ' ' + additional;
     }
