@@ -35,6 +35,11 @@ export class ProductService {
           }
         }),
       );
+
+      if (where?.filial) {
+        querybuilder.andWhere('filial.id = :filial', { filial: where.filial });
+      }
+
       querybuilder
         .leftJoinAndSelect('product.model', 'model')
         .leftJoinAndSelect('model.collection', 'collection')
