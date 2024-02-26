@@ -18,6 +18,7 @@ export class ActionService {
   async getAll(options: IPaginationOptions): Promise<Pagination<Action>> {
     return paginate<Action>(this.actionRepository, options, {
       relations: { filial: true, user: { filial: true, position: true } },
+      order: { date: 'DESC' },
     });
   }
 
