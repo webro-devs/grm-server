@@ -23,7 +23,7 @@ export class ProductController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Query() query: ProductQueryDto, @Route() route: string, @Req() req) {
-    return await this.productService.getAll({ limit: query.limit, page: query.page, route }, req.where);
+    return await this.productService.getAll({ limit: query.limit, page: query.page, route }, req.where, req.user);
   }
 
   @Get('/baza')

@@ -41,7 +41,7 @@ export class UserController {
     description: 'The users were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getData(@Route() route: string, @Query() query: PaginationDto) {
+  async getData(@Route() route: string, @Query() query) {
     return await this.userService.getAll({ ...query, route });
   }
 

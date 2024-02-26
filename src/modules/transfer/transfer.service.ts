@@ -90,7 +90,13 @@ export class TransferService {
       );
       const filial_1 = await this.filialService.getOne(values[0].from);
       const filial_2 = await this.filialService.getOne(values[0].to);
-      await this.actionService.create({}, id, values[0].from, `С ${filial_1.title} на ${filial_2.title} м².`);
+      await this.actionService.create(
+        {},
+        id,
+        values[0].from,
+        'transfer_create',
+        `С ${filial_1.title} на ${filial_2.title} м².`,
+      );
     }
   }
 

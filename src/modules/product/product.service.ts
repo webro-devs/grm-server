@@ -20,7 +20,7 @@ export class ProductService {
     private readonly connection: DataSource,
   ) {}
 
-  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Product>) {
+  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Product>, _user?) {
     if (where['fields']) {
       if (!where?.filial) throw new BadRequestException('Filial should be exist!');
       const querybuilder = this.productRepository.createQueryBuilder('product');
