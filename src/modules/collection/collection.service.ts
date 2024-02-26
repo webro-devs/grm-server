@@ -149,7 +149,7 @@ export class CollectionService {
   }): Promise<Pagination<Collection>> {
     const where = {
       ...(collection && { id: collection }),
-      ...(filial && { model: { products: { filial: { id: filial } } } }),
+      ...(filial && { model: { products: { filial: { id: filial }, count: MoreThanOrEqual(1) } } }),
     };
 
     const data2 = await paginate<Collection>(
@@ -157,7 +157,7 @@ export class CollectionService {
       { limit, page },
       {
         relations: { model: { products: { filial: true, color: true, model: true } } },
-        where: { ...where, model: { products: { count: MoreThanOrEqual(1) } } },
+        where: { model: { products: { count: MoreThanOrEqual(1) } }, ...where },
       },
     );
 
