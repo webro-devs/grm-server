@@ -31,7 +31,7 @@ export class UserService {
     private readonly actionService: ActionService,
   ) {}
 
-  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<User>): Promise<Pagination<User>> {
+  async getAll(options: IPaginationOptions, where): Promise<Pagination<User>> {
     return paginate<User>(this.userRepository, options, {
       order: {
         firstName: 'ASC',
@@ -42,6 +42,8 @@ export class UserService {
       },
       where: {
         role: MoreThan(0),
+        ...(where.role && { role: where.role }),
+        ...(where.filial && { filial: { id: where.filial } }),
       },
     });
   }

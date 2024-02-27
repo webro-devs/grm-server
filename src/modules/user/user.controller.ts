@@ -42,7 +42,7 @@ export class UserController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query) {
-    return await this.userService.getAll({ ...query, route });
+    return await this.userService.getAll({ ...query, route }, query);
   }
 
   @Get('/info/me')

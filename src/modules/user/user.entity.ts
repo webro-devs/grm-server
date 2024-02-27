@@ -62,7 +62,7 @@ export class User {
   @OneToMany(() => Cashflow, (cashflow) => cashflow.casher, { nullable: true })
   cashflow: Cashflow[];
 
-  @ManyToOne(() => Filial, (filial) => filial.users, { nullable: true })
+  @ManyToOne(() => Filial, (filial) => filial.users)
   @JoinColumn()
   filial: Filial;
 
