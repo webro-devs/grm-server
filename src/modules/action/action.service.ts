@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { ActionDescEnum, ActionTypeEnum } from 'src/infra/shared/enum';
-import { Between, FindOptionsWhere, InsertResult } from 'typeorm';
+import { Between, Equal, FindOptionsWhere, InsertResult, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 
 import { Action } from './action.entity';
 import { ActionRepository } from './action.repository';
@@ -16,29 +16,50 @@ export class ActionService {
   ) {}
 
   async getAll(options: IPaginationOptions, query?): Promise<Pagination<Action>> {
-    if (!query.to) {
+    let where = {};
+    if (!query.endDate) {
       let tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       tomorrow.setHours(23, 59, 59, 999);
-      query.to = tomorrow;
+      query.endDate = tomorrow;
     }
-
-    if (!query.from) {
+    if (!query.startDate) {
       const today = new Date();
       today.setHours(23, 59, 59, 999);
-      query.from = today;
+      query.startDate = today;
     }
-    let to = new Date(query.to);
-    let from = new Date(query.from);
+    let to = new Date(query.endDate);
+    let from = new Date(query.startDate);
 
     to.setHours(23, 59, 59, 999);
     from.setHours(0, 0, 0, 1);
 
-    const date = Between(from, to);
+    if (query.endDate && query.startDate) {
+      where = {
+        date: Between(from, to),
+      };
+    } else if (query.startDate) {
+      where = {
+        date: MoreThanOrEqual(from),
+      };
+    } else if (query.endDate) {
+      where = {
+        date: LessThanOrEqual(to),
+      };
+    }
+
+    if (query.filial && query.filial != 'boss' && query.filial != 'manager') {
+      where = { ...where, user: { filial: { id: Equal(query.filial) } } };
+    } else if (query?.filial?.toLowerCase() == 'boss') {
+      where = { ...where, user: { role: 5 } };
+    } else if (query?.filial?.toLowerCase() == 'manager') {
+      where = { ...where, user: { role: 3 } };
+    }
+
     return paginate<Action>(this.actionRepository, options, {
       relations: { filial: true, user: { filial: true, position: true } },
       order: { date: 'DESC' },
-      where: { date: Between(from, to) },
+      where,
     });
   }
 
