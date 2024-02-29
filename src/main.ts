@@ -2,11 +2,12 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { AccessTokenUserGuard } from './modules/auth/passport-stratagies/access-token-user/access-token-user.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { ErrorFilter } from './infra/validators';
 import { useContainer } from 'class-validator';
+const logging = new Logger('Request Middleware', { timestamp: true });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -22,12 +23,8 @@ async function bootstrap() {
 
   app.use((req, res, next) => {
     const originalSend = res.send;
-    const now = new Date();
-    const options = { timeZone: 'Asia/Tashkent' };
-    const timeInTashkent = now.toLocaleString('en-US', options);
-
-    res.send = function (body) {
-      console.log(`[ ${timeInTashkent} ] Response for ${req.method} ${req.url}`);
+    res.send = function () {
+      logging.warn(`Response for ${req.method} ${req.url}`);
       originalSend.apply(res, arguments);
     };
     next();

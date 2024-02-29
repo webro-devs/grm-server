@@ -7,6 +7,7 @@ import { ClientOrderService } from '../client-order/client-order.service';
 import { paginateArray } from 'src/infra/helpers';
 import { EntityManager } from 'typeorm';
 import { OrderCashflowDto } from './dto';
+import { OrderQueryDto } from 'src/infra/shared/dto';
 
 Injectable();
 export class AccountingService {
@@ -119,6 +120,24 @@ export class AccountingService {
   }
 
   async getKassaActions(where: OrderCashflowDto) {
+    const query = { endDate: where?.endDate, startDate: where?.startDate };
+    if (!query.endDate) {
+      let tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(23, 59, 59, 999);
+      query.endDate = tomorrow;
+    }
+    if (!query.startDate) {
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
+      query.startDate = today;
+    }
+    let from = new Date(query.startDate);
+    let to = new Date(query.endDate);
+
+    from.setHours(0, 0, 0, 1);
+    to.setHours(23, 59, 59, 999);
+
     const order = this.entityManager
       .getRepository('order')
       .createQueryBuilder('order')
@@ -152,6 +171,17 @@ export class AccountingService {
     if (where.filial) {
       order.andWhere('filial.id = :filial', { filial: where.filial });
       cashflow.andWhere('filial.id = :filial', { filial: where.filial });
+    }
+
+    if (where.endDate && where.startDate) {
+      order.andWhere('order.date BETWEEN :startDate AND :endDate', { startDate: from, endDate: to });
+      cashflow.andWhere('cashflow.date BETWEEN :startDate AND :endDate', { startDate: from, endDate: to });
+    } else if (where.startDate) {
+      order.andWhere('order.date >= :startDate', { startDate: from });
+      cashflow.andWhere('cashflow.date >= :startDate', { startDate: from });
+    } else if (where.endDate) {
+      order.andWhere('order.date <= :endDate', { endDate: to });
+      cashflow.andWhere('cashflow.date <= :endDate', { endDate: to });
     }
 
     const orders = await order.getManyAndCount();

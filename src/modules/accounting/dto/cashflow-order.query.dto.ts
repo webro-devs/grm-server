@@ -13,7 +13,7 @@ function parsePaginationQuery({ key, value }: TransformFnParams) {
   return int;
 }
 
-class CreateColorDto {
+class CreateCashflowDto {
   @ApiProperty({
     description: `limit`,
     example: 10,
@@ -42,6 +42,22 @@ class CreateColorDto {
   readonly filial: string;
 
   @ApiProperty({
+    description: `startDate`,
+    example: '2024-05-22',
+  })
+  @IsOptional()
+  @IsString()
+  readonly startDate: Date;
+
+  @ApiProperty({
+    description: `endDate`,
+    example: '2024-06-23',
+  })
+  @IsOptional()
+  @IsString()
+  readonly endDate: Date;
+
+  @ApiProperty({
     description: `type`,
     example: 'income or expence',
   })
@@ -55,4 +71,4 @@ class CreateColorDto {
   }
 }
 
-export default CreateColorDto;
+export default CreateCashflowDto;

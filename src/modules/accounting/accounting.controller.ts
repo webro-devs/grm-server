@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { AccountingService } from './accounting.service';
-import { RangeDto } from '../../infra/shared/dto';
+import { OrderQueryDto, RangeDto } from '../../infra/shared/dto';
 import { Public } from '../auth/decorators/public.decorator';
 import { OrderCashflowDto } from './dto';
 
