@@ -36,7 +36,7 @@ export class ActionController {
   })
   @HttpCode(HttpStatus.OK)
   async getAll(@Query() query: ProductQueryDto) {
-    return await this.actionService.getAll({ limit: query.limit, page: query.page });
+    return await this.actionService.getAll({ limit: query.limit, page: query.page }, query);
   }
 
   @Post('/')

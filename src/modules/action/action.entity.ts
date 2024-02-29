@@ -15,7 +15,7 @@ export class Action {
   filial: Filial;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  date: string;
+  date: Date;
 
   @Column('varchar')
   type: string;

@@ -43,7 +43,7 @@ export class OrderService {
         seller: true,
         product: { model: { collection: true }, color: true, filial: true },
       },
-      where: { ...where, isActive: Not('reject') },
+      where,
       order: { date: 'DESC' },
     });
   }
