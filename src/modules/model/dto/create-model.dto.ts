@@ -1,7 +1,6 @@
 import { IsArray, IsNotEmpty, IsString, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUnique } from 'src/infra/shared/decorators/is-unique.decorator';
 class CreateModelDto {
   @ApiProperty({
     description: `title`,
@@ -9,7 +8,6 @@ class CreateModelDto {
   })
   @IsNotEmpty()
   @IsString()
-  @IsUnique('model')
   readonly title: string;
 
   @ApiProperty({
