@@ -4,7 +4,6 @@ import {
   Body,
   HttpCode,
   HttpStatus,
-  HttpException,
   Delete,
   Patch,
   Param,
@@ -12,7 +11,6 @@ import {
   Query,
   Req,
   Res,
-  StreamableFile,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
@@ -20,13 +18,12 @@ import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestj
 import { CreateClientDto, CreateUserDto, UpdateClientDto, UpdateUserDto } from './dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
-import { PaginationDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from 'src/infra/shared/enum';
 import * as path from 'path';
-import { createReadStream, existsSync } from 'fs';
+import { existsSync } from 'fs';
 import * as AdmZip from 'adm-zip';
 
 @ApiTags('User')

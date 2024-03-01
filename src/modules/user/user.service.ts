@@ -42,7 +42,7 @@ export class UserService {
       },
       where: {
         role: MoreThan(0),
-        ...(where.role && { role: where.role }),
+        ...(where.role && { position: { id: where.role } }),
         ...(where.filial && { filial: { id: where.filial } }),
       },
     });
