@@ -4,6 +4,7 @@ enum ActionTypeEnum {
   user_update = 'user updete',
   partiya_create = 'create partiya',
   partiya_update = 'update partiya',
+  update_partiya = 'update partiya',
   partiya_Send = 'end partiya',
   transfer_create = 'transfer',
   transfer_accept = 'transfer',
