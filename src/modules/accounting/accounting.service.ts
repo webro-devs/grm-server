@@ -22,6 +22,8 @@ export class AccountingService {
   ) {}
 
   async getFullAccounting(where) {
+    console.log(where);
+
     const result = [];
     const allFilial = await this.filialService.getAllFilial();
     let total = false;
@@ -50,11 +52,13 @@ export class AccountingService {
         plasticSum,
       } = await this.kassaService.kassaTotal({
         filial: { id: where.filial.id },
-        ...(where?.isActive && { isActive: true }),
+        isActive: true,
+        ...(where.startDate && { startDate: where.startDate }),
       });
 
       const { remainingSize, remainingSum } = await this.productService.remainingProducts({
         filial: { id: where.filial.id },
+        ...(where.date && { date: where.date }),
       });
 
       result.push({
