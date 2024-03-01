@@ -38,6 +38,16 @@ export class OrderController {
     return await this.orderService.getAll({ limit: query.limit, page: query.page, route }, req.where);
   }
 
+  @Get('/stats')
+  @ApiOperation({ summary: 'Method: returns all orders' })
+  @ApiOkResponse({
+    description: 'The orders were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getStats(@Query() query) {
+    return await this.orderService.getStats(query);
+  }
+
   @Get('/get-by-user/:id')
   @ApiOperation({ summary: 'Method: returns all orders' })
   @ApiOkResponse({

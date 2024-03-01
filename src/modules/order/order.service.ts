@@ -9,7 +9,17 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { Between, DataSource, EntityManager, Equal, FindOptionsWhere, Not, Repository } from 'typeorm';
+import {
+  Between,
+  DataSource,
+  EntityManager,
+  Equal,
+  FindOptionsWhere,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Not,
+  Repository,
+} from 'typeorm';
 
 import { Order } from './order.entity';
 import { UpdateOrderDto, CreateOrderDto } from './dto';
@@ -219,13 +229,16 @@ export class OrderService {
       product.calculateProductPrice();
       additionalProfitSum = value.price - product.priceMeter * cost * product.y;
       netProfitSum = (product.priceMeter - product.comingPrice) * cost * product.y;
+      value.kv = cost;
     } else {
       if (product.count < value.x) throw new BadRequestException('Not enough product count!');
       product.count = +product.count - +value.x;
       product.setTotalSize();
       additionalProfitSum = value.price - product.price;
       netProfitSum = (product.priceMeter - product.comingPrice) * product.x * product.y;
+      value.kv = product.x * product.y * value.x;
     }
+
     product.isMetric = value.isMetric;
     await this.saveRepo(product);
 
@@ -387,5 +400,25 @@ export class OrderService {
     };
 
     await this.productService.create([newProduct]);
+  }
+
+  async getStats(query) {
+    let result = this.entityManager
+      .createQueryBuilder('Order', 'o')
+      .select("DATE_TRUNC('day', o.date)", 'day')
+      .addSelect('SUM(o.kv)', 'kv')
+      .addSelect('SUM(o.price)', 'price')
+      .groupBy('day, o.date')
+      .orderBy('o.date', 'DESC');
+
+    if (query.startDate && query.endDate) {
+      result.where('o.date >= :fromDate AND o.date <= :toDate', { fromDate: query.startDate, toDate: query.endDate });
+    } else if (query.startDate) {
+      result.where('o.date >= :fromDate', { fromDate: query.startDate });
+    } else if (query.endDate) {
+      result.where('o.date <= :toDate', { toDate: query.endDate });
+    }
+
+    return await result.getRawMany();
   }
 }

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsOptional, IsNumber, IsBoolean } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, IsNumber, IsBoolean, IsEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { BadRequestException } from '@nestjs/common';
@@ -52,6 +52,10 @@ class CreateOrderDto {
   @IsOptional()
   @IsString()
   readonly kassa: string;
+
+  @IsEmpty()
+  @IsNumber()
+  kv: number;
 }
 
 export default CreateOrderDto;
