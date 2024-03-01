@@ -418,6 +418,12 @@ export class OrderService {
     } else if (query.endDate) {
       result.where('o.date <= :toDate', { toDate: query.endDate });
     }
+    if (query.filial) {
+      result
+        .leftJoin('o.product', 'product')
+        .leftJoin('product.filial', 'filial')
+        .andWhere('filial.id = :id', { id: query.filial });
+    }
 
     return await result.getRawMany();
   }
