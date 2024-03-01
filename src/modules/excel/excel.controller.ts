@@ -1,10 +1,14 @@
 import { Controller, Post, HttpCode, UseInterceptors, UploadedFile, HttpStatus, Param } from '@nestjs/common';
+
+import * as path from 'path';
+import { existsSync } from 'fs';
+import * as AdmZip from 'adm-zip';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiCreatedResponse, ApiTags, ApiOperation, ApiConsumes } from '@nestjs/swagger';
 import { ExcelService } from './excel.service';
 import { deleteFile, multerStorage } from '../../infra/helpers';
 import { Public } from '../auth/decorators/public.decorator';
-import { Body, Delete, Get, Put, Req } from '@nestjs/common/decorators';
+import { Body, Delete, Get, Put, Req, Res } from '@nestjs/common/decorators';
 import { ImportExcelDto, UpdateCollectionCostDto, UpdateExcelDto, UpdateModelCostDto, UpdateProductExcelDto } from './dto';
 import CreateProductExcDto from './dto/createProduct-excel';
 import { CreateQrBaseDto } from '../qr-base/dto';
@@ -203,5 +207,32 @@ export class ExcelController {
     const response = await this.fileService.readProductsByModel(id, modelId);
 
     return response;
+  }
+
+  @Post('/zip')
+  @ApiOperation({
+    summary: 'dfasdfadgafgasdfasdfasd',
+  })
+  @ApiCreatedResponse({
+    description: 'asdsfgasdfasdfasdf',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getExcel(@Body() Body, @Res() res) {
+    const response = await this.fileService.createExcelFile(Body, 'accounting');
+    const pathfile = path.join(process.cwd(), 'uploads', 'accounting');
+    if (existsSync(pathfile)) {
+      const zip = new AdmZip();
+      await zip.addLocalFolder(pathfile);
+      const response = await zip.toBuffer();
+      const fileName = 'backup.zip';
+      const fileType = 'application/zip';
+
+      res.writeHead(200, {
+        'Content-Disposition': `attachment; filename="${fileName}`,
+        'Content-Type': fileType,
+      });
+
+      return res.end(response);
+    } else return { data: null, isNaN: true };
   }
 }

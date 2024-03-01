@@ -171,7 +171,7 @@ export class KassaService {
     }
   }
 
-  async kassaTotal(where) {
+  async   kassaTotal(where) {
     const data = await this.kassaRepository.find({
       where: { filial: { id: where.filial.id }, isActive: true },
     });

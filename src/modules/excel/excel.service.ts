@@ -1,6 +1,8 @@
 import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as XLSX from 'xlsx';
+import { join } from 'path';
+import * as fs from 'fs';
 
 import { Excel } from './excel.entity';
 import { ProductExcel } from './excel-product.entity';
@@ -479,22 +481,18 @@ export class ExcelService {
       priceMeter: product ? product.displayPrice : 0,
     };
   }
+  async createExcelFile(datas, pathname) {
+    const workbook = XLSX.utils.book_new();
+
+    const worksheet = XLSX.utils.json_to_sheet(datas);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet');
+    const filePath = join(process.cwd(), 'uploads', 'accounting', 'accounting.xlsx');
+
+    await fs.promises.writeFile(filePath, XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' }));
+
+    return pathname;
+  }
 }
-
-// async createExcelFile(datas, pathname) {
-//   const workbook = XLSX.utils.book_new();
-
-//   const worksheet = XLSX.utils.json_to_sheet(datas);
-//   XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet');
-//   const filePath = path.join(process.cwd(), pathname);
-
-//   await fs.promises.writeFile(
-//     filePath,
-//     XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' }),
-//   );
-
-//   return pathname;
-// }
 
 // async updateExcelFile(pathName, newData, restrict: boolean = false) {
 //   const workbook = XLSX.utils.book_new();

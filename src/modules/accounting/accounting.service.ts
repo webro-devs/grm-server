@@ -68,6 +68,8 @@ export class AccountingService {
         plasticSum,
         goingSumShop,
         goingSumBoss,
+        cashFlowSumBoss,
+        additionalProfitTotalSum,
       });
       delete where.filial.id;
 
