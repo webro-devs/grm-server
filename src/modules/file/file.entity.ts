@@ -13,4 +13,7 @@ export class File {
 
   @Column('varchar')
   color: string;
+
+  @Column('varchar')
+  shape: string;
 }

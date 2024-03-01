@@ -1,10 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { CreateFileDto, UpdateFileDto } from './dto';
 
 import { File } from './file.entity';
@@ -62,9 +58,9 @@ export class FileService {
     return response;
   }
 
-  async getByModelAndColor(model: string, color: string) {
+  async getByModelAndColor(model: string, color: string, shape: string) {
     const response = await this.fileRepository.findOne({
-      where: { model, color },
+      where: { model, color, shape },
     });
 
     return response;

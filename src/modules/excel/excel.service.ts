@@ -460,8 +460,8 @@ export class ExcelService {
   async setImg(data) {
     for (const item of data) {
       if (!item.imgUrl) {
-        if (item?.model && item?.color) {
-          data.imgUrl = await this.fileService.getByModelAndColor(item.model?.title, item.color?.title);
+        if (item?.model && item?.color && item?.shape) {
+          data.imgUrl = await this.fileService.getByModelAndColor(item.model?.title, item.color?.title, item.shape);
         } else data.imgUrl = null;
       }
     }

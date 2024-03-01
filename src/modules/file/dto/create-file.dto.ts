@@ -18,6 +18,14 @@ class CreateFileDto {
   readonly color: string;
 
   @ApiProperty({
+    description: `shape`,
+    example: 'rectangle',
+  })
+  @IsNotEmpty()
+  @IsString()
+  readonly shape: string;
+
+  @ApiProperty({
     description: `Url`,
     example: 'https://grm.uz/example.jpg',
   })

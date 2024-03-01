@@ -19,6 +19,14 @@ class UpdateFileDto {
   readonly color: string;
 
   @ApiProperty({
+    description: `shape`,
+    example: 'rectangle',
+  })
+  @IsOptional()
+  @IsString()
+  readonly shape: string;
+
+  @ApiProperty({
     description: `Url`,
     example: 'https://grm.uz/example.jpg',
   })
