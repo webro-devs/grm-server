@@ -12,6 +12,7 @@ import {
   Query,
   BadRequestException,
   Req,
+  Put,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
@@ -97,7 +98,7 @@ export class PartiyaController {
     }
   }
 
-  @Patch('/expense/:id')
+  @Put('/expense/:id')
   @ApiOperation({ summary: 'Method: updating partiya' })
   @ApiOkResponse({
     description: 'Partiya was changed',
