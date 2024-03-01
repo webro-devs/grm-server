@@ -197,8 +197,12 @@ export class ProductService {
       .insert()
       .into(Product)
       .values(value as unknown as Product)
-      .returning('id')
+      .returning(['id', 'model', 'color'])
       .execute();
+
+    data.identifiers.forEach(async (element) => {
+      this.getOne(element.id);
+    });
 
     return data;
   }

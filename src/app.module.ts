@@ -31,6 +31,7 @@ import { CountryModule } from './modules/country/country.module';
 import { SizeModule } from './modules/size/size.module';
 import { ColorModule } from './modules/color/color.module';
 import { QrBaseModule } from './modules/qr-base/qr-base.module';
+import { BannerModule } from './modules/banner/banner.module';
 import { IsUniqueConstraint } from './infra/shared/decorators/is-unique.constrain';
 
 @Module({
@@ -50,6 +51,7 @@ import { IsUniqueConstraint } from './infra/shared/decorators/is-unique.constrai
     }),
     AccountingModule,
     AuthModule,
+    BannerModule,
     CashflowModule,
     ClientOrderModule,
     ClientRequestModule,
