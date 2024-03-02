@@ -63,18 +63,18 @@ export class KassaController {
     //  throw new BadRequestException("You don't have filial!");
     // }
 
-    if (user.filial.id !== id && user.role !== UserRoleEnum.BOSS) {
-      throw new BadRequestException("It's not your filial!");
-    }
+    // if (user.filial.id !== id && user.role !== UserRoleEnum.BOSS) {
+      // throw new BadRequestException("It's not your filial!");
+    // }
 
-    if (user.role == UserRoleEnum.BOSS) {
-      const filial = req?.body?.filial;
-      if (filial) {
-        id = req.body.filial.id;
-      } else {
-        throw new BadRequestException("Mr Boss, You don't give filial for find kassa!");
-      }
-    }
+    // if (user.role == UserRoleEnum.BOSS) {
+     // const filial = req?.body?.filial;
+     // if (filial) {
+        // id = req.body.filial.id;
+      // } else {
+       // throw new BadRequestException("Mr Boss, You don't give filial for find kassa!");
+      // }
+   // }
 
     let kassa = await this.kassaService.GetOpenKassa(id);
 
