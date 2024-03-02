@@ -59,9 +59,9 @@ export class KassaController {
   async opnKassa(@Param('filialId') id: string, @Req() req): Promise<Kassa | unknown> {
     const user = req.user;
 
-    if (!user?.filial?.id) {
-      throw new BadRequestException("You don't have filial!");
-    }
+   // if (!user?.filial?.id) {
+    //  throw new BadRequestException("You don't have filial!");
+    // }
 
     if (user.filial.id !== id && user.role !== UserRoleEnum.BOSS) {
       throw new BadRequestException("It's not your filial!");
