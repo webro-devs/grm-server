@@ -133,6 +133,8 @@ export class KassaService {
     if (data.length) {
       const comingSum = data.map((d) => d.totalSum).reduce((a, b) => a + b);
 
+      const netProfitTotalSum = data.map((d) => d.netProfitTotalSum).reduce((a, b) => a + b);
+
       const goingSumBoss = data.map((d) => d.expenditureBoss).reduce((a, b) => a + b);
 
       const goingSumShop = data.map((d) => d.expenditureShop).reduce((a, b) => a + b);
@@ -156,6 +158,7 @@ export class KassaService {
         cashFlowSumBoss,
         cashFlowSumShop,
         plasticSum,
+        netProfitTotalSum,
       };
     } else {
       return {
@@ -167,13 +170,14 @@ export class KassaService {
         cashFlowSumBoss: 0,
         cashFlowSumShop: 0,
         plasticSum: 0,
+        netProfitTotalSum: 0,
       };
     }
   }
 
   async kassaTotal(where) {
     const data = await this.kassaRepository.find({
-      where
+      where,
     });
 
     if (data.length) {
@@ -189,6 +193,7 @@ export class KassaService {
             cashFlowSumBoss,
             cashFlowSumShop,
             plasticSum,
+            netProfitTotalSum,
           },
         ) => {
           return {
@@ -200,9 +205,11 @@ export class KassaService {
             cashFlowSumBoss: cashFlowSumBoss || 0 + prev.cashFlowSumBoss,
             cashFlowSumShop: cashFlowSumShop || 0 + prev.cashFlowSumShop,
             plasticSum: plasticSum || 0 + prev.plasticSum,
+            netProfitTotalSum: netProfitTotalSum || 0 + prev.netProfitTotalSum,
           };
         },
         {
+          netProfitTotalSum: 0,
           comingSum: 0,
           goingSumBoss: 0,
           goingSumShop: 0,
@@ -216,6 +223,7 @@ export class KassaService {
       return kassa;
     } else {
       return {
+        netProfitTotalSum: 0,
         comingSum: 0,
         goingSumBoss: 0,
         goingSumShop: 0,

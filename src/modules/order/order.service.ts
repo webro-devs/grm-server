@@ -227,7 +227,7 @@ export class OrderService {
       product.y = product.y - cost;
       product.setTotalSize();
       product.calculateProductPrice();
-      additionalProfitSum = value.price - product.priceMeter * cost * product.y;
+      additionalProfitSum = (value.price - product.priceMeter) * cost * product.y;
       netProfitSum = (product.priceMeter - product.comingPrice) * cost * product.y;
       value.kv = cost;
     } else {
