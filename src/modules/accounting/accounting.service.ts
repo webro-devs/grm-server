@@ -50,6 +50,7 @@ export class AccountingService {
         cashFlowSumBoss,
         cashFlowSumShop,
         plasticSum,
+        netProfitTotalSum,
       } = await this.kassaService.kassaTotal({
         filial: { id: where.filial.id },
         isActive: true,
@@ -74,6 +75,7 @@ export class AccountingService {
         goingSumBoss,
         cashFlowSumBoss,
         additionalProfitTotalSum,
+        netProfitTotalSum,
       });
       delete where.filial.id;
 
