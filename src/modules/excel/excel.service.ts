@@ -307,7 +307,8 @@ export class ExcelService {
       style: code.style.id || null,
     };
 
-    return await this.addProductToPartiya([Product], partiyaId);
+    await this.addProductToPartiya([Product], partiyaId);
+    return Product;
   }
   async createWithCodeExcel(newDatas: CreateQrBaseDto[], partiyaId) {
     const partiya = await this.partiyaService.getOne(partiyaId);
