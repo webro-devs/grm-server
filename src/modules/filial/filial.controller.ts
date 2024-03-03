@@ -23,6 +23,16 @@ export class FilialController {
     return await this.filialService.getAll({ ...query, route });
   }
 
+  @Get('/action')
+  @ApiOperation({ summary: 'Method: returns all filial' })
+  @ApiOkResponse({
+    description: 'The filial were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getAction() {
+    return await this.filialService.name();
+  }
+
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single filial by id' })
   @ApiOkResponse({

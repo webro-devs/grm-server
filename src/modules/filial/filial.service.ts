@@ -87,4 +87,13 @@ export class FilialService {
 
     return response;
   }
+
+  async name() {
+    const data = await this.filialRepository.find();
+
+    // @ts-ignore
+    data.unshift({ id: 'boss', title: 'Boss' }, { id: 'manager', title: 'Manager' });
+
+    return data;
+  }
 }
