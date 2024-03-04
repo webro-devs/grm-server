@@ -92,7 +92,7 @@ export class FilialService {
     const data = await this.filialRepository.find();
 
     // @ts-ignore
-    data.unshift({ id: 'boss', title: 'Boss' }, { id: 'manager', title: 'Manager' });
+    data.unshift({ id: 'boss', name: 'Boss' }, { id: 'manager', name: 'Manager' });
 
     return data;
   }
