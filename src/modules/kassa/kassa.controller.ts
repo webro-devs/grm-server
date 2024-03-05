@@ -35,8 +35,22 @@ export class KassaController {
     description: 'The kassa were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getData(@Route() route: string, @Query() query: PaginationDto) {
-    return await this.kassaService.getAll({ ...query, route });
+  async getData(@Route() route: string, @Query() query: PaginationDto, @Req() req) {
+    return await this.kassaService.getAll({ ...query, route }, req.where);
+  }
+
+  @Roles(UserRoleEnum.CASHIER)
+  @Get('/report')
+  @ApiOperation({ summary: 'Method: returns single kassa' })
+  @ApiOkResponse({
+    description: 'The kassa was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async alKassa(@Req() req, @Query() query): Promise<Kassa | unknown> {
+    return await this.kassaService.getReport({ limit: query.limit || 50, page: query.page || 0 }, req.user, {
+      startDate: query.startDate || new Date(),
+      endDate: query?.endDate,
+    });
   }
 
   @Get('/:id')
@@ -59,22 +73,22 @@ export class KassaController {
   async opnKassa(@Param('filialId') id: string, @Req() req): Promise<Kassa | unknown> {
     const user = req.user;
 
-   // if (!user?.filial?.id) {
+    // if (!user?.filial?.id) {
     //  throw new BadRequestException("You don't have filial!");
     // }
 
     // if (user.filial.id !== id && user.role !== UserRoleEnum.BOSS) {
-      // throw new BadRequestException("It's not your filial!");
+    // throw new BadRequestException("It's not your filial!");
     // }
 
     // if (user.role == UserRoleEnum.BOSS) {
-     // const filial = req?.body?.filial;
-     // if (filial) {
-        // id = req.body.filial.id;
-      // } else {
-       // throw new BadRequestException("Mr Boss, You don't give filial for find kassa!");
-      // }
-   // }
+    // const filial = req?.body?.filial;
+    // if (filial) {
+    // id = req.body.filial.id;
+    // } else {
+    // throw new BadRequestException("Mr Boss, You don't give filial for find kassa!");
+    // }
+    // }
 
     let kassa = await this.kassaService.GetOpenKassa(id);
 

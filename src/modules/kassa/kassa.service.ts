@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { FindOptionsWhere, Not, Repository } from 'typeorm';
+import { FindOptionsWhere, LessThanOrEqual, MoreThanOrEqual, Not, Repository } from 'typeorm';
 
 import { Kassa } from './kassa.entity';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
@@ -23,12 +23,37 @@ export class KassaService {
     });
   }
 
+  async getReport(options: IPaginationOptions, user, where) {
+    let startDate = where.startDate,
+      endDate = where.endDate;
+
+    if (endDate) {
+      where.endDate = LessThanOrEqual(endDate);
+    }
+    if (startDate) {
+      where.startDate = MoreThanOrEqual(startDate);
+    }
+    return paginate<Kassa>(this.kassaRepository, options, {
+      relations: {
+        filial: {
+          users: true,
+        },
+      },
+      where: {
+        ...where,
+        isActive: false,
+        filial: { id: user.filial.id, users: { role: 2 } },
+      },
+    });
+  }
+
   async getById(id: string) {
     const data = await this.kassaRepository.findOne({ where: { id } }).catch(() => {
       throw new NotFoundException('data not found');
     });
     return data;
   }
+
   async getOne(id: string) {
     const data = await this.kassaRepository
       .findOne({
