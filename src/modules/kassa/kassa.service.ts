@@ -42,7 +42,7 @@ export class KassaService {
       where: {
         ...where,
         isActive: false,
-        filial: { id: user.filial.id, users: { role: 2 } },
+        filial: { id: user.filial.id },
       },
     });
   }
