@@ -47,8 +47,8 @@ export class KassaController {
   })
   @HttpCode(HttpStatus.OK)
   async alKassa(@Req() req, @Query() query): Promise<Kassa | unknown> {
-    return await this.kassaService.getReport({ limit: query.limit || 50, page: query.page || 0 }, req.user, {
-      startDate: query.startDate || new Date(),
+    return await this.kassaService.getReport({ limit: query.limit || 50, page: query.page || 1 }, req.user, {
+      startDate: query.startDate,
       endDate: query?.endDate,
     });
   }

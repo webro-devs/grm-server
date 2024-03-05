@@ -24,6 +24,8 @@ export class KassaService {
   }
 
   async getReport(options: IPaginationOptions, user, where) {
+    console.log(user);
+
     let startDate = where.startDate,
       endDate = where.endDate;
 
@@ -33,6 +35,8 @@ export class KassaService {
     if (startDate) {
       where.startDate = MoreThanOrEqual(startDate);
     }
+    console.log(where);
+
     return paginate<Kassa>(this.kassaRepository, options, {
       relations: {
         filial: {
@@ -40,9 +44,10 @@ export class KassaService {
         },
       },
       where: {
-        ...where,
+        ...(startDate && { startDate: MoreThanOrEqual(startDate) }),
+        ...(endDate && { startDate: LessThanOrEqual(endDate) }),
         isActive: false,
-        filial: { id: user.filial.id },
+        filial: { id: user.filial.id, users: { role: 2 } },
       },
     });
   }
