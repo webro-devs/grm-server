@@ -19,7 +19,7 @@ export class BannerController {
     description: 'The size was returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getAll(@Param('id') id: string): Promise<Banner[]> {
+  async getAll(): Promise<Banner[]> {
     return this.bannerService.getAll();
   }
 

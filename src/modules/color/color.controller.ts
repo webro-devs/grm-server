@@ -37,6 +37,16 @@ export class ColorController {
     return this.colorService.getOne(id);
   }
 
+  @Get('/merge/datas')
+  @ApiOperation({ summary: 'Method: returns single color by id' })
+  @ApiOkResponse({
+    description: 'The color was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getMerge() {
+    return this.colorService.mergeColors();
+  }
+
   @Post('/')
   @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: creates new color' })
