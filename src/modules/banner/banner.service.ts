@@ -46,7 +46,8 @@ export class BannerService {
   }
 
   async deleteOne(id: string) {
-    const response = await this.bannerRepository.delete(id).catch(() => {
+    const banner = await this.getOne(id);
+    const response = await this.bannerRepository.delete({ id, index: banner.index }).catch(() => {
       throw new NotFoundException('Size not found');
     });
     return response;

@@ -34,7 +34,7 @@ export class BannerController {
   }
 
   @Post('/')
-  @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
+  // @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: creates new size' })
   @ApiCreatedResponse({
     description: 'The size was created successfully',
