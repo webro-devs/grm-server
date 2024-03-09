@@ -1,10 +1,6 @@
 import { NotFoundException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { FindOptionsWhere, Repository } from 'typeorm';
 
 import { Color } from './color.entity';
@@ -75,8 +71,30 @@ export class ColorService {
     });
 
     if (!response) {
-      return (await this.create({title, code: "#f00000"})).id;
+      return (await this.create({ title, code: '#f00000' })).id;
     }
     return response.id;
+  }
+
+  async mergeColors() {
+    const colors: Color[] = await this.getAll();
+    const groupedColors: any[] = this.groupSimilarColors(colors);
+    return groupedColors;
+  }
+
+  groupSimilarColors(colors: Color[]): any[] {
+    const groupedColorsMap = new Map<string, Color[]>();
+
+    colors.forEach((color) => {
+      const key = color.title.toLowerCase();
+
+      if (groupedColorsMap.has(key)) {
+        groupedColorsMap.get(key).push(color);
+      } else {
+        groupedColorsMap.set(key, [color]);
+      }
+    });
+
+    return Array.from(groupedColorsMap.values());
   }
 }

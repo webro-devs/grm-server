@@ -11,6 +11,6 @@ export class Banner {
   @Column({ type: 'varchar' })
   img: string;
 
-  @Column({ type: 'int' })
+  @PrimaryGeneratedColumn('increment')
   index: number;
 }
