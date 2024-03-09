@@ -16,7 +16,7 @@ export class BannerService {
   async getAll() {
     return await this.bannerRepository.find({
       order: {
-        title: 'ASC',
+        index: 'ASC',
       },
     });
   }
