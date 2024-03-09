@@ -1,15 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  HttpStatus,
-  Delete,
-  Patch,
-  Param,
-  Get,
-  Query,
-} from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, Delete, Patch, Param, Get, Query, Put } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 
@@ -55,7 +44,17 @@ export class BannerController {
     return await this.bannerService.create(data);
   }
 
-  @Patch('/:id')
+  @Put('/all')
+  @ApiOperation({ summary: 'Method: updating size' })
+  @ApiOkResponse({
+    description: 'Size was changed',
+  })
+  @HttpCode(HttpStatus.OK)
+  async changeDataAll(@Body() BannerData: UpdateBannerDto[]): Promise<string> {
+    return await this.bannerService.changeAll(BannerData);
+  }
+
+  @Put('/:id')
   @ApiOperation({ summary: 'Method: updating size' })
   @ApiOkResponse({
     description: 'Size was changed',

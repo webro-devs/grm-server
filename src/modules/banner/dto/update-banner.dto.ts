@@ -24,6 +24,9 @@ class UpdateBannerDto {
   @IsOptional()
   @IsNumber()
   readonly index: number;
+
+  @IsOptional()
+  readonly id: string;
 }
 
 export default UpdateBannerDto;

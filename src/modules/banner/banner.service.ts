@@ -10,11 +10,11 @@ Injectable();
 export class BannerService {
   constructor(
     @InjectRepository(Banner)
-    private readonly sizeRepository: Repository<Banner>,
+    private readonly bannerRepository: Repository<Banner>,
   ) {}
 
   async getAll() {
-    return await this.sizeRepository.find({
+    return await this.bannerRepository.find({
       order: {
         title: 'ASC',
       },
@@ -22,7 +22,7 @@ export class BannerService {
   }
 
   async getOne(id: string) {
-    const data = await this.sizeRepository
+    const data = await this.bannerRepository
       .findOne({
         where: { id },
       })
@@ -34,7 +34,7 @@ export class BannerService {
   }
 
   async getOneByName(title: string) {
-    const data = await this.sizeRepository
+    const data = await this.bannerRepository
       .findOne({
         where: { title },
       })
@@ -46,19 +46,26 @@ export class BannerService {
   }
 
   async deleteOne(id: string) {
-    const response = await this.sizeRepository.delete(id).catch(() => {
+    const response = await this.bannerRepository.delete(id).catch(() => {
       throw new NotFoundException('Size not found');
     });
     return response;
   }
 
   async change(value: UpdateBannerDto, id: string) {
-    const response = await this.sizeRepository.update({ id }, value);
+    const response = await this.bannerRepository.update({ id }, value);
     return response;
   }
 
+  async changeAll(value: UpdateBannerDto[]) {
+    for (let i = 0; i < value.length; i++) {
+      const response = await this.bannerRepository.update({ id: value[i].id }, { index: value[i].index });
+    }
+    return 'okay';
+  }
+
   async create(value: CreateBannerDto) {
-    const data = this.sizeRepository.create(value);
-    return await this.sizeRepository.save(data);
+    const data = this.bannerRepository.create(value);
+    return await this.bannerRepository.save(data);
   }
 }
