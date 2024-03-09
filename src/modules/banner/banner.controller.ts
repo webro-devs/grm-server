@@ -24,6 +24,16 @@ import { UserRoleEnum } from 'src/infra/shared/enum';
 export class BannerController {
   constructor(private readonly bannerService: BannerService) {}
 
+  @Get('/')
+  @ApiOperation({ summary: 'Method: returns single size by id' })
+  @ApiOkResponse({
+    description: 'The size was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getAll(@Param('id') id: string): Promise<Banner[]> {
+    return this.bannerService.getAll();
+  }
+
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single size by id' })
   @ApiOkResponse({
