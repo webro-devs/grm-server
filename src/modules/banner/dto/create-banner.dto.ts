@@ -16,14 +16,6 @@ class CreateBannerDto {
   @IsNotEmpty()
   @IsString()
   readonly img: string;
-
-  @ApiProperty({
-    description: `index number`,
-    example: 1,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  readonly index: number;
 }
 
 export default CreateBannerDto;
