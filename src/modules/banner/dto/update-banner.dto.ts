@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class UpdateBannerDto {
   @ApiProperty({
@@ -16,6 +16,14 @@ class UpdateBannerDto {
   @IsOptional()
   @IsString()
   readonly img: string;
+
+  @ApiProperty({
+    description: `index number`,
+    example: 1,
+  })
+  @IsOptional()
+  @IsNumber()
+  readonly index: number;
 }
 
 export default UpdateBannerDto;
