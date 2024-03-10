@@ -6,6 +6,7 @@ import { Shape } from '../shape/shape.entity';
 import { Size } from '../size/size.entity';
 import { Style } from '../style/style.entity';
 import { Collection } from '../collection/collection.entity';
+import { ColumnNumericTransformer } from 'src/infra/helpers';
 
 @Entity('productexcel')
 export class ProductExcel {
@@ -21,7 +22,7 @@ export class ProductExcel {
   @Column({ nullable: true, default: 0 })
   count: number;
 
-  @Column({ nullable: true, default: 0 })
+  @Column({ precision: 20, scale: 2, transformer: new ColumnNumericTransformer(), default: 0, type: 'numeric' })
   displayPrice: number;
 
   @Column({ nullable: true })
@@ -30,10 +31,10 @@ export class ProductExcel {
   @Column('jsonb', { nullable: true, default: [] })
   otherImgs: string[];
 
-  @Column({ nullable: true, default: 0 })
+  @Column({ precision: 20, scale: 2, transformer: new ColumnNumericTransformer(), default: 0, type: 'numeric' })
   commingPrice: number;
 
-  @Column({ nullable: true, default: 0 })
+  @Column({ precision: 20, scale: 2, transformer: new ColumnNumericTransformer(), default: 0, type: 'numeric' })
   collectionPrice: number;
 
   @Column({ nullable: true, default: 0 })

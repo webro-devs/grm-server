@@ -50,6 +50,10 @@ export class ExcelService {
     return data;
   }
 
+  async getAll() {
+    return this.productExcelRepository.find();
+  }
+
   async getOne(id: string) {
     const res = await this.productExcelRepository.findOne({
       where: { id },

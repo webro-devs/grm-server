@@ -52,6 +52,20 @@ export class ExcelController {
     return response;
   }
 
+  @Get('/')
+  @ApiOperation({
+    summary: '',
+  })
+  @ApiCreatedResponse({
+    description: '',
+  })
+  @HttpCode(HttpStatus.OK)
+  async GetAllProducts() {
+    const response = await this.fileService.getAll();
+
+    return response;
+  }
+
   @Public()
   @Get('/:id')
   @ApiOperation({
