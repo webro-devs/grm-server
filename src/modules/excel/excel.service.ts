@@ -95,7 +95,7 @@ export class ExcelService {
       const updatedProduct: CreateProductExcelDto = {
         ...e,
         partiya: partiya.id,
-        country: e.country || partiya.country,
+        country: e?.country || null,
         count,
         ...price,
       };
@@ -350,7 +350,7 @@ export class ExcelService {
         color: code?.color?.id || null,
         commingPrice: 0,
         count: Number(newData?.count) || 1,
-        country: code?.country?.title || null,
+        country: code?.country?.id || null,
         displayPrice: 0,
         imgUrl: null,
         isEdited: false,
