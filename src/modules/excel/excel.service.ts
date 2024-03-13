@@ -124,6 +124,17 @@ export class ExcelService {
     for (const support of products) {
       if (support.model && support.collection && support.code) {
         const codes = await this.qrBaseService.getOneCode(support.code);
+        if (codes.length) {
+          const product = await this.productExcelRepository.findOne({
+            relations: { partiya: true },
+            where: { code: support.code, partiya: { id: partiyaId } },
+          });
+          if (product) {
+            product.count += 1;
+            await this.productExcelRepository.save(product);
+            continue;
+          }
+        }
 
         let data = { ...support };
 
@@ -143,7 +154,7 @@ export class ExcelService {
         data.style = (await this.styleService.getOneByName(data.style))?.id || null;
         data.count = data.count < 1 ? 1 : data.count;
         const price = await this.returnPrice(data.model);
-        
+
         if (codes.length < 1) {
           await this.qrBaseService.create(data);
         }
