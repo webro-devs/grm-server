@@ -107,7 +107,6 @@ export class ModelService {
   }
 
   async findOrCreate(collection, title) {
-    console.log(title);
     const response = await this.modelRepository.findOne({ where: { title } });
 
     if (!response) {
