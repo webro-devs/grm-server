@@ -149,6 +149,7 @@ export class ExcelService {
           throw new BadRequestException('model not found!');
         }
         data.model = model;
+        data.collection = collection;
         data?.country ? data.country : (data.country = partiya.country);
         data.partiya = partiya.id;
         data.color = (await this.colorService.getOneByName(data.color))?.id || null;
@@ -161,7 +162,7 @@ export class ExcelService {
 
         if (codes.length < 1) {
           const country = await this.countryService.findOrCreate(data.country);
-          await this.qrBaseService.create({ ...data, country, collection });
+          await this.qrBaseService.create({ ...data, country });
         }
         data = { ...data, ...price };
 
