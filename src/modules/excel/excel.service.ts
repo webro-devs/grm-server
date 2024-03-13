@@ -146,6 +146,8 @@ export class ExcelService {
         if (!model) {
           throw new BadRequestException('model not found!');
         }
+        data.model = model.id;
+        data.collection = collection.id;
         data?.country ? data.country : (data.country = partiya.country);
         data.partiya = partiya.id;
         data.color = (await this.colorService.getOneByName(data.color))?.id || null;
