@@ -123,7 +123,7 @@ export class ExcelService {
     }
     const prod = [];
 
-    for (const support of products) {
+    for await (const support of products) {
       if (support.model && support.collection && support.code) {
         const codes = await this.qrBaseService.getOneCode(support.code);
         if (codes.length) {
