@@ -128,11 +128,11 @@ export class PartiyaService {
 
     products.forEach((product, i) => {
       const { size, collection, collectionPrice } = product;
-      if (/^0\d*\./.test(size.title)) {
+      if (/^0\d*\./.test(size?.title)) {
         console.log('error: ', size.title);
-        return new BadRequestException(`error: ${size.title}`);
+        return new BadRequestException(`error: ${size?.title}`);
       }
-      const totalM2 = (eval(size.title.match(/\d+\.*\d*/g).join('*') || [0, 0]) / 10000 || 0) * product?.count;
+      const totalM2 = (eval(size?.title.match(/\d+\.*\d*/g).join('*') || [0, 0]) / 10000 || 0) * product?.count;
 
       if (!collections[collection?.title]) {
         collections[collection?.title] = {
@@ -141,7 +141,7 @@ export class PartiyaService {
         };
       }
 
-      collections[collection.title].totalM2 += totalM2;
+      collections[collection?.title].totalM2 += totalM2;
     });
 
     const totalPricesByCollection = Object.entries(collections).map(([collection, data]) => {
