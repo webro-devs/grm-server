@@ -122,7 +122,9 @@ export class ExcelService {
     const prod = [];
 
     for (const support of products) {
-      if (support.model && support.collection) {
+      if (support.model && support.collection && support.code) {
+        const codes = await this.qrBaseService.getOneCode(support.code);
+
         let data = { ...support };
 
         const collection = await this.collectionService.getOneByName(data.collection);
@@ -141,11 +143,15 @@ export class ExcelService {
         data.style = (await this.styleService.getOneByName(data.style))?.id || null;
         data.count = data.count < 1 ? 1 : data.count;
         const price = await this.returnPrice(data.model);
+        
+        if (codes.length < 1) {
+          await this.qrBaseService.create(data);
+        }
         data = { ...data, ...price };
 
         prod.push(data);
       } else {
-        let msg = support.collection ? 'Collection must be exist!' : 'Model must be exist!';
+        let msg = support.collection ? 'Collection must be exist!' : 'Model or Code must be exist!';
         throw new BadRequestException(msg);
       }
     }
@@ -314,6 +320,7 @@ export class ExcelService {
     await this.addProductToPartiya([Product], partiyaId);
     return Product;
   }
+
   async createWithCodeExcel(newDatas: CreateQrBaseDto[], partiyaId) {
     const partiya = await this.partiyaService.getOne(partiyaId);
     if (!partiya) throw new BadRequestException('Partiya not Found!');
@@ -344,8 +351,8 @@ export class ExcelService {
 
       const code = await this.qrBaseService.getOneByCode(newData.code);
       const Product: CreateProductExcelDto = {
-        code: code.code,
-        collection: code.collection.id,
+        code: code?.code,
+        collection: code?.collection?.id,
         collectionPrice: 0,
         color: code?.color?.id || null,
         commingPrice: 0,
@@ -355,7 +362,7 @@ export class ExcelService {
         imgUrl: null,
         isEdited: false,
         isMetric: false,
-        model: code.model.id,
+        model: code?.model?.id,
         otherImgs: [],
         partiya: partiyaId,
         priceMeter: 0,
