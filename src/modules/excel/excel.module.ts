@@ -17,6 +17,7 @@ import { StyleModule } from '../style/style.module';
 import { FilialModule } from '../filial/filial.module';
 import { QrBaseModule } from '../qr-base/qr-base.module';
 import { ActionModule } from '../action/action.module';
+import { CountryModule } from '../country/country.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ActionModule } from '../action/action.module';
     StyleModule,
     FilialModule,
     QrBaseModule,
+    CountryModule
   ],
   controllers: [ExcelController],
   providers: [ExcelService],

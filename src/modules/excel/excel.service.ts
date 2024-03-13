@@ -22,6 +22,7 @@ import { CreateProductExcelDto, UpdateProductExcelDto } from './dto';
 import { QrBaseService } from '../qr-base/qr-base.service';
 import { CreateQrBaseDto } from '../qr-base/dto';
 import { ActionService } from '../action/action.service';
+import { CountryService } from '../country/country.service';
 
 Injectable();
 export class ExcelService {
@@ -37,6 +38,7 @@ export class ExcelService {
     private readonly productService: ProductService,
     private readonly collectionService: CollectionService,
     private readonly colorService: ColorService,
+    private readonly countryService: CountryService,
     private readonly modelService: ModelService,
     private readonly shapeService: ShapeService,
     private readonly sizeService: SizeService,
@@ -159,7 +161,8 @@ export class ExcelService {
         const price = await this.returnPrice(model.id);
 
         if (codes.length < 1) {
-          await this.qrBaseService.create(data);
+          const country = await this.countryService.findOrCreate(data.country);
+          await this.qrBaseService.create({ ...data, country });
         }
         data = { ...data, ...price };
 
