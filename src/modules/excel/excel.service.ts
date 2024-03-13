@@ -155,7 +155,8 @@ export class ExcelService {
         data.size = (await this.sizeService.getOneByName(data.size))?.id || null;
         data.style = (await this.styleService.getOneByName(data.style))?.id || null;
         data.count = data.count < 1 ? 1 : data.count;
-        const price = await this.returnPrice(data.model);
+        console.log(data);
+        const price = await this.returnPrice(model.id);
 
         if (codes.length < 1) {
           await this.qrBaseService.create(data);
