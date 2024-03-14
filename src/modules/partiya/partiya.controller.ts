@@ -92,7 +92,7 @@ export class PartiyaController {
   @HttpCode(HttpStatus.OK)
   async changeData(@Body() data: UpdatePartiyaDto, @Param('id') id: string, @Req() req): Promise<UpdateResult> {
     try {
-      return await this.partiyaService.changeExp(data.expense, id, req.user);
+      return await this.partiyaService.changeExp(data, id, req.user);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
