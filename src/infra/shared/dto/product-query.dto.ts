@@ -133,6 +133,14 @@ class ProductQueryDto {
   readonly search;
 
   @ApiProperty({
+    description: `internet shop product need come`,
+    example: true,
+  })  
+  @IsOptional()
+  @IsBoolean()
+  readonly isInternetShop;
+
+  @ApiProperty({
     description: `Limit`,
     example: 20,
   })

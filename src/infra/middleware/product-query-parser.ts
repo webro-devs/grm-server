@@ -23,6 +23,7 @@ class ProductQueryParserMiddleware implements NestMiddleware {
       partiyaId,
       isMetric,
       search,
+      isInternetShop,
     }: ProductQueryDto = req.query;
 
     if (startDate && endDate) {
@@ -106,6 +107,10 @@ class ProductQueryParserMiddleware implements NestMiddleware {
       where.partiya = {
         id: partiyaId,
       };
+    }
+
+    if (isInternetShop) {
+      where.isInternetShop = isInternetShop;
     }
 
     if (isMetric) {
