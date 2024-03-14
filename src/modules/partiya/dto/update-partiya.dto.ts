@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsNumber } from 'class-validator';
+import { IsOptional, IsString, IsNumber, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class UpdatePartiyaDto {
   @ApiProperty({
@@ -34,7 +34,7 @@ class UpdatePartiyaDto {
     required: false,
   })
   @IsOptional()
-  @IsNumber()
+  @IsBoolean()
   readonly check?: boolean;
 }
 
