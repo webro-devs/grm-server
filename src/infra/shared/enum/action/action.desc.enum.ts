@@ -5,7 +5,7 @@ enum ActionDescEnum {
   partiya_create = 'Создал новую партию!',
   partiya_update = 'Партия завершена!',
   update_partiya = 'Изменил расход партии.',
-  partiya_Send = 'Партия завершена!',
+  partiya_send = 'Партия завершена!',
   transfer_create = 'Сделал трансфер.',
   transfer_accept = 'Кассир принял трансфер.',
   transfer_reject = 'Кассир не принял трансфер.',

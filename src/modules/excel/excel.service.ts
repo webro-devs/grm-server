@@ -399,17 +399,22 @@ export class ExcelService {
       if (partiya.check) {
         throw new BadRequestException('Partiya already sended to filials');
       }
+
       const partiya_infos = {
         title: partiya.title || 'Default title',
         meter: partiya.m2 || 0,
       };
+
+      console.log(partiya.id);
+      console.log(user.id);
       await this.actionService.create(
-        partiya.items[0],
-        user.id,
+        partiya,
+        user?.id,
         null,
         'partiya_send',
         `${partiya_infos.title} с ${partiya_infos.meter} м²`,
       );
+
       let products = await this.productExcelRepository.find({
         relations: {
           size: true,
@@ -424,10 +429,10 @@ export class ExcelService {
       products = await this.setImg(products);
       products = this.setPrice(products, partiya.expense);
       const filial = await this.filialService.findOrCreateFilialByTitle('baza');
-      let productss = this.setProperty(products, filialId ? filialId : filial.id);
+      let productss = this.setProperty(products, filialId ? filialId : filial?.id);
 
       const response = await this.productService.create(productss);
-      await this.partiyaService.change({ check: true }, partiya.id);
+      await this.partiyaService.change({ check: true }, partiya?.id);
       return response;
     } catch (err) {
       throw new BadRequestException(err.message);

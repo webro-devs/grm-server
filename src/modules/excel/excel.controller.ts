@@ -96,7 +96,6 @@ export class ExcelController {
     return response;
   }
 
-  @Public()
   @Post('/product/:id')
   @ApiOperation({
     summary: 'Method: imports data and update products in the baza',
@@ -106,8 +105,6 @@ export class ExcelController {
   })
   @HttpCode(HttpStatus.CREATED)
   async CreateProducts(@Param('id') id: string, @Body() data, @Req() req) {
-    console.log(data);
-
     const response = await this.fileService.createProduct(id, data?.filial, req.user);
 
     return response;

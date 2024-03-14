@@ -5,7 +5,7 @@ enum ActionTypeEnum {
   partiya_create = 'create partiya',
   partiya_update = 'update partiya',
   update_partiya = 'update partiya',
-  partiya_Send = 'end partiya',
+  partiya_send = 'end partiya',
   transfer_create = 'transfer',
   transfer_accept = 'transfer',
   transfer_reject = 'transfer',
