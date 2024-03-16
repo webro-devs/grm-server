@@ -17,6 +17,7 @@ enum ActionDescEnum {
   add_expense_cashflow_shop = 'Добавил Магазин расход в размере',
   accept_order = 'Подтвердил продажу в размере',
   return_order = 'Принял возврат товара',
+  reject_order = 'Отменил продажу товара',
 }
 
 export default ActionDescEnum;

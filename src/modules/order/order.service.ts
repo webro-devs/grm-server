@@ -290,10 +290,10 @@ export class OrderService {
     return response;
   }
 
-  async rejectOrder(id: string) {
+  async rejectOrder(id: string, casher) {
     const data = await this.orderRepository.findOne({
       where: { id },
-      relations: { product: true },
+      relations: { product: true, kassa: { filial: true } },
     });
     if (data.isActive === OrderEnum.Reject) throw new BadRequestException('Already Rejected');
     const product = data.product;
@@ -307,6 +307,7 @@ export class OrderService {
       product.setTotalSize();
     }
 
+    await this.actionService.create({ ...data, isActive: OrderEnum.Accept }, casher, data.kassa.filial.id, 'reject_order');
     await this.saveRepo(product);
 
     return await this.orderRepository.delete({ id });

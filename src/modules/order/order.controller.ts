@@ -142,8 +142,8 @@ export class OrderController {
     description: 'Order was rejected',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
-  async reject(@Param('id') id: string) {
-    return await this.orderService.rejectOrder(id);
+  async reject(@Param('id') id: string, @Req() req) {
+    return await this.orderService.rejectOrder(id, req.user);
   }
 
   @Patch('/return/:id')

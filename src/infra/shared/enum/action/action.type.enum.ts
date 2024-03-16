@@ -17,6 +17,7 @@ enum ActionTypeEnum {
   add_expense_cashflow_shop = 'cashflow',
   accept_order = 'order',
   return_order = 'order',
+  reject_order = 'order',
 }
 
 export default ActionTypeEnum;

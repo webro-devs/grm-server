@@ -463,12 +463,6 @@ export class ExcelService {
         if (!product?.size?.title) {
           throw new BadRequestException('Product size must be exist!');
         }
-        if (!product?.shape) {
-          throw new BadRequestException('Product shape must be exist!');
-        }
-        if (!product?.style) {
-          throw new BadRequestException('Product style must be exist!');
-        }
 
         if (product?.count < 1) {
           throw new BadRequestException('Product count must be upper than 0!');
@@ -479,9 +473,9 @@ export class ExcelService {
         product.filial = filialId;
         product.size = product.size.title;
         product.model = product.model.id;
-        product.style = product?.style?.title || null;
+        product.style = product?.style?.title || 'Classic';
         product.color = product?.color?.id || null;
-        product.shape = product?.shape?.title || null;
+        product.shape = product?.shape?.title || 'Rectangle';
         product.partiya = product?.partiya?.id || null;
         product.country ? product?.country : (product.country = country);
       }
