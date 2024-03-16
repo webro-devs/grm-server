@@ -15,7 +15,7 @@ import { Public } from '../auth/decorators/public.decorator';
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
-  @Public()
+  @Roles(UserRoleEnum.SELLER, UserRoleEnum.CASHIER, UserRoleEnum.BOSS, UserRoleEnum.CLIENT)
   @Get('/')
   @ApiOperation({ summary: 'Method: returns all products' })
   @ApiOkResponse({
