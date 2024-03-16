@@ -307,7 +307,7 @@ export class OrderService {
       product.setTotalSize();
     }
 
-    await this.actionService.create({ ...data, isActive: OrderEnum.Accept }, casher, data.kassa.filial.id, 'reject_order');
+    await this.actionService.create({ ...data, isActive: OrderEnum.Reject }, casher, data.kassa.filial.id, 'reject_order');
     await this.saveRepo(product);
 
     return await this.orderRepository.delete({ id });
