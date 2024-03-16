@@ -30,7 +30,7 @@ export class ProductService {
             { filial: where.filial },
           );
 
-          if (_user.role < 3) {
+          if (_user?.role < 3) {
             cb.andWhere('filial.title != :filial', { filial: 'baza' });
           }
         }),
