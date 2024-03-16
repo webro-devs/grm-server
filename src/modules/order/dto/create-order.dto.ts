@@ -53,7 +53,7 @@ class CreateOrderDto {
   @IsString()
   readonly kassa: string;
 
-  @IsEmpty()
+  @IsOptional()
   @IsNumber()
   kv: number;
 }
