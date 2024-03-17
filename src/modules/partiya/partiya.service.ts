@@ -63,7 +63,7 @@ export class PartiyaService {
             style: true,
           },
         },
-        where: { id, productsExcel: { count: MoreThan(0) } },
+        where: { id },
       })
       .catch(() => {
         throw new NotFoundException('data not found');
@@ -129,7 +129,7 @@ export class PartiyaService {
     const collections = {};
 
     products.forEach((product, i) => {
-      const { size, collection, collectionPrice } = product;
+      const { size, collection, collectionPrice, priceMeter } = product;
       if (/^0\d*\./.test(size?.title)) {
         console.log('error: ', size.title);
         return new BadRequestException(`error: ${size?.title}`);
@@ -139,7 +139,7 @@ export class PartiyaService {
       if (!collections[collection?.title]) {
         collections[collection?.title] = {
           totalM2: 0,
-          collectionPrice,
+          collectionPrice: priceMeter,
         };
       }
 
