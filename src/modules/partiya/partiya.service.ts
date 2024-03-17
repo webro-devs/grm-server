@@ -6,7 +6,7 @@ import { Partiya } from './partiya.entity';
 import { CreatePartiyaDto, UpdatePartiyaDto } from './dto';
 import { deleteFile, partiyaDateSort } from '../../infra/helpers';
 import { ExcelService } from '../excel/excel.service';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { ActionService } from '../action/action.service';
 
 Injectable();
@@ -53,7 +53,6 @@ export class PartiyaService {
   async getOneProds(id: string) {
     const data = await this.partiyaRepository
       .findOne({
-        where: { id },
         relations: {
           productsExcel: {
             collection: true,
@@ -64,6 +63,7 @@ export class PartiyaService {
             style: true,
           },
         },
+        where: { id, productsExcel: { count: MoreThan(0) } },
       })
       .catch(() => {
         throw new NotFoundException('data not found');
