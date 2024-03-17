@@ -1,7 +1,7 @@
 import { NotFoundException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { FindOptionsWhere, MoreThanOrEqual, Repository } from 'typeorm';
+import { FindOptionsWhere, MoreThan, MoreThanOrEqual, Repository } from 'typeorm';
 
 import { Collection } from './collection.entity';
 import { CreateCollectionDto, UpdateCollectionDto } from './dto';
@@ -113,10 +113,30 @@ export class CollectionService {
   }
 
   async remainingProductsByCollection(query) {
-    const data = await this.collectionRepository.find({
-      relations: { model: { products: { filial: true } } },
-      where: query?.filial ? { model: { products: { filial: { id: query.filial } } } } : {},
-    });
+    let data = [];
+    if (query?.filial) {
+      data = await this.collectionRepository.find({
+        relations: { model: { products: { filial: true } } },
+        where: query?.filial ? { model: { products: { filial: { id: query.filial }, count: MoreThan(0) } } } : {},
+      });
+    } else if (query?.collection) {
+      data = await this.collectionRepository.find({
+        relations: { model: { products: { color: true } } },
+        where: { id: query.collection, model: { products: { count: MoreThan(0) } } },
+      });
+    } else if (query.model) {
+      data = await this.collectionRepository.find({
+        relations: { model: { products: { color: true, model: { collection: true } } } },
+        where: {
+          model: { id: query.model, products: { count: MoreThan(0) } },
+        },
+      });
+    } else {
+      data = await this.collectionRepository.find({
+        relations: { model: { products: { filial: true } } },
+        where: { model: { products: { count: MoreThan(0) } } },
+      });
+    }
 
     let result = [];
     for (let i = 0; i < data.length; i++) {
@@ -131,10 +151,13 @@ export class CollectionService {
       }
       if (remainingSize > 0) {
         result.push({
+          id: data[i].id,
+          title: data[i].title,
           remainingCount,
           remainingSize,
           remainingSum,
-          title: data[i].title,
+          ...(query?.collection && { model: data[i].model.filter((e) => e.products.length) }),
+          ...(query?.model && { model: data[i].model[0].products }),
         });
       }
     }
