@@ -228,7 +228,7 @@ export class ProductService {
         (acc, item) => {
           acc.remainingSize += item.totalSize || 0;
           acc.count += item.count || 0;
-          acc.remainingSum += item.price || 0;
+          acc.remainingSum += item.comingPrice || 0;
           return acc;
         },
         { remainingSize: 0, remainingSum: 0, count: 0 },
