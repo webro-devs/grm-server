@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 class ImportQrBaselDto {
   @ApiProperty({
     description: `Excel file`,
@@ -14,6 +14,7 @@ class ImportQrBaselDto {
     example: 'uuid',
     required: false,
   })
+  @IsOptional()
   @IsString()
   readonly partiyaId: string;
 }
