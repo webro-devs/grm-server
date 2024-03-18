@@ -134,6 +134,14 @@ class UpdateProductDto {
   @IsOptional()
   @IsBoolean()
   isMetric: boolean;
+  
+  @ApiProperty({
+    description: `internetInfo`,
+    example: '...',
+  })
+  @IsOptional()
+  @IsArray()
+  internetInfo: string[];
 }
 
 export default UpdateProductDto;
