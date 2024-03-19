@@ -37,7 +37,7 @@ export class ProductExcel {
   @Column({ precision: 20, scale: 2, transformer: new ColumnNumericTransformer(), default: 0, type: 'numeric' })
   collectionPrice: number;
 
-  @Column({ nullable: true, default: 0 })
+  @Column({ precision: 20, scale: 2, transformer: new ColumnNumericTransformer(), default: 0, type: 'numeric' })
   priceMeter: number;
 
   @Column({ precision: 20, scale: 2, transformer: new ColumnNumericTransformer(), default: 0, type: 'numeric' })
@@ -79,6 +79,6 @@ export class ProductExcel {
 
   public calculateProductPrice() {
     // @ts-ignore
-    this.meterPrice = this.priceMeter;
+    this.priceMeter = this.meterPrice;
   }
 }
