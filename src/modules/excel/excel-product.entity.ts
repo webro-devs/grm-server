@@ -79,6 +79,6 @@ export class ProductExcel {
 
   public calculateProductPrice() {
     // @ts-ignore
-    this.meterPrice = this.priceMeter.toFixed(2);
+    this.meterPrice = this.priceMeter;
   }
 }
