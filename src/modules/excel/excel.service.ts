@@ -53,7 +53,11 @@ export class ExcelService {
   }
 
   async getAll() {
-    return this.productExcelRepository.find();
+    const data = await this.productExcelRepository.find();
+    data.forEach((e) => {
+      this.getOne(e.id);
+    });
+    return;
   }
 
   async getOne(id: string) {
@@ -61,7 +65,7 @@ export class ExcelService {
       where: { id },
       relations: { collection: true, model: true, color: true, partiya: true, shape: true, size: true, style: true },
     });
-
+    res.calculateProductPrice();
     return res;
   }
 
