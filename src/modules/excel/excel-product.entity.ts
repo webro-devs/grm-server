@@ -40,9 +40,6 @@ export class ProductExcel {
   @Column({ precision: 20, scale: 2, transformer: new ColumnNumericTransformer(), default: 0, type: 'numeric' })
   priceMeter: number;
 
-  @Column({ precision: 20, scale: 2, transformer: new ColumnNumericTransformer(), default: 0, type: 'numeric' })
-  meterPrice: number;
-
   @Column({ nullable: true, default: false })
   isMetric: boolean;
 
@@ -76,9 +73,4 @@ export class ProductExcel {
   @ManyToOne(() => Partiya, (partiya) => partiya.productsExcel, { onDelete: 'CASCADE' })
   @JoinColumn()
   partiya: Partiya;
-
-  public calculateProductPrice() {
-    // @ts-ignore
-    this.priceMeter = this.meterPrice;
-  }
 }

@@ -55,22 +55,14 @@ export class ExcelService {
 
   async getAll() {
     const data = await this.productExcelRepository.find();
-    data.forEach(async (e) => {
-      this.getOne(e.id);
-    });
 
-    return;
+    return data;
   }
 
   async getOne(id: string) {
     const res = await this.productExcelRepository.findOne({
       where: { id },
       relations: { collection: true, model: true, color: true, partiya: true, shape: true, size: true, style: true },
-    });
-    res.calculateProductPrice();
-
-    await this.connection.transaction(async (manager: EntityManager) => {
-      await manager.save(res);
     });
 
     return res;
