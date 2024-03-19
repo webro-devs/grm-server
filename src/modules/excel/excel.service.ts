@@ -8,7 +8,7 @@ import { Excel } from './excel.entity';
 import { ProductExcel } from './excel-product.entity';
 import { deleteFile, excelDataParser } from 'src/infra/helpers';
 import { FileService } from '../file/file.service';
-import { Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { PartiyaService } from '../partiya/partiya.service';
 import { ProductService } from '../product/product.service';
 import { CollectionService } from '../collection/collection.service';
@@ -45,6 +45,7 @@ export class ExcelService {
     private readonly styleService: StyleService,
     private readonly filialService: FilialService,
     private readonly qrBaseService: QrBaseService,
+    private readonly connection: DataSource,
   ) {}
   async readExcel(id: string) {
     const data = await this.partiyaService.getOneProds(id);
@@ -54,9 +55,10 @@ export class ExcelService {
 
   async getAll() {
     const data = await this.productExcelRepository.find();
-    data.forEach((e) => {
+    data.forEach(async (e) => {
       this.getOne(e.id);
     });
+
     return;
   }
 
@@ -66,6 +68,11 @@ export class ExcelService {
       relations: { collection: true, model: true, color: true, partiya: true, shape: true, size: true, style: true },
     });
     res.calculateProductPrice();
+
+    await this.connection.transaction(async (manager: EntityManager) => {
+      await manager.save(res);
+    });
+
     return res;
   }
 

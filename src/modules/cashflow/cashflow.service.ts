@@ -147,6 +147,7 @@ export class CashflowService {
           }
         }
       }
+      
       await this.connection.transaction(async (manager: EntityManager) => {
         await manager.save(kassa);
       });
