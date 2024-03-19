@@ -139,7 +139,7 @@ export class PartiyaService {
       if (!collections[collection?.title]) {
         collections[collection?.title] = {
           totalM2: 0,
-          collectionPrice: priceMeter,
+          collectionPrice: collectionPrice,
         };
       }
 
