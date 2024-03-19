@@ -78,6 +78,7 @@ export class ProductExcel {
   partiya: Partiya;
 
   public calculateProductPrice() {
-    this.meterPrice = this.priceMeter;
+    // @ts-ignore
+    this.meterPrice = this.priceMeter.toFixed(2);
   }
 }
