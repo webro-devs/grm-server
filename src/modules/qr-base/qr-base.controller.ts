@@ -30,7 +30,7 @@ export class QrBaseController {
     return await this.qrBaseService.getAll({
       limit: query.limit,
       page: query.page,
-    });
+    }, query);
   }
 
   @Get('/:id')

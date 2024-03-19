@@ -14,6 +14,7 @@ import { ModelService } from '../model/model.service';
 import { ShapeService } from '../shape/shape.service';
 import { SizeService } from '../size/size.service';
 import { StyleService } from '../style/style.service';
+import QrBaseQueryDto from 'src/infra/shared/dto/qr-base.query.dto';
 
 @Injectable()
 export class QrBaseService {
@@ -29,7 +30,7 @@ export class QrBaseService {
     private readonly styleService: StyleService,
   ) {}
 
-  async getAll(options: IPaginationOptions): Promise<Pagination<QrBase>> {
+  async getAll(options: IPaginationOptions, query: QrBaseQueryDto): Promise<Pagination<QrBase>> {
     return paginate<QrBase>(this.qrBaseRepository, options, {
       order: {
         date: 'DESC',
@@ -43,6 +44,13 @@ export class QrBaseService {
         style: true,
         country: true,
       },
+      where: query.code
+        ? [
+            { code: ILike(`%${query.code}%`) },
+            { collection: { title: ILike(`%${query.code}%`) } },
+            { model: { title: ILike(`%${query.code}%`) } },
+          ]
+        : {},
     });
   }
 
