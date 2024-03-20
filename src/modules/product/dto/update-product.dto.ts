@@ -134,6 +134,14 @@ class UpdateProductDto {
   @IsOptional()
   @IsBoolean()
   isMetric: boolean;
+
+  @ApiProperty({
+    description: `isInternetShop`,
+    example: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isInternetShop: boolean;
   
   @ApiProperty({
     description: `internetInfo`,
