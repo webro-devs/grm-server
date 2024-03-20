@@ -25,6 +25,7 @@ import { ActionService } from '../action/action.service';
 import { CountryService } from '../country/country.service';
 
 Injectable();
+
 export class ExcelService {
   constructor(
     @InjectRepository(Excel)
@@ -46,7 +47,9 @@ export class ExcelService {
     private readonly filialService: FilialService,
     private readonly qrBaseService: QrBaseService,
     private readonly connection: DataSource,
-  ) {}
+  ) {
+  }
+
   async readExcel(id: string) {
     const data = await this.partiyaService.getOneProds(id);
 
@@ -206,9 +209,11 @@ export class ExcelService {
       throw new Error('Collection not found');
     }
 
-    const productIds = collection.productsExcel.map((product) => {
-      if (product?.partiya?.id == newData?.partiyaId) return product.id;
-    });
+    const productIds = [];
+
+    for await (const product of collection.productsExcel) {
+      if (product?.partiya?.id == newData?.partiyaId) productIds.push(product.id);
+    }
 
     // Update collectionPrice for products in the collection using the product IDs
     await this.productExcelRepository
@@ -226,9 +231,11 @@ export class ExcelService {
       throw new Error('Model not found');
     }
 
-    const productIds = collection.productsExcel.map((product) => {
-      if (!product?.isEdited && product?.partiya?.id == newData?.partiyaId) return product.id;
-    });
+    const productIds = [];
+
+    for await (const product of collection.productsExcel) {
+      if (!product?.isEdited && product?.partiya?.id == newData?.partiyaId) productIds.push(product.id);
+    }
 
     // Update collectionPrice for products in the collection using the product IDs
     await this.productExcelRepository
@@ -346,7 +353,7 @@ export class ExcelService {
     if (!partiya) throw new BadRequestException('Partiya not Found!');
     const products = [];
     const check = newDatas.filter((e) => !e?.collection || !e.model);
-    if (check.length > 0) throw new BadRequestException("Collection or Model don't come, please check your excel!");
+    if (check.length > 0) throw new BadRequestException('Collection or Model don\'t come, please check your excel!');
 
     for (const newData of newDatas) {
       if (!newData.code) throw new BadRequestException('Code Not Exist!');
@@ -512,6 +519,7 @@ export class ExcelService {
       priceMeter: product ? product.displayPrice : 0,
     };
   }
+
   async createExcelFile(datas, pathname) {
     const workbook = XLSX.utils.book_new();
 
