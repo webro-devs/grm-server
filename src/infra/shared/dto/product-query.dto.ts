@@ -137,7 +137,6 @@ class ProductQueryDto {
     example: true,
   })  
   @IsOptional()
-  @IsBoolean()
   readonly isInternetShop;
 
   @ApiProperty({

@@ -109,7 +109,7 @@ class ProductQueryParserMiddleware implements NestMiddleware {
       };
     }
 
-    if (isInternetShop) {
+    if (isInternetShop == 'true' || isInternetShop == 'false') {
       where.isInternetShop = isInternetShop;
     }
 
