@@ -26,7 +26,6 @@ export class ProductService {
     _user?: { role: number; },
   ) {
     if (where['fields']) {
-      console.log(where);
       if (!where?.filial) throw new BadRequestException('Filial should be exist!');
       const products = (await this.productRepository.query(prodSearch({
         text: where['search'],
@@ -34,15 +33,25 @@ export class ProductService {
         base: _user.role > 2,
         offset: (+options.page - 1) * +options.limit,
         limit: options.limit,
+        total: false
+      }))) || [];
+
+      const total = (await this.productRepository.query(prodSearch({
+        text: where['search'],
+        filialId: where.filial,
+        base: _user.role > 2,
+        offset: (+options.page - 1) * +options.limit,
+        limit: options.limit,
+        total: true
       }))) || [];
 
       return {
         items: products,
         meta: {
-          "totalItems": products.length,
+          "totalItems": +total[0].count,
           "itemCount": products.length,
           "itemsPerPage": +options.limit,
-          "totalPages": Math.ceil(products.length / +options.limit),
+          "totalPages": Math.ceil(+total[0].count / +options.limit),
           "currentPage": +options.page
         },
       };

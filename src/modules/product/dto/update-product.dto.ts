@@ -148,8 +148,8 @@ class UpdateProductDto {
     example: '...',
   })
   @IsOptional()
-  @IsArray()
-  internetInfo: string[];
+  @IsString()
+  internetInfo: string;
 }
 
 export default UpdateProductDto;
