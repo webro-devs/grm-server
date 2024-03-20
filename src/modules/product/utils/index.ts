@@ -1,0 +1,1 @@
+export { default as prodSearch } from './product-search.util'

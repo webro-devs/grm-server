@@ -1,53 +1,51 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, DataSource, EntityManager, FindOptionsWhere, Repository } from 'typeorm';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { DataSource, EntityManager, FindOptionsWhere, Repository } from 'typeorm';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { Product } from './product.entity';
 import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from './dto';
 import { sizeParser } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 import { ModelService } from '../model/model.service';
+import { prodSearch } from './utils';
 
 Injectable();
+
 export class ProductService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
     private readonly filialService: FilialService,
     private readonly modelService: ModelService,
-    private readonly entityManager: EntityManager,
-    private readonly connection: DataSource,
-  ) {}
+  ) {
+  }
 
-  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Product>, _user?) {
+  async getAll(
+    options: IPaginationOptions,
+    where?: FindOptionsWhere<Product>,
+    _user?: { role: number; },
+  ) {
     if (where['fields']) {
+      console.log(where);
       if (!where?.filial) throw new BadRequestException('Filial should be exist!');
-      const querybuilder = this.productRepository.createQueryBuilder('product');
-      querybuilder.andWhere(
-        new Brackets((cb) => {
-          cb.where('LOWER(product.slug) LIKE LOWER(:search)', { search: `%${where['search']}%` }).andWhere(
-            'filial.id = :filial',
-            { filial: where.filial },
-          );
+      const products = (await this.productRepository.query(prodSearch({
+        text: where['search'],
+        filialId: where.filial,
+        base: _user.role > 2,
+        offset: (+options.page - 1) * +options.limit,
+        limit: options.limit,
+      }))) || [];
 
-          if (_user?.role < 3) {
-            cb.andWhere('filial.title != :filial', { filial: 'baza' });
-          }
-        }),
-      );
-
-      if (where?.filial) {
-        querybuilder.andWhere('filial.id = :filial', { filial: where.filial });
-      }
-
-      querybuilder
-        .leftJoinAndSelect('product.model', 'model')
-        .leftJoinAndSelect('model.collection', 'collection')
-        .leftJoinAndSelect('product.filial', 'filial')
-        .orderBy('product.date', 'DESC')
-        .getMany();
-
-      return paginate(querybuilder, options);
+      return {
+        items: products,
+        meta: {
+          "totalItems": products.length,
+          "itemCount": products.length,
+          "itemsPerPage": +options.limit,
+          "totalPages": Math.ceil(products.length / +options.limit),
+          "currentPage": +options.page
+        },
+      };
     }
 
     return paginate<Product>(this.productRepository, options, {
