@@ -9,9 +9,11 @@ ${
        p.country,
        p.shape,
        p."imgUrl",
-       json_build_object('id', c.id, 'title', c.title, 'code', c.code) AS color,
-       json_build_object('id', c.id, 'title', m.title, 'collection', json_build_object('id', col.id, 'title', col.title)) AS model,
-       json_build_object('id', f.id, 'title', f.title, 'name', f.name) AS filial`
+       p.count,
+       p.price,
+       to_json(c) AS color,
+       json_build_object('id', c.id, 'title', m.title, 'collection', to_json(col)) AS model,
+       to_json(f) AS filial`
 }
 FROM product AS p
          LEFT JOIN
