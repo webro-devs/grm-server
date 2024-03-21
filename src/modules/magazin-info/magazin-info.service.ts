@@ -5,6 +5,7 @@ import { CreateMagazinInfoDto, UpdateMagazinInfoDto } from './dto';
 import { MagazinInfo } from './magazin-info.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSenderService } from '../data-sender/data-sender.service';
+import * as process from 'process';
 
 @Injectable()
 export class MagazinInfoService {
@@ -46,13 +47,13 @@ export class MagazinInfoService {
 
   async change(value: UpdateMagazinInfoDto) {
     const magazineInfos = await this.magazineInfoRepository.find();
-    if (value.allowed == true) {
+    if (value.allowed == true && process.env?.TYPE == 'production' && !magazineInfos[0].allowed) {
       this.dataSenderService.cronJob({
         startTime: value.start_time,
         endTime: value.end_time,
         count: value.count,
       });
-    }else if(value.allowed == false){
+    }else if((value.allowed == false || process.env?.TYPE == 'test') && magazineInfos[0].allowed){
       this.dataSenderService.onModuleDestroy()
     }
     return this.magazineInfoRepository.update({ id: magazineInfos[0].id }, value);
