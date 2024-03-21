@@ -1,91 +1,51 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  HttpStatus,
-  Delete,
-  Patch,
-  Param,
-  Get,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { CreateMagazinInfoDto, UpdateMagazinInfoDto } from './dto';
-import { MagazinInfo } from './magazin-info.entity';
+import { UpdateMagazinInfoDto } from './dto';
 import { MagazinInfoService } from './magazin-info.service';
-import { PaginationDto } from '../../infra/shared/dto';
-import { Route } from '../../infra/shared/decorators/route.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from '../../infra/shared/enum';
 import { Public } from '../auth/decorators/public.decorator';
+import { Put } from '@nestjs/common/decorators';
 
-@ApiTags('Magazin-info')
-@Controller('magazin-info')
+@ApiTags('Magazine')
+@Controller('magazine-info')
 export class MagazinInfoController {
-  constructor(private readonly magazinInfoService: MagazinInfoService) {}
+  constructor(private readonly magazineInfoService: MagazinInfoService) {}
 
   @Public()
   @Get('/')
-  @ApiOperation({ summary: 'Method: returns all magazin info' })
+  @ApiOperation({ summary: 'Method: returns all magazine info' })
   @ApiOkResponse({
-    description: 'The magazin info were returned successfully',
+    description: 'The magazine info were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getData(@Route() route: string, @Query() query: PaginationDto) {
-    return await this.magazinInfoService.getAll({ ...query, route });
+  async getData() {
+    return await this.magazineInfoService.getAll();
   }
 
-  @Get('/:id')
-  @ApiOperation({ summary: 'Method: returns single magazin info by id' })
+  @Put('/')
+  @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER)
+  @ApiOperation({ summary: 'Method: updating magazine info' })
   @ApiOkResponse({
-    description: 'The magazin info was returned successfully',
-  })
-  @HttpCode(HttpStatus.OK)
-  async getMe(@Param('id') id: string): Promise<MagazinInfo> {
-    return this.magazinInfoService.getOne(id);
-  }
-
-  @Post('/')
-  @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
-  @ApiOperation({ summary: 'Method: creates new magazin info' })
-  @ApiCreatedResponse({
-    description: 'The magazin info was created successfully',
-  })
-  @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() data: CreateMagazinInfoDto): Promise<MagazinInfo> {
-    return await this.magazinInfoService.create(data);
-  }
-
-  @Patch('/:id')
-  @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
-  @ApiOperation({ summary: 'Method: updating magazin info' })
-  @ApiOkResponse({
-    description: 'magazin info was changed',
+    description: 'magazine info was changed',
   })
   @HttpCode(HttpStatus.OK)
   async changeData(
     @Body() data: UpdateMagazinInfoDto,
-    @Param('id') id: string,
   ): Promise<UpdateResult> {
-    return await this.magazinInfoService.change(data, id);
+    return await this.magazineInfoService.change(data);
   }
 
   @Delete('/:id')
-  @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
-  @ApiOperation({ summary: 'Method: deleting magazin info' })
+  @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER)
+  @ApiOperation({ summary: 'Method: deleting magazine info' })
   @ApiOkResponse({
-    description: 'magazin info was deleted',
+    description: 'magazine info was deleted',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
-    return await this.magazinInfoService.deleteOne(id);
+    return "ok";
   }
 }
