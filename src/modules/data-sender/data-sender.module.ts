@@ -9,5 +9,6 @@ import { FilialModule } from '../filial/filial.module';
   imports: [ProductModule, FilialModule],
   providers: [DataSenderService],
   controllers: [DataSenderController],
+  exports: [DataSenderService]
 })
 export class DataSenderModule {}

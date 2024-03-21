@@ -8,8 +8,6 @@ import {
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 
-import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRoleEnum } from '../../infra/shared/enum';
 import { Public } from '../auth/decorators/public.decorator';
 import { DataSenderService } from './data-sender.service';
 import CreateSenderDataDto from './dto/create-senderData.dto';

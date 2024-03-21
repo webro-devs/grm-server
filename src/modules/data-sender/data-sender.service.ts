@@ -1,4 +1,3 @@
-// data-sender.service.ts
 import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import * as cron from 'node-cron';
 import { ProductService } from '../product/product.service';
@@ -6,7 +5,7 @@ import { FilialService } from '../filial/filial.service';
 import { telegramSender } from '../../infra/helpers';
 
 @Injectable()
-export class DataSenderService implements OnModuleDestroy {
+export class DataSenderService {
   private scheduledJobs: cron.ScheduledTask[] = [];
   index = 0;
   constructor(
