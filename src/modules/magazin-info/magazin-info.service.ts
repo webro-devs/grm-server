@@ -53,7 +53,7 @@ export class MagazinInfoService {
         endTime: value.end_time,
         count: value.count,
       });
-    }else if((value.allowed == false || process.env?.TYPE == 'test') && magazineInfos[0].allowed){
+    } else if (value.allowed == false && process.env?.TYPE == 'production' && magazineInfos[0].allowed) {
       this.dataSenderService.onModuleDestroy()
     }
     return this.magazineInfoRepository.update({ id: magazineInfos[0].id }, value);
