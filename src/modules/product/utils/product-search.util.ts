@@ -1,4 +1,4 @@
-const search = ({ text, filialId, base, limit, offset, total }) => `
+const search = ({ text, filialId, base, limit, offset, total, shop }) => `
 SELECT 
 ${ 
        total ? 'count(*)' : 
@@ -9,6 +9,8 @@ ${
        p.country,
        p.shape,
        p."imgUrl",
+       p."isInternetShop",
+       p."secondPrice",
        p.count,
        p.price,
        to_json(c) AS color,
@@ -31,8 +33,10 @@ WHERE (SELECT COUNT(*)
              '%' || unique_words.word || '%') = (SELECT COUNT(*)
                                                  FROM (SELECT LOWER(word) AS word
                                                        FROM (SELECT REGEXP_SPLIT_TO_TABLE(LOWER('%${text}%'), ' ') AS word) AS words) AS unique_words)
-  and f.id = '${filialId}' ${ base ? '' : `and f.title != 'baza'`}
-${total ? '' : `offset ${offset} limit ${limit}`};
+  ${filialId ? `and f.id = '${filialId}'` : ''} 
+  ${ base ? '' : `and f.title != 'baza'`}
+  ${ shop == 'true' || shop == 'false' ? `and p."isInternetShop" = ${shop}` : '' }
+  ${total ? '' : `offset ${offset} limit ${limit}`};
 `;
 
 export default search;

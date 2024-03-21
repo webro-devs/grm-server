@@ -26,23 +26,25 @@ export class ProductService {
     _user?: { role: number; },
   ) {
     if (where['fields']) {
-      if (!where?.filial) throw new BadRequestException('Filial should be exist!');
+      console.log(where);
       const products = (await this.productRepository.query(prodSearch({
         text: where['search'],
-        filialId: where.filial,
-        base: _user.role > 2,
+        filialId: where?.filial,
+        base: _user?.role > 2,
         offset: (+options.page - 1) * +options.limit,
         limit: options.limit,
-        total: false
+        total: false,
+        shop: where?.isInternetShop
       }))) || [];
 
       const total = (await this.productRepository.query(prodSearch({
         text: where['search'],
-        filialId: where.filial,
-        base: _user.role > 2,
+        filialId: where?.filial,
+        base: _user?.role > 2,
         offset: (+options.page - 1) * +options.limit,
         limit: options.limit,
-        total: true
+        total: true,
+        shop: where?.isInternetShop
       }))) || [];
 
       return {

@@ -124,6 +124,7 @@ class ProductQueryParserMiddleware implements NestMiddleware {
         filial: filialId,
         search,
         fields: true,
+        isInternetShop: isInternetShop || null,
       };
     }
 
