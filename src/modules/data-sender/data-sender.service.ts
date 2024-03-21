@@ -56,14 +56,14 @@ export class DataSenderService implements OnModuleDestroy {
       model: products[this.index]?.model,
       shape: products[this.index]?.shape,
       size: products[this.index]?.size,
-      phone1: filial.phone1,
-      phone2: filial.phone2,
-      address: filial.address,
-      addressLink: filial.addressLink,
-      endWork: filial.endWorkTime,
-      startWork: filial.startWorkTime,
-      title: filial.title,
-      landmark: filial.landmark,
+      phone1: filial?.phone1,
+      phone2: filial?.phone2,
+      address: filial?.address,
+      addressLink: filial?.addressLink,
+      endWork: filial?.endWorkTime,
+      startWork: filial?.startWorkTime,
+      title: filial?.title,
+      landmark: filial?.landmark,
     });
     ++this.index;
   }

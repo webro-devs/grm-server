@@ -25,12 +25,14 @@ import { PaginationDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from '../../infra/shared/enum';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Magazin-info')
 @Controller('magazin-info')
 export class MagazinInfoController {
   constructor(private readonly magazinInfoService: MagazinInfoService) {}
 
+  @Public()
   @Get('/')
   @ApiOperation({ summary: 'Method: returns all magazin info' })
   @ApiOkResponse({
