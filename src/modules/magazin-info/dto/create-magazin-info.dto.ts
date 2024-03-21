@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class CreateMagazinInfoDto {
   @ApiProperty({
@@ -16,6 +16,30 @@ class CreateMagazinInfoDto {
   @IsOptional()
   @IsString()
   readonly availability: string;
+
+  @ApiProperty({
+    description: `start time`,
+    example: '21:00',
+  })
+  @IsOptional()
+  @IsString()
+  readonly start_time: string;
+
+  @ApiProperty({
+    description: `end time`,
+    example: '22:00',
+  })
+  @IsOptional()
+  @IsString()
+  readonly end_time: string;
+
+  @ApiProperty({
+    description: `count`,
+    example: '1',
+  })
+  @IsOptional()
+  @IsNumber()
+  readonly count: number;
 }
 
 export default CreateMagazinInfoDto;

@@ -1,21 +1,45 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 class UpdateMagazinInfoDto {
   @ApiProperty({
     description: `terms`,
-    example: 'Something...',
+    example: 'something...',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly terms: string;
 
   @ApiProperty({
     description: `availability`,
-    example: 'Something...',
+    example: 'something...',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly availability: string;
+
+  @ApiProperty({
+    description: `start time`,
+    example: '21:00',
+  })
+  @IsOptional()
+  @IsString()
+  readonly start_time: string;
+
+  @ApiProperty({
+    description: `end time`,
+    example: '22:00',
+  })
+  @IsOptional()
+  @IsString()
+  readonly end_time: string;
+
+  @ApiProperty({
+    description: `count`,
+    example: '1',
+  })
+  @IsOptional()
+  @IsNumber()
+  readonly count: number
 }
 
 export default UpdateMagazinInfoDto;

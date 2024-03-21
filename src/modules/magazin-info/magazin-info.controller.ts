@@ -1,13 +1,14 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { UpdateMagazinInfoDto } from './dto';
+import { CreateMagazinInfoDto, UpdateMagazinInfoDto } from './dto';
 import { MagazinInfoService } from './magazin-info.service';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from '../../infra/shared/enum';
 import { Public } from '../auth/decorators/public.decorator';
 import { Put } from '@nestjs/common/decorators';
+import { MagazinInfo } from './magazin-info.entity';
 
 @ApiTags('Magazine')
 @Controller('magazine-info')

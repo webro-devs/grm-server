@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 
 import { CreateMagazinInfoDto, UpdateMagazinInfoDto } from './dto';
 import { MagazinInfo } from './magazin-info.entity';
@@ -14,28 +13,32 @@ export class MagazinInfoService {
   ) {}
 
   async getAll(): Promise<MagazinInfo> {
-    const shopInfo = (await this.magazineInfoRepository.find())[0]
-    delete shopInfo.id
-    return shopInfo;
+    const shopInfo = await this.magazineInfoRepository.find()
+    if(!shopInfo.length){
+      const data = {terms: null, availability: null, end_time: null, start_time: null, count: 0}
+      const res = await this.create(data);
+      delete res.id;
+
+      return res;
+    }
+    delete shopInfo[0].id
+    return shopInfo[0];
   }
 
   async getOne(id: string) {
-    const data = await this.magazineInfoRepository
+    return await this.magazineInfoRepository
       .findOne({
         where: { id },
       })
       .catch(() => {
         throw new NotFoundException('data not found');
       });
-
-    return data;
   }
 
   async deleteOne(id: string) {
-    const response = await this.magazineInfoRepository.delete(id).catch(() => {
+    return await this.magazineInfoRepository.delete(id).catch(() => {
       throw new NotFoundException('data not found');
     });
-    return response;
   }
 
   async change(value: UpdateMagazinInfoDto) {
