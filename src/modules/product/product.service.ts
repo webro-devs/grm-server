@@ -1,13 +1,13 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, EntityManager, FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { Product } from './product.entity';
 import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from './dto';
 import { sizeParser } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 import { ModelService } from '../model/model.service';
-import { prodSearch } from './utils';
+import { iShopAccounting, prodSearch } from './utils';
 
 Injectable();
 
@@ -295,5 +295,9 @@ export class ProductService {
     }
 
     return ids;
+  }
+
+  async getIShopAccounting(query: { by: string }): Promise<[{ sold_shop_products: string, percentage_sold: string, sold_shop_products_first: string }]> {
+    return this.productRepository.query(iShopAccounting(query));
   }
 }

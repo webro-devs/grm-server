@@ -52,6 +52,17 @@ export class ProductController {
     });
   }
 
+  @Get('/shop-accounting')
+  @ApiOperation({ summary: 'Method: returns I-Shop products accounting' })
+  @ApiOkResponse({
+    description: 'The I-Shop products accounting were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getIShopAccounting(@Query() query: { by: string }) {
+    const response = await this.productService.getIShopAccounting(query);
+    return { total_sold: +response[0].sold_shop_products, percentage: +response[0].percentage_sold, total_sold_first: +response[0].sold_shop_products_first };
+  }
+
   @Get('/max-price')
   @ApiOperation({ summary: 'Method: returns all products' })
   @ApiOkResponse({
