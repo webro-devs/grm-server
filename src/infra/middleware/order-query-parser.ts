@@ -8,7 +8,7 @@ class OrderQueryParserMiddleware implements NestMiddleware {
   use(req, res: Response, next: NextFunction) {
     let where: any = {};
     let relations: any = {};
-    const { startDate, endDate, startPrice, endPrice, filialId }: OrderQueryDto = req.query;
+    const { startDate, endDate, startPrice, endPrice, filialId, isActive }: OrderQueryDto = req.query;
 
     if (startDate && endDate) {
       where = {
@@ -43,6 +43,10 @@ class OrderQueryParserMiddleware implements NestMiddleware {
           id: filialId,
         },
       };
+    }
+
+    if(isActive){
+      where.isActive = isActive;
     }
 
     req.where = where;

@@ -1,7 +1,8 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { BadRequestException } from '@nestjs/common';
+import orderTypeEnum from '../enum/order.type.enum';
 
 function parsePaginationQuery({ key, value }: TransformFnParams) {
   const int = Number(value);
@@ -55,6 +56,15 @@ class OrderQueryDto {
   @IsOptional()
   @IsString()
   readonly filialId;
+
+  @ApiProperty({
+    description: `is active type`,
+    example: 'accept',
+  })
+  @IsOptional()
+  @IsString()
+  @IsEnum(orderTypeEnum)
+  readonly isActive: orderTypeEnum;
 
   @ApiProperty({
     description: `Limit`,

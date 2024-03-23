@@ -4,7 +4,6 @@ import {
   Body,
   HttpCode,
   HttpStatus,
-  HttpException,
   Delete,
   Patch,
   Param,
@@ -17,7 +16,7 @@ import { UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { OrderService } from './order.service';
 import { Route } from '../../infra/shared/decorators/route.decorator';
-import { OrderQueryDto, PaginationDto } from '../../infra/shared/dto';
+import { OrderQueryDto } from '../../infra/shared/dto';
 import { CreateOrderDto, UpdateOrderDto } from './dto';
 import { Order } from './order.entity';
 import { Roles } from '../auth/decorators/roles.decorator';

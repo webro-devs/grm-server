@@ -329,7 +329,7 @@ export class OrderService {
       },
     });
 
-    if (order.isActive === OrderEnum.Reject) throw new BadRequestException('Already Rejected!');
+    if (order.isActive === OrderEnum.Reject) throw new BadRequestException('Already Returned!');
     await this.returnProduct(order.product, order.x, order.x);
     const kassa = await this.kassaService.GetOpenKassa(order.product.filial.id);
 
