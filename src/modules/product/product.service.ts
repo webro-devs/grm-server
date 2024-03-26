@@ -305,7 +305,6 @@ export class ProductService {
     if (!code){
       throw new BadRequestException('code must be exist');
   }
-    console.log(getByCode(code));
-    return await this.productRepository.query(getByCode(code));
+    return (await this.productRepository.query(getByCode(code)))[0] || {};
   }
 }
