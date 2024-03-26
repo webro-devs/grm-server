@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { FindOptionsWhere, LessThanOrEqual, MoreThanOrEqual, Not, Repository } from 'typeorm';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
+import { FindOptionsWhere, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 
 import { Kassa } from './kassa.entity';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
@@ -53,7 +53,7 @@ export class KassaService {
   }
 
   async getById(id: string) {
-    const data = await this.kassaRepository.findOne({ where: { id } }).catch(() => {
+    const data = await this.kassaRepository.findOne({ where: { id }, relations: { filial: true } }).catch(() => {
       throw new NotFoundException('data not found');
     });
     return data;
