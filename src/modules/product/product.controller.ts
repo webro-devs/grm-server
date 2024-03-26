@@ -83,6 +83,16 @@ export class ProductController {
     return this.productService.remainingProducts(req.where);
   }
 
+  @Get('/code/:code')
+  @ApiOperation({ summary: 'Method: returns remaining ofp products' })
+  @ApiOkResponse({
+    description: 'The remaining of products was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getWithCode(@Param('code') code: string) {
+    return await this.productService.getByCode(code);
+  }
+
   @Get('/remaining-products/all-filial')
   @ApiOperation({ summary: 'Method: returns remaining ofp products' })
   @ApiOkResponse({

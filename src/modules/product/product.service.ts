@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
@@ -7,7 +7,7 @@ import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from
 import { sizeParser } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 import { ModelService } from '../model/model.service';
-import { iShopAccounting, prodSearch } from './utils';
+import { getByCode, iShopAccounting, prodSearch } from './utils';
 
 Injectable();
 
@@ -299,5 +299,13 @@ export class ProductService {
 
   async getIShopAccounting(query: { by: string }): Promise<[{ sold_shop_products: string, percentage_sold: string, sold_shop_products_first: string }]> {
     return this.productRepository.query(iShopAccounting(query));
+  }
+
+  async getByCode(code: string){
+    if (!code){
+      throw new BadRequestException('code must be exist');
+  }
+    console.log(getByCode(code));
+    return await this.productRepository.query(getByCode(code));
   }
 }
