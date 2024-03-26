@@ -186,7 +186,6 @@ export class CashflowService {
       }
 
       if (value.type == 'Расход') {
-        if (kassa.totalSum < value.price) throw new BadRequestException('You dont have enough money!');
         if (value.title == 'Магазин Расход') {
           await this.actionService.create(data, id, kassa.filial.id, 'add_expense_cashflow_shop', `$${value.price}`);          
           kassa.expenditureShop = kassa.expenditureShop + value.price;
