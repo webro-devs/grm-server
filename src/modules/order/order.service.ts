@@ -31,7 +31,7 @@ import { CashFlowEnum, CashflowExpenditureEnum, OrderEnum } from 'src/infra/shar
 import { CashflowService } from '../cashflow/cashflow.service';
 import { Product } from '../product/product.entity';
 import { GRMGateway } from '../web-socket/web-socket.gateway';
-
+//
 Injectable();
 export class OrderService {
   constructor(
@@ -339,7 +339,7 @@ export class OrderService {
       'Возврат',
       CashFlowEnum.Consumption,
       userId,
-      `${order?.product?.model?.collection['title']} | ${order?.product?.model?.title} | ${order.product.size} | ${
+        `${order?.product?.model?.collection['title']} | ${order?.product?.model?.title} | ${order.product.size} | ${
         order.product.isMetric ? 'x' + order.x * 100 : order.x
       } | ${order.product.shape}`,
     );
