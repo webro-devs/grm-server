@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, Req } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Post, Patch, HttpCode, Query, Body, Param, Delete, HttpStatus } from '@nestjs/common';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { FilialService } from './filial.service';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { PaginationDto } from '../../infra/shared/dto';
@@ -19,14 +19,8 @@ export class FilialController {
     description: 'The filial were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getData(@Route() route: string, @Query() query: PaginationDto, @Req() req) {
-    const filials = await this.filialService.getAll({ ...query, route });
-    if(req?.user?.role === 5){
-      return { items: filials.items.filter(e => e.title != 'baza') };
-    }else if(req?.user?.role === 3){
-      return { items: filials.items.filter(e => e.title != 'baza' && e.title != 'I-Dokon') };
-    }
-    return filials;
+  async getData(@Route() route: string, @Query() query: PaginationDto) {
+    return await this.filialService.getAll({ ...query, route });
   }
 
   @Get('/action')
