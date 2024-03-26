@@ -16,7 +16,7 @@ export class FilialService {
     return paginate<Filial>(this.filialRepository, options, {
       order: {
         title: 'ASC',
-      },
+      }
     });
   }
 
