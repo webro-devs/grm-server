@@ -27,7 +27,7 @@ import { UserRoleEnum } from '../../infra/shared/enum';
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
-  @Roles(UserRoleEnum.SELLER, UserRoleEnum.CASHIER, UserRoleEnum.BOSS, UserRoleEnum.CLIENT, UserRoleEnum.SUPPER_MANAGER)
+  @Roles(UserRoleEnum.SELLER, UserRoleEnum.CASHIER, UserRoleEnum.BOSS, UserRoleEnum.CLIENT, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
   @Get('/')
   @ApiOperation({ summary: 'Method: returns all products' })
   @ApiOkResponse({
