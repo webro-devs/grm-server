@@ -307,7 +307,7 @@ export class ProductService {
   }
     const product = (await this.productRepository.query(getByCode(code)))[0];
     if(!product){
-      throw new BadRequestException('This product is not valid!');
+      throw new BadRequestException('This product is not found!');
     }
     return  product;
   }
