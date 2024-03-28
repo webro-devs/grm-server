@@ -7,7 +7,7 @@ import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from
 import { sizeParser } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 import { ModelService } from '../model/model.service';
-import { getByCode, iShopAccounting, prodSearch } from './utils';
+import { getByCode, getSupports, iShopAccounting, prodSearch } from './utils';
 import { FileService } from '../file/file.service';
 import { ColorService } from '../color/color.service';
 
@@ -337,5 +337,9 @@ export class ProductService {
       throw new BadRequestException('This product is not found!');
     }
     return  product;
+  }
+
+  async getSupports(){
+    return this.productRepository.query(getSupports());
   }
 }

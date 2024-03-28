@@ -51,6 +51,16 @@ export class ProductController {
     console.log(req.user);
     return await this.productService.getAll({ limit: query.limit, page: query.page, route }, req.where, req.user);
   }
+  @Public()
+  @Get('/internet-shop/supports')
+  @ApiOperation({ summary: 'Method: returns all product supports for internet shop' })
+  @ApiOkResponse({
+    description: 'The product supports were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getDataInternetShopSupports() {
+    return (await this.productService.getSupports())[0];
+  }
 
   @Get('/baza')
   @ApiOperation({ summary: 'Method: returns all products' })
