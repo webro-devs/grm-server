@@ -12,9 +12,11 @@ import { ProductController } from './product.controller';
 import { ProductQueryParserMiddleware } from '../../infra/middleware';
 import { FilialModule } from '../filial/filial.module';
 import { ModelModule } from '../model/model.module';
+import { FileModule } from '../file/file.module';
+import { ColorModule } from '../color/color.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product]), FilialModule, ModelModule],
+  imports: [TypeOrmModule.forFeature([Product]), FilialModule, ModelModule, FileModule, ColorModule],
   controllers: [ProductController],
   providers: [ProductService],
   exports: [ProductService],

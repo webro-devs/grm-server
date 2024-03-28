@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, Not, Repository } from 'typeorm';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { Product } from './product.entity';
 import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from './dto';
@@ -8,6 +8,8 @@ import { sizeParser } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 import { ModelService } from '../model/model.service';
 import { getByCode, iShopAccounting, prodSearch } from './utils';
+import { FileService } from '../file/file.service';
+import { ColorService } from '../color/color.service';
 
 Injectable();
 
@@ -16,7 +18,9 @@ export class ProductService {
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
     private readonly filialService: FilialService,
+    private readonly fileService: FileService,
     private readonly modelService: ModelService,
+    private readonly colorService: ColorService,
   ) {
   }
 
@@ -26,11 +30,10 @@ export class ProductService {
     _user?: { role: number; },
   ) {
     if (where['fields']) {
-      console.log(where);
       const products = (await this.productRepository.query(prodSearch({
         text: where['search'],
         filialId: where?.filial,
-        base: _user?.role > 2,
+        base: _user?.role && _user?.role > 2 ? true : false,
         offset: (+options.page - 1) * +options.limit,
         limit: options.limit,
         total: false,
@@ -40,7 +43,7 @@ export class ProductService {
       const total = (await this.productRepository.query(prodSearch({
         text: where['search'],
         filialId: where?.filial,
-        base: _user?.role > 2,
+        base: _user?.role && _user?.role > 2 ? true : false,
         offset: (+options.page - 1) * +options.limit,
         limit: options.limit,
         total: true,
@@ -67,7 +70,10 @@ export class ProductService {
         filial: true,
         color: true,
       },
-      where,
+      where: {
+        ...where,
+        ...(_user && _user?.role > 2 ? {} : { filial: { title: Not('baza') } }),
+      },
       order: { date: 'DESC' },
     });
   }
@@ -138,6 +144,8 @@ export class ProductService {
         where: { id },
         relations: {
           filial: true,
+          color: true,
+          model: true,
         },
       })
       .catch(() => {
@@ -178,13 +186,32 @@ export class ProductService {
   }
 
   async change(value: UpdateProductDto, id: string) {
-    const response = await this.productRepository
+    if (value?.imgUrl) {
+      const product = await this.getById(id);
+      if ( (product?.model || value?.model) && (product.color || value.color) && (product.shape || value.shape)) {
+        const color = await this.colorService.getOne(value?.color ? value.color : product.color.id);
+        const model = await this.modelService.getOne(value?.model ? value.model : product.model.id);
+        if (value.shape || product.shape) {
+          const data = {
+            shape: value.shape ? value.shape : product.shape,
+            url: value.imgUrl,
+            color: color.title,
+            model: model.title,
+          };
+          const file = await this.fileService.getByModelAndColor(data.model, data.color, data.shape);
+          if (!file) {
+            await this.fileService.create(data);
+          }
+        }
+      }
+    }
+
+    return await this.productRepository
       .createQueryBuilder()
       .update()
       .set(value as unknown as Product)
       .where('id = :id', { id })
       .execute();
-    return response;
   }
 
   async changeInternetShopProduct(value: UpdateInternetShopProductDto, id: string) {

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { CreateFileDto, UpdateFileDto } from './dto';
 
 import { File } from './file.entity';
@@ -20,26 +20,20 @@ export class FileService {
   }
 
   async update(data: UpdateFileDto, id: string) {
-    const response = await this.fileRepository.update({ id }, data);
-
-    return response;
+    return await this.fileRepository.update({ id }, data);
   }
 
   async delete(id: string) {
-    const response = await this.fileRepository.delete(id).catch(() => {
+    return await this.fileRepository.delete(id).catch(() => {
       throw new NotFoundException('data not found');
     });
-
-    return response;
   }
 
   async deleteByUrl(url: string) {
     const file = await this.getByUrl(url);
-    const response = await this.fileRepository.delete(file.id).catch(() => {
+    return await this.fileRepository.delete(file.id).catch(() => {
       throw new NotFoundException('data not found');
     });
-
-    return response;
   }
 
   async getAll(options: IPaginationOptions): Promise<Pagination<File>> {
@@ -47,22 +41,16 @@ export class FileService {
   }
 
   async getByModel(model: string) {
-    const response = await this.fileRepository.find({ where: { model } });
-
-    return response;
+    return await this.fileRepository.find({ where: { model } });
   }
 
   async getByUrl(url: string) {
-    const response = await this.fileRepository.findOne({ where: { url } });
-
-    return response;
+    return await this.fileRepository.findOne({ where: { url } });
   }
 
   async getByModelAndColor(model: string, color: string, shape: string) {
-    const response = await this.fileRepository.findOne({
+    return await this.fileRepository.findOne({
       where: { model, color, shape },
     });
-
-    return response;
   }
 }

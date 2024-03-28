@@ -22,6 +22,7 @@ import { ProductQueryDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from '../../infra/shared/enum';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Product')
 @Controller('product')
@@ -35,6 +36,19 @@ export class ProductController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Query() query: ProductQueryDto, @Route() route: string, @Req() req) {
+    return await this.productService.getAll({ limit: query.limit, page: query.page, route }, req.where, req.user);
+  }
+
+  @Public()
+  @Get('/internet-shop')
+  @ApiOperation({ summary: 'Method: returns all products for internet shop' })
+  @ApiOkResponse({
+    description: 'The products were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getDataInternetShop(@Query() query: ProductQueryDto, @Route() route: string, @Req() req) {
+    req.where.isInternetShop = true;
+    console.log(req.user);
     return await this.productService.getAll({ limit: query.limit, page: query.page, route }, req.where, req.user);
   }
 
