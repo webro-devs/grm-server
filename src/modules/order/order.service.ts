@@ -1,33 +1,23 @@
 import {
+  BadRequestException,
+  forwardRef,
   HttpException,
   HttpStatus,
-  NotFoundException,
-  Injectable,
   Inject,
-  forwardRef,
-  BadRequestException,
+  Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import {
-  Between,
-  DataSource,
-  EntityManager,
-  Equal,
-  FindOptionsWhere,
-  LessThanOrEqual,
-  MoreThanOrEqual,
-  Not,
-  Repository,
-} from 'typeorm';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
+import { Between, DataSource, EntityManager, FindOptionsWhere, Repository } from 'typeorm';
 
 import { Order } from './order.entity';
-import { UpdateOrderDto, CreateOrderDto } from './dto';
-import { CreateProductDto, UpdateProductDto } from '../product/dto';
+import { CreateOrderDto, UpdateOrderDto } from './dto';
+import { CreateProductDto } from '../product/dto';
 import { ProductService } from '../product/product.service';
 import { KassaService } from '../kassa/kassa.service';
 import { ActionService } from '../action/action.service';
-import { CashFlowEnum, CashflowExpenditureEnum, OrderEnum } from 'src/infra/shared/enum';
+import { CashFlowEnum, OrderEnum } from 'src/infra/shared/enum';
 import { CashflowService } from '../cashflow/cashflow.service';
 import { Product } from '../product/product.entity';
 import { GRMGateway } from '../web-socket/web-socket.gateway';
@@ -62,7 +52,11 @@ export class OrderService {
     const data = await this.orderRepository
       .findOne({
         where: { id },
-        relations: { casher: true, seller: true, product: true, kassa: true },
+        relations: {
+          casher: true, seller: true, product: {
+            model: { collection: true }, color: true,
+          }, kassa: true,
+        },
       })
       .catch(() => {
         throw new NotFoundException('data not found');

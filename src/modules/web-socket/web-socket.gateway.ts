@@ -1,10 +1,10 @@
 import {
-  WebSocketGateway,
-  WebSocketServer,
+  ConnectedSocket,
+  MessageBody,
   OnGatewayInit,
   SubscribeMessage,
-  MessageBody,
-  ConnectedSocket,
+  WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { OrderService } from '../order/order.service';
@@ -13,7 +13,7 @@ import { CashflowService } from '../cashflow/cashflow.service';
 import { ProductService } from '../product/product.service';
 import { KassaService } from '../kassa/kassa.service';
 import { ActionService } from '../action/action.service';
-import { Inject, forwardRef } from '@nestjs/common';
+import { forwardRef, Inject } from '@nestjs/common';
 
 @WebSocketGateway()
 export class GRMGateway implements OnGatewayInit {
@@ -45,6 +45,7 @@ export class GRMGateway implements OnGatewayInit {
 
   @SubscribeMessage('ordered-product')
   async orderProduct(@MessageBody() body: { orderId: string; filialId: string }) {
+    console.log('Order', body);
     const order = await this.orderService.getById(body.orderId);
     const kassa = await this.kassaService.GetOpenKassa(body.filialId);
 
@@ -81,11 +82,13 @@ export class GRMGateway implements OnGatewayInit {
 
   @SubscribeMessage('join-room')
   handleJoinRoom(client: Socket, room: string) {
+    console.log('join room', room);
     client.join(room);
   }
 
   @SubscribeMessage('leave-room')
   handleLeaveRoom(client: Socket, room: string) {
+    console.log('leave room', room);
     client.leave(room);
   }
 
