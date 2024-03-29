@@ -48,6 +48,8 @@ export class GRMGateway implements OnGatewayInit {
     console.log('Order', body);
     const order = await this.orderService.getById(body.orderId);
     const kassa = await this.kassaService.GetOpenKassa(body.filialId);
+    console.log('order ===>', order);
+    console.log('kassa ===>', kassa);
 
     kassa?.['id'] ? this.server.to(kassa['id']).emit('get-order', order) : null;
   }
@@ -67,8 +69,8 @@ export class GRMGateway implements OnGatewayInit {
   }
 
   @SubscribeMessage('action')
-  async Action() {
-    const action = await this.actionService.getAll({ limit: 20, page: 1 });
+  async Action(id: string) {
+    const action = await this.actionService.getOne(id);
     this.server.emit('userActions', action);
   }
 

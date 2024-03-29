@@ -1,12 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { ActionDescEnum, ActionTypeEnum } from 'src/infra/shared/enum';
-import { Between, Equal, FindOptionsWhere, InsertResult, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { Between, Equal, InsertResult, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 
 import { Action } from './action.entity';
 import { ActionRepository } from './action.repository';
-import { CreateActionDto } from './dto';
 
 Injectable();
 export class ActionService {
@@ -85,5 +84,9 @@ export class ActionService {
       .execute();
 
     return response;
+  }
+
+  async getOne(id) {
+    return await this.actionRepository.findOneBy({ id });
   }
 }

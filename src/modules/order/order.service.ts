@@ -280,7 +280,9 @@ export class OrderService {
       .where('id = :id', { id })
       .execute();
 
-    await this.actionService.create({ ...order, isActive: OrderEnum.Accept }, casher, order.kassa.filial.id, 'accept_order');
+    const action = await this.actionService.create({ ...order, isActive: OrderEnum.Accept }, casher, order.kassa.filial.id, 'accept_order');
+
+    await this.grmGetaway.Action(action.raw[0]?.id);
     return response;
   }
 
