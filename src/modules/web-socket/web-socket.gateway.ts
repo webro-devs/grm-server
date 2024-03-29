@@ -14,6 +14,8 @@ import { ProductService } from '../product/product.service';
 import { KassaService } from '../kassa/kassa.service';
 import { ActionService } from '../action/action.service';
 import { forwardRef, Inject } from '@nestjs/common';
+import { Order } from '../order/order.entity';
+import { Cashflow } from '../cashflow/cashflow.entity';
 
 @WebSocketGateway()
 export class GRMGateway implements OnGatewayInit {
@@ -55,17 +57,13 @@ export class GRMGateway implements OnGatewayInit {
   }
 
   @SubscribeMessage('check-order')
-  async sendKassaSum(@MessageBody() body: { kassaId: string; orderId: string }) {
-    const kassaSum = await this.kassaService.getKassaSum(body.kassaId);
-    const order = await this.orderService.getById(body.orderId);
-    this.server.to(body.kassaId).emit('kassaSum', kassaSum);
+  async sendBossOrder(@MessageBody() order: Order) {
     this.server.emit('bossOrder', order);
   }
 
   @SubscribeMessage('cashflow')
-  async Cashflow(@MessageBody() id: string) {
-    const cashflow = await this.cashflowService.getOne(id);
-    this.server.emit('bossCashFlow', cashflow);
+  async Cashflow(@MessageBody() body: Cashflow) {
+    this.server.emit('bossOrder', body);
   }
 
   @SubscribeMessage('action')

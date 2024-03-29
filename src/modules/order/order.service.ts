@@ -252,7 +252,7 @@ export class OrderService {
   async checkOrder(id: string, casher: string) {
     const order = await this.orderRepository.findOne({
       where: { id },
-      relations: { kassa: { filial: true }, product: true },
+      relations: { kassa: { filial: true }, product: { model: { collection: true }, color: true } },
     });
 
     const kassa = await this.kassaService.getById(order.kassa.id);
@@ -283,6 +283,7 @@ export class OrderService {
     const action = await this.actionService.create({ ...order, isActive: OrderEnum.Accept }, casher, order.kassa.filial.id, 'accept_order');
 
     await this.grmGetaway.Action(action.raw[0]?.id);
+    await this.grmGetaway.sendBossOrder(order);
     return response;
   }
 
