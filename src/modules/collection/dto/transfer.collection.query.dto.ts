@@ -52,6 +52,15 @@ class PaginationCollectionDto {
   @IsString()
   readonly filial: string;
 
+  @ApiProperty({
+    description: `code`,
+    example: '4651654316531',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  readonly code: string;
+
   constructor() {
     this.limit = this.limit ? this.limit : 100;
     this.page = this.page ? this.page : 1;
