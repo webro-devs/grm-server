@@ -88,7 +88,6 @@ export class UserService {
     });
 
     for (const user of users) {
-      console.log(user);
       user['sellerOrdersCount'] = user.sellerOrders.length;
       delete user.password;
       delete user.login;

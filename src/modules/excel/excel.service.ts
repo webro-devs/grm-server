@@ -163,7 +163,6 @@ export class ExcelService {
         data.size = (await this.sizeService.getOneByName(data.size))?.id || null;
         data.style = (await this.styleService.getOneByName(data.style))?.id || null;
         data.count = data.count < 1 ? 1 : data.count;
-        console.log(data);
         const price = await this.returnPrice(model.id);
 
         if (codes.length < 1) {
@@ -262,7 +261,6 @@ export class ExcelService {
 
   async checkProductCode(newData: { code: string; id: string }) {
     const code = await this.qrBaseService.getOneByCode(newData.code);
-    console.log(newData.code, ' : ', code);
 
     if (!code) {
       throw new BadRequestException('Code not exist!');
@@ -415,8 +413,6 @@ export class ExcelService {
         meter: partiya.m2 || 0,
       };
 
-      console.log(partiya.id);
-      console.log(user.id);
       await this.actionService.create(
         partiya,
         user?.id,

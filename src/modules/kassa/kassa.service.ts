@@ -24,8 +24,6 @@ export class KassaService {
   }
 
   async getReport(options: IPaginationOptions, user, where) {
-    console.log(user);
-
     let startDate = where.startDate,
       endDate = where.endDate;
 

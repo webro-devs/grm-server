@@ -245,7 +245,6 @@ export class OrderService {
       .returning('id')
       .execute();
 
-    await this.grmGetaway.orderProduct({ orderId: response.raw[0].id, filialId: product.filial.id });
     return response;
   }
 

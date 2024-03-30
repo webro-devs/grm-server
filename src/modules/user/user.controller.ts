@@ -60,8 +60,6 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async getMe(@Param('id') id: string, @Query() query, @Req() req): Promise<User> {
     query['collection'] = !query?.collection && req?.['user'].role == 1 ? true : query?.collection || null;
-    console.log(query);
-
     return await this.userService.getOne(id, query?.from || null, query.to || null, query.collection);
   }
 

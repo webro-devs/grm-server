@@ -89,7 +89,6 @@ export class PartiyaService {
   }
 
   async change(value: UpdatePartiyaDto, id: string) {
-    console.log(value);
 
     const response = await this.partiyaRepository.update({ id }, value);
     return response;

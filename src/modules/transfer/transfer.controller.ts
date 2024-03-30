@@ -21,8 +21,6 @@ export class TransferController {
   })
   @HttpCode(HttpStatus.OK)
   async getData(@Route() route: string, @Query() query: TransferQueryDto, @Req() req) {
-    console.log(query);
-
     return await this.transferService.getAll({ limit: query.limit, page: query.page, route }, req.where);
   }
 

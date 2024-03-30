@@ -153,8 +153,6 @@ export class QrBaseService {
         if (!response) {
           data.collection = await this.collectionService.findOrCreate(data.collection);
           data.country ? (data.country = await this.countryService.findOrCreate(data.country)) : (data.country = null);
-          console.log(data.collection);
-          console.log(data.model);
 
           data.model
             ? (data.model = await this.modelService.findOrCreate(data.collection, data.model))

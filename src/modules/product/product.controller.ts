@@ -48,7 +48,6 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   async getDataInternetShop(@Query() query: ProductQueryDto, @Route() route: string, @Req() req) {
     req.where.isInternetShop = true;
-    console.log(req.user);
     return await this.productService.getAll({ limit: query.limit, page: query.page, route }, req.where, req.user);
   }
   @Public()

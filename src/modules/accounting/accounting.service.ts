@@ -22,8 +22,6 @@ export class AccountingService {
   ) {}
 
   async getFullAccounting(where) {
-    console.log(where);
-
     const result = [];
     const allFilial = await this.filialService.getAllFilial();
     let total = false;
