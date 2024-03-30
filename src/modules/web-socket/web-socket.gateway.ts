@@ -60,6 +60,7 @@ export class GRMGateway implements OnGatewayInit {
 
   @SubscribeMessage('cashflow')
   async Cashflow(@MessageBody() body: Cashflow) {
+    console.log(body);
     this.server.emit('bossOrder', body);
   }
 
