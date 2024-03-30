@@ -303,9 +303,10 @@ export class OrderService {
       product.setTotalSize();
     }
 
-    await this.actionService.create({ ...data, isActive: OrderEnum.Reject }, casher, data.kassa.filial.id, 'reject_order');
+    const action = await this.actionService.create({ ...data, isActive: OrderEnum.Reject }, casher, data.kassa.filial.id, 'reject_order');
     await this.saveRepo(product);
 
+    await this.grmGetaway.Action(action.raw[0].id);
     return await this.orderRepository.delete({ id });
   }
 
@@ -341,13 +342,14 @@ export class OrderService {
     );
 
     await this.orderRepository.update({ id: order.id }, { isActive: OrderEnum.Reject });
-    await this.actionService.create(
+    const action = await this.actionService.create(
       { ...order, isActive: OrderEnum.Reject },
       userId,
       order.product.filial.id,
       'return_order',
     );
 
+    await this.grmGetaway.Action(action.raw[0].id);
     return 'ok';
   }
 
