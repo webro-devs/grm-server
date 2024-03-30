@@ -251,7 +251,7 @@ export class OrderService {
   async checkOrder(id: string, casher: string) {
     const order = await this.orderRepository.findOne({
       where: { id },
-      relations: { kassa: { filial: true }, product: { model: { collection: true }, color: true } },
+      relations: { kassa: { filial: true }, product: { model: { collection: true }, color: true }, seller: true, casher: true },
     });
 
     const kassa = await this.kassaService.getById(order.kassa.id);
