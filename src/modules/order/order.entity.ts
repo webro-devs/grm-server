@@ -76,7 +76,7 @@ export class Order {
 
   @ManyToOne(() => User, (user) => user.casherOrders)
   @JoinColumn()
-  cashier: User;
+  casher: User;
 
   @ManyToOne(() => Kassa, (kassa) => kassa.orders, {
     onDelete: 'CASCADE',

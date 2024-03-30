@@ -53,7 +53,7 @@ export class OrderService {
       .findOne({
         where: { id },
         relations: {
-          cashier: true, seller: true, product: {
+          casher: true, seller: true, product: {
             model: { collection: true }, color: true,
           }, kassa: true,
         },
@@ -93,7 +93,7 @@ export class OrderService {
   async getByKassa(id: string) {
     const data = await this.orderRepository
       .find({
-        relations: { kassa: true, cashier: true, seller: true, product: true },
+        relations: { kassa: true, casher: true, seller: true, product: true },
         where: { kassa: { id } },
         order: { date: 'desc' },
       })
@@ -106,7 +106,7 @@ export class OrderService {
   async getByKassaWithCach(id: string) {
     const data = await this.orderRepository
       .find({
-        relations: { kassa: true, cashier: true, seller: true, product: true },
+        relations: { kassa: true, casher: true, seller: true, product: true },
         where: { kassa: { id } },
         order: { date: 'desc' },
       })
