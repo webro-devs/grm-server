@@ -86,7 +86,7 @@ export class ActionService {
     return response;
   }
 
-  async getOne(id) {
-    return await this.actionRepository.findOneBy({ id });
+  async getOne(id: string) {
+    return await this.actionRepository.findOne({ where: { id }, relations: { user: true } });
   }
 }

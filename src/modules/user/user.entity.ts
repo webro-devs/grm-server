@@ -56,7 +56,7 @@ export class User {
   @OneToMany(() => Order, (order) => order.seller)
   sellerOrders: Order[];
 
-  @OneToMany(() => Order, (order) => order.casher)
+  @OneToMany(() => Order, (order) => order.cashier)
   casherOrders: Order[];
 
   @OneToMany(() => Cashflow, (cashflow) => cashflow.casher, { nullable: true })
