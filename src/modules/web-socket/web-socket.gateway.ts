@@ -9,21 +9,16 @@ import {
 import { Server, Socket } from 'socket.io';
 import { OrderService } from '../order/order.service';
 import { TransferService } from '../transfer/transfer.service';
-import { CashflowService } from '../cashflow/cashflow.service';
-import { ProductService } from '../product/product.service';
 import { KassaService } from '../kassa/kassa.service';
 import { ActionService } from '../action/action.service';
 import { forwardRef, Inject } from '@nestjs/common';
 import { Order } from '../order/order.entity';
-import { Cashflow } from '../cashflow/cashflow.entity';
 
 @WebSocketGateway()
 export class GRMGateway implements OnGatewayInit {
   constructor(
     @Inject(forwardRef(() => OrderService))
     private readonly orderService: OrderService,
-    private readonly productService: ProductService,
-    private readonly cashflowService: CashflowService,
     private readonly transferService: TransferService,
     private readonly kassaService: KassaService,
     private readonly actionService: ActionService,
@@ -59,7 +54,7 @@ export class GRMGateway implements OnGatewayInit {
   }
 
   @SubscribeMessage('cashflow')
-  async Cashflow(@MessageBody() body: Cashflow) {
+  async Cashflow(@MessageBody() body) {
     console.log(body);
     this.server.emit('bossOrder', body);
   }

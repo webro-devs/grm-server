@@ -14,11 +14,11 @@ import { OrderQueryParserMiddleware } from 'src/infra/middleware';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Order]),
+    forwardRef(() => GrmSocketModule),
     ProductModule,
     KassaModule,
     ActionModule,
     CashflowModule,
-    forwardRef(() => GrmSocketModule),
   ],
   controllers: [OrderController],
   providers: [OrderService],

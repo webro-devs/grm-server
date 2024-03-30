@@ -1,4 +1,4 @@
-import { NotFoundException, Injectable, BadRequestException } from '@nestjs/common';
+import { NotFoundException, Injectable, BadRequestException, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { CreateCashflowDto, UpdateCashflowDto } from './dto';
@@ -9,12 +9,15 @@ import { CashFlowEnum, CashflowExpenditureEnum } from '../../infra/shared/enum';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import CashflowComingEnum from '../../infra/shared/enum/cashflow/cashflow-coming';
 import { ActionService } from '../action/action.service';
+import { GRMGateway } from '../web-socket/web-socket.gateway';
 
 Injectable();
 export class CashflowService {
   constructor(
     @InjectRepository(Cashflow)
     private readonly cashflowRepository: Repository<Cashflow>,
+    @Inject(forwardRef(() => GRMGateway))
+    private readonly grmGateway: GRMGateway,
     private readonly kassaService: KassaService,
     private readonly connection: DataSource,
     private readonly actionService: ActionService,
@@ -198,7 +201,7 @@ export class CashflowService {
       await this.connection.transaction(async (manager: EntityManager) => {
         await manager.save(kassa);
       });
-
+      await this.grmGateway.Action(response.raw[0].id)
       return this.getOne(response.raw[0].id);
     } catch (error) {
       throw new BadRequestException(error.message);
