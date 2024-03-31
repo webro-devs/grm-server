@@ -72,7 +72,7 @@ export class ProductService {
       },
       where: {
         ...where,
-        ...(_user && _user?.role > 2 ? {} : { filial: { title: Not('baza') } }),
+        ...(_user && _user?.role > 2 ? {} : { filial: { title: Not('baza'), ...(where.filial && { id: where.filial['id'] }) } }),
       },
       order: { date: 'DESC' },
     });
