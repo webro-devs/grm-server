@@ -134,10 +134,11 @@ export class ExcelService {
         const codes = await this.qrBaseService.getOneCode(support.code);
         if (codes.length) {
           const product = await this.productExcelRepository.findOne({
-            relations: { partiya: true },
+            relations: { partiya: true, model: { collection: true} },
             where: { code: support.code, partiya: { id: partiyaId } },
           });
-          if (product) {
+
+          if (product && !product?.model?.collection?.meter) {
             product.count += 1;
             await this.productExcelRepository.save(product);
             continue;
@@ -266,14 +267,16 @@ export class ExcelService {
       throw new BadRequestException('Code not exist!');
     }
     const product = await this.productExcelRepository.findOne({
-      relations: { partiya: true },
+      relations: { partiya: true, model: { collection: true } },
       where: { code: newData.code, partiya: { id: newData.id } },
     });
-    if (product) {
+
+    if (product && !product?.model?.collection?.meter) {
       product.count += 1;
       await this.productExcelRepository.save(product);
       return 'Added Product +1';
     }
+
     const value: CreateProductExcelDto = {
       code: code.code,
       collection: code?.collection?.id || null,
@@ -295,6 +298,7 @@ export class ExcelService {
       style: code?.style?.id || null,
     };
     const productIds = await this.addProductToPartiya([value], newData.id);
+
     return await this.productExcelRepository.findOne({
       where: { id: productIds.raw[0].id },
       relations: { size: true, model: true, style: true, shape: true, color: true, collection: true },
@@ -344,61 +348,6 @@ export class ExcelService {
 
     await this.addProductToPartiya([Product], partiyaId);
     return code;
-  }
-
-  async createWithCodeExcel(newDatas: CreateQrBaseDto[], partiyaId) {
-    const partiya = await this.partiyaService.getOne(partiyaId);
-    if (!partiya) throw new BadRequestException('Partiya not Found!');
-    const products = [];
-    const check = newDatas.filter((e) => !e?.collection || !e.model);
-    if (check.length > 0) throw new BadRequestException('Collection or Model don\'t come, please check your excel!');
-
-    for (const newData of newDatas) {
-      if (!newData.code) throw new BadRequestException('Code Not Exist!');
-
-      const value: CreateQrBaseDto = {
-        code: newData.code,
-        collection: newData.collection,
-        color: newData.color,
-        country: newData.country,
-        model: newData.model,
-        shape: newData.shape,
-        size: newData.size,
-        style: newData.style,
-      };
-
-      const data = await this.qrBaseService.getOneCode(newData.code);
-      console.log(data);
-
-      if (data.length < 1) {
-        await this.qrBaseService.create(value);
-      }
-
-      const code = await this.qrBaseService.getOneByCode(newData.code);
-      const Product: CreateProductExcelDto = {
-        code: code?.code,
-        collection: code?.collection?.id,
-        collectionPrice: 0,
-        color: code?.color?.id || null,
-        commingPrice: 0,
-        count: Number(newData?.count) || 1,
-        country: code?.country?.id || null,
-        displayPrice: 0,
-        imgUrl: null,
-        isEdited: false,
-        isMetric: false,
-        model: code?.model?.id,
-        otherImgs: [],
-        partiya: partiyaId,
-        priceMeter: 0,
-        shape: code?.shape?.id || null,
-        size: code?.size?.id || null,
-        style: code?.style?.id || null,
-      };
-      products.push(Product);
-    }
-
-    return await this.addProductToPartiya(products, partiyaId);
   }
 
   async createProduct(partiyaId, filialId, user) {
@@ -495,7 +444,7 @@ export class ExcelService {
     for (const item of data) {
       if (!item.imgUrl) {
         if (item?.model && item?.color && item?.shape) {
-          data.imgUrl = await this.fileService.getByModelAndColor(item.model?.title, item.color?.title, item.shape);
+          data.imgUrl = await this.fileService.getByModelAndColor(item.model?.title, item.color?.title, item?.shape);
         } else data.imgUrl = null;
       }
     }

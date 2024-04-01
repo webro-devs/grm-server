@@ -215,6 +215,10 @@ export class OrderService {
     const filial = user.filial.id;
     const kassa = await this.kassaService.GetOpenKassa(filial);
 
+    if(user.role > 3 && filial != product.filial.id){
+      throw new BadRequestException('You cannot sell a product on a non-working branch!')
+    }
+
     if (value.isMetric) {
       if (product.y < value.x) throw new BadRequestException('Not enough product meter!');
       const cost = value.x / 100;
