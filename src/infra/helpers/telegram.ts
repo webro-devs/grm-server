@@ -18,7 +18,7 @@ const telegram = async ({
   startWork,
   landmark,
 }) => {
-  const chatId = process.env.CLIENT_ID;
+  const chatId = process.env.CHATID;
   const text = `😍 Наши необычные ковры добавят интерьеру цвета, характер и современности вашего дома !)
 
   🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
