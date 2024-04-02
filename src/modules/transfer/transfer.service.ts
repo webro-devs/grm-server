@@ -29,7 +29,7 @@ export class TransferService {
     }
 
     if (where.progres == 'In') {
-      where.from = Not(user.filial.id);
+      where.to = Equal(user.filial.id);
     } else if (where.progres == 'Out') {
       where.from = Equal(user.filial.id);
     }
