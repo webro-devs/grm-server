@@ -223,7 +223,7 @@ export class OrderService {
     }
 
     if (value.isMetric) {
-      if (product.y < value.x) throw new BadRequestException('Not enough product meter!');
+      if (product.y < value.x / 100) throw new BadRequestException('Not enough product meter!');
       const cost = value.x / 100;
       product.y = product.y - cost;
       product.setTotalSize();
