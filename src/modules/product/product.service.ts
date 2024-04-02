@@ -61,7 +61,7 @@ export class ProductService {
         },
       };
     }
-
+    console.log({ ...(_user && _user?.role > 2 ? { ...(where.filial && { id: where.filial['id'] }) } : { filial: { title: Not('baza'), ...(where.filial && { id: where.filial['id'] }) } }) });
     return paginate<Product>(this.productRepository, options, {
       relations: {
         model: {
@@ -72,7 +72,7 @@ export class ProductService {
       },
       where: {
         ...where,
-        ...(_user && _user?.role > 2 ? {...(where.filial && { id: where.filial['id']}) } : { filial: { title: Not('baza'), ...(where.filial && { id: where.filial['id'] }) } }),
+        ...(_user && _user?.role > 2 ? { ...(where.filial && { filial: { id: where.filial['id'] } }) } : { filial: { title: Not('baza'), ...(where.filial && { id: where.filial['id'] }) } }),
       },
       order: { date: 'DESC' },
     });
