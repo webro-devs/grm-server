@@ -1,7 +1,8 @@
-import { IsArray, isArray, IsBoolean, isNumber, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, isArray, IsBoolean, IsEnum, isNumber, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { BadRequestException } from '@nestjs/common';
+import { TransferEnum } from '../enum';
 
 function parsePaginationQuery({ key, value }: TransformFnParams) {
   const int = Number(value);
@@ -62,6 +63,16 @@ class TransferQueryDto {
   @IsOptional()
   @IsString()
   readonly filialId;
+
+  @ApiProperty({
+    description: `type`,
+    example: 'Accepted, Processing or Rejected',
+    required: false
+  })
+  @IsOptional()
+  @IsString()
+  @IsEnum(TransferEnum)
+  readonly type: TransferEnum;
 
   @ApiProperty({
     description: `Limit`,

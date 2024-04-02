@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
-import { Between, In, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { Between, ILike, In, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { TransferQueryDto } from '../shared/dto';
 
 @Injectable()
@@ -8,7 +8,7 @@ class TransferQueryParserMiddleware implements NestMiddleware {
   use(req, res: Response, next: NextFunction) {
     let where: any = {};
     let relations: any = {};
-    const { startDate, endDate, size, collectionId, filialId }: TransferQueryDto = req.query;
+    const { startDate, endDate, size, collectionId, filialId, type }: TransferQueryDto = req.query;
 
     if (startDate && endDate) {
       where = {
@@ -36,6 +36,10 @@ class TransferQueryParserMiddleware implements NestMiddleware {
           },
         },
       };
+    }
+
+    if(type){
+      where.progres = ILike(`%${type}%`)
     }
 
     if (filialId) {
