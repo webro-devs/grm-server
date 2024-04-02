@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { Filial } from './filial.entity';
 import { CreateFilialDto, UpdateFilialDto } from './dto';
@@ -95,5 +95,12 @@ export class FilialService {
     data.unshift({ id: 'boss', name: 'Boss' }, { id: 'manager', name: 'Manager' });
 
     return data;
+  }
+
+  async getBazaFor() {
+    return await this.filialRepository
+      .findOne({
+        where: { title: 'baza' },
+      });
   }
 }

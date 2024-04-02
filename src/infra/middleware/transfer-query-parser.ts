@@ -39,7 +39,7 @@ class TransferQueryParserMiddleware implements NestMiddleware {
     }
 
     if(type){
-      where.progres = ILike(`%${type}%`)
+      where.progres = type
     }
 
     if (filialId) {

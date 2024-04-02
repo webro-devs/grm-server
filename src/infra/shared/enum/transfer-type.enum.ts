@@ -1,7 +1,6 @@
 enum OrderEnum {
-  Progress = 'Processing',
-  Accept = 'Accepted',
-  Reject = 'Rejected',
+  Out = 'Out',
+  In = 'In',
   nothing = ''
 }
 

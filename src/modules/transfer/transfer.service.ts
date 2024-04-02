@@ -1,7 +1,7 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { DataSource, EntityManager, FindOptionsWhere, Repository } from 'typeorm';
+import { DataSource, EntityManager, Equal, FindOptionsWhere, Not, Repository } from 'typeorm';
 import { CreateTransferDto, UpdateTransferDto } from './dto';
 
 import { Transfer } from './transfer.entity';
@@ -22,7 +22,18 @@ export class TransferService {
     private readonly actionService: ActionService,
     private readonly filialService: FilialService,
   ) {}
-  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Transfer>): Promise<Pagination<Transfer>> {
+
+  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Transfer>, user?): Promise<Pagination<Transfer>> {
+    if(!user?.filial){
+      user.filial = await this.filialService.findOrCreateFilialByTitle('baza');
+    }
+
+    if (where.progres == 'In') {
+      where.from = Not(user.filial.id);
+    } else if (where.progres == 'Out') {
+      where.from = Equal(user.filial.id);
+    }
+    where?.progres && delete where?.progres;
     return paginate<Transfer>(this.transferRepository, options, {
       relations: {
         from: true,
