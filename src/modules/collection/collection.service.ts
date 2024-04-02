@@ -145,9 +145,18 @@ export class CollectionService {
         remainingCount = 0;
       for (let j = 0; j < data[i].model.length; j++) {
         const products = data[i].model[j].products;
-        remainingSum += products.length ? products.map((p) => +p.price * p.count).reduce((a, b) => a + b) : 0;
-        remainingSize += products.length ? products.map((p) => +p.totalSize).reduce((a, b) => a + b) : 0;
-        remainingCount += products.length ? products.map((p) => p.count).reduce((a, b) => a + b) : 0;
+        let prodSum = products.length ? products.map((p) => +p.price * p.count).reduce((a, b) => a + b) : 0;
+        remainingSum += prodSum;
+
+        let prodSize = products.length ? products.map((p) => +p.totalSize).reduce((a, b) => a + b) : 0;
+        remainingSize += prodSize;
+
+        let prodCount = products.length ? products.map((p) => p.count).reduce((a, b) => a + b) : 0;
+        remainingCount += prodCount;
+
+        data[i].model[j].count = prodCount;
+        data[i].model[j].totalSize = prodSize;
+        data[i].model[j].totalSum = prodSum;
       }
       if (remainingSize > 0) {
         result.push({
