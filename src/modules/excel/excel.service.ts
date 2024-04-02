@@ -134,11 +134,11 @@ export class ExcelService {
         const codes = await this.qrBaseService.getOneCode(support.code);
         if (codes.length) {
           const product = await this.productExcelRepository.findOne({
-            relations: { partiya: true, model: { collection: true} },
+            relations: { partiya: true, model: { collection: true}, shape: true },
             where: { code: support.code, partiya: { id: partiyaId } },
           });
 
-          if (product && !product?.model?.collection?.meter) {
+          if (product && !product?.shape?.meter) {
             product.count += 1;
             await this.productExcelRepository.save(product);
             continue;
@@ -267,11 +267,11 @@ export class ExcelService {
       throw new BadRequestException('Code not exist!');
     }
     const product = await this.productExcelRepository.findOne({
-      relations: { partiya: true, model: { collection: true } },
+      relations: { partiya: true, model: { collection: true }, shape: true },
       where: { code: newData.code, partiya: { id: newData.id } },
     });
 
-    if (product && !product?.model?.collection?.meter) {
+    if (product && !product?.shape?.meter) {
       product.count += 1;
       await this.productExcelRepository.save(product);
       return 'Added Product +1';

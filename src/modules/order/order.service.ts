@@ -212,7 +212,10 @@ export class OrderService {
         throw new BadRequestException('User Not Found!');
       });
 
-    const filial = user.filial.id;
+    let filial = user?.filial?.id;
+    if(user.role > 3){
+      filial = product.filial.id
+    }
     const kassa = await this.kassaService.GetOpenKassa(filial);
 
     if(user.role > 3 && filial != product.filial.id){

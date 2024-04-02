@@ -11,9 +11,6 @@ export class Collection {
   @Column()
   title: string;
 
-  @Column({ default: false, nullable: true })
-  meter: string;
-
   @OneToMany(() => Model, (model) => model.collection, { onDelete: 'SET NULL' })
   model: Model[];
 

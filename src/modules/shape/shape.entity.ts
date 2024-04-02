@@ -10,6 +10,9 @@ export class Shape {
   @Column('varchar')
   title: string;
 
+  @Column({ default: false, nullable: true })
+  meter: string;
+
   @OneToMany(() => QrBase, (qrBase) => qrBase.shape, { onDelete: 'SET NULL' })
   qrBase: QrBase[];
 
