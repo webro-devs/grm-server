@@ -184,7 +184,7 @@ export class TransferService {
   }
 
   async rejectProduct(id: string, userId: string) {
-    const transfer = await this.transferRepository.findOne({ where: { id }, relations: { product: true } });
+    const transfer = await this.transferRepository.findOne({ where: { id }, relations: { product: { filial: true} } });
     if (transfer.isChecked) {
       throw new BadRequestException('Transfer already ended!');
     }
@@ -194,6 +194,6 @@ export class TransferService {
 
     await this.transferRepository.update(id, { cashier, progres: 'Rejected', isChecked: true });
 
-    await this.actionService.create({ ...transfer, progres: 'Rejected' }, cashier.id, cashier.filial.id, 'transfer_reject');
+    await this.actionService.create({ ...transfer, progres: 'Rejected' }, cashier.id, cashier.filial.id || transfer.product.filial.id, 'transfer_reject');
   }
 }
