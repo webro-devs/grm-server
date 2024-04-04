@@ -194,6 +194,6 @@ export class TransferService {
 
     await this.transferRepository.update(id, { cashier, progres: 'Rejected', isChecked: true });
 
-    await this.actionService.create({ ...transfer, progres: 'Rejected' }, cashier.id, cashier.filial.id || transfer.product.filial.id, 'transfer_reject');
+    await this.actionService.create({ ...transfer, progres: 'Rejected' }, cashier?.id, cashier?.filial?.id || transfer.product.filial.id, 'transfer_reject');
   }
 }
