@@ -12,7 +12,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation, OpenAPIObject } from '@nestjs/swagger';
 
 import { CreateCollectionDto, UpdateCollectionDto, TrCollectionDto } from './dto';
 import { Collection } from './collection.entity';

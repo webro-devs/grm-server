@@ -12,7 +12,6 @@ import { FileService } from '../file/file.service';
 import { ColorService } from '../color/color.service';
 
 Injectable();
-
 export class ProductService {
   constructor(
     @InjectRepository(Product)

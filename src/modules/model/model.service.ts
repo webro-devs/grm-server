@@ -1,6 +1,6 @@
-import { NotFoundException, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { FindOptionsWhere, Repository } from 'typeorm';
 
 import { Model } from './model.entity';
@@ -106,8 +106,11 @@ export class ModelService {
     return response;
   }
 
-  async findOrCreate(collection, title) {
-    const response = await this.modelRepository.findOne({ where: { title } });
+  async findOrCreate(collection: string, title: string) {
+    const response = await this.modelRepository.findOne({
+      where: { title, collection: { id: collection } },
+      relations: { collection: true },
+    });
 
     if (!response) {
       const value = { title, collection };
