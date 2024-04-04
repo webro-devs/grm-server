@@ -42,7 +42,7 @@ class TransferQueryParserMiddleware implements NestMiddleware {
       where.progres = type
     }
 
-    if (filialId) {
+    if (filialId && !type) {
       where = [where, { from: { id: filialId } }, { to: { id: filialId } }];
     }
 

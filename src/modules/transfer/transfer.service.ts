@@ -30,8 +30,10 @@ export class TransferService {
 
     if (where.progres == 'In') {
       where.to = Equal(user.filial.id);
+      where.filial && delete where.filial
     } else if (where.progres == 'Out') {
       where.from = Equal(user.filial.id);
+      where.filial && delete where.filial
     }
     where?.progres && delete where?.progres;
     return paginate<Transfer>(this.transferRepository, options, {
