@@ -1,7 +1,7 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { DataSource, EntityManager, Equal, FindOptionsWhere, Not, Repository } from 'typeorm';
+import { DataSource, EntityManager, Equal, FindOptionsWhere, Repository } from 'typeorm';
 import { CreateTransferDto, UpdateTransferDto } from './dto';
 
 import { Transfer } from './transfer.entity';
@@ -118,10 +118,19 @@ export class TransferService {
   async takeProduct(id: string, count: number) {
     const product = await this.productService.getById(id);
 
-    if (count > product.count) {
-      throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
+    if (product.shape.toLowerCase() === 'rulo') {
+      count /= 100;
+      if (product.y < count) {
+        throw new HttpException('Not enough meter product', HttpStatus.BAD_REQUEST);
+      }
+      product.y -= count;
+    } else {
+      if (count > product.count) {
+        throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
+      }
+      product.count -= count;
     }
-    product.count -= count;
+
 
     product.setTotalSize();
     await this.connection.transaction(async (manager: EntityManager) => {
@@ -132,7 +141,12 @@ export class TransferService {
   async giveProduct(id: string, count: number) {
     const product = await this.productService.getById(id);
 
-    product.count += count;
+    if (product.shape.toLowerCase() === 'rulo') {
+      count /= 100;
+      product.y += count;
+    } else {
+      product.count += count;
+    }
 
     product.setTotalSize();
     await this.connection.transaction(async (manager: EntityManager) => {
@@ -146,14 +160,14 @@ export class TransferService {
       relations: { product: { color: true, model: true, partiya: true }, transferer: true, to: true },
     });
     if (transfer.isChecked) {
-      throw new BadRequestException('Transfer already ended!');
+      throw new BadRequestException('Transfer already checked!');
     }
 
     const product = transfer.product;
     const newProduct: CreateProductDto = {
       code: product?.code || null,
       color: product.color.id,
-      count: transfer.count || 1,
+      count: product.shape.toLowerCase() === 'rulo' ? product.count : transfer.count || 1,
       filial: transfer.to.id,
       imgUrl: product.imgUrl,
       model: product.model.id,
@@ -166,7 +180,7 @@ export class TransferService {
       otherImgs: product.otherImgs,
       totalSize: product.x * product.y * transfer.count,
       x: product.x,
-      y: product.y,
+      y: product.shape.toLowerCase() === 'rulo' ? transfer.count / 100 : product.y,
       partiya: product.partiya.id,
       secondPrice: product.secondPrice,
       country: product.country,

@@ -13,6 +13,8 @@ ${
        p."secondPrice",
        p.count,
        p.price,
+       p."priceMeter",
+       p."comingPrice",
        to_json(c) AS color,
        json_build_object('id', c.id, 'title', m.title, 'collection', to_json(col)) AS model,
        to_json(f) AS filial`
