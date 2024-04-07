@@ -12,7 +12,7 @@ import {
   Query,
   Req,
 } from '@nestjs/common';
-import { UpdateResult } from 'typeorm';
+import { In, UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from './dto';
@@ -48,6 +48,20 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   async getDataInternetShop(@Query() query: ProductQueryDto, @Route() route: string, @Req() req) {
     req.where.isInternetShop = true;
+
+    if (query?.modelId && typeof query?.modelId == 'string' && typeof JSON.parse(query?.modelId) == 'object') {
+      req.where.model = { title: In(JSON.parse(query.modelId)) };
+    }
+
+    if (query?.collectionId && typeof query.collectionId == 'string' && typeof JSON.parse(query?.collectionId) == 'object') {
+      if(req.where.model){
+        req.where.model.collection = { title: In(JSON.parse(query.collectionId)) };
+      } else {
+        req.where.model = {
+          collection: { title: In(JSON.parse(query.collectionId)) }
+        }
+      }
+    }
     return await this.productService.getAll({ limit: query.limit, page: query.page, route }, req.where, req.user);
   }
   @Public()
