@@ -227,19 +227,13 @@ export class ProductService {
   async create(value: CreateProductDto[]) {
     value = this.setXy(value);
 
-    const data = await this.productRepository
+    return await this.productRepository
       .createQueryBuilder()
       .insert()
       .into(Product)
       .values(value as unknown as Product)
       .returning(['id', 'model', 'color'])
       .execute();
-
-    data.identifiers.forEach(async (element) => {
-      this.getOne(element.id);
-    });
-
-    return data;
   }
 
   setXy(value: CreateProductDto[]): CreateProductDto[] {

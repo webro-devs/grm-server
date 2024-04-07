@@ -1,6 +1,6 @@
-import { NotFoundException, Injectable } from '@nestjs/common';
-import { FindOptionsWhere, Repository, ILike } from 'typeorm';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { ILike, Repository } from 'typeorm';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as XLSX from 'xlsx';
 
@@ -55,7 +55,7 @@ export class QrBaseService {
   }
 
   async getOne(id: string) {
-    const data = await this.qrBaseRepository
+    return await this.qrBaseRepository
       .findOne({
         where: { id },
         relations: {
@@ -71,8 +71,6 @@ export class QrBaseService {
       .catch(() => {
         throw new NotFoundException('Qr-code not found');
       });
-
-    return data;
   }
 
   async getOneByCode(code: string) {
@@ -97,7 +95,7 @@ export class QrBaseService {
   }
 
   async getOneCode(code) {
-    const data = await this.qrBaseRepository.find({
+    return await this.qrBaseRepository.find({
       where: { code },
       relations: {
         model: true,
@@ -109,37 +107,31 @@ export class QrBaseService {
         country: true,
       },
     });
-
-    return data;
   }
 
   async deleteOne(id: string) {
-    const response = await this.qrBaseRepository.delete(id).catch(() => {
+    return await this.qrBaseRepository.delete(id).catch(() => {
       throw new NotFoundException('Qr-code not found');
     });
-    return response;
   }
 
   async change(value: UpdateQrBaseDto, id: string) {
-    const response = await this.qrBaseRepository
+    return await this.qrBaseRepository
       .createQueryBuilder()
       .update()
       .set(value as unknown as QrBase)
       .where('id = :id', { id })
       .execute();
-    return response;
   }
 
   async create(value: CreateQrBaseDto) {
-    const data = await this.qrBaseRepository
+    return await this.qrBaseRepository
       .createQueryBuilder()
       .insert()
       .into(QrBase)
       .values(value as unknown as QrBase)
       .returning('id')
       .execute();
-
-    return data;
   }
 
   async findOrCreate(codes: CreateQrBaseDto[]) {

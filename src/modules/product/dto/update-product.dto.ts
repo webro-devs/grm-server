@@ -71,6 +71,10 @@ class UpdateProductDto {
   @IsNumber()
   secondPrice: number;
 
+  @IsOptional()
+  @IsNumber()
+  priceMeter: number;
+
   @ApiProperty({
     description: `Carpet coming price`,
     example: 100,
