@@ -270,9 +270,16 @@ export class ProductService {
     }
   }
 
-  async getRemainingProductsForAllFilial() {
+  async getRemainingProductsForAllFilial(query?) {
     const result = [];
     const allFilial = await this.filialService.getAllFilial();
+
+    if(query.filial){
+      const remail =  await this.remainingProducts({ filial: { id: query.filial } });
+      result.push(remail);
+      return result;
+    }
+
     for (let data of allFilial) {
       const remain = await this.remainingProducts({ filial: { id: data.id } });
       result.push({ ...data, ...remain });

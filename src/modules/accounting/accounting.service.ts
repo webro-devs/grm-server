@@ -98,8 +98,8 @@ export class AccountingService {
     return result;
   }
 
-  async getRemainingProducts() {
-    const data = await this.productService.getRemainingProductsForAllFilial();
+  async getRemainingProducts(query) {
+    const data = await this.productService.getRemainingProductsForAllFilial(query);
     const remainingSize = data.map((p) => p.remainingSize).reduce((a, b) => a + b);
     const remainingSum = data.map((p) => p.remainingSum).reduce((a, b) => a + b);
     return { remainingSize, remainingSum };

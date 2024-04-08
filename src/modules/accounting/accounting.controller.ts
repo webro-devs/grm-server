@@ -71,9 +71,9 @@ export class AccountingController {
     description: 'Remaining products returned successfully!',
   })
   @HttpCode(HttpStatus.OK)
-  async getRemainingProducts() {
+  async getRemainingProducts(@Query() query) {
     try {
-      return await this.accountingService.getRemainingProducts();
+      return await this.accountingService.getRemainingProducts(query);
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
