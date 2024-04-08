@@ -78,7 +78,7 @@ export class ProductService {
   }
 
   async getOne(id: string) {
-    const data = await this.productRepository
+    return this.productRepository
       .findOne({
         where: { id },
         relations: {
@@ -92,10 +92,6 @@ export class ProductService {
       .catch(() => {
         throw new NotFoundException('Product not found');
       });
-
-    await this.productRepository.save(data);
-
-    return data;
   }
 
   async getBaza({ limit, page, route }) {

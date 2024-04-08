@@ -147,7 +147,7 @@ export class ProductController {
   })
   @HttpCode(HttpStatus.OK)
   async getMe(@Param('id') id: string): Promise<Product> {
-    return this.productService.getOne(id);
+    return await this.productService.getOne(id);
   }
 
   @Post('/')
