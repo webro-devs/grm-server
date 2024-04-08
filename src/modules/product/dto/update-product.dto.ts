@@ -23,6 +23,10 @@ class UpdateProductDto {
   @IsString()
   country: string;
 
+  @IsOptional()
+  @IsString()
+  collection: string;
+
   @ApiProperty({
     description: `Carpet color`,
     example: 'yellow',

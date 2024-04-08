@@ -185,6 +185,9 @@ export class ProductService {
   }
 
   async change(value: UpdateProductDto, id: string) {
+    if(value?.collection){
+      delete value.collection
+    }
     if (value?.imgUrl) {
       const product = await this.getById(id);
       if ( (product?.model || value?.model) && (product.color || value.color) && (product.shape || value.shape)) {
