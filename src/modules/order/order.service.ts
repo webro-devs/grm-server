@@ -228,8 +228,8 @@ export class OrderService {
       product.y = product.y - cost;
       product.setTotalSize();
       product.calculateProductPrice();
-      additionalProfitSum = (value.price - product.priceMeter) * cost * product.y;
-      netProfitSum = (product.priceMeter - product.comingPrice) * cost * product.y;
+      additionalProfitSum = (value.price - product.priceMeter) * cost * product.x;
+      netProfitSum = (product.priceMeter - product.comingPrice) * cost * product.x;
       value.kv = cost;
     } else {
       if (product.count < value.x) throw new BadRequestException('Not enough product count!');
