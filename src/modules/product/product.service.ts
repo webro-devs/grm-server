@@ -274,7 +274,7 @@ export class ProductService {
     const result = [];
     const allFilial = await this.filialService.getAllFilial();
 
-    if(query.filial){
+    if(query?.filial){
       const remail =  await this.remainingProducts({ filial: { id: query.filial } });
       result.push(remail);
       return result;
