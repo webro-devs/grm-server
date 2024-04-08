@@ -117,7 +117,7 @@ export class CollectionService {
     if (query?.filial) {
       data = await this.collectionRepository.find({
         relations: { model: { products: { filial: true } } },
-        where: query?.filial ? { model: { products: { filial: { id: query.filial }, count: MoreThan(0) } } } : {},
+        where: query?.filial ? { ...( query.collection && { id: query.collection }), model: { products: { filial: { id: query.filial }, count: MoreThan(0) } } } : {},
       });
     } else if (query?.collection) {
       data = await this.collectionRepository.find({
