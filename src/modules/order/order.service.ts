@@ -244,15 +244,13 @@ export class OrderService {
     await this.saveRepo(product);
 
     const data = { ...value, seller: id, additionalProfitSum, netProfitSum, kassa: value.kassa || kassa.id };
-    const response = await this.orderRepository
+    return await this.orderRepository
       .createQueryBuilder()
       .insert()
       .into(Order)
       .values(data as unknown as Order)
       .returning('id')
       .execute();
-
-    return response;
   }
 
   async checkOrder(id: string, casher: string) {
@@ -266,7 +264,7 @@ export class OrderService {
     kassa.totalSum = kassa.totalSum + order.price;
 
     if (order.product.isMetric) {
-      kassa.totalSize = kassa.totalSize + order.x * order.product.y;
+      kassa.totalSize = kassa.totalSize + order.x * order.product.x;
     } else {
       kassa.totalSize = kassa.totalSize + order.product.x * order.product.y;
     }
