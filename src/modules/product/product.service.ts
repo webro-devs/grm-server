@@ -92,7 +92,6 @@ export class ProductService {
       .catch(() => {
         throw new NotFoundException('Product not found');
       });
-    data.setSlug();
 
     await this.productRepository.save(data);
 
