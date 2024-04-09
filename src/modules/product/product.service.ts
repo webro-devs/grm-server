@@ -183,6 +183,15 @@ export class ProductService {
     if(value?.collection){
       delete value.collection
     }
+
+    if(value?.size){
+      const xy = sizeParser(value.size);
+      value.x = xy[0] / 100;
+      value.y = xy[1] / 100;
+      value.totalSize = (eval(value.size.match(/\d+\.*\d*/g).join('*')) / 10000) * value.count;
+      value.price = Number(value.priceMeter) * (value.x * value.y);
+    }
+
     if (value?.imgUrl) {
       const product = await this.getById(id);
       if ( (product?.model || value?.model) && (product.color || value.color) && (product.shape || value.shape)) {
@@ -212,14 +221,12 @@ export class ProductService {
   }
 
   async changeInternetShopProduct(value: UpdateInternetShopProductDto, id: string) {
-    const response = await this.productRepository
+    return await this.productRepository
       .createQueryBuilder()
       .update()
       .set(value as unknown as Product)
       .where('id = :id', { id })
       .execute();
-
-    return response;
   }
 
   async create(value: CreateProductDto[]) {

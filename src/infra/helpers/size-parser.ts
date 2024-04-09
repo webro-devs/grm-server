@@ -1,3 +1,5 @@
+import { BadRequestException } from '@nestjs/common';
+
 const sizeParser = (item) => {
   const regex = /\d+\.*\d*/g;
   const matches = item.match(regex);

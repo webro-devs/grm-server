@@ -158,6 +158,15 @@ class UpdateProductDto {
   @IsOptional()
   @IsString()
   internetInfo: string;
+
+  @IsOptional()
+  x: number;
+
+  @IsOptional()
+  y: number;
+
+  @IsOptional()
+  totalSize: number;
 }
 
 export default UpdateProductDto;
