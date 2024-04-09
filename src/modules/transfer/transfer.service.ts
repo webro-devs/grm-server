@@ -23,17 +23,22 @@ export class TransferService {
     private readonly filialService: FilialService,
   ) {}
 
-  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Transfer>, user?): Promise<Pagination<Transfer>> {
+  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Transfer & {
+    to: string,
+    from: string,
+    type: string
+  }>, user?): Promise<Pagination<Transfer>> {
     if(!user?.filial){
       user.filial = await this.filialService.findOrCreateFilialByTitle('baza');
     }
 
-    if (where.progres == 'In') {
+    if (where.type == 'In') {
       where.to = Equal(user.filial.id);
-    } else if (where.progres == 'Out') {
+    } else if (where.type == 'Out') {
       where.from = Equal(user.filial.id);
     }
-    where?.progres && delete where?.progres;
+    where?.type && delete where?.type;
+
     return paginate<Transfer>(this.transferRepository, options, {
       relations: {
         from: true,

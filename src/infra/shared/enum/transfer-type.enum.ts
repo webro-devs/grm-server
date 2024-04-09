@@ -4,4 +4,4 @@ enum OrderEnum {
   nothing = ''
 }
 
-export default OrderEnum;
+export default OrderEnum ;

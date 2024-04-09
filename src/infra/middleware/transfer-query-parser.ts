@@ -1,6 +1,6 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Response, NextFunction } from 'express';
-import { Between, ILike, In, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { BadRequestException, Injectable, NestMiddleware } from '@nestjs/common';
+import { NextFunction, Response } from 'express';
+import { Between, In, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { TransferQueryDto } from '../shared/dto';
 
 @Injectable()
@@ -8,7 +8,7 @@ class TransferQueryParserMiddleware implements NestMiddleware {
   use(req, res: Response, next: NextFunction) {
     let where: any = {};
     let relations: any = {};
-    const { startDate, endDate, size, collectionId, filialId, type }: TransferQueryDto = req.query;
+    const { startDate, endDate, size, collectionId, from, type, to, progress }: TransferQueryDto = req.query;
 
     if (startDate && endDate) {
       where = {
@@ -38,12 +38,25 @@ class TransferQueryParserMiddleware implements NestMiddleware {
       };
     }
 
-    if(type){
-      where.progres = type
+    if (progress) {
+      try {
+        const transformedData = JSON.parse(progress);
+        where.progres = In(transformedData);
+      } catch (e) {
+        throw new BadRequestException(e.message);
+      }
     }
 
-    if (filialId && !type) {
-      where = [where, { from: { id: filialId } }, { to: { id: filialId } }];
+    if(type){
+      where.type = type;
+    }
+
+    if (from) {
+      where.from = from;
+    }
+
+    if (to) {
+      where.to = to;
     }
 
     req.where = where;
