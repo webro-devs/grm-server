@@ -5,6 +5,7 @@ import { FindOptionsWhere, MoreThan, MoreThanOrEqual, Repository } from 'typeorm
 
 import { Collection } from './collection.entity';
 import { CreateCollectionDto, UpdateCollectionDto } from './dto';
+import { prodSearch } from '../product/utils';
 
 Injectable();
 export class CollectionService {
@@ -183,15 +184,51 @@ export class CollectionService {
     page = 1,
     collection,
     filial,
-                                                code,
+                                                search,
+                                                _user,
   }): Promise<Pagination<Collection>> {
+    if (search) {
+      const products = (await this.collectionRepository.query(prodSearch({
+        text: search,
+        filialId: filial,
+        base: _user?.role && _user?.role > 2,
+        offset: (+page - 1) * +limit,
+        limit: limit,
+        total: false,
+        shop: false,
+      }))) || [];
+
+      const total = (await this.collectionRepository.query(prodSearch({
+        text: search,
+        filialId: filial,
+        base: _user?.role && _user?.role > 2,
+        offset: (+page - 1) * +limit,
+        limit: limit,
+        total: true,
+        shop: false,
+      }))) || [];
+
+      return {
+        items: products,
+        meta: {
+          'totalItems': +total[0].count,
+          'itemCount': products.length,
+          'itemsPerPage': +limit,
+          'totalPages': Math.ceil(+total[0].count / +limit),
+          'currentPage': +page,
+        },
+      };
+
+
+    }
+
     const where = {
       ...(collection && { id: collection }),
       ...(filial && {
         model: {
           products: {
             filial: { id: filial },
-            count: MoreThanOrEqual(1), ...(code && { code }),
+            count: MoreThanOrEqual(1),
           },
         },
       }),
@@ -202,7 +239,7 @@ export class CollectionService {
       { limit, page },
       {
         relations: { model: { products: { filial: true, color: true, model: true } } },
-        where: { model: { products: { count: MoreThanOrEqual(1) } }, ...where },
+        where,
       },
     );
 

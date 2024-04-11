@@ -59,7 +59,7 @@ class PaginationCollectionDto {
   })
   @IsOptional()
   @IsString()
-  readonly code: string;
+  readonly search: string;
 
   constructor() {
     this.limit = this.limit ? this.limit : 100;

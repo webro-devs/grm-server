@@ -32,7 +32,7 @@ export class ProductService {
       const products = (await this.productRepository.query(prodSearch({
         text: where['search'],
         filialId: where?.filial,
-        base: _user?.role && _user?.role > 2 ? true : false,
+        base: _user?.role && _user?.role > 2,
         offset: (+options.page - 1) * +options.limit,
         limit: options.limit,
         total: false,
@@ -42,7 +42,7 @@ export class ProductService {
       const total = (await this.productRepository.query(prodSearch({
         text: where['search'],
         filialId: where?.filial,
-        base: _user?.role && _user?.role > 2 ? true : false,
+        base: _user?.role && _user?.role > 2,
         offset: (+options.page - 1) * +options.limit,
         limit: options.limit,
         total: true,
@@ -60,7 +60,7 @@ export class ProductService {
         },
       };
     }
-    console.log({ ...(_user && _user?.role > 2 ? { ...(where.filial && { id: where.filial['id'] }) } : { filial: { title: Not('baza'), ...(where.filial && { id: where.filial['id'] }) } }) });
+
     return paginate<Product>(this.productRepository, options, {
       relations: {
         model: {

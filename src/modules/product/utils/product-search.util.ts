@@ -35,6 +35,7 @@ WHERE (SELECT COUNT(*)
              '%' || unique_words.word || '%') = (SELECT COUNT(*)
                                                  FROM (SELECT LOWER(word) AS word
                                                        FROM (SELECT REGEXP_SPLIT_TO_TABLE(LOWER('%${text}%'), ' ') AS word) AS words) AS unique_words)
+  and p.count > 0
   ${filialId ? `and f.id = '${filialId}'` : ''} 
   ${ base ? '' : `and f.title != 'baza'`}
   ${ shop == 'true' || shop == 'false' ? `and p."isInternetShop" = ${shop}` : '' }

@@ -1,20 +1,8 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  HttpStatus,
-  HttpException,
-  Delete,
-  Patch,
-  Param,
-  Get,
-  Query,
-} from '@nestjs/common';
-import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation, OpenAPIObject } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, Req } from '@nestjs/common';
+import { UpdateResult } from 'typeorm';
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { CreateCollectionDto, UpdateCollectionDto, TrCollectionDto } from './dto';
+import { CreateCollectionDto, TrCollectionDto, UpdateCollectionDto } from './dto';
 import { Collection } from './collection.entity';
 import { CollectionService } from './collection.service';
 import { PaginationDto } from '../../infra/shared/dto';
@@ -41,8 +29,8 @@ export class CollectionController {
     description: 'The collections were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getCollectionTransfer(@Route() route: string, @Query() query: TrCollectionDto) {
-    return await this.collectionService.remainingProductsByCollectionTransfer({ ...query });
+  async getCollectionTransfer(@Route() route: string, @Query() query: TrCollectionDto, @Req() req: any) {
+    return await this.collectionService.remainingProductsByCollectionTransfer({ ...query, _user: req.user });
   }
 
   @Get('/internet-shop')
