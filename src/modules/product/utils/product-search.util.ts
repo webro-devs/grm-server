@@ -13,6 +13,8 @@ ${
        p."secondPrice",
        p.count,
        p.price,
+       p.x,
+       p.y,
        p."priceMeter",
        p."comingPrice",
        to_json(c) AS color,
