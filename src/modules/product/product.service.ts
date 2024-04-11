@@ -29,6 +29,7 @@ export class ProductService {
     _user?: { role: number; },
   ) {
     if (where['fields']) {
+      console.log(where);
       const products = (await this.productRepository.query(prodSearch({
         text: where['search'],
         filialId: where?.filial,
@@ -36,9 +37,10 @@ export class ProductService {
         offset: (+options.page - 1) * +options.limit,
         limit: options.limit,
         total: false,
-        shop: where?.isInternetShop
+        shop: where?.isInternetShop,
+        collection: where.model?.['collection']?.id
       }))) || [];
-
+      console.log(where);
       const total = (await this.productRepository.query(prodSearch({
         text: where['search'],
         filialId: where?.filial,
@@ -46,7 +48,8 @@ export class ProductService {
         offset: (+options.page - 1) * +options.limit,
         limit: options.limit,
         total: true,
-        shop: where?.isInternetShop
+        shop: where?.isInternetShop,
+        collection: where.model?.['collection']?.id
       }))) || [];
 
       return {

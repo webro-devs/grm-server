@@ -196,6 +196,7 @@ export class CollectionService {
         limit: limit,
         total: false,
         shop: false,
+        collection
       }))) || [];
 
       const total = (await this.collectionRepository.query(prodSearch({
@@ -206,6 +207,7 @@ export class CollectionService {
         limit: limit,
         total: true,
         shop: false,
+        collection
       }))) || [];
 
       return {

@@ -1,4 +1,4 @@
-const search = ({ text, filialId, base, limit, offset, total, shop }) => `
+const search = ({ text, filialId, base, limit, offset, total, shop, collection }) => `
 SELECT 
 ${ 
        total ? 'count(*)' : 
@@ -13,8 +13,8 @@ ${
        p."secondPrice",
        p.count,
        p.price,
-       p.x::numeric,
-       p.y::numeric,
+       p.x as x,
+       p.y as y,
        p."priceMeter",
        p."comingPrice",
        to_json(c) AS color,
@@ -39,6 +39,7 @@ WHERE (SELECT COUNT(*)
                                                        FROM (SELECT REGEXP_SPLIT_TO_TABLE(LOWER('%${text}%'), ' ') AS word) AS words) AS unique_words)
   and p.count > 0
   ${filialId ? `and f.id = '${filialId}'` : ''} 
+  ${collection ? `and col.id = '${collection}'` : ''} 
   ${ base ? '' : `and f.title != 'baza'`}
   ${ shop == 'true' || shop == 'false' ? `and p."isInternetShop" = ${shop}` : '' }
   ${total ? '' : `offset ${offset} limit ${limit}`};

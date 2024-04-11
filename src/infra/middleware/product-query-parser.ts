@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Response, NextFunction } from 'express';
-import { Between, Equal, ILike, In, LessThanOrEqual, Like, MoreThanOrEqual } from 'typeorm';
+import { NextFunction, Response } from 'express';
+import { Between, In, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { ProductQueryDto } from '../shared/dto';
 
 @Injectable()
@@ -86,9 +86,11 @@ class ProductQueryParserMiddleware implements NestMiddleware {
     }
 
     if (collectionId) {
-      where.model = {
-        collection: {
-          id: collectionId,
+      where = {
+        model: {
+          collection: {
+            id: collectionId,
+          },
         },
       };
     }
@@ -125,6 +127,7 @@ class ProductQueryParserMiddleware implements NestMiddleware {
         search,
         fields: true,
         isInternetShop: isInternetShop || null,
+        model: { collection: { id: collectionId } },
       };
     }
 
