@@ -226,17 +226,10 @@ export class CollectionService {
       ...(collection && { id: collection }),
       model: {
         products: {
+          ...(filial && { filial: { id: filial } }),
           count: MoreThanOrEqual(1),
         },
       },
-      ...(filial && {
-        model: {
-          products: {
-            filial: { id: filial },
-            count: MoreThanOrEqual(1),
-          },
-        },
-      }),
     };
 
     const data2 = await paginate<Collection>(
@@ -261,8 +254,8 @@ export class CollectionService {
         remainingCount += items.length ? items.map((p) => p.count).reduce((a, b) => a + b) : 0;
         collection && products.push(...items);
       }
-      console.log(data2);
-      collection ? products.length && result.push(products) : result.push({
+
+      collection ? products.length && (result = products) : result.push({
         remainingCount,
         remainingSize,
         remainingSum,
