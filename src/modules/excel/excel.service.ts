@@ -413,7 +413,6 @@ export class ExcelService {
 
   setProperty(products, filialId, country = 'Not found') {
     try {
-      console.log(products);
       for (let product of products) {
         if (!product?.size?.title) {
           throw new BadRequestException('Product size must be exist!');

@@ -30,6 +30,7 @@ export class OrderService {
     @Inject(forwardRef(() => GRMGateway))
     private readonly grmGetaway: GRMGateway,
     private readonly productService: ProductService,
+    @Inject(forwardRef(()=> KassaService))
     private readonly kassaService: KassaService,
     private readonly actionService: ActionService,
     private readonly cashFlowService: CashflowService,

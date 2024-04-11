@@ -187,7 +187,8 @@ export class KassaController {
     }
 
     await this.kassaService.closeKassa(id, req.user);
-    await this.kassaService.create({ filial: user.filial.id });
+    const _kassa = await this.kassaService.create({ filial: user.filial.id });
+    await this.kassaService.updateProgressOrdersNewKassa(_kassa?.['raw'][0].id);
     return await this.kassaService.GetOpenKassa(req.user.filial.id);
   }
 

@@ -1,20 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { FindOptionsWhere, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { EntityManager, FindOptionsWhere, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 
 import { Kassa } from './kassa.entity';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
 import { FilialService } from '../filial/filial.service';
 import { ActionService } from '../action/action.service';
+import { Order } from '../order/order.entity';
 
 Injectable();
 export class KassaService {
   constructor(
     @InjectRepository(Kassa)
     private readonly kassaRepository: Repository<Kassa>,
-    private readonly filialService: FilialService,
     private readonly actionService: ActionService,
+    private readonly filialService: FilialService,
+    private readonly entityManager: EntityManager,
+
   ) {}
 
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Kassa>): Promise<Pagination<Kassa>> {
@@ -33,7 +36,6 @@ export class KassaService {
     if (startDate) {
       where.startDate = MoreThanOrEqual(startDate);
     }
-    console.log(where);
 
     return paginate<Kassa>(this.kassaRepository, options, {
       relations: {
@@ -127,7 +129,7 @@ export class KassaService {
   async create(value: CreateKassaDto) {
     const check = await this.GetOpenKassa(value.filial);
     if (check) {
-      return false;
+      return { raw: [{ id: check.id }] };
     }
 
     const data = this.kassaRepository
@@ -302,5 +304,28 @@ export class KassaService {
     const sortedArray = mergedArray.sort((b, a) => a.date.getTime() - b.date.getTime());
 
     return sortedArray;
+  }
+
+  async updateProgressOrdersNewKassa(id: string) {
+    // Find the kassa with the provided id along with its related filial
+    const kassa = await this.kassaRepository.findOne({ where: { id }, relations: { filial: true } });
+
+    // Subquery to select orders that need to be updated
+    const subQuery = this.entityManager
+      .createQueryBuilder()
+      .select('order.id')
+      .from(Order, 'order')
+      .innerJoin('order.kassa', 'kassa')
+      .where('kassa.filial.id = :filialId', { filialId: kassa.filial.id })
+      .andWhere('order.isActive = :status', { status: 'progress' });
+
+    // Update orders based on the selected orders from the subquery
+    return await this.entityManager
+      .createQueryBuilder()
+      .update(Order)
+      .set({ kassa: kassa })
+      .where('id IN (' + subQuery.getQuery() + ')')
+      .setParameters(subQuery.getParameters())
+      .execute();
   }
 }

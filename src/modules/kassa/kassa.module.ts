@@ -1,4 +1,5 @@
 import {
+  forwardRef,
   MiddlewareConsumer,
   Module,
   NestModule,
@@ -12,6 +13,7 @@ import { KassaController } from './kassa.controller';
 import { KassaQueryParserMiddleware } from '../../infra/middleware';
 import { FilialModule } from '../filial/filial.module';
 import { ActionModule } from '../action/action.module';
+import { OrderModule } from '../order/order.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Kassa]), FilialModule, ActionModule],

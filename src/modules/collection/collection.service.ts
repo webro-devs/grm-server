@@ -224,6 +224,11 @@ export class CollectionService {
 
     const where = {
       ...(collection && { id: collection }),
+      model: {
+        products: {
+          count: MoreThanOrEqual(1),
+        },
+      },
       ...(filial && {
         model: {
           products: {
@@ -256,7 +261,8 @@ export class CollectionService {
         remainingCount += items.length ? items.map((p) => p.count).reduce((a, b) => a + b) : 0;
         collection && products.push(...items);
       }
-      result.push({
+      console.log(data2);
+      collection ? products.length && result.push(products) : result.push({
         remainingCount,
         remainingSize,
         remainingSum,

@@ -12,7 +12,6 @@ import { OrderQueryDto } from 'src/infra/shared/dto';
 Injectable();
 export class AccountingService {
   constructor(
-    @Inject(forwardRef(() => KassaService))
     private readonly kassaService: KassaService,
     private readonly filialService: FilialService,
     private readonly productService: ProductService,
