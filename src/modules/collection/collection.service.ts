@@ -236,7 +236,7 @@ export class CollectionService {
       this.collectionRepository,
       { limit, page },
       {
-        relations: { model: { products: { filial: true, color: true, model: true } } },
+        relations: { model: { products: { filial: true, color: true, model: { collection: true } } } },
         where,
       },
     );
@@ -254,15 +254,18 @@ export class CollectionService {
         remainingCount += items.length ? items.map((p) => p.count).reduce((a, b) => a + b) : 0;
         collection && products.push(...items);
       }
-
+      if (collection) {
+        // @ts-ignore
+        data2.meta.totalItems = products.length;
+      }
       collection ? products.length && (result = products) : result.push({
         remainingCount,
         remainingSize,
         remainingSum,
         title: data2.items[i].title,
         id: data2.items[i].id,
-        ...(collection && { products }),
       });
+
     }
 
     return {
