@@ -41,7 +41,9 @@ class TransferQueryParserMiddleware implements NestMiddleware {
     if (progress) {
       try {
         const transformedData = progress.split('_');
-        where.progres = In(transformedData);
+        if (transformedData.length) {
+          where.progres = In(transformedData);
+        }
       } catch (e) {
         throw new BadRequestException(e.message);
       }
