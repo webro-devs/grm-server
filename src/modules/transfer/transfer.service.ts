@@ -191,7 +191,7 @@ export class TransferService {
       country: product.country,
     };
 
-    const res = await this.productService.create([newProduct]);
+    const res = await this.productService.create([newProduct], true);
 
     const cashier = await this.userService.getOne(userId);
 

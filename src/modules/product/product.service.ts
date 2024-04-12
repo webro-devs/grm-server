@@ -232,8 +232,12 @@ export class ProductService {
       .execute();
   }
 
-  async create(value: CreateProductDto[]) {
+  async create(value: CreateProductDto[], type = false) {
+    let y = value[0].y
     value = this.setXy(value);
+    if(type){
+      value[0].y = y;
+    }
 
     return await this.productRepository
       .createQueryBuilder()
