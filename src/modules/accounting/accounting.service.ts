@@ -1,4 +1,4 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { KassaService } from '../kassa/kassa.service';
 import { FilialService } from '../filial/filial.service';
 import { ProductService } from '../product/product.service';
@@ -7,12 +7,12 @@ import { ClientOrderService } from '../client-order/client-order.service';
 import { paginateArray } from 'src/infra/helpers';
 import { EntityManager } from 'typeorm';
 import { OrderCashflowDto } from './dto';
-import { OrderQueryDto } from 'src/infra/shared/dto';
 
 Injectable();
 export class AccountingService {
   constructor(
     private readonly kassaService: KassaService,
+    @Inject(forwardRef(()=> FilialService))
     private readonly filialService: FilialService,
     private readonly productService: ProductService,
     private readonly collectionService: CollectionService,

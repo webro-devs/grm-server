@@ -96,7 +96,6 @@ class TransferQueryDto {
     required: false
   })
   @IsOptional()
-  @Transform(parseTextToArray)
   progress: string;
 
   @ApiProperty({
