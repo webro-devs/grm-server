@@ -73,6 +73,14 @@ class TransferQueryDto {
   to: string;
 
   @ApiProperty({
+    description: `to filial id`,
+    example: 'uuid',
+  })
+  @IsOptional()
+  @IsString()
+  filial: string;
+
+  @ApiProperty({
     description: `type`,
     example: 'In or Out',
     required: false

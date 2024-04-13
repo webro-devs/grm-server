@@ -1,7 +1,7 @@
 import { Telegraf } from 'telegraf';
 
 const token = process.env.BOT_TOKEN;
-const app = new Telegraf(token);
+const app = new Telegraf(token, {});
 
 const telegram = async ({
   imgUrl,
@@ -19,6 +19,7 @@ const telegram = async ({
   landmark,
 }) => {
   const chatId = process.env.CHATID;
+  console.log(chatId);
   const text = `😍 Наши необычные ковры добавят интерьеру цвета, характер и современности вашего дома !)
 
   🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
@@ -53,7 +54,7 @@ const telegram = async ({
       },
     ));
 
-  if (!imgUrl) app.telegram.sendMessage(chatId, text, { parse_mode: 'HTML' });
+  if (!imgUrl) await app.telegram.sendMessage(-1001922756052, text, { parse_mode: 'HTML' });
 };
 
 export default telegram;

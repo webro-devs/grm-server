@@ -8,7 +8,7 @@ class TransferQueryParserMiddleware implements NestMiddleware {
   use(req, res: Response, next: NextFunction) {
     let where: any = {};
     let relations: any = {};
-    const { startDate, endDate, size, collectionId, from, type, to, progress }: TransferQueryDto = req.query;
+    const { startDate, endDate, size, collectionId, from, type, to, progress, filial }: TransferQueryDto = req.query;
 
     if (startDate && endDate) {
       where = {
@@ -36,6 +36,10 @@ class TransferQueryParserMiddleware implements NestMiddleware {
           },
         },
       };
+    }
+
+    if(filial){
+      where.filial = filial;
     }
 
     if (progress) {

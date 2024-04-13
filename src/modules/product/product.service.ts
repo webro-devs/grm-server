@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Not, Repository } from 'typeorm';
+import { FindOptionsWhere, MoreThan, Not, Repository } from 'typeorm';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { Product } from './product.entity';
 import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from './dto';
@@ -74,6 +74,8 @@ export class ProductService {
       },
       where: {
         ...where,
+        y: MoreThan(0),
+        count: MoreThan(0),
         ...(_user && _user?.role > 2 ? { ...(where.filial && { filial: { id: where.filial['id'] } }) } : { filial: { title: Not('baza'), ...(where.filial && { id: where.filial['id'] }) } }),
       },
       order: { date: 'DESC' },
@@ -117,24 +119,6 @@ export class ProductService {
     };
   }
 
-  async getOneForExcel(id: string) {
-    const data: any = await this.productRepository
-      .findOne({
-        where: { id },
-        relations: {
-          model: {
-            collection: true,
-          },
-          filial: true,
-          color: true,
-        },
-      })
-      .catch(() => {
-        throw new NotFoundException('Product not found');
-      });
-    return data;
-  }
-
   async getById(id: string) {
     const data = await this.productRepository
       .findOne({
@@ -158,7 +142,7 @@ export class ProductService {
   }
 
   async getMaxPrice(): Promise<number> {
-    const query = 'SELECT MAX("priceMeter") AS maxPrice FROM product';
+    const query = 'SELECT MAX("priceMeter") AS maxPrice FROM product as p WHERE p.count > 0 and p.y > 0;';
     const result = await this.productRepository.query(query);
 
     return result[0];
@@ -297,12 +281,10 @@ export class ProductService {
   }
 
   async getAllForTelegram() {
-    const products = await this.productRepository
-      .createQueryBuilder('user')
-      .where('isInternetShop = :isInternetShop', { isInternetShop: true })
-      .relation('filial')
-      .of(Product)
-      .loadOne();
+    const products = await this.productRepository.find({
+      where: { isInternetShop: true, count: MoreThan(0), y: MoreThan(0) },
+      relations: { filial: true, model: { collection: true }, color: true },
+    });
 
     return { products, count: products.length };
   }

@@ -26,18 +26,24 @@ export class TransferService {
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Transfer & {
     to: string,
     from: string,
-    type: string
+    type: string,
+    filial: any,
   }>, user?): Promise<Pagination<Transfer>> {
+    const baza = await this.filialService.findOrCreateFilialByTitle('baza');
     if(!user?.filial){
-      user.filial = await this.filialService.findOrCreateFilialByTitle('baza');
+      user.filial = baza;
     }
 
     if (where.type == 'In') {
       where.to = Equal(user.filial.id);
+      where?.filial && (where.from = Equal(where.filial));
     } else if (where.type == 'Out') {
       where.from = Equal(user.filial.id);
+      where?.filial && (where.to = Equal(where.filial));
     }
+
     where?.type && delete where?.type;
+    where?.filial && delete where?.filial;
 
     return paginate<Transfer>(this.transferRepository, options, {
       relations: {

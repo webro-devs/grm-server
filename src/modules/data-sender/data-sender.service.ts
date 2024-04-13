@@ -27,7 +27,7 @@ export class DataSenderService {
       const hour = Math.floor(minutes / 60);
       const minute = minutes % 60;
       const cronExpression = `${minute} ${hour} * * *`;
-      const job = cron.schedule(cronExpression, () => this.sendData());
+      const job = cron.schedule(cronExpression, async() => await this.sendData());
       this.scheduledJobs.push(job);
     }
     return 'ok';
@@ -44,12 +44,14 @@ export class DataSenderService {
 
   private async sendData() {
     const { products, count } = await this.productService.getAllForTelegram();
+
     if (count <= this.index) this.index = 0;
+
     const filial = await this.filialService.getOne(
       products[this.index].filial.id,
     );
 
-    telegramSender({
+    const data = await telegramSender({
       imgUrl: products[this.index]?.imgUrl,
       color: products[this.index]?.color,
       model: products[this.index]?.model,
