@@ -43,6 +43,7 @@ export class OrderService {
       relations: {
         seller: true,
         product: { model: { collection: true }, color: true, filial: true },
+        kassa: true,
       },
       where,
       order: { date: 'DESC' },
