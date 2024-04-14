@@ -304,7 +304,7 @@ export class OrderService {
     const product = data.product;
 
     if (product.isMetric) {
-      product.y = Math.abs(+data.x) + Math.abs(product.y);
+      product.y = (Math.abs(+data.x) / 100) + Math.abs(product.y);
       product.calculateProductPrice();
       product.setTotalSize();
     } else {
