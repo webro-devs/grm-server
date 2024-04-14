@@ -232,7 +232,7 @@ export class OrderService {
       product.y = product.y - cost;
       product.setTotalSize();
       product.calculateProductPrice();
-      additionalProfitSum = (value.price - product.priceMeter * cost) * cost * product.x;
+      additionalProfitSum = (value.price - product.priceMeter * cost);
       netProfitSum = (product.priceMeter - product.comingPrice) * cost * product.x;
       value.kv = cost;
     } else {
@@ -268,7 +268,7 @@ export class OrderService {
     kassa.totalSum = kassa.totalSum + order.price;
 
     if (order.product.isMetric) {
-      kassa.totalSize = kassa.totalSize + order.x * order.product.x;
+      kassa.totalSize = kassa.totalSize + (order.x / 100) * order.product.x;
     } else {
       kassa.totalSize = kassa.totalSize + order.product.x * order.product.y;
     }
@@ -449,7 +449,7 @@ export class OrderService {
       for await (let kassaOrder of kassa.orders) {
         if (kassaOrder.product.isMetric) {
           const cost = kassaOrder.x / 100;
-          kassaOrder.additionalProfitSum = (kassaOrder.price - kassaOrder.product.priceMeter * cost) * cost * kassaOrder.product.x;
+          kassaOrder.additionalProfitSum = (kassaOrder.price - kassaOrder.product.priceMeter * cost);
           kassaOrder.netProfitSum = (kassaOrder.product.priceMeter - kassaOrder.product.comingPrice) * cost * kassaOrder.product.x;
           kassaOrder.kv = cost * kassaOrder.product.x;
         } else {
@@ -487,7 +487,7 @@ export class OrderService {
     kassa.totalSum = kassa.totalSum + order.price;
 
     if (order.product.isMetric) {
-      kassa.totalSize = kassa.totalSize + order.x * order.product.x;
+      kassa.totalSize = kassa.totalSize + (order.x / 100) * order.product.x;
     } else {
       kassa.totalSize = kassa.totalSize + order.product.x * order.product.y;
     }

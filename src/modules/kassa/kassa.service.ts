@@ -209,7 +209,7 @@ export class KassaService {
     const data = await this.kassaRepository.find({
       where,
     });
-
+    console.log(data);
     if (data.length) {
       const kassa = data.reduce(
         (
@@ -230,7 +230,7 @@ export class KassaService {
             comingSum: (totalSum || 0 - (cashFlowSumBoss + cashFlowSumShop)) + prev.comingSum,
             goingSumBoss: expenditureBoss || 0 + prev.goingSumBoss,
             goingSumShop: expenditureShop || 0 + prev.goingSumShop,
-            sellingSize: (totalSize / 100) || 0 + prev.sellingSize,
+            sellingSize: totalSize || 0 + prev.sellingSize,
             additionalProfitTotalSum: additionalProfitTotalSum || 0 + prev.additionalProfitTotalSum,
             cashFlowSumBoss: cashFlowSumBoss || 0 + prev.cashFlowSumBoss,
             cashFlowSumShop: cashFlowSumShop || 0 + prev.cashFlowSumShop,
