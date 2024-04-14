@@ -37,6 +37,16 @@ export class OrderController {
     return await this.orderService.getAll({ limit: query.limit, page: query.page, route }, req.where);
   }
 
+  @Get('/correct-kassa')
+  @ApiOperation({ summary: 'Method: returns all orders' })
+  @ApiOkResponse({
+    description: 'The orders were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async correct() {
+    return await this.orderService.updateFilialKassas();
+  }
+
   @Get('/stats')
   @ApiOperation({ summary: 'Method: returns all orders' })
   @ApiOkResponse({

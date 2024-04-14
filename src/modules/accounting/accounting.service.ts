@@ -26,10 +26,10 @@ export class AccountingService {
     let total = false;
     const haveFilial = where?.filial?.id || false;
 
-    if (where?.total) {
+    if (where?.total == 'true') {
       total = true;
-      delete where.total;
     }
+     where.total && delete where.total;
 
     for await (let filial of allFilial) {
       if (!where?.filial?.id) {

@@ -10,6 +10,7 @@ import { ActionModule } from '../action/action.module';
 import { CashflowModule } from '../cashflow/cashflow.module';
 import { GrmSocketModule } from '../web-socket/web-socket.module';
 import { OrderQueryParserMiddleware } from 'src/infra/middleware';
+import { FilialModule } from '../filial/filial.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { OrderQueryParserMiddleware } from 'src/infra/middleware';
     KassaModule,
     ActionModule,
     CashflowModule,
+    FilialModule,
   ],
   controllers: [OrderController],
   providers: [OrderService],

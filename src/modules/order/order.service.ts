@@ -21,6 +21,7 @@ import { CashFlowEnum, OrderEnum } from 'src/infra/shared/enum';
 import { CashflowService } from '../cashflow/cashflow.service';
 import { Product } from '../product/product.entity';
 import { GRMGateway } from '../web-socket/web-socket.gateway';
+import { FilialService } from '../filial/filial.service';
 //
 Injectable();
 export class OrderService {
@@ -36,6 +37,7 @@ export class OrderService {
     private readonly cashFlowService: CashflowService,
     private readonly connection: DataSource,
     private readonly entityManager: EntityManager,
+    private readonly filialService: FilialService,
   ) {}
 
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Product>): Promise<Pagination<Order>> {
@@ -230,7 +232,7 @@ export class OrderService {
       product.y = product.y - cost;
       product.setTotalSize();
       product.calculateProductPrice();
-      additionalProfitSum = (value.price - product.priceMeter) * cost * product.x;
+      additionalProfitSum = (value.price - product.priceMeter * cost) * cost * product.x;
       netProfitSum = (product.priceMeter - product.comingPrice) * cost * product.x;
       value.kv = cost;
     } else {
@@ -302,7 +304,7 @@ export class OrderService {
     const product = data.product;
 
     if (product.isMetric) {
-      product.x += data.x;
+      product.y = +data.x + product.y;
       product.calculateProductPrice();
       product.setTotalSize();
     } else {
@@ -347,6 +349,12 @@ export class OrderService {
         order.product.isMetric ? 'x' + order.x * 100 : order.x
       } | ${order.product.shape}`,
     );
+
+    if (order.product.isMetric) {
+      await this.entityManager.query(`update kassa set "totalSize" = '${order.kassa.totalSize - order.x * order.product.x}' where id = '${order.kassa.id}'`);
+    } else {
+      await this.entityManager.query(`update kassa set "totalSize" = '${order.kassa.totalSize - order.product.x * order.product.y}' where id = '${order.kassa.id}'`);
+    }
 
     await this.orderRepository.update({ id: order.id }, { isActive: OrderEnum.Reject });
     const action = await this.actionService.create(
@@ -432,5 +440,95 @@ export class OrderService {
     }
 
     return await result.getRawMany();
+  }
+
+  async correctOrdersKassa(id: string) {
+    const kassa = await this.kassaService.getKassaAndOrders(id);
+
+    if (kassa?.orders) {
+      for await (let kassaOrder of kassa.orders) {
+        if (kassaOrder.product.isMetric) {
+          const cost = kassaOrder.x / 100;
+          kassaOrder.additionalProfitSum = (kassaOrder.price - kassaOrder.product.priceMeter * cost) * cost * kassaOrder.product.x;
+          kassaOrder.netProfitSum = (kassaOrder.product.priceMeter - kassaOrder.product.comingPrice) * cost * kassaOrder.product.x;
+          kassaOrder.kv = cost * kassaOrder.product.x;
+        } else {
+          kassaOrder.additionalProfitSum = kassaOrder.price - kassaOrder.product.price;
+          kassaOrder.netProfitSum = (kassaOrder.product.priceMeter - kassaOrder.product.comingPrice) * kassaOrder.product.x * kassaOrder.product.y;
+          kassaOrder.kv = kassaOrder.product.x * kassaOrder.product.y;
+        }
+        await this.entityManager.save(kassaOrder);
+      }
+      kassa.totalSize = 0;
+      kassa.totalSum = 0;
+      kassa.additionalProfitTotalSum = 0;
+      kassa.netProfitTotalSum = 0;
+      kassa.plasticSum = 0;
+      await this.entityManager.save(kassa);
+    }
+
+    return 'okay';
+  }
+
+  async kassaPriceUpdate(id: string) {
+    const order = await this.orderRepository.findOne({
+      where: { id, isActive: 'accept' },
+      relations: {
+        kassa: { filial: true },
+        product: { model: { collection: true }, color: true },
+        seller: true,
+        casher: true,
+      },
+    });
+    if (!order) return;
+
+    const kassa = await this.kassaService.getById(order.kassa.id);
+
+    kassa.totalSum = kassa.totalSum + order.price;
+
+    if (order.product.isMetric) {
+      kassa.totalSize = kassa.totalSize + order.x * order.product.x;
+    } else {
+      kassa.totalSize = kassa.totalSize + order.product.x * order.product.y;
+    }
+
+    kassa.netProfitTotalSum = kassa.netProfitTotalSum + order.netProfitSum;
+
+    kassa.additionalProfitTotalSum = kassa.additionalProfitTotalSum + order.additionalProfitSum;
+
+    kassa.plasticSum = kassa.plasticSum + order.plasticSum;
+
+    await this.saveRepo(kassa);
+
+    return 'ok';
+  }
+
+  async cashflowAdd(id) {
+    const kassa = await this.kassaService.getById(id);
+    kassa.totalSum = kassa.cashFlowSumBoss + kassa.totalSum;
+    kassa.totalSum = kassa.cashFlowSumShop + kassa.totalSum;
+    kassa.totalSum = kassa.internetShopSum + kassa.totalSum;
+    await this.entityManager.save(kassa);
+  }
+
+  async updateFilialKassas() {
+    const filials = await this.filialService.getFilialWithKassa();
+    for await (const filial of filials) {
+      if (filial.kassa) {
+        for await(const kassa of filial.kassa) {
+          await this.correctOrdersKassa(kassa.id);
+        }
+        for await (const kassa of filial.kassa) {
+          await this.cashflowAdd(kassa.id);
+        }
+        for await (const kassa of filial.kassa) {
+          if (kassa.orders) {
+            for await (const order of kassa.orders) {
+              await this.kassaPriceUpdate(order.id);
+            }
+          }
+        }
+      }
+    }
   }
 }

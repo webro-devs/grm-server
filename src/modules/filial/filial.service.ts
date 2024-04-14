@@ -103,4 +103,8 @@ export class FilialService {
         where: { title: 'baza' },
       });
   }
+
+  async getFilialWithKassa() {
+    return this.filialRepository.find({ relations: { kassa: { orders: true } } });
+  }
 }

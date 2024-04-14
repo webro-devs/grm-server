@@ -53,7 +53,7 @@ export class KassaService {
   }
 
   async getById(id: string) {
-    const data = await this.kassaRepository.findOne({ where: { id }, relations: { filial: true } }).catch(() => {
+    const data = await this.kassaRepository.findOne({ where: { id }, relations: { filial: true, cashflow: true } }).catch(() => {
       throw new NotFoundException('data not found');
     });
     return data;
@@ -227,10 +227,10 @@ export class KassaService {
           },
         ) => {
           return {
-            comingSum: totalSum || 0 + prev.comingSum,
+            comingSum: (totalSum || 0 - (cashFlowSumBoss + cashFlowSumShop)) + prev.comingSum,
             goingSumBoss: expenditureBoss || 0 + prev.goingSumBoss,
             goingSumShop: expenditureShop || 0 + prev.goingSumShop,
-            sellingSize: totalSize || 0 + prev.sellingSize,
+            sellingSize: (totalSize / 100) || 0 + prev.sellingSize,
             additionalProfitTotalSum: additionalProfitTotalSum || 0 + prev.additionalProfitTotalSum,
             cashFlowSumBoss: cashFlowSumBoss || 0 + prev.cashFlowSumBoss,
             cashFlowSumShop: cashFlowSumShop || 0 + prev.cashFlowSumShop,
@@ -327,5 +327,9 @@ export class KassaService {
       .where('id IN (' + subQuery.getQuery() + ')')
       .setParameters(subQuery.getParameters())
       .execute();
+  }
+
+  async getKassaAndOrders(id: string) {
+    return this.kassaRepository.findOne({ where: { id, orders: { isActive: 'accept'} }, relations: { orders: { product: true } } });
   }
 }
