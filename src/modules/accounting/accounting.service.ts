@@ -26,7 +26,7 @@ export class AccountingService {
     let total = false;
     const haveFilial = where?.filial?.id || false;
 
-    if (where?.total == 'true') {
+    if (where?.total) {
       total = true;
     }
      where.total && delete where.total;
@@ -50,7 +50,7 @@ export class AccountingService {
         netProfitTotalSum,
       } = await this.kassaService.kassaTotal({
         filial: { id: where.filial.id },
-        isActive: total,
+        isActive: total ? true : false,
         ...(where.startDate && { startDate: where.startDate }),
       });
 
