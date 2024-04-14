@@ -25,7 +25,7 @@ export class AccountingService {
     const allFilial = await this.filialService.getAllFilial();
     let total = false;
     const haveFilial = where?.filial?.id || false;
-
+    console.log(where);
     if (where?.total) {
       total = true;
     }
@@ -36,6 +36,8 @@ export class AccountingService {
         where.filial = {
           id: filial.id,
         };
+      } else {
+        filial = allFilial.find(e => e.id === where.filial.id);
       }
 
       const {
@@ -51,7 +53,7 @@ export class AccountingService {
       } = await this.kassaService.kassaTotal({
         filial: { id: where.filial.id },
         isActive: total ? true : false,
-        ...(where.startDate && { startDate: where.startDate }),
+        ...(where?.startDate && { startDate: where.startDate }),
       });
 
       const { remainingSize, remainingSum } = await this.productService.remainingProducts({
