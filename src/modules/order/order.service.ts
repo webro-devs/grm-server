@@ -351,7 +351,7 @@ export class OrderService {
     );
 
     if (order.product.isMetric) {
-      await this.entityManager.query(`update kassa set "totalSize" = '${order.kassa.totalSize - order.x * order.product.x}' where id = '${order.kassa.id}'`);
+      await this.entityManager.query(`update kassa set "totalSize" = '${order.kassa.totalSize - ( order.x / 100 ) * order.product.x}' where id = '${order.kassa.id}'`);
     } else {
       await this.entityManager.query(`update kassa set "totalSize" = '${order.kassa.totalSize - order.product.x * order.product.y}' where id = '${order.kassa.id}'`);
     }
