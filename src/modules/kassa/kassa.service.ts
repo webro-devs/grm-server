@@ -227,14 +227,14 @@ export class KassaService {
         ) => {
           return {
             comingSum: (totalSum || 0 - (cashFlowSumBoss + cashFlowSumShop)) + prev.comingSum,
-            goingSumBoss: expenditureBoss || 0 + prev.goingSumBoss,
-            goingSumShop: expenditureShop || 0 + prev.goingSumShop,
-            sellingSize: totalSize || 0 + prev.sellingSize,
-            additionalProfitTotalSum: additionalProfitTotalSum || 0 + prev.additionalProfitTotalSum,
-            cashFlowSumBoss: cashFlowSumBoss || 0 + prev.cashFlowSumBoss,
-            cashFlowSumShop: cashFlowSumShop || 0 + prev.cashFlowSumShop,
-            plasticSum: plasticSum || 0 + prev.plasticSum,
-            netProfitTotalSum: netProfitTotalSum || 0 + prev.netProfitTotalSum,
+            goingSumBoss: expenditureBoss + prev.goingSumBoss,
+            goingSumShop: expenditureShop + prev.goingSumShop,
+            sellingSize: totalSize + prev.sellingSize,
+            additionalProfitTotalSum: additionalProfitTotalSum + prev.additionalProfitTotalSum,
+            cashFlowSumBoss: cashFlowSumBoss + prev.cashFlowSumBoss,
+            cashFlowSumShop: cashFlowSumShop + prev.cashFlowSumShop,
+            plasticSum: plasticSum + prev.plasticSum,
+            netProfitTotalSum: netProfitTotalSum + prev.netProfitTotalSum,
           };
         },
         {
