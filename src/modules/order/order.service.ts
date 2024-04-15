@@ -345,9 +345,8 @@ export class OrderService {
       'Возврат',
       CashFlowEnum.Consumption,
       userId,
-        `${order?.product?.model?.collection['title']} | ${order?.product?.model?.title} | ${order.product.size} | ${
-        order.product.isMetric ? 'x' + order.x * 100 : order.x
-      } | ${order.product.shape}`,
+      `${order?.product?.model?.collection['title']} | ${order?.product?.model?.title} | ${order.product.size} | 
+      ${'x' + order.x} | ${order.product.shape}`,
     );
 
     if (order.product.isMetric) {
