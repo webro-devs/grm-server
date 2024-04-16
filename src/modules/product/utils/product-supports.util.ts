@@ -1,4 +1,4 @@
-const query = () => `
+const query =  `
 with color as (select distinct title, count(title), jsonb_agg(distinct color.id) as id
                from color
                         left join product as p on color.id = p."colorId"

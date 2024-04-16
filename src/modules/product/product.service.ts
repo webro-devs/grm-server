@@ -334,6 +334,6 @@ export class ProductService {
   }
 
   async getSupports(){
-    return this.productRepository.query(getSupports());
+    return await this.productRepository.query(getSupports);
   }
 }
