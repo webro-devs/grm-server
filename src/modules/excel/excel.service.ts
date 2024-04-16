@@ -326,24 +326,24 @@ export class ExcelService {
 
     const code = await this.qrBaseService.getOneByCode(newData.code);
     const Product: CreateProductExcelDto = {
-      code: code.code,
-      collection: code.collection.id,
+      code: code?.code,
+      collection: code?.collection?.id,
       collectionPrice: 0,
-      color: code.color.id || null,
+      color: code?.color?.id || null,
       commingPrice: 0,
-      count: Number(newData.count) || 1,
-      country: code.country.title || null,
+      count: Number(newData?.count) || 1,
+      country: code?.country?.title || null,
       displayPrice: 0,
       imgUrl: null,
       isEdited: false,
       isMetric: false,
-      model: code.model.id,
+      model: code?.model?.id,
       otherImgs: [],
       partiya: partiyaId,
       priceMeter: 0,
-      shape: code.shape.id || null,
-      size: code.size.id || null,
-      style: code.style.id || null,
+      shape: code?.shape?.id || null,
+      size: code?.size?.id || null,
+      style: code?.style?.id || null,
     };
 
     await this.addProductToPartiya([Product], partiyaId);
