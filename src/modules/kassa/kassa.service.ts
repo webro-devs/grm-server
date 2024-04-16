@@ -49,6 +49,7 @@ export class KassaService {
         isActive: false,
         filial: { id: user.filial.id, users: { role: 2 } },
       },
+      order: { startDate: 'DESC' },
     });
   }
 
