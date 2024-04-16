@@ -66,6 +66,8 @@ export class KassaService {
         where: { id },
         relations: {
           filial: true,
+          cashflow: true,
+          orders: true
         },
       })
       .catch(() => {

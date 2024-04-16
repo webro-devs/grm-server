@@ -24,7 +24,7 @@ with color as (select distinct title, count(title), jsonb_agg(distinct color.id)
                           join product as p on country.title = p.country
                  where "isInternetShop" = true
                  group by title),
-     collection as (select distinct collection.title, count(collection.title), jsonb_agg(distinct collection.id) as id
+     collection as (select distinct collection.title, count(collection.title), jsonb_agg(distinct collection.id) as id, jsonb_agg(distinct m.title) as model
                     from collection
                              join model as m on collection.id = m."collectionId"
                              join product as p on m.id = p."modelId"
