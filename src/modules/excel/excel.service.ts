@@ -271,7 +271,7 @@ export class ExcelService {
       where: { code: newData.code, partiya: { id: newData.id } },
     });
 
-    if (product && !product?.shape?.meter) {
+    if (product || !product?.shape?.meter) {
       product.count += 1;
       await this.productExcelRepository.save(product);
       return 'Added Product +1';
