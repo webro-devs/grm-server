@@ -272,11 +272,11 @@ export class ExcelService {
       where: { code: newData.code, partiya: { id: newData.id } },
     });
 
-    // if (product && product?.shape?.title?.toLowerCase() !== "rulo") {
-    //   product.count += 1;
-    //   await this.productExcelRepository.save(product);
-    //   return product;
-    // }
+    if (product && product?.shape?.title?.toLowerCase() !== "rulo") {
+      product.count += 1;
+      await this.productExcelRepository.save(product);
+      return product;
+    }
 
     const value: CreateProductExcelDto = {
       code: code.code,
