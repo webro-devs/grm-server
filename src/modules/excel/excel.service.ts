@@ -272,11 +272,11 @@ export class ExcelService {
       where: { code: newData.code, partiya: { id: newData.id } },
     });
 
-    if (product && product?.shape?.title?.toLowerCase() !== "rulo") {
-      product.count += 1;
-      await this.productExcelRepository.save(product);
-      return product;
-    }
+    // if (product && product?.shape?.title?.toLowerCase() !== "rulo") {
+    //   product.count += 1;
+    //   await this.productExcelRepository.save(product);
+    //   return product;
+    // }
 
     const value: CreateProductExcelDto = {
       code: code.code,
@@ -478,39 +478,38 @@ export class ExcelService {
   }
 
   async mergeProds(partiyaId: string) {
-    // const prods = await this.productExcelRepository.find({
-    //   where: { partiya: { id: partiyaId } },
-    //   relations: { collection: true, model: true, shape: true, color: true, size: true, style: true },
-    // });
-    // let similars = []
-    // for await (let prod of prods) {
-    //   similars.push(prods.filter((e, i) => {
-    //     if(e?.style?.title == prod?.style?.title
-    //       && e?.model?.title == prod?.model?.title
-    //       && e?.color?.title == prod?.color?.title
-    //       && e?.collection?.title == prod?.collection?.title
-    //       && e?.size?.title == prod?.size?.title
-    //       && e?.shape?.title == prod?.shape?.title
-    //       && e?.shape?.title?.toLowerCase() == 'rulo'
-    //     ){
-    //       delete prods[i];
-    //       return e
-    //     }
-    //   }));
-    //
-    //   for (let p = 0; p  < similars.length; p++) {
-    //     for (let i = 1; i < similars[p].length; i++) {
-    //       similars[p][0].count += similars[p][i].count;
-    //       await this.productExcelRepository.delete(similars[p][i].id);
-    //       similars[p].splice(i);
-    //     }
-    //     if(similars[p][0]){
-    //       await this.productExcelRepository.save(similars[p][0]);
-    //     }
-    //   }
-    // }
-    // return similars;
-    return "ok"
+    const prods = await this.productExcelRepository.find({
+      where: { partiya: { id: partiyaId } },
+      relations: { collection: true, model: true, shape: true, color: true, size: true, style: true },
+    });
+    let similars = []
+    for await (let prod of prods) {
+      similars.push(prods.filter((e, i) => {
+        if(e?.style?.title == prod?.style?.title
+          && e?.model?.title == prod?.model?.title
+          && e?.color?.title == prod?.color?.title
+          && e?.collection?.title == prod?.collection?.title
+          && e?.size?.title == prod?.size?.title
+          && e?.shape?.title == prod?.shape?.title
+          && e?.shape?.title?.toLowerCase() != 'rulo'
+        ){
+          delete prods[i];
+          return e
+        }
+      }));
+
+      for (let p = 0; p  < similars.length; p++) {
+        for (let i = 1; i < similars[p].length; i++) {
+          similars[p][0].count += similars[p][i].count;
+          await this.productExcelRepository.delete(similars[p][i].id);
+          similars[p].splice(i);
+        }
+        if(similars[p][0]){
+          await this.productExcelRepository.save(similars[p][0]);
+        }
+      }
+    }
+    return similars;
   }
 }
 
