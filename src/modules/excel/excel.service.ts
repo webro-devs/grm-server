@@ -266,12 +266,13 @@ export class ExcelService {
     if (!code) {
       throw new BadRequestException('Code not exist!');
     }
+    console.log(newData);
     const product = await this.productExcelRepository.findOne({
       relations: { partiya: true, model: { collection: true }, shape: true },
       where: { code: newData.code, partiya: { id: newData.id } },
     });
 
-    if (product?.shape?.title?.toLowerCase() == "rulo") {
+    if ( product?.shape?.title && product?.shape?.title?.toLowerCase() !== "rulo") {
       product.count += 1;
       await this.productExcelRepository.save(product);
       return 'Added Product +1';
