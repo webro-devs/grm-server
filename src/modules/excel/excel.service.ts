@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as XLSX from 'xlsx';
 import { join } from 'path';
@@ -8,7 +8,7 @@ import { Excel } from './excel.entity';
 import { ProductExcel } from './excel-product.entity';
 import { deleteFile, excelDataParser } from 'src/infra/helpers';
 import { FileService } from '../file/file.service';
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { PartiyaService } from '../partiya/partiya.service';
 import { ProductService } from '../product/product.service';
 import { CollectionService } from '../collection/collection.service';
@@ -18,7 +18,7 @@ import { ShapeService } from '../shape/shape.service';
 import { SizeService } from '../size/size.service';
 import { StyleService } from '../style/style.service';
 import { FilialService } from '../filial/filial.service';
-import { CreateProductExcelDto, UpdateProductExcelDto } from './dto';
+import { CreateProductExcelDto } from './dto';
 import { QrBaseService } from '../qr-base/qr-base.service';
 import { CreateQrBaseDto } from '../qr-base/dto';
 import { ActionService } from '../action/action.service';
@@ -268,14 +268,14 @@ export class ExcelService {
     }
     console.log(newData);
     const product = await this.productExcelRepository.findOne({
-      relations: { partiya: true, model: { collection: true }, shape: true },
+      relations: { partiya: true, model: { collection: true },  size: true, style: true, shape: true, color: true, collection: true },
       where: { code: newData.code, partiya: { id: newData.id } },
     });
 
     if (product && product?.shape?.title?.toLowerCase() !== "rulo") {
       product.count += 1;
       await this.productExcelRepository.save(product);
-      return 'Added Product +1';
+      return product;
     }
 
     const value: CreateProductExcelDto = {
@@ -475,6 +475,42 @@ export class ExcelService {
     await fs.promises.writeFile(filePath, XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' }));
 
     return pathname;
+  }
+
+  async mergeProds(partiyaId: string) {
+    // const prods = await this.productExcelRepository.find({
+    //   where: { partiya: { id: partiyaId } },
+    //   relations: { collection: true, model: true, shape: true, color: true, size: true, style: true },
+    // });
+    // let similars = []
+    // for await (let prod of prods) {
+    //   similars.push(prods.filter((e, i) => {
+    //     if(e?.style?.title == prod?.style?.title
+    //       && e?.model?.title == prod?.model?.title
+    //       && e?.color?.title == prod?.color?.title
+    //       && e?.collection?.title == prod?.collection?.title
+    //       && e?.size?.title == prod?.size?.title
+    //       && e?.shape?.title == prod?.shape?.title
+    //       && e?.shape?.title?.toLowerCase() == 'rulo'
+    //     ){
+    //       delete prods[i];
+    //       return e
+    //     }
+    //   }));
+    //
+    //   for (let p = 0; p  < similars.length; p++) {
+    //     for (let i = 1; i < similars[p].length; i++) {
+    //       similars[p][0].count += similars[p][i].count;
+    //       await this.productExcelRepository.delete(similars[p][i].id);
+    //       similars[p].splice(i);
+    //     }
+    //     if(similars[p][0]){
+    //       await this.productExcelRepository.save(similars[p][0]);
+    //     }
+    //   }
+    // }
+    // return similars;
+    return "ok"
   }
 }
 
