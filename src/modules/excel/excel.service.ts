@@ -272,7 +272,7 @@ export class ExcelService {
       where: { code: newData.code, partiya: { id: newData.id } },
     });
 
-    if ( product?.shape?.title && product?.shape?.title?.toLowerCase() !== "rulo") {
+    if (product && product?.shape?.title?.toLowerCase() !== "rulo") {
       product.count += 1;
       await this.productExcelRepository.save(product);
       return 'Added Product +1';
