@@ -417,12 +417,12 @@ export class ExcelService {
         delete product.displayPrice;
         product.filial = filialId;
         product.size = product?.size?.title || '1x1';
-        product.model = product?.model?.id;
+        product.model = product?.model?.id || null;
         product.style = product?.style?.title || 'Classic';
         product.color = product?.color?.id || null;
         product.shape = product?.shape?.title || 'Rectangle';
         product.partiya = product?.partiya?.id || null;
-        product.country ? product?.country : (product.country = country);
+        product.country = product.country || country;
       }
       return products;
     } catch (error) {

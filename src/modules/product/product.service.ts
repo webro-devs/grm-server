@@ -223,13 +223,7 @@ export class ProductService {
       value[0].y = y;
     }
 
-    return await this.productRepository
-      .createQueryBuilder()
-      .insert()
-      .into(Product)
-      .values(value as unknown as Product)
-      .returning(['id', 'model', 'color'])
-      .execute();
+    return await this.productRepository.save(value as unknown as Product, { chunk: Math.floor(value.length / 20) });
   }
 
   setXy(value: CreateProductDto[]): CreateProductDto[] {
@@ -287,35 +281,6 @@ export class ProductService {
     });
 
     return { products, count: products.length };
-  }
-
-  async updateOrCreateProducts(productsData: any[]) {
-    const ids = [];
-
-    for (const productData of productsData) {
-      const filial = await this.filialService.getOne(productData.filial);
-      const model = await this.modelService.getOne(productData.model);
-
-      if (filial && model) {
-        const existingProduct = await this.productRepository.findOne({
-          where: { id: productData.id },
-        });
-
-        if (existingProduct) {
-          await this.change(productData, productData.id);
-          ids.push(productData.id);
-        } else {
-          delete productData.id;
-          const newProduct = await this.create(productData);
-
-          ids.push(newProduct.raw[0].id);
-        }
-      } else {
-        console.error('Filial or Model not found for product:', productData);
-      }
-    }
-
-    return ids;
   }
 
   async getIShopAccounting(query: { by: string }): Promise<[{ sold_shop_products: string, percentage_sold: string, sold_shop_products_first: string }]> {
