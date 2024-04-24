@@ -222,8 +222,8 @@ export class ProductService {
     if(type){
       value[0].y = y;
     }
-
-    return await this.productRepository.save(value as unknown as Product, { chunk: Math.floor(value.length / 20) });
+    await this.productRepository.save(value as unknown as Product, { chunk: Math.floor(value.length / 20) });
+    return "ok";
   }
 
   setXy(value: CreateProductDto[]): CreateProductDto[] {
