@@ -352,8 +352,6 @@ export class ExcelService {
         meter: partiya.m2 || 0,
       };
 
-
-
       let products = await this.productExcelRepository.find({
         relations: {
           size: true,
@@ -382,6 +380,7 @@ export class ExcelService {
       );
       return response;
     } catch (err) {
+      console.log(err);
       throw new BadRequestException(err.message);
     }
   }
