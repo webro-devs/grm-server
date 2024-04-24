@@ -393,7 +393,7 @@ export class ExcelService {
     );
     const expenseByKv = expense / fullKv;
     products = products.map((pr) => {
-      pr.comingPrice = expenseByKv + pr.collectionPrice;
+      pr.comingPrice = +expenseByKv + +pr.collectionPrice;
       delete pr.collectionPrice;
       delete pr.isEdited;
       return pr;
@@ -416,8 +416,8 @@ export class ExcelService {
         delete product.id;
         delete product.displayPrice;
         product.filial = filialId;
-        product.size = product.size.title;
-        product.model = product.model.id;
+        product.size = product?.size?.title || '1x1';
+        product.model = product?.model?.id;
         product.style = product?.style?.title || 'Classic';
         product.color = product?.color?.id || null;
         product.shape = product?.shape?.title || 'Rectangle';
