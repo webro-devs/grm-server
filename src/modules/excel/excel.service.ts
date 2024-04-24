@@ -352,13 +352,7 @@ export class ExcelService {
         meter: partiya.m2 || 0,
       };
 
-      await this.actionService.create(
-        partiya,
-        user?.id,
-        null,
-        'partiya_send',
-        `${partiya_infos.title} с ${partiya_infos.meter} м²`,
-      );
+
 
       let products = await this.productExcelRepository.find({
         relations: {
@@ -378,6 +372,14 @@ export class ExcelService {
 
       const response = await this.productService.create(productss);
       await this.partiyaService.change({ check: true }, partiya?.id);
+
+      await this.actionService.create(
+        partiya,
+        user?.id,
+        null,
+        'partiya_send',
+        `${partiya_infos.title} с ${partiya_infos.meter} м²`,
+      );
       return response;
     } catch (err) {
       throw new BadRequestException(err.message);
