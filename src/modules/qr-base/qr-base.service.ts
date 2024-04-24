@@ -73,7 +73,7 @@ export class QrBaseService {
       });
   }
 
-  async getOneByCode(code: string) {
+async getOneByCode(code: string) {
     const data = await this.qrBaseRepository
       .findOne({
         where: { code },

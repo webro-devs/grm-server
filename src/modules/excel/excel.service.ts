@@ -51,24 +51,18 @@ export class ExcelService {
   }
 
   async readExcel(id: string) {
-    const data = await this.partiyaService.getOneProds(id);
-
-    return data;
+    return await this.partiyaService.getOneProds(id);
   }
 
   async getAll() {
-    const data = await this.productExcelRepository.find();
-
-    return data;
+    return await this.productExcelRepository.find();
   }
 
   async getOne(id: string) {
-    const res = await this.productExcelRepository.findOne({
+    return await this.productExcelRepository.findOne({
       where: { id },
       relations: { collection: true, model: true, color: true, partiya: true, shape: true, size: true, style: true },
     });
-
-    return res;
   }
 
   async delete(id: string) {
@@ -111,15 +105,13 @@ export class ExcelService {
       productPromises.push(updatedProduct);
     }
 
-    const data = await this.productExcelRepository
+    return await this.productExcelRepository
       .createQueryBuilder()
       .insert()
       .into(ProductExcel)
       .values(productPromises as unknown as ProductExcel)
       .returning('id')
       .execute();
-
-    return data;
   }
 
   async addProductToPartiyaWithExcel(products: CreateProductExcelDto[], partiyaId: string) {
@@ -179,15 +171,13 @@ export class ExcelService {
       }
     }
 
-    const data = await this.productExcelRepository
+    return await this.productExcelRepository
       .createQueryBuilder()
       .insert()
       .into(ProductExcel)
       .values(prod as unknown as ProductExcel)
       .returning('id')
       .execute();
-
-    return data;
   }
 
   async readProducts(partiyaId: string) {
@@ -247,8 +237,7 @@ export class ExcelService {
   }
 
   async updateProduct(value, id) {
-    const response = await this.productExcelRepository.update({ id }, value);
-    return response;
+    return await this.productExcelRepository.update({ id }, value);
   }
 
   async readProductsByModel(partiyaId: string, id: string) {
