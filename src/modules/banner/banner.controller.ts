@@ -7,12 +7,14 @@ import { Banner } from './banner.entity';
 import { BannerService } from './banner.service';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from 'src/infra/shared/enum';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Banner')
 @Controller('banner')
 export class BannerController {
   constructor(private readonly bannerService: BannerService) {}
 
+  @Public()
   @Get('/')
   @ApiOperation({ summary: 'Method: returns single size by id' })
   @ApiOkResponse({
