@@ -298,7 +298,7 @@ export class ProductService {
     return  product;
   }
 
-  async getSupports(){
-    return await this.productRepository.query(getSupports);
+  async getSupports(model: string){
+    return await this.productRepository.query(getSupports(model));
   }
 }
