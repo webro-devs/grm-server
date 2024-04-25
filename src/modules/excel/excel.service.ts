@@ -137,7 +137,7 @@ export class ExcelService {
           }
         }
 
-        let data = { ...support };
+        let data = { ...support, count: support?.count || 1 };
 
         const collection = await this.collectionService.findOrCreate(data.collection);
         const model = await this.modelService.findOrCreate(collection, data.model);
