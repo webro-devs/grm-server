@@ -4,7 +4,7 @@ SELECT
     json_agg(DISTINCT collection) AS collection,
     json_agg(DISTINCT country) AS country,
     json_agg(DISTINCT style) AS style,
-    json_agg(DISTINCT shape) AS shape,
+    json_agg(distinct jsonb_build_object('title', color, 'code', code)) AS color,
     json_agg(DISTINCT color) AS color,
     json_agg(DISTINCT size) AS size
 FROM
@@ -16,6 +16,7 @@ FROM
             s.title AS style,
             sh.title AS shape,
             cl.title AS color,
+            cl.code AS code,
             si.title AS size
         FROM
             product p
@@ -29,7 +30,7 @@ FROM
         WHERE
             p."isInternetShop" = true ${ model ? `and m.title = '${model}'` : '' }
         GROUP BY
-            m.title, c.title, co.title, s.title, sh.title, cl.title, si.title 
+            m.title, c.title, co.title, s.title, sh.title, cl.title, si.title, cl.code
         ) AS subquery;
 `
 export default query;
