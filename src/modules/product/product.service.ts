@@ -30,6 +30,7 @@ export class ProductService {
   ) {
     if (where['fields']) {
       console.log(where);
+      console.log(_user);
       const products = (await this.productRepository.query(prodSearch({
         text: where['search'],
         filialId: where?.filial,
