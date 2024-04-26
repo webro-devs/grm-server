@@ -27,7 +27,7 @@ FROM
             LEFT JOIN color cl ON p."colorId" = cl.id
             LEFT JOIN size si ON p.size = si.title
         WHERE
-            p."isInternetShop" = true ${ model ? `and m.title = ${model}` : '' }
+            p."isInternetShop" = true ${ model ? `and m.title = '${model}'` : '' }
         GROUP BY
             m.title, c.title, co.title, s.title, sh.title, cl.title, si.title 
         ) AS subquery;
