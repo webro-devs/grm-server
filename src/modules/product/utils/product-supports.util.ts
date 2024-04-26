@@ -4,8 +4,8 @@ SELECT
     json_agg(DISTINCT collection) AS collection,
     json_agg(DISTINCT country) AS country,
     json_agg(DISTINCT style) AS style,
+    json_agg(DISTINCT shape) AS shape,
     json_agg(distinct jsonb_build_object('title', color, 'code', code)) AS color,
-    json_agg(DISTINCT color) AS color,
     json_agg(DISTINCT size) AS size
 FROM
     (
