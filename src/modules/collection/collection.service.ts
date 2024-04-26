@@ -230,6 +230,7 @@ export class CollectionService {
         products: {
           ...(filial && { filial: { id: filial } }),
           count: MoreThanOrEqual(1),
+          y: MoreThanOrEqual(1),
         },
       },
     };
