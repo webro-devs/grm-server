@@ -177,24 +177,24 @@ export class TransferService {
     const product = transfer.product;
     const newProduct: CreateProductDto = {
       code: product?.code || null,
-      color: product.color.id,
+      color: product?.color?.id || null,
       count: product.shape.toLowerCase() === 'rulo' ? product.count : transfer.count || 1,
       filial: transfer.to.id,
       imgUrl: product.imgUrl,
-      model: product.model.id,
+      model: product?.model.id,
       price: product.price,
       comingPrice: product.comingPrice,
       priceMeter: product.priceMeter,
-      shape: product.shape,
-      size: product.size,
-      style: product.style,
+      shape: product?.shape,
+      size: product?.size,
+      style: product?.style,
       otherImgs: product.otherImgs,
       totalSize: product.x * product.y * transfer.count,
       x: product.x,
       y: product.shape.toLowerCase() === 'rulo' ? transfer.count / 100 : product.y,
       partiya: product.partiya.id,
-      secondPrice: product.secondPrice,
-      country: product.country,
+      secondPrice: product?.secondPrice,
+      country: product?.country,
     };
 
     const res = await this.productService.create([newProduct], true);
