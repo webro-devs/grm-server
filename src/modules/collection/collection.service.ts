@@ -116,19 +116,6 @@ export class CollectionService {
   async remainingProductsByCollection(query: { filial: string; collection: any; model: any; }) {
     let data = [];
     if (query?.filial && query.filial != 'null') {
-      console.log('collection', await this.collectionRepository.find({
-        relations: { model: { products: { filial: true } } },
-        where: {
-          model: {
-            products: {
-              filial: { id: query.filial },
-              count: MoreThanOrEqual(1),
-              y: MoreThanOrEqual(1),
-            },
-          },
-        },
-      }));
-
       data = await this.collectionRepository.find({
         relations: { model: { products: { filial: true } } },
         where: {
