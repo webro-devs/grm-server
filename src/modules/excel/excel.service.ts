@@ -287,7 +287,7 @@ export class ExcelService {
       size: code?.size?.id || null,
       style: code?.style?.id || null,
     };
-    console.log(value);
+
     const productId = await this.productExcelRepository.createQueryBuilder()
       .insert()
       .into(ProductExcel)
@@ -295,7 +295,6 @@ export class ExcelService {
       .returning('id')
       .execute();
 
-    console.log(product);
     return await this.productExcelRepository.findOne({
       where: { id: product ? product.id : productId.raw[0].id },
       relations: { size: true, model: true, style: true, shape: true, color: true, collection: true },

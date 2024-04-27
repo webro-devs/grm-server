@@ -113,34 +113,40 @@ export class CollectionService {
     return await this.collectionRepository.save(data);
   }
 
-  async remainingProductsByCollection(query) {
+  async remainingProductsByCollection(query: { filial: string; collection: any; model: any; }) {
     let data = [];
     if (query?.filial && query.filial != 'null') {
+      console.log('collection', await this.collectionRepository.find({
+        relations: { model: { products: { filial: true } } },
+        where: { model: { products: { filial: { id: query.filial } } } },
+      }));
+
       data = await this.collectionRepository.find({
         relations: { model: { products: { filial: true } } },
-        where: query?.filial ? { ...(query?.collection && { id: query.collection }),
+        where: {
+          ...(query?.collection && { id: query.collection }),
           model: {
             ...(query?.model && { id: query.model }),
-            products: { filial: { id: query.filial }, count: MoreThan(0) },
+            products: { filial: { id: query.filial }, count: MoreThan(0), y: MoreThan(0) },
           },
-        } : {},
+        },
       });
     } else if (query?.collection) {
       data = await this.collectionRepository.find({
         relations: { model: { products: { color: true } } },
-        where: { id: query.collection, model: { products: { count: MoreThan(0) } } },
+        where: { id: query.collection, model: { products: { count: MoreThan(0), y: MoreThan(0) } } },
       });
     } else if (query.model) {
       data = await this.collectionRepository.find({
         relations: { model: { products: { color: true, model: { collection: true } } } },
         where: {
-          model: { id: query.model, products: { count: MoreThan(0) } },
+          model: { id: query.model, products: { count: MoreThan(0), y: MoreThan(0) } },
         },
       });
     } else {
       data = await this.collectionRepository.find({
         relations: { model: { products: { filial: true } } },
-        where: { model: { products: { count: MoreThan(0) } } },
+        where: { model: { products: { count: MoreThan(0), y: MoreThan(0) } } },
       });
     }
 
