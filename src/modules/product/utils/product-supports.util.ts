@@ -1,4 +1,4 @@
-const query = ( model: string, shape: string ) => `
+const query = ( model: string, shape: string, color: string ) => `
 SELECT
     json_agg(DISTINCT model) AS model,
     json_agg(DISTINCT collection) AS collection,
@@ -28,7 +28,10 @@ FROM
             LEFT JOIN color cl ON p."colorId" = cl.id
             LEFT JOIN size si ON p.size = si.title
         WHERE
-            p."isInternetShop" = true ${ model ? `and m.title = '${model}'` : '' } ${ shape ? `and sh.title = '${shape}'` : '' }
+            p."isInternetShop" = true 
+            ${ model ? `and m.title = '${model}'` : '' } 
+            ${ shape ? `and sh.title = '${shape}'` : '' } 
+            ${ color ? `and cl.title = '${color}'` : '' }
         GROUP BY
             m.title, c.title, co.title, s.title, sh.title, cl.title, si.title, cl.code
         ) AS subquery;
