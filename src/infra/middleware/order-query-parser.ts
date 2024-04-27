@@ -1,5 +1,5 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Response, NextFunction } from 'express';
+import { NextFunction, Response } from 'express';
 import { Between, In, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { OrderQueryDto } from '../shared/dto';
 
@@ -8,7 +8,20 @@ class OrderQueryParserMiddleware implements NestMiddleware {
   use(req, res: Response, next: NextFunction) {
     let where: any = {};
     let relations: any = {};
-    const { startDate, endDate, startPrice, endPrice, filialId, isActive }: OrderQueryDto = req.query;
+    const {
+      startDate,
+      endDate,
+      startPrice,
+      endPrice,
+      filialId,
+      isActive,
+      color,
+      shape,
+      model,
+      collection,
+      style,
+      size,
+    }: OrderQueryDto = req.query;
 
     if (startDate && endDate) {
       where = {
@@ -47,6 +60,47 @@ class OrderQueryParserMiddleware implements NestMiddleware {
 
     if(isActive){
       where.isActive = isActive;
+    }
+
+    if (style) {
+      const ddd = JSON.parse(style);
+      ddd.length && (where.product = { ...(where.product && where.product), style: { id: In(ddd) } });
+    }
+
+    if (size?.length) {
+      let ddd = JSON.parse(size);
+      ddd.length && (where.product = { ...(where.product && where.product), size: { id: In(ddd) } });
+    }
+
+    if (shape) {
+      let ddd = JSON.parse(shape);
+      ddd.length && (where.product = { ...(where.product && where.product), shape: { id: In(ddd) } });
+    }
+
+    if (color) {
+      const ddd = JSON.parse(color);
+      ddd.length && (where.product = { ...(where.product && where.product), color: { id: In(ddd) } });
+    }
+
+    if (collection) {
+      const ddd = JSON.parse(collection);
+      ddd.length && (where.product = {
+        ...(where.product && where.product),
+        model: {
+          collection: { id: In(ddd) },
+        },
+      });
+    }
+
+    if (model) {
+      const ddd = JSON.parse(model);
+      ddd.length && (where.product = {
+        ...(where.product && where.product),
+        model: {
+          id: In(ddd),
+          ...(where?.product?.model?.collection && where.product.model.collection),
+        },
+      });
     }
 
     req.where = where;

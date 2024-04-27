@@ -92,6 +92,19 @@ class OrderQueryDto {
   @IsOptional()
   readonly isMetric: string | boolean;
 
+  @IsOptional()
+  style: string;
+  @IsOptional()
+  shape: string;
+  @IsOptional()
+  color: string;
+  @IsOptional()
+  model: string;
+  @IsOptional()
+  collection: string;
+  @IsOptional()
+  size: string;
+
   constructor() {
     this.limit = this.limit ? this.limit : 100;
     this.page = this.page ? this.page : 1;
