@@ -28,7 +28,9 @@ FROM
             LEFT JOIN color cl ON p."colorId" = cl.id
             LEFT JOIN size si ON p.size = si.title
         WHERE
-            p."isInternetShop" = true 
+            p."isInternetShop" = true
+            and p.count > 0
+            and p.y > 0
             ${ model ? `and m.title = '${model}'` : '' } 
             ${ shape ? `and sh.title = '${shape}'` : '' } 
             ${ color ? `and cl.title = '${color}'` : '' }
