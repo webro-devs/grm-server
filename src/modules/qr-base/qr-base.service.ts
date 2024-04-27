@@ -14,6 +14,7 @@ import { ModelService } from '../model/model.service';
 import { ShapeService } from '../shape/shape.service';
 import { SizeService } from '../size/size.service';
 import { StyleService } from '../style/style.service';
+import { qr_search } from './utils';
 import QrBaseQueryDto from 'src/infra/shared/dto/qr-base.query.dto';
 
 @Injectable()
@@ -31,6 +32,25 @@ export class QrBaseService {
   ) {}
 
   async getAll(options: IPaginationOptions, query: QrBaseQueryDto): Promise<Pagination<QrBase>> {
+    if(query?.search){
+      query.search = query.search.split('+').join(' ');
+
+      const data = await this.qrBaseRepository.query(qr_search(query.search, +options.page, +options.limit, false));
+      const total = await this.qrBaseRepository.query(qr_search(query.search, +options.page, +options.limit, true));
+      console.log(total);
+      const response = {
+        items: data,
+        meta: {
+          totalItems: +total[0].count,
+          itemCount: data.length,
+          itemsPerPage: +options.limit,
+          totalPages: Math.floor(+total[0].count / +options.limit),
+          currentPage: +options.page
+        }
+      }
+      return response;
+    }
+
     return paginate<QrBase>(this.qrBaseRepository, options, {
       order: {
         date: 'DESC',

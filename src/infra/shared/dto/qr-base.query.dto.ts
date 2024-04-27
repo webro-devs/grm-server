@@ -58,6 +58,10 @@ class QrBaseQueryDto {
   @IsString()
   readonly size: string;
 
+  @IsOptional()
+  @IsString()
+  search: string;
+
   @ApiProperty({
     description: `style`,
     example: 'Classic',required: false

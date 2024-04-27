@@ -97,8 +97,8 @@ class OrderQueryParserMiddleware implements NestMiddleware {
       ddd.length && (where.product = {
         ...(where.product && where.product),
         model: {
+          ...(where?.product?.model && where.product.model),
           id: In(ddd),
-          ...(where?.product?.model?.collection && where.product.model.collection),
         },
       });
     }
