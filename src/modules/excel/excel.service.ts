@@ -243,7 +243,7 @@ export class ExcelService {
   async readProductsByModel(partiyaId: string, id: string) {
     const response = await this.modelService.productByExcel(id, partiyaId);
     //@ts-ignore
-    response['products'] = response.productsExcel;
+    response['products'] = response?.productsExcel;
     delete response.productsExcel;
 
     return response;
@@ -287,10 +287,17 @@ export class ExcelService {
       size: code?.size?.id || null,
       style: code?.style?.id || null,
     };
-    const productIds = await this.addProductToPartiya([value], newData.id);
+    console.log(value);
+    const productId = await this.productExcelRepository.createQueryBuilder()
+      .insert()
+      .into(ProductExcel)
+      .values(value as unknown as ProductExcel)
+      .returning('id')
+      .execute();
 
+    console.log(product);
     return await this.productExcelRepository.findOne({
-      where: { id: productIds.raw[0].id },
+      where: { id: productId[0].raw.id },
       relations: { size: true, model: true, style: true, shape: true, color: true, collection: true },
     });
   }

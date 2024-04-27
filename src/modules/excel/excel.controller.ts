@@ -255,7 +255,7 @@ export class ExcelController {
   })
   @HttpCode(HttpStatus.OK)
   async getModell(@Param('id') id: string, @Param('modelId') modelId: string) {
-    const response = await this.fileService.readProductsByModel(id, modelId);
+    const response = await this.fileService.readProductsByModel(id, modelId) || [];
 
     return response;
   }

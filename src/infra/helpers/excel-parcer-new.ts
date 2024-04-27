@@ -6,19 +6,23 @@ function convertInputToOutput(
 ): OutputProduct[] {
   const collections: { [id: string]: OutputProduct } = {};
   let totalM2AllCollections = 0;
+
   input.forEach((inputProduct) => {
     const {
       collection,
       model,
       size,
       count,
-      secondPrice,
-      priceMeter,
-      commingPrice,
+      secondPrice = 0,
+      priceMeter = 0,
+      commingPrice = 0,
       otherImgs,
     } = inputProduct;
-    const m2 = eval(size.title.match(/\d+\.*\d*/g).join('*')) / 10000;
-    // Track total m2 across all collections
+
+    // Extracting the size from the title
+    const sizeMatch = size.title.match(/\d+\.*\d*/g);
+    const m2 = sizeMatch ? sizeMatch.reduce((acc, val) => acc * parseFloat(val), 1) / 10000 : 0;
+
     totalM2AllCollections += m2;
 
     if (!collections[collection.id]) {
@@ -32,39 +36,25 @@ function convertInputToOutput(
       };
     }
 
-    collections[collection.id].m2 += m2;
-
     const collectionOutput = collections[collection.id];
+    collectionOutput.m2 += m2;
 
-    const modelIndex = collectionOutput.models.findIndex(
-      (m) => m.id === model.id,
-    );
-    if (modelIndex === -1) {
-      collectionOutput.models.push({
+    let modelOutput = collectionOutput.models.find((m) => m.id === model.id);
+
+    if (!modelOutput) {
+      modelOutput = {
         id: model.id,
         title: model.title,
-        commingPrice: commingPrice || 0,
-        priceMeter: priceMeter || 0,
+        commingPrice: commingPrice,
+        priceMeter: priceMeter,
         products: [],
-      });
+      };
+      collectionOutput.models.push(modelOutput);
     }
 
-    const modelOutput = collectionOutput.models.find((m) => m.id === model.id)!;
     modelOutput.products.push({
-      color: inputProduct.color,
-      style: inputProduct.style,
-      shape: inputProduct.shape,
-      size: inputProduct.size,
-      code: inputProduct.code,
-      count: count,
-      img: inputProduct.img,
-      price: (priceMeter + secondPrice) * m2 || 0,
-      secondPrice: secondPrice || 0,
-      priceMeter: priceMeter || 0,
-      commingPrice: commingPrice || 0,
-      filial: inputProduct.filial,
-      partiya: inputProduct.partiya,
-      otherImgs: otherImgs,
+      ...inputProduct,
+      price: (priceMeter + secondPrice) * m2,
       m2: m2,
     });
   });
@@ -72,19 +62,10 @@ function convertInputToOutput(
   return Object.values(collections);
 }
 
+
 function convertOutputToInput(output: OutputProduct[]): InputProduct[] {
   const input: InputProduct[] = [];
-
-  // Implement your conversion logic here
 
   return input;
 }
 
-// Example usage:
-// const inputProducts: InputProduct[] = []; // Populate with your input data
-// const outputProducts: OutputProduct[] = convertInputToOutput(inputProducts);
-// const convertedInputProducts: InputProduct[] =
-//   convertOutputToInput(outputProducts);
-
-// console.log(outputProducts);
-// console.log(convertedInputProducts);
