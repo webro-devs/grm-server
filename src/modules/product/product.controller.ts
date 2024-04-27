@@ -71,8 +71,8 @@ export class ProductController {
     description: 'The product supports were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getDataInternetShopSupports(@Query() query: { model: string, shape: string, color: string } ) {
-    return (await this.productService.getSupports(query?.model, query?.shape, query?.color))[0];
+  async getDataInternetShopSupports(@Query() query: { model: string, shape: string, color: string, size: string } ) {
+    return (await this.productService.getSupports(query?.model, query?.shape, query?.color, query?.size))[0];
   }
 
   @Get('/baza')

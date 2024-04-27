@@ -1,4 +1,4 @@
-const query = ( model: string, shape: string, color: string ) => `
+const query = ( model: string, shape: string, color: string, size: string ) => `
 SELECT
     json_agg(DISTINCT model) AS model,
     json_agg(DISTINCT collection) AS collection,
@@ -32,6 +32,7 @@ FROM
             ${ model ? `and m.title = '${model}'` : '' } 
             ${ shape ? `and sh.title = '${shape}'` : '' } 
             ${ color ? `and cl.title = '${color}'` : '' }
+            ${ size ? `and s.title = '${size}'` : '' }
         GROUP BY
             m.title, c.title, co.title, s.title, sh.title, cl.title, si.title, cl.code
         ) AS subquery;
