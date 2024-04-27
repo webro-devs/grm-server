@@ -297,7 +297,7 @@ export class ExcelService {
 
     console.log(product);
     return await this.productExcelRepository.findOne({
-      where: { id: productId[0].raw.id },
+      where: { id: product ? product.id : productId.raw[0].id },
       relations: { size: true, model: true, style: true, shape: true, color: true, collection: true },
     });
   }
