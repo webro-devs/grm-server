@@ -35,6 +35,7 @@ export class QrBaseService {
     if(query?.search){
       query.search = query.search.split('+').join(' ');
 
+      console.log(options);
       const data = await this.qrBaseRepository.query(qr_search(query.search, +options.page, +options.limit, false));
       const total = await this.qrBaseRepository.query(qr_search(query.search, (+options.page - 1) * +options.limit, +options.limit, true));
       console.log(total);
