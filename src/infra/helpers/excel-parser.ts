@@ -46,11 +46,11 @@ const transformedObj = data.reduce((acc, curr) => {
     country,
   };
 
-  const collectionItem = acc.find((item) => item.title === collection.title);
+  const collectionItem = acc.find((item) => item.title.toLowerCase() === collection.title.toLowerCase());
 
   if (collectionItem) {
     const modelItem = collectionItem.models.find(
-      (item) => item.title === model.title,
+      (item) => item.title.toLowerCase() === model.title.toLowerCase(),
     );
 
     if (modelItem) {
