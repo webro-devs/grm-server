@@ -46,7 +46,6 @@ export class ExcelService {
     private readonly styleService: StyleService,
     private readonly filialService: FilialService,
     private readonly qrBaseService: QrBaseService,
-    private readonly connection: DataSource,
   ) {
   }
 
@@ -147,22 +146,19 @@ export class ExcelService {
         if (!model) {
           throw new BadRequestException('model not found!');
         }
-        console.log("data 1 ============",data.size);
-        console.log("size =============", (await this.sizeService.getOneByName(data.size)));
         data.model = model;
         data.collection = collection;
         data?.country ? data.country : (data.country = partiya.country);
         data.partiya = partiya.id;
-        data.color = (await this.colorService.getOneByName(data.color.trim()))?.id || null;
-        data.shape = (await this.shapeService.getOneByName(data.shape.trim()))?.id || null;
-        data.size = (await this.sizeService.getOneByName(data.size.trim()))?.id || null;
-        data.style = (await this.styleService.getOneByName(data.style.trim()))?.id || null;
+        data.color = (await this.colorService.getOneByName(data?.color?.trim()))?.id || null;
+        data.shape = (await this.shapeService.getOneByName(data?.shape?.trim()))?.id || null;
+        data.size = (await this.sizeService.getOneByName(data?.size?.trim()))?.id || null;
+        data.style = (await this.styleService.getOneByName(data?.style?.trim()))?.id || null;
         data.count = data.count < 1 ? 1 : data.count;
-        console.log("data 2 ============", data.size);
         const price = await this.returnPrice(model.id);
 
         if (codes.length < 1) {
-          const country = await this.countryService.findOrCreate(data.country);
+          const country = await this.countryService.findOrCreate(data?.country?.trim());
           await this.qrBaseService.create({ ...data, country });
         }
         data = { ...data, ...price };

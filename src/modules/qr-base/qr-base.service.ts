@@ -164,28 +164,28 @@ async getOneByCode(code: string) {
         let data = { ...support };
 
         if (!response) {
-          data.collection = await this.collectionService.findOrCreate(data.collection);
-          data.country ? (data.country = await this.countryService.findOrCreate(data.country)) : (data.country = null);
+          data.collection = await this.collectionService.findOrCreate(data?.collection?.trim());
+          data.country ? (data.country = await this.countryService.findOrCreate(data?.country?.trim())) : (data.country = null);
 
           data.model
-            ? (data.model = await this.modelService.findOrCreate(data.collection, data.model))
+            ? (data.model = await this.modelService.findOrCreate(data?.collection?.trim(), data?.model?.trim()))
             : (data.model = null);
-          data.color ? (data.color = await this.colorService.findOrCreate(data.color)) : (data.color = null);
-          data.shape ? (data.shape = await this.shapeService.findOrCreate(data.shape)) : (data.shape = null);
-          data.size ? (data.size = await this.sizeService.findOrCreate(data.size)) : (data.size = null);
-          data.style ? (data.style = await this.styleService.findOrCreate(data.style)) : (data.style = null);
+          data.color ? (data.color = await this.colorService.findOrCreate(data?.color?.trim())) : (data.color = null);
+          data.shape ? (data.shape = await this.shapeService.findOrCreate(data?.shape?.trim())) : (data.shape = null);
+          data.size ? (data.size = await this.sizeService.findOrCreate(data?.size?.trim())) : (data.size = null);
+          data.style ? (data.style = await this.styleService.findOrCreate(data?.style?.trim())) : (data.style = null);
 
           await this.create(data);
         } else {
-          data?.collection && (data.collection = await this.collectionService.findOrCreate(data.collection));
-          data?.country && (data.country = await this.countryService.findOrCreate(data.country));
+          data?.collection && (data.collection = await this.collectionService.findOrCreate(data?.collection?.trim()));
+          data?.country && (data.country = await this.countryService.findOrCreate(data?.country?.trim()));
           data?.collection &&
             data?.model &&
-            (data.model = await this.modelService.findOrCreate(data.collection, data.model));
-          data?.color && (data.color = await this.colorService.findOrCreate(data.color));
-          data?.shape && (data.shape = await this.shapeService.findOrCreate(data.shape));
-          data?.size && (data.size = await this.sizeService.findOrCreate(data.size));
-          data?.style && (data.style = await this.styleService.findOrCreate(data.style));
+            (data.model = await this.modelService.findOrCreate(data?.collection?.trim(), data?.model?.trim()));
+          data?.color && (data.color = await this.colorService.findOrCreate(data?.color?.trim()));
+          data?.shape && (data.shape = await this.shapeService.findOrCreate(data?.shape?.trim()));
+          data?.size && (data.size = await this.sizeService.findOrCreate(data?.size?.trim()));
+          data?.style && (data.style = await this.styleService.findOrCreate(data?.style?.trim()));
 
           await this.change(data, response.id);
         }

@@ -36,7 +36,6 @@ export class SizeService {
     const [data] = await this.sizeRepository.find({
         where: { title: ILike(title) },
     });
-    console.log(ILike(title));
 
     return data;
   }
