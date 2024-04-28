@@ -44,7 +44,7 @@ export class QrBaseService {
           totalItems: +total[0].count,
           itemCount: data.length,
           itemsPerPage: +options.limit,
-          totalPages: Math.floor(+total[0].count / +options.limit),
+          totalPages: Math.round(+total[0].count / +options.limit),
           currentPage: +options.page
         }
       }
