@@ -97,8 +97,7 @@
 //
 // export default excelDataParser;
 
-const excelDataParser = (data, expense) => {
-  let allM2 = 0;
+const excelDataParser = (data) => {
   const transformedObj = data.reduce((acc, curr) => {
     const {
       id,
@@ -121,10 +120,15 @@ const excelDataParser = (data, expense) => {
       isEdite = false,
     } = curr;
 
-    // Avoid using eval()
-    const sizeMatches = size.title.match(/\d+\.*\d*/g);
-    const m2 = sizeMatches ? (sizeMatches.reduce((acc, val) => acc * parseFloat(val), 1) / 10000) * count : 0;
-    allM2 += m2;
+    // Check if size data is valid
+    const sizeMatches = size && size.title.match(/\d+\.*\d*/g);
+    if (!sizeMatches) return acc;
+
+    // Calculate m2
+    const m2 = sizeMatches.reduce((acc, val) => acc * parseFloat(val), 1) / 10000 * count;
+
+    // Update total m2
+    acc.totalM2 += m2;
 
     const datas = {
       isEdite,
@@ -147,53 +151,54 @@ const excelDataParser = (data, expense) => {
       country,
     };
 
-    const collectionItem = acc.find((item) => item.title === (collection ? collection.title : null));
+    const collectionTitle = collection ? collection.title : null;
+    const modelTitle = model ? model.title : null;
 
-    if (collectionItem) {
-      const modelItem = collectionItem.models.find(
-        (item) => item.title === (model ? model.title : null),
-      );
-
-      if (modelItem) {
-        modelItem.m2 += m2;
-        modelItem.products.push(datas);
-        collectionItem.collection_m += m2;
-      } else {
-        collectionItem.models.push({
-          id: model ? model.id : null,
-          title: model ? model.title : null,
-          cost: priceMeter,
-          commingPrice: commingPrice,
-          m2: m2,
-          products: [datas],
-        });
-      }
-      collectionItem.collection_m += m2;
-    } else {
-      acc.push({
+    let collectionItem = acc.collections[collectionTitle];
+    if (!collectionItem) {
+      collectionItem = {
         id: collection ? collection.id : null,
-        title: collection ? collection.title : null,
+        title: collectionTitle,
         collection_cost: 0,
         collection_exp: 0,
-        collection_m: m2,
-        models: [
-          {
-            id: model ? model.id : null,
-            title: model ? model.title : null,
-            cost: priceMeter,
-            commingPrice: commingPrice,
-            m2: m2,
-            products: [datas],
-          },
-        ],
-      });
+        collection_m: 0,
+        models: {},
+      };
+      acc.collections[collectionTitle] = collectionItem;
     }
 
-    return acc;
-  }, []);
+    let modelItem = collectionItem.models[modelTitle];
+    if (!modelItem) {
+      modelItem = {
+        id: model ? model.id : null,
+        title: modelTitle,
+        cost: priceMeter,
+        commingPrice: commingPrice,
+        m2: 0,
+        products: [],
+      };
+      collectionItem.models[modelTitle] = modelItem;
+    }
 
-  // Initialize transformedObj as an object instead of an array
-  return Object.values(transformedObj);
+    modelItem.m2 += m2;
+    modelItem.products.push(datas);
+    collectionItem.collection_m += m2;
+
+    return acc;
+  }, { totalM2: 0, collections: {} });
+
+  transformedObj.totalM2 = Math.round(transformedObj.totalM2 * 100) / 100;
+
+  // Convert collections object to array
+  const transformedArray = Object.values(transformedObj.collections).map(collection => {
+    if (collection?.['models']) {
+      collection['models'] = Object.values(collection['models']);
+      return collection;
+    }
+  });
+
+  return transformedArray;
 };
 
 export default excelDataParser;
+
