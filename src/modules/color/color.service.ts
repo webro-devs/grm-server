@@ -1,7 +1,7 @@
 import { NotFoundException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 
 import { Color } from './color.entity';
 import { CreateColorDto, UpdateColorDto } from './dto';
@@ -39,7 +39,7 @@ export class ColorService {
   async getOneByName(title: string) {
     const data = await this.colorRepository
       .findOne({
-        where: { title },
+        where: { title: ILike(title) },
       })
       .catch(() => {
         throw new NotFoundException('Color not found');

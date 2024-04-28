@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 
 import { Size } from './size.entity';
 import { CreateSizeDto, UpdateSizeDto } from './dto';
@@ -35,7 +35,7 @@ export class SizeService {
   async getOneByName(title: string) {
     return await this.sizeRepository
       .findOne({
-        where: { title },
+        where: { title: ILike(title) },
       })
       .catch(() => {
         throw new NotFoundException('Size not found');

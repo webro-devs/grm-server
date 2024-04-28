@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 import { UpdateStyleDto, CreateStyleDto } from './dto';
@@ -36,7 +36,7 @@ export class StyleService {
   async getOneByName(title: string) {
     const data = await this.styleRepository
       .findOne({
-        where: { title },
+        where: { title: ILike(title) },
       })
       .catch(() => {
         throw new NotFoundException('Style not found');

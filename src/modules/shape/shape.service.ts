@@ -1,5 +1,5 @@
 import { NotFoundException, Injectable } from '@nestjs/common';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 import { UpdateShapeDto, CreateShapeDto } from './dto';
@@ -36,7 +36,7 @@ export class ShapeService {
   async getOneByName(title: string) {
     const data = await this.shapeRepository
       .findOne({
-        where: { title },
+        where: { title: ILike(title) },
       })
       .catch(() => {
         throw new NotFoundException('Shape not found');
