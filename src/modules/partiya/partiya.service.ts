@@ -56,7 +56,7 @@ export class PartiyaService {
         relations: {
           productsExcel: {
             collection: true,
-            model: true,
+            model: { collection: true },
             color: true,
             size: true,
             shape: true,

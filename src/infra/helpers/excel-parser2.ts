@@ -11,7 +11,7 @@ const excelDataParser = (products, rasxod) => {
   const rasxodNaKv = rasxod / fullKv;
 
   const res = products.reduce((acc, curr) => {
-    const collectionTitle = curr?.collection?.title || null;
+    const collectionTitle = curr?.model?.collection?.title || null;
     const modelTitle = curr?.model?.title || null;
 
     const collection = acc[collectionTitle] || {
