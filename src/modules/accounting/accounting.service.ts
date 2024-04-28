@@ -197,7 +197,7 @@ export class AccountingService {
     const items = paginateArray([...orders[0], ...cashflows[0]], where.page, where.limit);
     const result = {
       //@ts-ignore
-      items: items.sort((a: { date: string | number | Date; }, b: { date: string | number | Date; }) => new Date(b.date) - new Date(a.date)),
+      items: items,
       meta: {
         totalItems: orders[1] + cashflows[1],
         itemCount: items.length,
