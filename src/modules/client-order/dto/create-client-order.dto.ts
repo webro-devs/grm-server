@@ -111,7 +111,7 @@ class CreateClientOrderDto {
   })
   @IsOptional()
   @IsString()
-  readonly filial: string;
+  filial: string;
 
   @ApiProperty({
     description: `user`,
@@ -119,7 +119,7 @@ class CreateClientOrderDto {
   })
   @IsOptional()
   @IsString()
-  readonly user: string;
+  user: string;
 
   @ApiProperty({
     description: `order`,

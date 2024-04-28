@@ -107,4 +107,24 @@ export class FilialService {
   async getFilialWithKassa() {
     return this.filialRepository.find({ relations: { kassa: { orders: true } } });
   }
+
+  async getIDokon() {
+    const [data] = await this.filialRepository.find({ where: { title: 'I-Dokon' } });
+    if (!data) {
+      const req = this.filialRepository.create({
+        'title': 'I-Dokon',
+        'name': 'I-Dokon',
+        'telegram': 't.me/sanat-hali',
+        'address': 'Internet magazin',
+        'startWorkTime': '09:00',
+        'endWorkTime': '21:00',
+        'addressLink': 'https://maps.app.goo.gl/PTP4RyzLSnHbNKSNA',
+        'landmark': 'Sanat Hali',
+        'phone1': '+998 99 761-11-11',
+        'phone2': '+998 99 761-11-11',
+      });
+      return await this.filialRepository.save(req);
+    }
+    return data;
+  }
 }

@@ -1,34 +1,23 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  HttpStatus,
-  Delete,
-  Patch,
-  Param,
-  Get,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, Req } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { UpdateClientOrderDto, CreateClientOrderDto } from './dto';
+import { CreateClientOrderDto, UpdateClientOrderDto } from './dto';
 import { ClientOrder } from './client-order.entity';
 import { ClientOrderService } from './client-order.service';
 import { PaginationDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { Public } from '../auth/decorators/public.decorator';
+import { FilialService } from '../filial/filial.service';
 
 @ApiTags('Client-Order')
 @Controller('client-order')
 export class ClientOrderController {
-  constructor(private readonly clientRequestService: ClientOrderService) {}
+  constructor(
+    private readonly clientRequestService: ClientOrderService,
+    private readonly filialService: FilialService,
+  ) {
+  }
 
   @Get('/')
   @ApiOperation({ summary: 'Method: returns all client order' })
@@ -61,15 +50,16 @@ export class ClientOrderController {
     return this.clientRequestService.getOne(id);
   }
 
-  @Public()
   @Post('/')
   @ApiOperation({ summary: 'Method: creates new client order' })
   @ApiCreatedResponse({
     description: 'The client order was created successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async saveData(@Body() data: CreateClientOrderDto) {
-    return await this.clientRequestService.create(data);
+  async saveData(@Body() data: CreateClientOrderDto, @Req() req: any) {
+    data.user = req.user;
+    data.filial = (await this.filialService.getIDokon()).id;
+    await this.clientRequestService.create(data);
   }
 
   @Patch('/:id')

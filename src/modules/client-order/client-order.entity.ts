@@ -46,16 +46,7 @@ export class ClientOrder {
   totalPrice: number;
 
   @Column({ type: 'varchar', nullable: true })
-  city: string;
-
-  @Column({ type: 'varchar', nullable: true })
-  region: string;
-
-  @Column({ type: 'varchar', nullable: true })
-  street: string;
-
-  @Column({ type: 'varchar', nullable: true })
-  house: string;
+  location: string;
 
   @Column({ type: 'varchar', nullable: true })
   comment: string;
@@ -89,7 +80,7 @@ export class ClientOrder {
   isActive: boolean = false;
 
   @Column({ type: 'boolean', default: false })
-  isChecked: boolean = false;
+  isChecked: boolean;
 
   @ManyToOne(() => Filial, (filial) => filial.clientOrders, {
     onDelete: 'SET NULL',

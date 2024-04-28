@@ -62,6 +62,10 @@ export class ModelService {
       where: { id, productsExcel: { partiya: { id: partiyaId } } },
     });
 
+    if(!data?.productsExcel){
+      data.productsExcel = []
+    }
+
     return data;
   }
 
