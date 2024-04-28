@@ -33,13 +33,12 @@ export class SizeService {
   }
 
   async getOneByName(title: string) {
-    return await this.sizeRepository
-      .findOne({
+    const [data] = await this.sizeRepository.find({
         where: { title: ILike(title) },
-      })
-      .catch(() => {
-        throw new NotFoundException('Size not found');
-      });
+    });
+    console.log(ILike(title));
+
+    return data;
   }
 
   async deleteOne(id: string) {
