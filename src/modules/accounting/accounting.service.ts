@@ -136,7 +136,7 @@ export class AccountingService {
     }
     if (!query.startDate) {
       const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      today.setHours(23, 59, 59, 999);
       query.startDate = today;
     }
     let from = new Date(query.startDate);
@@ -145,7 +145,7 @@ export class AccountingService {
     from.setHours(0, 0, 0, 1);
     to.setHours(23, 59, 59, 999);
 
-    const orderQuery = this.entityManager
+    const order = this.entityManager
       .getRepository('order')
       .createQueryBuilder('order')
       .leftJoinAndSelect('order.casher', 'casher')
@@ -156,55 +156,53 @@ export class AccountingService {
       .leftJoinAndSelect('product.model', 'model')
       .leftJoinAndSelect('model.collection', 'collection')
       .leftJoin('kassa.filial', 'filial')
-      .where('order.isActive != :progress', { progress: 'progress' });
+      .where('order.isActive != :progres', { progres: 'progress' });
 
-    const cashflowQuery = this.entityManager
+    const cashflow = this.entityManager
       .getRepository('cashflow')
       .createQueryBuilder('cashflow')
       .leftJoinAndSelect('cashflow.casher', 'casher')
       .leftJoinAndSelect('cashflow.kassa', 'kassa')
-      .leftJoin('cashflow.filial', 'filial');
+      .leftJoin('kassa.filial', 'filial');
 
     if (where.type === 'income') {
-      orderQuery.andWhere('LOWER(order.isActive) LIKE LOWER(:progress)', { progress: '%ccep%' });
-      cashflowQuery.andWhere('LOWER(cashflow.type) LIKE LOWER(:progress)', { progress: '%их%' });
+      order.where('LOWER(order.isActive) LIKE LOWER(:progres)', { progres: '%ccep%' });
+      cashflow.where('LOWER(cashflow.type) LIKE LOWER(:progres)', { progres: '%их%' });
     }
 
     if (where.type === 'expense') {
-      orderQuery.andWhere('LOWER(order.isActive) LIKE LOWER(:type)', { type: '%ejec%' });
-      cashflowQuery.andWhere('LOWER(cashflow.type) LIKE LOWER(:type)', { type: '%сх%' });
+      order.where('LOWER(order.isActive) LIKE LOWER(:type)', { type: '%ejec%' });
+      cashflow.where('LOWER(cashflow.type) LIKE LOWER(:type)', { type: '%сх%' });
     }
 
     if (where.filial) {
-      orderQuery.andWhere('filial.id = :filial', { filial: where.filial });
-      cashflowQuery.andWhere('filial.id = :filial', { filial: where.filial });
+      order.andWhere('filial.id = :filial', { filial: where.filial });
+      cashflow.andWhere('filial.id = :filial', { filial: where.filial });
     }
 
     if (where.endDate && where.startDate) {
-      orderQuery.andWhere('order.date BETWEEN :startDate AND :endDate', { startDate: from, endDate: to });
-      cashflowQuery.andWhere('cashflow.date BETWEEN :startDate AND :endDate', { startDate: from, endDate: to });
+      order.andWhere('order.date BETWEEN :startDate AND :endDate', { startDate: from, endDate: to });
+      cashflow.andWhere('cashflow.date BETWEEN :startDate AND :endDate', { startDate: from, endDate: to });
     } else if (where.startDate) {
-      orderQuery.andWhere('order.date >= :startDate', { startDate: from });
-      cashflowQuery.andWhere('cashflow.date >= :startDate', { startDate: from });
+      order.andWhere('order.date >= :startDate', { startDate: from });
+      cashflow.andWhere('cashflow.date >= :startDate', { startDate: from });
     } else if (where.endDate) {
-      orderQuery.andWhere('order.date <= :endDate', { endDate: to });
-      cashflowQuery.andWhere('cashflow.date <= :endDate', { endDate: to });
+      order.andWhere('order.date <= :endDate', { endDate: to });
+      cashflow.andWhere('cashflow.date <= :endDate', { endDate: to });
     }
 
-    const [orders, ordersCount] = await orderQuery.getManyAndCount();
-    const [cashflows, cashflowsCount] = await cashflowQuery.getManyAndCount();
+    const orders = await order.getManyAndCount();
+    const cashflows = await cashflow.getManyAndCount();
 
-    const allItems = [...orders, ...cashflows];
-    const sortedItems = allItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    const items = paginateArray(sortedItems, where.page, where.limit);
-
+    const items = paginateArray([...orders[0], ...cashflows[0]], where.page, where.limit);
     const result = {
-      items,
+      //@ts-ignore
+      items: items.sort((b, a) => new Date(a.date) - new Date(b.date)),
       meta: {
-        totalItems: ordersCount + cashflowsCount,
+        totalItems: orders[1] + cashflows[1],
         itemCount: items.length,
         itemsPerPage: where?.limit,
-        totalPages: Math.ceil((ordersCount + cashflowsCount) / where.limit),
+        totalPages: Math.ceil((orders[1] + cashflows[1]) / where.limit),
         currentPage: where.page,
       },
     };

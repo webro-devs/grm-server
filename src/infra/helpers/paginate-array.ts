@@ -1,4 +1,4 @@
-function paginateArray(array, page, limit) {
+function  paginateArray(array, page, limit) {
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
 
