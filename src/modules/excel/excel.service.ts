@@ -153,10 +153,10 @@ export class ExcelService {
         data.collection = collection;
         data?.country ? data.country : (data.country = partiya.country);
         data.partiya = partiya.id;
-        data.color = (await this.colorService.getOneByName(data.color))?.id || null;
-        data.shape = (await this.shapeService.getOneByName(data.shape))?.id || null;
-        data.size = (await this.sizeService.getOneByName(data.size))?.id || null;
-        data.style = (await this.styleService.getOneByName(data.style))?.id || null;
+        data.color = (await this.colorService.getOneByName(data.color.trim()))?.id || null;
+        data.shape = (await this.shapeService.getOneByName(data.shape.trim()))?.id || null;
+        data.size = (await this.sizeService.getOneByName(data.size.trim()))?.id || null;
+        data.style = (await this.styleService.getOneByName(data.style.trim()))?.id || null;
         data.count = data.count < 1 ? 1 : data.count;
         console.log("data 2 ============", data.size);
         const price = await this.returnPrice(model.id);
