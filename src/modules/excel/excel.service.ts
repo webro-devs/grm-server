@@ -130,7 +130,7 @@ export class ExcelService {
             where: { code: support.code, partiya: { id: partiyaId } },
           });
 
-          if (product && !product?.shape?.meter) {
+          if (product && product?.shape?.title.toLowerCase() !== 'rulo') {
             product.count += 1;
             await this.productExcelRepository.save(product);
             continue;

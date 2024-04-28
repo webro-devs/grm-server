@@ -1,7 +1,6 @@
-import { NotFoundException, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { Size } from './size.entity';
 import { CreateSizeDto, UpdateSizeDto } from './dto';
@@ -34,15 +33,13 @@ export class SizeService {
   }
 
   async getOneByName(title: string) {
-    const data = await this.sizeRepository
+    return await this.sizeRepository
       .findOne({
         where: { title },
       })
       .catch(() => {
         throw new NotFoundException('Size not found');
       });
-
-    return data;
   }
 
   async deleteOne(id: string) {
