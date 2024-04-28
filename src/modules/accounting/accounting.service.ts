@@ -155,7 +155,7 @@ export class AccountingService {
       .leftJoinAndSelect('product.color', 'color')
       .leftJoinAndSelect('product.model', 'model')
       .leftJoinAndSelect('model.collection', 'collection')
-      .leftJoin('order.filial', 'filial')
+      .leftJoin('kassa.filial', 'filial')
       .where('order.isActive != :progress', { progress: 'progress' });
 
     const cashflowQuery = this.entityManager
