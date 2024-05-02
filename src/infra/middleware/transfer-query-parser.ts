@@ -24,16 +24,13 @@ class TransferQueryParserMiddleware implements NestMiddleware {
       };
     }
 
-    if (size?.length) {
-      where.product = { size: In(JSON.parse(size)) };
-    }
-
-    if (collectionId || model) {
+    if (collectionId || model || size) {
       where.product = {
+        ...(size && JSON.parse(size).length && { size: In(JSON.parse(size)) }),
         ...(where?.product && where.product),
         model: {
-          ...(model?.length && JSON.parse(model) && { id: In(JSON.parse(model)) }),
-          ...(collectionId?.length && JSON.parse(collectionId) && {
+          ...(model?.length && JSON.parse(model).length && { id: In(JSON.parse(model)) }),
+          ...(collectionId?.length && JSON.parse(collectionId).length && {
             collection: {
               id: In(JSON.parse(collectionId)),
             },
