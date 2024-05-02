@@ -53,7 +53,7 @@ class TransferQueryDto {
     example: 'uuid',
   })
   @IsOptional()
-  @IsString()
+  @IsArray()
   @Transform(parseTextToArray)
   readonly collectionId: string;
 
@@ -109,6 +109,7 @@ class TransferQueryDto {
   readonly limit: number;
 
   @IsOptional()
+  @IsArray()
   @Transform(parseTextToArray)
   model: string;
 
