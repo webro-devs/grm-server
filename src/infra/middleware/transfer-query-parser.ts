@@ -32,8 +32,8 @@ class TransferQueryParserMiddleware implements NestMiddleware {
       where.product = {
         ...(where?.product && where.product),
         model: {
-          ...(model && { id: In(JSON.parse(model)) }),
-          ...(collectionId && JSON.parse(collectionId) && {
+          ...(model?.length && JSON.parse(model) && { id: In(JSON.parse(model)) }),
+          ...(collectionId?.length && JSON.parse(collectionId) && {
             collection: {
               id: In(JSON.parse(collectionId)),
             },
