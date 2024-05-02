@@ -36,21 +36,17 @@ export class ModelService {
   }
 
   async getOne(id: string) {
-    const data = await this.modelRepository.findOne({
+    return await this.modelRepository.findOne({
       where: { id },
       relations: { collection: true },
     });
-
-    return data;
   }
 
   async getOneExcel(id: string) {
-    const data = await this.modelRepository.findOne({
+    return await this.modelRepository.findOne({
       where: { id },
       relations: { productsExcel: { partiya: true } },
     });
-
-    return data;
   }
 
   async productByExcel(id: string, partiyaId) {

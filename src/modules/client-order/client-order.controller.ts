@@ -8,14 +8,12 @@ import { ClientOrderService } from './client-order.service';
 import { PaginationDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { Public } from '../auth/decorators/public.decorator';
-import { FilialService } from '../filial/filial.service';
 
 @ApiTags('Client-Order')
 @Controller('client-order')
 export class ClientOrderController {
   constructor(
     private readonly clientRequestService: ClientOrderService,
-    private readonly filialService: FilialService,
   ) {
   }
 
@@ -57,9 +55,7 @@ export class ClientOrderController {
   })
   @HttpCode(HttpStatus.CREATED)
   async saveData(@Body() data: CreateClientOrderDto, @Req() req: any) {
-    data.user = req.user;
-    data.filial = (await this.filialService.getIDokon()).id;
-    await this.clientRequestService.create(data);
+    await this.clientRequestService.create(data, req.user);
   }
 
   @Patch('/:id')

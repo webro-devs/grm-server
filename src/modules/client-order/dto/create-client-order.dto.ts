@@ -58,36 +58,20 @@ class CreateClientOrderDto {
   readonly totalPrice: number;
 
   @ApiProperty({
-    description: `City`,
-    example: 'London',
+    description: `location`,
+    example: 'London dark St 5',
   })
   @IsOptional()
   @IsString()
-  readonly city: string;
+  readonly location: string;
 
   @ApiProperty({
-    description: `Region`,
-    example: 'Walk street',
+    description: `location link`,
+    example: 'https://meet.google.com/hrr-utnj-gcd',
   })
   @IsOptional()
   @IsString()
-  readonly region: string;
-
-  @ApiProperty({
-    description: `Street`,
-    example: '4-corner',
-  })
-  @IsOptional()
-  @IsString()
-  readonly street: string;
-
-  @ApiProperty({
-    description: `House`,
-    example: '4-h',
-  })
-  @IsOptional()
-  @IsString()
-  readonly house: string;
+  readonly location_link: string;
 
   @ApiProperty({
     description: `comment`,
@@ -104,22 +88,6 @@ class CreateClientOrderDto {
   @IsOptional()
   @IsString()
   readonly date: string;
-
-  @ApiProperty({
-    description: `filial`,
-    example: 'uuid',
-  })
-  @IsOptional()
-  @IsString()
-  filial: string;
-
-  @ApiProperty({
-    description: `user`,
-    example: 'uuid',
-  })
-  @IsOptional()
-  @IsString()
-  user: string;
 
   @ApiProperty({
     description: `order`,

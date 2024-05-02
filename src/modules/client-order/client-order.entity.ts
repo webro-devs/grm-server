@@ -49,6 +49,9 @@ export class ClientOrder {
   location: string;
 
   @Column({ type: 'varchar', nullable: true })
+  location_link: string;
+
+  @Column({ type: 'varchar', nullable: true })
   comment: string;
 
   @Column({ type: 'varchar', nullable: true })
@@ -79,7 +82,7 @@ export class ClientOrder {
   @Column({ type: 'boolean', default: false })
   isActive: boolean = false;
 
-  @Column({ type: 'boolean', default: false })
+  @Column({ type: 'boolean', default: null, nullable: true })
   isChecked: boolean;
 
   @ManyToOne(() => Filial, (filial) => filial.clientOrders, {

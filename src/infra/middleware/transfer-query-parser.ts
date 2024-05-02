@@ -8,7 +8,7 @@ class TransferQueryParserMiddleware implements NestMiddleware {
   use(req, res: Response, next: NextFunction) {
     let where: any = {};
     let relations: any = {};
-    const { startDate, endDate, size, collectionId, type, progress, filial }: TransferQueryDto = req.query;
+    const { startDate, endDate, size, collectionId, type, progress, filial, model }: TransferQueryDto = req.query;
 
     if (startDate && endDate) {
       where = {
@@ -25,15 +25,19 @@ class TransferQueryParserMiddleware implements NestMiddleware {
     }
 
     if (size?.length) {
-      where.product = { size: In(size) };
+      where.product = { size: In(JSON.parse(size)) };
     }
 
-    if (collectionId) {
+    if (collectionId || model) {
       where.product = {
+        ...(where?.product && where.product),
         model: {
-          collection: {
-            id: collectionId,
-          },
+          ...(model && { id: In(JSON.parse(model)) }),
+          ...(collectionId && {
+            collection: {
+              id: In(JSON.parse(collectionId)),
+            },
+          }),
         },
       };
     }
