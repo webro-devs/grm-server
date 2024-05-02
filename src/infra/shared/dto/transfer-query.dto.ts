@@ -53,7 +53,6 @@ class TransferQueryDto {
     example: 'uuid',
   })
   @IsOptional()
-  @IsArray()
   @Transform(parseTextToArray)
   readonly collectionId: string;
 
