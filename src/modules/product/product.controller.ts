@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -200,5 +201,19 @@ export class ProductController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
     return await this.productService.deleteOne(id);
+  }
+
+  @Roles(UserRoleEnum.SELLER, UserRoleEnum.CASHIER, UserRoleEnum.BOSS, UserRoleEnum.CLIENT, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
+  @Get('/collection/:id')
+  @ApiOperation({ summary: 'Method: returns all products' })
+  @ApiOkResponse({
+    description: 'The products were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getDataByCollections(@Query() query: any, @Param('id') id: string) {
+    if(!id){
+      throw new BadRequestException('Filial ID must be exist!');
+    }
+    return await this.productService.getByCollections(query, id);
   }
 }

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, MoreThan, Not, Repository } from 'typeorm';
+import { FindOptionsWhere, In, MoreThan, Not, Repository } from 'typeorm';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { Product } from './product.entity';
 import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from './dto';
@@ -10,6 +10,7 @@ import { ModelService } from '../model/model.service';
 import { getByCode, getSupports, iShopAccounting, prodSearch } from './utils';
 import { FileService } from '../file/file.service';
 import { ColorService } from '../color/color.service';
+import { CollectionService } from '../collection/collection.service';
 
 Injectable();
 export class ProductService {
@@ -20,6 +21,7 @@ export class ProductService {
     private readonly fileService: FileService,
     private readonly modelService: ModelService,
     private readonly colorService: ColorService,
+    private readonly collectionService: CollectionService,
   ) {
   }
 
@@ -98,6 +100,36 @@ export class ProductService {
       .catch(() => {
         throw new NotFoundException('Product not found');
       });
+  }
+
+  async getByCollections(quer: any, id: string) {
+    const filial = await this.filialService.getOne(id);
+    if (!filial || !id) {
+      throw new BadRequestException('Filial Not Found!');
+    }
+
+    if (!quer.collection) {
+      throw new BadRequestException('Collection Not Found!');
+    }
+    for await (const id of JSON.parse(quer.collection)) {
+      const collection = await this.collectionService.getOne(id);
+      if(!collection){
+        throw new BadRequestException(`collection not fount by: ${id}`);
+      }
+    }
+
+    let where = {
+      filial: { id },
+      ...(quer.collection && JSON.parse(quer.collection) && { model: { collection: In(JSON.parse(quer.collection)) } }),
+    };
+
+    return await this.productRepository.find({
+      where, relations: {
+        filial: true,
+        color: true,
+        model: { collection: true },
+      },
+    });
   }
 
   async getBaza({ limit, page, route }) {

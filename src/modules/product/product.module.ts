@@ -14,9 +14,10 @@ import { FilialModule } from '../filial/filial.module';
 import { ModelModule } from '../model/model.module';
 import { FileModule } from '../file/file.module';
 import { ColorModule } from '../color/color.module';
+import { CollectionModule } from '../collection/collection.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product]), FilialModule, ModelModule, FileModule, ColorModule],
+  imports: [TypeOrmModule.forFeature([Product]), FilialModule, ModelModule, FileModule, ColorModule, CollectionModule],
   controllers: [ProductController],
   providers: [ProductService],
   exports: [ProductService],
