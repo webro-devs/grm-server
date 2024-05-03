@@ -10,6 +10,7 @@ import { Route } from '../../infra/shared/decorators/route.decorator';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from '../../infra/shared/enum';
+import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 
 @ApiTags('Client-Order')
 @Controller('client-order')
@@ -57,7 +58,7 @@ export class ClientOrderController {
     description: 'The client order was returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getMyOrders(@Req() req: { user: { id: string } }, @Query() query): Promise<ClientOrder[]> {
+  async getMyOrders(@Req() req: { user: { id: string } }, @Query() query): Promise<Pagination<ClientOrder, IPaginationMeta>> {
     return await this.clientRequestService.getMyOrders(req.user.id, Number(query?.limit) || 20, Number(1 - query?.page) || 0);
   }
 
