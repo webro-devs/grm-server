@@ -30,6 +30,17 @@ export class ClientOrderController {
     return await this.clientRequestService.getAll({ ...query, route });
   }
 
+  @Roles(UserRoleEnum.CLIENT)
+  @Get('/my-orders')
+  @ApiOperation({ summary: 'Method: returns single client order by id' })
+  @ApiOkResponse({
+    description: 'The client order was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getMyOrders(@Req() req: { user: { id: string } }, @Query() query): Promise<Pagination<ClientOrder, IPaginationMeta>> {
+    return await this.clientRequestService.getMyOrders(req.user.id, Number(query?.limit) || 20, Number(1 - query?.page) || 0);
+  }
+
   @Public()
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single client order by id' })
@@ -49,17 +60,6 @@ export class ClientOrderController {
   @HttpCode(HttpStatus.OK)
   async getMyOrder(@Param('id') id: string): Promise<ClientOrder> {
     return this.clientRequestService.getOne(id);
-  }
-
-  @Roles(UserRoleEnum.CLIENT)
-  @Get('/my-orders')
-  @ApiOperation({ summary: 'Method: returns single client order by id' })
-  @ApiOkResponse({
-    description: 'The client order was returned successfully',
-  })
-  @HttpCode(HttpStatus.OK)
-  async getMyOrders(@Req() req: { user: { id: string } }, @Query() query): Promise<Pagination<ClientOrder, IPaginationMeta>> {
-    return await this.clientRequestService.getMyOrders(req.user.id, Number(query?.limit) || 20, Number(1 - query?.page) || 0);
   }
 
   @Post('/')
