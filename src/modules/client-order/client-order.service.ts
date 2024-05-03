@@ -40,15 +40,12 @@ export class ClientOrderService {
     return data;
   }
 
-  async getMyOrders(id: string) {
-    return await this.clientOrder
-      .find({
-        where: { user: { id } },
-        relations: { product: true, filial: true },
-      })
-      .catch(() => {
-        throw new NotFoundException('data not found');
-      });
+  async getMyOrders(id: string, page: number, limit: number) {
+    return paginate<ClientOrder>(this.clientOrder, { page, limit }, {
+      relations: { product: true, filial: true },
+      where: { user: { id } },
+      order: { date: 'DESC' },
+    });
   }
 
   async deleteOne(id: string) {

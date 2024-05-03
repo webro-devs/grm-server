@@ -57,8 +57,8 @@ export class ClientOrderController {
     description: 'The client order was returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getMyOrders(@Req() req: { user: { id: string } }): Promise<ClientOrder[]> {
-    return await this.clientRequestService.getMyOrders(req.user.id);
+  async getMyOrders(@Req() req: { user: { id: string } }, @Query() query): Promise<ClientOrder[]> {
+    return await this.clientRequestService.getMyOrders(req.user.id, Number(query?.limit) || 20, Number(1 - query?.page) || 0);
   }
 
   @Post('/')
