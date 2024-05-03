@@ -40,6 +40,17 @@ export class ClientOrderService {
     return data;
   }
 
+  async getMyOrders(id: string) {
+    return await this.clientOrder
+      .find({
+        where: { user: { id } },
+        relations: { product: true, filial: true },
+      })
+      .catch(() => {
+        throw new NotFoundException('data not found');
+      });
+  }
+
   async deleteOne(id: string) {
     return await this.clientOrder.delete(id).catch(() => {
       throw new NotFoundException('data not found');

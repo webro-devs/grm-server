@@ -8,6 +8,8 @@ import { ClientOrderService } from './client-order.service';
 import { PaginationDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { Public } from '../auth/decorators/public.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRoleEnum } from '../../infra/shared/enum';
 
 @ApiTags('Client-Order')
 @Controller('client-order')
@@ -46,6 +48,17 @@ export class ClientOrderController {
   @HttpCode(HttpStatus.OK)
   async getMyOrder(@Param('id') id: string): Promise<ClientOrder> {
     return this.clientRequestService.getOne(id);
+  }
+
+  @Roles(UserRoleEnum.CLIENT)
+  @Get('/my-orders')
+  @ApiOperation({ summary: 'Method: returns single client order by id' })
+  @ApiOkResponse({
+    description: 'The client order was returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getMyOrders(@Req() req: { user: { id: string } }): Promise<ClientOrder[]> {
+    return await this.clientRequestService.getMyOrders(req.user.id);
   }
 
   @Post('/')
