@@ -42,7 +42,7 @@ export class ClientOrderService {
 
   async getMyOrders(id: string, limit: number = 20, page: number = 0) {
     return paginate<ClientOrder>(this.clientOrder, { page: page, limit }, {
-      relations: { product: { model: { collection: true }, color: true }, user: true, filial: true },
+      relations: { product: { model: { collection: true }, color: true, partiya: true }, user: true, filial: true },
       where: { user: { id } },
       order: { startDate: 'DESC' },
     });
