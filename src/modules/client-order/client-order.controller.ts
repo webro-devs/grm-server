@@ -38,7 +38,7 @@ export class ClientOrderController {
   })
   @HttpCode(HttpStatus.OK)
   async getMyOrders(@Req() req: { user: { id: string } }, @Query() query): Promise<Pagination<ClientOrder, IPaginationMeta>> {
-    return await this.clientRequestService.getMyOrders(req.user.id, Number(query?.limit || 20), Number(1 - query?.page || 0));
+    return await this.clientRequestService.getMyOrders(req.user.id, Number(query?.limit || 20), Number( query?.page - 1 || 0));
   }
 
   @Public()
