@@ -11,6 +11,7 @@ import { getByCode, getSupports, iShopAccounting, prodSearch } from './utils';
 import { FileService } from '../file/file.service';
 import { ColorService } from '../color/color.service';
 import { CollectionService } from '../collection/collection.service';
+import ProductMediumByStyleUtil from './utils/product-medium-by-style.util';
 
 Injectable();
 export class ProductService {
@@ -100,6 +101,10 @@ export class ProductService {
       .catch(() => {
         throw new NotFoundException('Product not found');
       });
+  }
+
+  async getProdsByStyle(){
+    return this.productRepository.query(ProductMediumByStyleUtil);
   }
 
   async getByCollections(quer: any, id: string) {

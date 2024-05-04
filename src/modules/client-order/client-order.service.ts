@@ -31,7 +31,7 @@ export class ClientOrderService {
     const data = await this.clientOrder
       .findOne({
         where: { id },
-        relations: { product: true, filial: true },
+        relations: { product: { model: { collection: true }, color: true }, filial: true },
       })
       .catch(() => {
         throw new NotFoundException('data not found');
@@ -42,7 +42,7 @@ export class ClientOrderService {
 
   async getMyOrders(id: string, limit: number = 20, page: number = 0) {
     return paginate<ClientOrder>(this.clientOrder, { page: page, limit }, {
-      relations: { product: true, user: true, filial: true   },
+      relations: { product: { model: { collection: true }, color: true }, user: true, filial: true },
       where: { user: { id } },
       order: { startDate: 'DESC' },
     });
