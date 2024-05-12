@@ -163,7 +163,7 @@ export class ExcelService {
         }
         data = { ...data, ...price };
 
-        if ((await this.shapeService.getOneByName(data?.shape))?.title?.toLowerCase() === 'rulo') {
+        if ((await this.shapeService.getOneByName('rulo'))?.title?.toLowerCase() === 'rulo') {
           const count = data.count;
           data.count = 1;
           for (let i = 0; i < count; i++) {
