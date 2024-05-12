@@ -8,7 +8,7 @@ import { Excel } from './excel.entity';
 import { ProductExcel } from './excel-product.entity';
 import { deleteFile, excelDataParser } from 'src/infra/helpers';
 import { FileService } from '../file/file.service';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { PartiyaService } from '../partiya/partiya.service';
 import { ProductService } from '../product/product.service';
 import { CollectionService } from '../collection/collection.service';
@@ -163,7 +163,15 @@ export class ExcelService {
         }
         data = { ...data, ...price };
 
-        prod.push(data);
+        if ((await this.shapeService.getOneByName(data?.shape))?.title?.toLowerCase() === 'rulo') {
+          const count = data.count;
+          data.count = 1;
+          for (let i = 0; i < count; i++) {
+            prod.push(data);
+          }
+        } else {
+          prod.push(data);
+        }
       } else {
         let msg = support.collection ? 'Collection must be exist!' : 'Model or Code must be exist!';
         throw new BadRequestException(msg);
