@@ -140,12 +140,14 @@ export class ExcelService {
 
         const collection = await this.collectionService.findOrCreate(data.collection);
         const model = await this.modelService.findOrCreate(collection, data.model);
+
         if (!collection) {
           throw new BadRequestException('collection not found!');
         }
         if (!model) {
           throw new BadRequestException('model not found!');
         }
+        const dataShape = await this.shapeService.getOneByName(data?.shape?.trim());
         data.model = model;
         data.collection = collection;
         data?.country ? data.country : (data.country = partiya.country);
@@ -163,7 +165,7 @@ export class ExcelService {
         }
         data = { ...data, ...price };
 
-        if ((await this.shapeService.getOneByName('rulo'))?.title?.toLowerCase() === 'rulo') {
+        if (dataShape?.title?.toLowerCase() === 'rulo') {
           const count = data.count;
           data.count = 1;
           for (let i = 0; i < count; i++) {

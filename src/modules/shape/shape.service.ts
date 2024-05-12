@@ -36,7 +36,7 @@ export class ShapeService {
   async getOneByName(title: string) {
     const data = await this.shapeRepository
       .findOne({
-        where: { title: ILike(title) },
+        where: { title: ILike(`%${title}%`) },
       })
       .catch(() => {
         throw new NotFoundException('Shape not found');
