@@ -79,4 +79,5 @@ import { IsUniqueConstraint } from './infra/shared/decorators/is-unique.constrai
   ],
   providers: [IsUniqueConstraint],
 })
+
 export class AppModule {}

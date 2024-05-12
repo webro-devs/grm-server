@@ -130,7 +130,7 @@ export class ExcelService {
           });
 
           if (product && product?.shape?.title.toLowerCase() !== 'rulo') {
-            product.count += 1;
+            product.count += support?.count || 1;
             await this.productExcelRepository.save(product);
             continue;
           }
