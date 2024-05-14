@@ -222,7 +222,7 @@ export class OrderService {
     }
     const kassa = await this.kassaService.GetOpenKassa(filial);
 
-    if(user.role > 3 && filial != product.filial.id){
+    if(filial != product.filial.id){
       throw new BadRequestException('You cannot sell a product on a non-working branch!')
     }
 

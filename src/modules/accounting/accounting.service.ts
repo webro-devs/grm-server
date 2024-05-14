@@ -25,7 +25,6 @@ export class AccountingService {
     const allFilial = await this.filialService.getAllFilial();
     let total = false;
     const haveFilial = where?.filial?.id || false;
-    console.log(where);
     if (where?.total) {
       total = true;
     }
