@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderBasket } from './order-basket.entity';
-import { Repository } from 'typeorm';
-import { createOrderBasketDto } from './dto';
+import { Repository, UpdateResult } from 'typeorm';
+import { createOrderBasketDto, orderBasketUpdateDto } from './dto';
 import { User } from '../user/user.entity';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 
@@ -23,6 +23,17 @@ export class OrderBasketService {
       },
       relations: {
         product: { model: { collection: true }, color: true },
+      },
+    });
+  }
+
+  async findAll(user: User) {
+    return this.orderBasketRepository.find({
+      where: {
+        seller: { id: user.id },
+      },
+      relations: {
+        product: { filial: true },
       },
     });
   }
@@ -52,7 +63,17 @@ export class OrderBasketService {
     return await this.orderBasketRepository.delete(id);
   }
 
-  async bulkDelete(id) {
+  async bulkDelete(id: string) {
     await this.orderBasketRepository.delete({ seller: { id } });
+  }
+
+  async update(id: string, value: orderBasketUpdateDto): Promise<UpdateResult> {
+    const basket = await this.orderBasketRepository.findOne({ where: { id }, relations: { product: true } });
+    if (basket.isMetric){
+      if(basket.product.y < value.x) throw new BadRequestException('Can not change upper than product length!');
+    } else {
+      if(basket.product.count < value.x) throw new BadRequestException('Can not change upper than product count!');
+    }
+    return await this.orderBasketRepository.update(id, value);
   }
 }

@@ -1,23 +1,23 @@
 import {
-  Controller,
-  Post,
   Body,
+  Controller,
+  Delete,
+  ForbiddenException,
+  Get,
   HttpCode,
   HttpStatus,
-  Delete,
-  Patch,
   Param,
-  Get,
+  Patch,
+  Post,
   Query,
   Req,
-  ForbiddenException,
 } from '@nestjs/common';
-import { UpdateResult } from 'typeorm';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
+import { InsertResult, UpdateResult } from 'typeorm';
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OrderService } from './order.service';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { OrderQueryDto } from '../../infra/shared/dto';
-import { CreateOrderDto, UpdateOrderDto } from './dto';
+import { CreateOrderDto, CreateWithBaskerOrderDto, UpdateOrderDto } from './dto';
 import { Order } from './order.entity';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from '../../infra/shared/enum';
@@ -111,6 +111,16 @@ export class OrderController {
       throw new ForbiddenException('Not Authorized!');
     }
     return await this.orderService.create(data, request.user.id);
+  }
+
+  @Post('/basket')
+  @ApiOperation({ summary: 'Method: creates new order' })
+  @ApiCreatedResponse({
+    description: 'The order was created successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async createWithBasket(@Body() data: CreateWithBaskerOrderDto, @Req() request: Request): Promise<InsertResult> {
+    return await this.orderService.createWithBasket(data.price, request['user']);
   }
 
   @Patch('/:id')

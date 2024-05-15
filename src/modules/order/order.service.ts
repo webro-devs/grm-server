@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { Between, DataSource, EntityManager, FindOptionsWhere, Repository } from 'typeorm';
+import { Between, DataSource, EntityManager, FindOptionsWhere, InsertResult, Repository } from 'typeorm';
 
 import { Order } from './order.entity';
 import { CreateOrderDto, UpdateOrderDto } from './dto';
@@ -22,6 +22,9 @@ import { CashflowService } from '../cashflow/cashflow.service';
 import { Product } from '../product/product.entity';
 import { GRMGateway } from '../web-socket/web-socket.gateway';
 import { FilialService } from '../filial/filial.service';
+import { OrderBasketService } from '../order-basket/order-basket.service';
+import { User } from '../user/user.entity';
+import { calcProdProfit } from './utils/functions';
 //
 Injectable();
 export class OrderService {
@@ -38,6 +41,7 @@ export class OrderService {
     private readonly connection: DataSource,
     private readonly entityManager: EntityManager,
     private readonly filialService: FilialService,
+    private readonly orderBasketService: OrderBasketService,
   ) {}
 
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Product>): Promise<Pagination<Order>> {
@@ -255,6 +259,55 @@ export class OrderService {
       .values(data as unknown as Order)
       .returning('id')
       .execute();
+  }
+
+  async createWithBasket(price: number, user: User): Promise<InsertResult> {
+    const orderBaskets = calcProdProfit(await this.orderBasketService.findAll(user), price);
+    if (!orderBaskets.length) throw new BadRequestException('For selling need product!');
+    if (!user.filial) throw new BadRequestException('For selling you should be seller or you need filial!');
+    const kassa = await this.kassaService.GetOpenKassa(user.filial.id);
+    const orders = [];
+
+    for await (const basket of orderBaskets) {
+      const product = await this.productService.getOne(basket.product);
+      if (basket.isMetric) {
+        if (product.y < basket.x / 100) throw new BadRequestException('Not enough product meter!');
+      } else {
+        if (product.count < basket.x) throw new BadRequestException('Not enough product count!');
+      }
+    }
+
+    for await (let value of orderBaskets) {
+      let additionalProfitSum: number, netProfitSum: number;
+      const product = await this.productService.getOne(value.product);
+
+      if (value.isMetric) {
+        const cost = value.x / 100;
+        product.y = product.y - cost;
+        product.setTotalSize();
+        product.calculateProductPrice();
+        additionalProfitSum = (value.price - product.priceMeter * cost);
+        netProfitSum = (product.priceMeter - product.comingPrice) * cost * product.x;
+        value.kv = cost;
+      } else {
+        product.count = +product.count - +value.x;
+        product.setTotalSize();
+        additionalProfitSum = value.price - product.price;
+        netProfitSum = (product.priceMeter - product.comingPrice) * product.x * product.y;
+        value.kv = product.x * product.y * value.x;
+      }
+
+      product.isMetric = value.isMetric;
+      await this.saveRepo(product);
+
+      orders.push({ ...value, seller: user.id, additionalProfitSum, netProfitSum, kassa: kassa.id });
+    }
+
+    await this.orderRepository.save(orders, { chunk: Math.floor(orders.length / 20) });
+
+    await this.orderBasketService.bulkDelete(user.id);
+
+    return { generatedMaps: [], identifiers: [], raw: [1] };
   }
 
   async checkOrder(id: string, casher: string) {

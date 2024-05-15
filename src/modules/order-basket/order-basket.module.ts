@@ -8,7 +8,7 @@ import { OrderBasketService } from './order-basket.service';
   imports: [TypeOrmModule.forFeature([OrderBasket])],
   controllers: [OrderBasketController],
   providers: [OrderBasketService],
-  exports: [],
+  exports: [OrderBasketService],
 })
 export class OrderBasketModule {
 }
