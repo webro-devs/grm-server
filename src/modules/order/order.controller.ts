@@ -120,7 +120,7 @@ export class OrderController {
   })
   @HttpCode(HttpStatus.CREATED)
   async createWithBasket(@Body() data: CreateWithBaskerOrderDto, @Req() request: Request): Promise<InsertResult> {
-    return await this.orderService.createWithBasket(data.price, request['user']);
+    return await this.orderService.createWithBasket(data.price, data.plasticSum, request['user']);
   }
 
   @Patch('/:id')
