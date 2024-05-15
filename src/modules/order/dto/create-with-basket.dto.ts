@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-class CreateWithBaskerOrderDto {
+class CreateWithBasketOrderDto {
   @ApiProperty({
     description: `price`,
     example: 1500,
@@ -19,4 +19,4 @@ class CreateWithBaskerOrderDto {
   readonly plasticSum: number;
 }
 
-export default CreateWithBaskerOrderDto;
+export default CreateWithBasketOrderDto;
