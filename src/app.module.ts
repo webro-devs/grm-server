@@ -33,6 +33,7 @@ import { ColorModule } from './modules/color/color.module';
 import { QrBaseModule } from './modules/qr-base/qr-base.module';
 import { BannerModule } from './modules/banner/banner.module';
 import { IsUniqueConstraint } from './infra/shared/decorators/is-unique.constrain';
+import { OrderBasketModule } from './modules/order-basket/order-basket.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { IsUniqueConstraint } from './infra/shared/decorators/is-unique.constrai
     PositionModule,
     ProductModule,
     OrderModule,
+    OrderBasketModule,
     QrBaseModule,
     SizeModule,
     ShapeModule,
