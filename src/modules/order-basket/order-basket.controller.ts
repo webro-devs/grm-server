@@ -1,10 +1,10 @@
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Query, Req } from '@nestjs/common';
 import { OrderBasketService } from './order-basket.service';
 import { OrderBasket } from './order-basket.entity';
 import { createOrderBasketDto, orderBasketQueryDto, orderBasketUpdateDto } from './dto';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
-import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
+import { Pagination } from 'nestjs-typeorm-paginate';
 import { Put } from '@nestjs/common/decorators';
 
 @ApiTags('Order-Basket')
@@ -29,6 +29,22 @@ export class OrderBasketController {
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() values: createOrderBasketDto, @Req() request: Request): Promise<InsertResult> {
     return { generatedMaps: [], identifiers: [], raw: await this.orderBasketService.create(values, request['user']) };
+  }
+
+  @Post('/calc-discount')
+  @ApiOperation({ summary: 'Method: create new order basket.' })
+  @ApiOkResponse({ description: 'The order baskets were returned successfully' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        price: { type: 'number' },
+      },
+    },
+  })
+  @HttpCode(HttpStatus.ACCEPTED)
+  async CalcDiscount(@Body() values: { price: number }, @Req() request: Request): Promise<string> {
+    return await this.orderBasketService.calcDiscount(values.price, request['user']);
   }
 
   @Delete('/:id')

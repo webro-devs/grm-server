@@ -76,4 +76,21 @@ export class OrderBasketService {
     }
     return await this.orderBasketRepository.update(id, value);
   }
+
+  async calcDiscount(price: number, user: User): Promise<string> {
+    const baskets = await this.orderBasketRepository.find({
+      where: {
+        seller: { id: user.id },
+      },
+      relations: { product: true },
+    });
+    const totalSum = baskets.reduce((acc, {
+      product,
+      isMetric,
+      x,
+    }) => isMetric ? (acc + (product.x * (x / 100) * product.price)) : acc + (x * product.price), 0);
+
+    if (price > totalSum) return '0%';
+    return (((totalSum - price) / totalSum) * 100).toFixed(2) + '%';
+  }
 }
