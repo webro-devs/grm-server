@@ -93,4 +93,18 @@ export class OrderBasketService {
     if (price > totalSum) return '0%';
     return (((totalSum - price) / totalSum) * 100).toFixed(2) + '%';
   }
+
+  async calcProduct(user: User){
+    const baskets = await this.orderBasketRepository.find({
+      where: {
+        seller: { id: user.id },
+      },
+      relations: { product: true },
+    });
+    return  baskets.reduce((acc, {
+      product,
+      isMetric,
+      x,
+    }) => isMetric ? (acc + (product.x * (x / 100) * product.price)) : acc + (x * product.price), 0);
+  }
 }

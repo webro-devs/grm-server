@@ -23,6 +23,16 @@ export class OrderBasketController {
     return await this.orderBasketService.find(request['user'], query);
   }
 
+  @Get('/product-price')
+  @ApiOperation({ summary: 'Method: returns all order baskets' })
+  @ApiOkResponse({
+    description: 'The order baskets were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getProdPrice(@Req() request: Request): Promise<number> {
+    return await this.orderBasketService.calcProduct(request['user']);
+  }
+
   @Post('/')
   @ApiOperation({ summary: 'Method: create new order basket.' })
   @ApiOkResponse({ description: 'The order baskets were returned successfully' })
