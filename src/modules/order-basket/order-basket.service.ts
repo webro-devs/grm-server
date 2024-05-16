@@ -70,7 +70,7 @@ export class OrderBasketService {
   async update(id: string, value: orderBasketUpdateDto): Promise<UpdateResult> {
     const basket = await this.orderBasketRepository.findOne({ where: { id }, relations: { product: true } });
     if (basket.isMetric){
-      if(basket.product.y < value.x) throw new BadRequestException('Can not change upper than product length!');
+      if(basket.product.y < (value.x / 100)) throw new BadRequestException('Can not change upper than product length!');
     } else {
       if(basket.product.count < value.x) throw new BadRequestException('Can not change upper than product count!');
     }
