@@ -34,7 +34,7 @@ export class ProductService {
     if (where['fields']) {
       console.log(where);
       console.log(_user);
-      if(where['search']){
+      if(!where['search']){
         throw new BadRequestException('Search must be exist something');
       }
       const products = (await this.productRepository.query(prodSearch({
