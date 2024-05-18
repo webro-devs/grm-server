@@ -13,12 +13,12 @@ const util = (orderBasket: OrderBasket[], totalRevenue: number, plasticSum: numb
   let proportionalProfits = orderBasket.map(basket => {
     let proportion = basket.product.price / totalCost;
     let productProfit = proportion * profit;
-    const { decimalPart } = priceSpliter(proportion);
+    const { decimalPart, integerPart } = priceSpliter(productProfit);
     additional_sum += decimalPart;
     return {
       product: basket.product.id,
       seller: basket.seller,
-      price: basket.product.price + productProfit,
+      price: basket.product.price + integerPart,
       x: basket.x,
       isMetric: basket.isMetric,
       kv: 0,
