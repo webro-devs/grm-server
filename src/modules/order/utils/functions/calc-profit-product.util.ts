@@ -42,6 +42,7 @@ const util = (orderBasket: OrderBasket[], totalRevenue: number, plasticSum: numb
   // }
 
   console.log(additional_sum);
+  if (plasticSum > 0) {
   for (let i = proportionalProfits.length - 1; i >= 0; i--) {
     console.log('for after while');
     const remainingPlastic = Math.min(plasticSum, proportionalProfits[i].price);
@@ -49,6 +50,7 @@ const util = (orderBasket: OrderBasket[], totalRevenue: number, plasticSum: numb
     proportionalProfits[i].price -= remainingPlastic;
     plasticSum -= remainingPlastic;
     if (plasticSum === 0) break;
+  }
   }
 
 
