@@ -1,10 +1,10 @@
 import { OrderBasket } from '../../../order-basket/order-basket.entity';
-import { priceSpliter } from './index';
 
 const util = (orderBasket: OrderBasket[], totalRevenue: number, plasticSum: number) => {
   let additional_sum = 0, index = 0;
   let totalCost = orderBasket.reduce((accumulator: any, basket: any) => {
-    return accumulator + +basket['product'].price;
+    const price = basket['isMetric'] ? basket.x * basket.product.x * basket.product.priceMeter : +basket['product'].price;
+    return accumulator + price;
   }, 0);  // Total cost of the products
   let profit = totalRevenue - totalCost;  // Total profit
 
