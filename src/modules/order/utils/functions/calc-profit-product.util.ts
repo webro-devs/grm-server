@@ -14,7 +14,7 @@ const util = (orderBasket: OrderBasket[], totalRevenue: number, plasticSum: numb
     const price = basket['isMetric'] ? (basket.x / 100) * basket.product.x * basket.product.priceMeter : basket['product'].x * basket.product.y * basket.x * basket.product.priceMeter;
     let proportion = price / totalCost;
     let productProfit = proportion * profit;
-    console.log(price);
+    console.log(price + productProfit);
     return {
       product: basket.product.id,
       seller: basket.seller,
