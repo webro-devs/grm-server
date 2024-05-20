@@ -26,6 +26,7 @@ const util = (orderBasket: OrderBasket[], totalRevenue: number, plasticSum: numb
     };
   });
   proportionalProfits = proportionalProfits.sort((a, b) => a.price - b.price);
+  additional_sum = Math.trunc(additional_sum);
   while (additional_sum && additional_sum > 0) {
     if (proportionalProfits[index]) {
       proportionalProfits[index].price += 1;
