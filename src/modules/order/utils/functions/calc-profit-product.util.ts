@@ -1,4 +1,5 @@
 import { OrderBasket } from '../../../order-basket/order-basket.entity';
+import { priceSpliter } from "./index"
 
 const util = (orderBasket: OrderBasket[], totalRevenue: number, plasticSum: number) => {
   let additional_sum = 0, index = 0;
@@ -8,17 +9,17 @@ const util = (orderBasket: OrderBasket[], totalRevenue: number, plasticSum: numb
   }, 0);
   let profit = totalRevenue - totalCost;  // Total profit
 
-  console.log(totalCost);
-
   let proportionalProfits = orderBasket.map(basket => {
     const price = basket['isMetric'] ? (basket.x / 100) * basket.product.x * basket.product.priceMeter : basket['product'].x * basket.product.y * basket.x * basket.product.priceMeter;
     let proportion = price / totalCost;
     let productProfit = proportion * profit;
-    console.log(price + productProfit);
+    const { decimalPart, integerPart } = priceSpliter(productProfit);
+    additional_sum += decimalPart;
+
     return {
       product: basket.product.id,
       seller: basket.seller,
-      price: price + productProfit,
+      price: price + integerPart,
       x: basket.x,
       isMetric: basket.isMetric,
       kv: 0,
