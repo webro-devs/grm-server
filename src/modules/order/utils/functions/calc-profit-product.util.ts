@@ -2,22 +2,23 @@ import { OrderBasket } from '../../../order-basket/order-basket.entity';
 
 const util = (orderBasket: OrderBasket[], totalRevenue: number, plasticSum: number) => {
   let additional_sum = 0, index = 0;
-  let totalCost = orderBasket.reduce((accumulator: any, basket: any) => {
+  let totalCost = orderBasket.reduce((accumulator, basket) => {
     const price = basket['isMetric'] ? (basket.x / 100) * basket.product.x * basket.product.priceMeter : basket['product'].x * basket.product.y * basket.x * basket.product.priceMeter;
     return accumulator + price;
-  }, 0);  // Total cost of the products
-  let profit = totalRevenue - totalCost;  // Total profit
+  }, 0);
+  let profit = 300 - totalCost;  // Total profit
 
-// Calculate the proportion of each product price in the total cost
+  console.log(totalCost);
+
   let proportionalProfits = orderBasket.map(basket => {
-    let proportion = basket.product.price / totalCost;
+    const price = basket['isMetric'] ? (basket.x / 100) * basket.product.x * basket.product.priceMeter : basket['product'].x * basket.product.y * basket.x * basket.product.priceMeter;
+    let proportion = price / totalCost;
     let productProfit = proportion * profit;
-    // const { decimalPart, integerPart } = priceSpliter(productProfit);
-    // additional_sum += decimalPart;
+    console.log(price);
     return {
       product: basket.product.id,
       seller: basket.seller,
-      price: basket.product.price + productProfit,
+      price: price + productProfit,
       x: basket.x,
       isMetric: basket.isMetric,
       kv: 0,
