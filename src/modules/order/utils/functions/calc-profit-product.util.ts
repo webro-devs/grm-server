@@ -24,6 +24,7 @@ const util = (orderBasket: OrderBasket[], totalRevenue: number, plasticSum: numb
       plasticSum: 0
     };
   });
+  console.log(additional_sum);
   // proportionalProfits = proportionalProfits.sort((a, b) => a.price - b.price);
   // additional_sum = Math.trunc(additional_sum);
   // console.log('test');
