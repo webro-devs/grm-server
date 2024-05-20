@@ -263,10 +263,6 @@ export class OrderService {
 
   async createWithBasket(price: number, plasticSum: number, user: User): Promise<InsertResult> {
     const orderBaskets = calcProdProfit(await this.orderBasketService.findAll(user), price + plasticSum, plasticSum);
-    if (!orderBaskets.length) throw new BadRequestException('For selling need product!');
-    if (!user.filial) throw new BadRequestException('For selling you should be seller or you need filial!');
-    const kassa = await this.kassaService.GetOpenKassa(user.filial.id);
-    const orders = [];
 
     for await (const basket of orderBaskets) {
       const product = await this.productService.getOne(basket.product);
@@ -276,6 +272,12 @@ export class OrderService {
         if (product.count < basket.x) throw new BadRequestException('Not enough product count!');
       }
     }
+
+    if (!orderBaskets.length) throw new BadRequestException('For selling need product!');
+    if (!user.filial) throw new BadRequestException('For selling you should be seller or you need filial!');
+    const kassa = await this.kassaService.GetOpenKassa(user.filial.id);
+
+    const orders = [];
 
     for await (let value of orderBaskets) {
       let additionalProfitSum: number, netProfitSum: number;

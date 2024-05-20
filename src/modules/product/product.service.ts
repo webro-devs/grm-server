@@ -47,7 +47,7 @@ export class ProductService {
         shop: where?.isInternetShop,
         collection: where.model?.['collection']?.id
       }))) || [];
-      console.log(where);
+
       const total = (await this.productRepository.query(prodSearch({
         text: where['search'],
         filialId: where?.filial,

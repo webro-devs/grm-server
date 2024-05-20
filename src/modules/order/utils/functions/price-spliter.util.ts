@@ -1,6 +1,6 @@
 function getParts(num) {
   let integerPart = Math.trunc(num);
-  let decimalPart = Math.abs(num - integerPart);
+  let decimalPart = +(String(num).split('.')[1]) || 0;
 
   return {
     integerPart: integerPart,
