@@ -3,7 +3,7 @@ import { OrderBasket } from '../../../order-basket/order-basket.entity';
 const util = (orderBasket: OrderBasket[], totalRevenue: number, plasticSum: number) => {
   let additional_sum = 0, index = 0;
   let totalCost = orderBasket.reduce((accumulator: any, basket: any) => {
-    const price = basket['isMetric'] ? (basket.x / 100) * basket.product.x * basket.product.priceMeter : +basket['product'].price;
+    const price = basket['isMetric'] ? (basket.x / 100) * basket.product.x * basket.product.priceMeter : basket['product'].x * basket.product.y * basket.x * basket.product.priceMeter;
     return accumulator + price;
   }, 0);  // Total cost of the products
   let profit = totalRevenue - totalCost;  // Total profit
