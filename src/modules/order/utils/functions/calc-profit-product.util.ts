@@ -6,7 +6,7 @@ const util = (orderBasket: OrderBasket[], totalRevenue: number, plasticSum: numb
     const price = basket['isMetric'] ? (basket.x / 100) * basket.product.x * basket.product.priceMeter : basket['product'].x * basket.product.y * basket.x * basket.product.priceMeter;
     return accumulator + price;
   }, 0);
-  let profit = 300 - totalCost;  // Total profit
+  let profit = totalRevenue - totalCost;  // Total profit
 
   console.log(totalCost);
 
