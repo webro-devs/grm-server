@@ -13,13 +13,13 @@ const util = (orderBasket: OrderBasket[], totalRevenue: number, plasticSum: numb
     const price = basket['isMetric'] ? (basket.x / 100) * basket.product.x * basket.product.priceMeter : basket['product'].x * basket.product.y * basket.x * basket.product.priceMeter;
     let proportion = price / totalCost;
     let productProfit = proportion * profit;
-    const { decimalPart, integerPart } = priceSpliter(productProfit);
+    const { decimalPart, integerPart } = priceSpliter(productProfit + price);
     additional_sum += decimalPart;
 
     return {
       product: basket.product.id,
       seller: basket.seller,
-      price: price + integerPart,
+      price: integerPart,
       x: basket.x,
       isMetric: basket.isMetric,
       kv: 0,
@@ -27,19 +27,11 @@ const util = (orderBasket: OrderBasket[], totalRevenue: number, plasticSum: numb
     };
   });
 
-  additional_sum = Math.trunc(additional_sum);
-  while (additional_sum && additional_sum > 0) {
-    if (proportionalProfits[index]) {
-      proportionalProfits[index].price += 1;
-    } else {
-      index = 0;
-      proportionalProfits[index].price += 1;
-    }
-    index++;
-    additional_sum--;
-  }
+  console.log(additional_sum);
 
   proportionalProfits = proportionalProfits.sort((a, b) => a.price - b.price);
+  proportionalProfits[0].price += additional_sum
+  
   if (plasticSum > 0) {
   for (let i = proportionalProfits.length - 1; i >= 0; i--) {
     const remainingPlastic = Math.min(plasticSum, proportionalProfits[i].price);

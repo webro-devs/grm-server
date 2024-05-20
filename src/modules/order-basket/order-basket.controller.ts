@@ -38,6 +38,8 @@ export class OrderBasketController {
   @ApiOkResponse({ description: 'The order baskets were returned successfully' })
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() values: createOrderBasketDto, @Req() request: Request): Promise<InsertResult> {
+    console.log("yes");
+    
     return { generatedMaps: [], identifiers: [], raw: await this.orderBasketService.create(values, request['user']) };
   }
 
