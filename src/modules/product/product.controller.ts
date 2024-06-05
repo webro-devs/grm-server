@@ -101,6 +101,7 @@ export class ProductController {
     return { total_sold: +response[0].sold_shop_products, percentage: +response[0].percentage_sold, total_sold_first: +response[0].sold_shop_products_first };
   }
 
+  @Public()
   @Get('/products-by-style')
   @ApiOperation({ summary: 'Method: returns products by style' })
   @ApiOkResponse({
