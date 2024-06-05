@@ -7,7 +7,7 @@ import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from
 import { sizeParser } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 import { ModelService } from '../model/model.service';
-import { getByCode, getSupports, iShopAccounting, prodSearch } from './utils';
+import { getByCode, getSupports, internetShop, iShopAccounting, prodSearch } from './utils';
 import { FileService } from '../file/file.service';
 import { ColorService } from '../color/color.service';
 import { CollectionService } from '../collection/collection.service';
@@ -341,5 +341,9 @@ export class ProductService {
 
   async getSupports(model: string, shape: string, color: string, size: string){
     return await this.productRepository.query(getSupports(model, shape, color, size));
+  }
+
+  async internetShop() {
+    return await this.productRepository.query(internetShop());
   }
 }

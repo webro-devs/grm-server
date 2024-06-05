@@ -111,6 +111,16 @@ export class ProductController {
     return await this.productService.getProdsByStyle();
   }
 
+  @Get('/products-internet-shop')
+  @ApiOperation({ summary: 'Method: returns products by style' })
+  @ApiOkResponse({
+    description: 'The I-Shop products accounting were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getIShopProducts() {
+    return await this.productService.internetShop();
+  }
+
   @Get('/max-price')
   @ApiOperation({ summary: 'Method: returns all products' })
   @ApiOkResponse({
