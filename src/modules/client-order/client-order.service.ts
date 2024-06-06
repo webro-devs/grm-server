@@ -24,6 +24,9 @@ export class ClientOrderService {
       relations: {
         product: { model: { collection: true }, color: true },
       },
+      order: {
+        date: 'DESC'
+      }
     });
   }
 
