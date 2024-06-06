@@ -23,12 +23,10 @@ export class TransferService {
     private readonly filialService: FilialService,
   ) {}
 
-  async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Transfer & {
-    to: string,
-    from: string,
-    type: string,
-    filial: any,
-  }>, user?): Promise<Pagination<Transfer>> {
+  async getAll(
+    options: IPaginationOptions,
+    where?: FindOptionsWhere<Transfer & { to: string, from: string, type: string, filial: any, }>,
+    user?): Promise<Pagination<Transfer>> {
     const baza = await this.filialService.findOrCreateFilialByTitle('baza');
     if(!user?.filial){
       user.filial = baza;
