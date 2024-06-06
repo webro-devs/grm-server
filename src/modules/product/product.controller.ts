@@ -112,6 +112,7 @@ export class ProductController {
     return await this.productService.getProdsByStyle();
   }
 
+  @Public()
   @Get('/products-internet-shop')
   @ApiOperation({ summary: 'Method: returns products by style' })
   @ApiOkResponse({
