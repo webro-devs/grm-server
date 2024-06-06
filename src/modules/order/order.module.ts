@@ -12,6 +12,7 @@ import { GrmSocketModule } from '../web-socket/web-socket.module';
 import { OrderQueryParserMiddleware } from 'src/infra/middleware';
 import { FilialModule } from '../filial/filial.module';
 import { OrderBasketModule } from '../order-basket/order-basket.module';
+import { TransferModule } from '../transfer/transfer.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { OrderBasketModule } from '../order-basket/order-basket.module';
     CashflowModule,
     FilialModule,
     OrderBasketModule,
+    TransferModule,
   ],
   controllers: [OrderController],
   providers: [OrderService],

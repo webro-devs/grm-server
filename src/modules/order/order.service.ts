@@ -25,6 +25,7 @@ import { FilialService } from '../filial/filial.service';
 import { OrderBasketService } from '../order-basket/order-basket.service';
 import { User } from '../user/user.entity';
 import { calcProdProfit } from './utils/functions';
+import { TransferService } from '../transfer/transfer.service';
 //
 Injectable();
 export class OrderService {
@@ -42,6 +43,7 @@ export class OrderService {
     private readonly entityManager: EntityManager,
     private readonly filialService: FilialService,
     private readonly orderBasketService: OrderBasketService,
+    private readonly transferService: TransferService,
   ) {}
 
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Product>): Promise<Pagination<Order>> {
@@ -584,5 +586,13 @@ export class OrderService {
         }
       }
     }
+  }
+
+  async acceptInternetShopOrder(value: CreateOrderDto, cashier: User, transferId: string) {
+    // @ts-ignore
+    value?.['product'] = await this.transferService.checkTransferManager(transferId, cashier.id);
+    const order = await this.create(value, cashier.id);
+    await this.checkOrder(order.raw[0].id, cashier.id);
+    return 'Ok'
   }
 }

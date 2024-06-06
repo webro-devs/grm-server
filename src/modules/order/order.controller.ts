@@ -113,6 +113,20 @@ export class OrderController {
     return await this.orderService.create(data, request.user.id);
   }
 
+  @Post('/internet-shop/:id')
+  @Roles(UserRoleEnum.SUPPER_MANAGER)
+  @ApiOperation({ summary: 'Method: creates new shop order' })
+  @ApiCreatedResponse({
+    description: 'The shop order was created successfully',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async internetOrder(@Body() data: CreateOrderDto, @Req() request: any, @Param('id') transferId: string) {
+    if (!request?.user?.id) {
+      throw new ForbiddenException('Not Authorized!');
+    }
+    return await this.orderService.acceptInternetShopOrder(data, request.user, transferId);
+  }
+
   @Post('/basket')
   @ApiOperation({ summary: 'Method: creates new order' })
   @ApiCreatedResponse({

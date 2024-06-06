@@ -12,6 +12,7 @@ import { FileService } from '../file/file.service';
 import { ColorService } from '../color/color.service';
 import { CollectionService } from '../collection/collection.service';
 import ProductMediumByStyleUtil from './utils/product-medium-by-style.util';
+import createProductDto from './dto/create-product.dto';
 
 Injectable();
 export class ProductService {
@@ -265,6 +266,21 @@ export class ProductService {
     }
     await this.productRepository.save(value as unknown as Product, { chunk: Math.floor(value.length / 20) });
     return "ok";
+  }
+
+  async create4Manager(value: createProductDto, type: boolean) {
+    let y = value.y;
+    value = this.setXy([value])[0];
+    if (type) {
+      value.y = y;
+    }
+    return await this.productRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Product)
+      .values(value as unknown as Product)
+      .returning('id')
+      .execute();
   }
 
   setXy(value: CreateProductDto[]): CreateProductDto[] {

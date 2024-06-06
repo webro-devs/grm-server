@@ -96,14 +96,13 @@ export class ModelService {
   }
 
   async create(value: CreateModelDto) {
-    const response = this.modelRepository
+    return this.modelRepository
       .createQueryBuilder()
       .insert()
       .into(Model)
       .values(value as unknown as Model)
       .returning('id')
       .execute();
-    return response;
   }
 
   async findOrCreate(collection: string, title: string) {

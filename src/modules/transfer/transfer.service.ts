@@ -221,4 +221,47 @@ export class TransferService {
 
     await this.actionService.create({ ...transfer, progres: 'Rejected' }, cashier?.id, cashier?.filial?.id || transfer.product.filial.id, 'transfer_reject');
   }
+
+  async checkTransferManager(id: string, userId: string) {
+    const transfer = await this.transferRepository.findOne({
+      where: { id },
+      relations: { product: { color: true, model: true, partiya: true }, transferer: true, to: true },
+    });
+    if (transfer.isChecked) {
+      throw new BadRequestException('Transfer already checked!');
+    }
+
+    const product = transfer.product;
+    const newProduct: CreateProductDto = {
+      code: product?.code || null,
+      color: product?.color?.id || null,
+      count: product.shape.toLowerCase() === 'rulo' ? product.count : transfer.count || 1,
+      filial: transfer.to.id,
+      imgUrl: product.imgUrl,
+      model: product?.model.id,
+      price: product.price,
+      comingPrice: product.comingPrice,
+      priceMeter: product.priceMeter,
+      shape: product?.shape,
+      size: product?.size,
+      style: product?.style,
+      otherImgs: product.otherImgs,
+      totalSize: product.x * product.y * transfer.count,
+      x: product.x,
+      y: product.shape.toLowerCase() === 'rulo' ? transfer.count / 100 : product.y,
+      partiya: product.partiya.id,
+      secondPrice: product?.secondPrice,
+      country: product?.country,
+    };
+
+    const res = await this.productService.create4Manager(newProduct, true);
+
+    const cashier = await this.userService.getOne(userId);
+
+    await this.transferRepository.update(id, { cashier, progres: 'Accepted', isChecked: true });
+
+    await this.actionService.create({ ...transfer, progres: 'Accepted' }, cashier.id, cashier.filial.id, 'transfer_accept');
+
+    return res.raw[0].id;
+  }
 }
