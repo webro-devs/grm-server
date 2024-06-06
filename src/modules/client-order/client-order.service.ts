@@ -22,7 +22,7 @@ export class ClientOrderService {
   async getAll(options: IPaginationOptions): Promise<Pagination<ClientOrder>> {
     return paginate<ClientOrder>(this.clientOrder, options, {
       relations: {
-        product: { model: { collection: true }, color: true },
+        product: { model: { collection: true }, color: true, filial: true },
       },
       order: {
         startDate: 'DESC'
