@@ -25,7 +25,7 @@ export class ClientOrderService {
         product: { model: { collection: true }, color: true },
       },
       order: {
-        date: 'DESC'
+        startDate: 'DESC'
       }
     });
   }
