@@ -214,7 +214,6 @@ export class OrderService {
     if (product.count < 1) {
       throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
     }
-    console.log("order create -> prod => : ", product);
     const user = await this.entityManager
       .getRepository('users')
       .findOne({ where: { id: id }, relations: { filial: true } })
@@ -226,8 +225,10 @@ export class OrderService {
     if(user.role > 3 && user.role !== 4){
       filial = product.filial.id
     }
-    const kassa = await this.kassaService.GetOpenKassa(filial);
-    console.log(kassa);
+    let kassa: any = await this.kassaService.GetOpenKassa(filial);
+    if (!kassa) {
+      kassa = { id: (await this.kassaService.create({ filial })).raw[0].id };
+    }
 
     if(filial != product.filial.id){
       throw new BadRequestException('You cannot sell a product on a non-working branch!')
@@ -593,7 +594,6 @@ export class OrderService {
     // @ts-ignore
     value?.['product'] = await this.transferService.checkTransferManager(transferId, cashier.id);
     const order = await this.create(value, cashier.id);
-    console.log("order service -> order=> : ", order);
     await this.checkOrder(order.raw[0].id, cashier.id);
     return 'Ok'
   }
