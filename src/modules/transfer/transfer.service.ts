@@ -260,6 +260,7 @@ export class TransferService {
 
     await this.actionService.create({ ...transfer, progres: 'Accepted' }, cashier.id, cashier.filial.id, 'transfer_accept');
 
+    console.log("transer res =>: ", res);
     return res.raw[0].id;
   }
 }
