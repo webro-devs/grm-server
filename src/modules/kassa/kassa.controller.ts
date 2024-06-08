@@ -1,20 +1,20 @@
 import {
-  Controller,
-  Post,
+  BadRequestException,
   Body,
-  HttpCode,
-  HttpStatus,
-  HttpException,
+  Controller,
   Delete,
-  Patch,
-  Param,
   Get,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
   Query,
   Req,
-  BadRequestException,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { KassaService } from './kassa.service';
 import { Kassa } from './kassa.entity';
 import { Route } from '../../infra/shared/decorators/route.decorator';
@@ -39,7 +39,7 @@ export class KassaController {
     return await this.kassaService.getAll({ ...query, route }, req.where);
   }
 
-  @Roles(UserRoleEnum.CASHIER)
+  @Roles(UserRoleEnum.CASHIER, UserRoleEnum.SUPPER_MANAGER)
   @Get('/report')
   @ApiOperation({ summary: 'Method: returns single kassa' })
   @ApiOkResponse({
@@ -63,7 +63,7 @@ export class KassaController {
     return await this.kassaService.getOne(id);
   }
 
-  @Roles(UserRoleEnum.CASHIER, UserRoleEnum.BOSS)
+  @Roles(UserRoleEnum.CASHIER, UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER)
   @Get('/open-kassa/:filialId')
   @ApiOperation({ summary: 'Method: returns single kassa' })
   @ApiOkResponse({
@@ -159,7 +159,7 @@ export class KassaController {
     return await this.kassaService.change(positionData, id);
   }
 
-  @Roles(UserRoleEnum.CASHIER, UserRoleEnum.BOSS)
+  @Roles(UserRoleEnum.CASHIER, UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER)
   @Patch('/close-kassa/:id')
   @ApiOperation({ summary: 'Method: closing kassa' })
   @ApiOkResponse({
