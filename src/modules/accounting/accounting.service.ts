@@ -51,7 +51,7 @@ export class AccountingService {
         netProfitTotalSum,
       } = await this.kassaService.kassaTotal({
         filial: { id: where.filial.id },
-        ...((!where?.startDate || !where?.startDate) && { isActive: true }),
+        ...((!where?.startDate && !where?.startDate) && { isActive: true }),
         ...(where?.startDate && { startDate: where.startDate }),
       });
 
