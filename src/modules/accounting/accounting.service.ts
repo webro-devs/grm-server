@@ -39,6 +39,12 @@ export class AccountingService {
         filial = allFilial.find(e => e.id === where.filial.id);
       }
 
+      const whereKassa = {
+        filial: { id: where.filial.id },
+        ...(where?.startDate && { startDate: where.startDate }),
+        ...(where?.endDate && { endDate: where.endDate }),
+      };
+
       const {
         comingSum,
         goingSumBoss,
@@ -49,11 +55,9 @@ export class AccountingService {
         cashFlowSumShop,
         plasticSum,
         netProfitTotalSum,
-      } = await this.kassaService.kassaTotal({
-        filial: { id: where.filial.id },
-        ...((!where?.startDate && !where?.startDate) && { isActive: true }),
-        ...(where?.startDate && { startDate: where.startDate }),
-      });
+      } = await this.kassaService.kassaTotal(
+        whereKassa?.startDate || whereKassa?.endDate ? whereKassa : { filial: { id: where.filial.id }, isActive: true },
+      );
 
       const { remainingSize, remainingSum } = await this.productService.remainingProducts({
         filial: { id: where.filial.id },
