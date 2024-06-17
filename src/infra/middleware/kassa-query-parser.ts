@@ -15,8 +15,8 @@ class KassaQueryParserMiddleware implements NestMiddleware {
       endDate.setHours(23, 59, 59, 999);
       where = {
         startDate: Between(
-          (new Date(startDate)).setHours(0, 0, 0, 0),
-          (new Date(endDate)).setHours(23, 59, 59, 999),
+          startDate,
+          endDate,
         ),
       };
     } else if (startDate) {
@@ -24,13 +24,13 @@ class KassaQueryParserMiddleware implements NestMiddleware {
       startDate.setHours(0, 0, 0, 0);
 
       where = {
-        startDate: MoreThanOrEqual((new Date(startDate)).setHours(0, 0, 0, 0)),
+        startDate: MoreThanOrEqual(startDate),
       };
     } else if (endDate) {
       endDate = new Date(startDate);
       endDate.setHours(23, 59, 59, 999);
       where = {
-        startDate: LessThanOrEqual((new Date(endDate)).setHours(23, 59, 59, 999)),
+        startDate: LessThanOrEqual(endDate),
       };
     }
     if (filial) {
