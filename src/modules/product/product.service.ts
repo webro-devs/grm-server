@@ -32,7 +32,7 @@ export class ProductService {
     where?: FindOptionsWhere<Product>,
     _user?: { role: number; },
   ) {
-    if (where['fields']) {
+    if (where?.['fields']) {
       console.log(where);
       console.log(_user);
       if(!where['search']){
