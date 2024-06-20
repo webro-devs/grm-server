@@ -24,6 +24,9 @@ export class OrderBasketService {
       relations: {
         product: { model: { collection: true }, color: true },
       },
+      order: {
+        date: 'ASC'
+      }
     });
   }
 

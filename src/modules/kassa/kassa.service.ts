@@ -213,7 +213,7 @@ export class KassaService {
       where,
     });
     if (data.length) {
-      const kassa = data.reduce(
+      return data.reduce(
         (
           prev,
           {
@@ -252,7 +252,6 @@ export class KassaService {
           plasticSum: 0,
         },
       );
-      return kassa;
     } else {
       return {
         netProfitTotalSum: 0,

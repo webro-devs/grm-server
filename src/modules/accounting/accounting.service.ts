@@ -5,7 +5,7 @@ import { ProductService } from '../product/product.service';
 import { CollectionService } from '../collection/collection.service';
 import { ClientOrderService } from '../client-order/client-order.service';
 import { paginateArray } from 'src/infra/helpers';
-import { EntityManager } from 'typeorm';
+import { EntityManager, In } from 'typeorm';
 import { OrderCashflowDto } from './dto';
 
 Injectable();
@@ -43,6 +43,7 @@ export class AccountingService {
         filial: { id: where.filial.id },
         ...(where?.startDate && { startDate: where.startDate }),
         ...(where?.endDate && { endDate: where.endDate }),
+        isActive: In([true, false]),
       };
 
       const {

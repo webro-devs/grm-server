@@ -8,30 +8,16 @@ class KassaQueryParserMiddleware implements NestMiddleware {
     let where: any = {};
     let { startDate, endDate, filial, total } = req.query;
 
-    if (startDate && endDate) {
-      startDate = new Date(startDate);
-      endDate = new Date(startDate);
-      startDate.setHours(0, 0, 0, 0);
-      endDate.setHours(23, 59, 59, 999);
-      where = {
-        startDate: Between(
-          startDate,
-          endDate,
-        ),
-      };
-    } else if (startDate) {
+    if (startDate) {
       startDate = new Date(startDate);
       startDate.setHours(0, 0, 0, 0);
+      where.startDate = MoreThanOrEqual(startDate)
+    }
 
-      where = {
-        startDate: MoreThanOrEqual(startDate),
-      };
-    } else if (endDate) {
-      endDate = new Date(startDate);
+    if (endDate) {
+      endDate = new Date(endDate);
       endDate.setHours(23, 59, 59, 999);
-      where = {
-        startDate: LessThanOrEqual(endDate),
-      };
+      where.endDate = LessThanOrEqual(endDate)
     }
     if (filial) {
       where.filial = {

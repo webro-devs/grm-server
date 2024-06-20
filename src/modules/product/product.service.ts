@@ -362,4 +362,14 @@ export class ProductService {
   async internetShop() {
     return await this.productRepository.query(internetShop());
   }
+
+  getFilial(array: Product[]){
+      const map = new Map();
+
+      array.forEach(item => {
+        map.set(item.filial.id, item.filial); // using 'id' as the unique key
+      });
+
+      return Array.from(map.values());
+  }
 }
