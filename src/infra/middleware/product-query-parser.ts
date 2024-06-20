@@ -120,7 +120,7 @@ class ProductQueryParserMiddleware implements NestMiddleware {
     }
     where.count = MoreThanOrEqual(1);
 
-    if (search) {
+      if (search) {
       search = search.split('+').join(' ');
       where = {
         filial: filialId,

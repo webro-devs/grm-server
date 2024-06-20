@@ -29,6 +29,7 @@ export class ProductModule implements NestModule {
       .forRoutes(
         { path: 'product/remaining-products', method: RequestMethod.GET },
         { path: '/product', method: RequestMethod.GET },
+        { path: '/product/filial', method: RequestMethod.GET },
         { path: '/product/internet-shop', method: RequestMethod.GET },
       );
   }
