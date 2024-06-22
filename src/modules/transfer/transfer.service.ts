@@ -120,7 +120,9 @@ export class TransferService {
 
   async takeSize(id: string, count: number) {
     const product = await this.productService.getById(id);
-
+    if(product.shape.toLowerCase().trim() === 'rulo'){
+      return product.x * count / 100
+    }
     return product.x * product.y * count;
   }
 
