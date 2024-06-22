@@ -107,6 +107,7 @@ export class KassaService {
       relations: {
         orders: {
           seller: true,
+          casher: true,
           product: {
             color: true,
             model: { collection: true },
