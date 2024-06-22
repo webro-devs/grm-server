@@ -102,6 +102,31 @@ export class KassaService {
     return kassa;
   }
 
+  async getKassa(id: string) {
+    const kassa = await this.kassaRepository.findOne({
+      relations: {
+        orders: {
+          seller: true,
+          product: {
+            color: true,
+            model: { collection: true },
+          },
+        },
+        cashflow: {
+          casher: true,
+        },
+        filial: true,
+      },
+      where: { id },
+    });
+
+    if (kassa) {
+      kassa['cashflowAndOrders'] = this.mergeAndSortCashflowsAndOrders(kassa);
+    }
+
+    return kassa;
+  }
+
   async closeKassa(id: string, user) {
     const response = await this.kassaRepository.update(id, {
       isActive: false,

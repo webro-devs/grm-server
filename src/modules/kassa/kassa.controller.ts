@@ -39,6 +39,16 @@ export class KassaController {
     return await this.kassaService.getAll({ ...query, route }, req.where);
   }
 
+  @Get('/archive/kassa/one/:id')
+  @ApiOperation({ summary: 'Method: returns all kassa' })
+  @ApiOkResponse({
+    description: 'The kassa were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getKassa(@Param('id') id: string) {
+    return await this.kassaService.getKassa(id);
+  }
+
   @Roles(UserRoleEnum.CASHIER, UserRoleEnum.SUPPER_MANAGER)
   @Get('/report')
   @ApiOperation({ summary: 'Method: returns single kassa' })
