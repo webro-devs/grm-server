@@ -8,6 +8,8 @@ import { CreateKassaDto, UpdateKassaDto } from './dto';
 import { FilialService } from '../filial/filial.service';
 import { ActionService } from '../action/action.service';
 import { Order } from '../order/order.entity';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRoleEnum } from '../../infra/shared/enum';
 
 Injectable();
 export class KassaService {
@@ -20,6 +22,7 @@ export class KassaService {
 
   ) {}
 
+  @Roles(UserRoleEnum.BOSS)
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Kassa>): Promise<Pagination<Kassa>> {
     return paginate<Kassa>(this.kassaRepository, options, {
       relations: { orders: true, cashflow: { casher: true } },
