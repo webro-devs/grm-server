@@ -22,7 +22,8 @@ export class KassaService {
 
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Kassa>): Promise<Pagination<Kassa>> {
     return paginate<Kassa>(this.kassaRepository, options, {
-      relations: { orders: true, cashflow: true },
+      relations: { orders: true, cashflow: { casher: true } },
+      where,
     });
   }
 
@@ -132,6 +133,7 @@ export class KassaService {
     const response = await this.kassaRepository.update(id, {
       isActive: false,
       endDate: new Date(),
+      closer: user.id,
     });
     const _kassa = await this.kassaRepository.findOne({ where: { id }, relations: { filial: true } });
     await this.actionService.create(_kassa, user.id, _kassa.filial.id, 'close_kassa', `$${_kassa.totalSum}`);
@@ -359,4 +361,4 @@ export class KassaService {
   async getKassaAndOrders(id: string) {
     return this.kassaRepository.findOne({ where: { id, orders: { isActive: 'accept'} }, relations: { orders: { product: true } } });
   }
-}
+};

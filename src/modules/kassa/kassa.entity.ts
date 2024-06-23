@@ -3,6 +3,7 @@ import { Order } from '../order/order.entity';
 import { Filial } from '../filial/filial.entity';
 import { Cashflow } from '../cashflow/cashflow.entity';
 import { ColumnNumericTransformer } from '../../infra/helpers';
+import { User } from '../user/user.entity';
 
 @Entity('kassa')
 export class Kassa {
@@ -107,4 +108,7 @@ export class Kassa {
 
   @OneToMany(() => Cashflow, (cashflow) => cashflow.kassa, { cascade: true })
   cashflow: Cashflow[];
+
+  @ManyToOne(() => User, user => user.id, {onDelete: 'SET NULL'})
+  closer: User;
 }

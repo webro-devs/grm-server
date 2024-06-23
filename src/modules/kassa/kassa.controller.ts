@@ -18,7 +18,7 @@ import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestj
 import { KassaService } from './kassa.service';
 import { Kassa } from './kassa.entity';
 import { Route } from '../../infra/shared/decorators/route.decorator';
-import { PaginationDto, RangeDto } from '../../infra/shared/dto';
+import { KassaQueryDto, RangeDto } from '../../infra/shared/dto';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -35,7 +35,8 @@ export class KassaController {
     description: 'The kassa were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getData(@Route() route: string, @Query() query: PaginationDto, @Req() req) {
+  async getData(@Route() route: string, @Query() query: KassaQueryDto, @Req() req) {
+    req.where?.total && delete req.where?.total;
     return await this.kassaService.getAll({ ...query, route }, req.where);
   }
 
