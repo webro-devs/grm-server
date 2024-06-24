@@ -25,7 +25,7 @@ export class KassaService {
   @Roles(UserRoleEnum.BOSS, UserRoleEnum.MANAGER)
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Kassa>): Promise<Pagination<Kassa>> {
     return paginate<Kassa>(this.kassaRepository, options, {
-      relations: { orders: true, cashflow: { casher: true } },
+      relations: { orders: { seller: true }, cashflow: { casher: true } },
       where,
     });
   }
