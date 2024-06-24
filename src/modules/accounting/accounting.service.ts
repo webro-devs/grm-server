@@ -66,6 +66,7 @@ export class AccountingService {
       });
 
       result.push({
+        id: filial.id,
         name: filial.name || filial.title,
         remainingSize,
         remainingSum,
