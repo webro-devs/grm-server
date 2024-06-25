@@ -49,8 +49,7 @@ class KassaQueryDto {
   })
   @IsOptional()
   @IsString()
-  @IsEnum(orderTypeEnum)
-  readonly isActive: orderTypeEnum;
+  readonly isActive: boolean;
 
   @ApiProperty({
     description: `Limit`,
