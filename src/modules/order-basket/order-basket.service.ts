@@ -48,10 +48,18 @@ export class OrderBasketService {
        throw new BadRequestException('It is not your product!');
       }
     }
+    const baskects = await this.orderBasketRepository.find({
+      where: {
+        product: { id: value.product },
+      },
+    });
+
     if (value.isMetric) {
-      if (product.y < value.x / 100) throw new BadRequestException('Not enough product meter!');
+      const total = baskects.reduce((acc, curr) => acc + (curr.x / 100), value.x / 100);
+      if (product.y < value.x / 100 || product.y < total) throw new BadRequestException('Not enough product meter!');
     } else {
-      if (product.count < value.x) throw new BadRequestException('Not enough product count!');
+      const total = baskects.reduce((acc, curr) => acc + curr.x, value.x);
+      if (product.count < value.x || product.count < total) throw new BadRequestException('Not enough product count!');
     }
     value.seller = user.id;
     const data = this.orderBasketRepository.create(value as unknown as OrderBasket);
