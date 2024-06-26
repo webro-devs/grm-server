@@ -1,0 +1,1 @@
+export { default as getAllQuery } from './get-all.util';

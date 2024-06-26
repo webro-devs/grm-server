@@ -24,10 +24,16 @@ export class KassaService {
 
   @Roles(UserRoleEnum.BOSS, UserRoleEnum.MANAGER)
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Kassa>): Promise<Pagination<Kassa>> {
-    return paginate<Kassa>(this.kassaRepository, options, {
-      relations: { orders: { seller: true, casher: true }, cashflow: { casher: true } },
-      where,
-    });
+    const queryBuilder = this.kassaRepository
+      .createQueryBuilder('k')
+      .leftJoinAndSelect('k.filial', 'f')
+      .leftJoinAndMapMany('f.cashiers', 'f.users', 'u', 'u.role = 2');
+
+    if (where) {
+      queryBuilder.where(where);
+    }
+
+    return paginate<Kassa>(queryBuilder, options);
   }
 
   async getReport(options: IPaginationOptions, user, where) {
