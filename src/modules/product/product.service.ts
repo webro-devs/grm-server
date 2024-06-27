@@ -355,8 +355,8 @@ export class ProductService {
     return  product;
   }
 
-  async getSupports(model: string, shape: string, color: string, size: string){
-    return await this.productRepository.query(getSupports(model, shape, color, size));
+  async getSupports(collection: string, model: string, shape: string, color: string, size: string) {
+    return await this.productRepository.query(getSupports(collection, model, shape, color, size));
   }
 
   async internetShop() {

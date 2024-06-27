@@ -1,4 +1,4 @@
-const query = ( model: string, shape: string, color: string, size: string ) => `
+const query = ( collection: string, model: string, shape: string, color: string, size: string ) => `
 SELECT
     json_agg(DISTINCT model) AS model,
     json_agg(DISTINCT collection) AS collection,
@@ -31,6 +31,7 @@ FROM
             p."isInternetShop" = true
             and p.count > 0
             and p.y > 0
+            ${ collection ? `and c.title = '${collection}'` : '' } 
             ${ model ? `and m.title = '${model}'` : '' } 
             ${ shape ? `and sh.title = '${shape}'` : '' } 
             ${ color ? `and cl.title = '${color}'` : '' }
