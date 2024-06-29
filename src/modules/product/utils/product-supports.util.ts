@@ -34,8 +34,8 @@ FROM
             ${ collection ? `and c.title in(${collection})` : '' } 
             ${ model ? `and m.title = '${model}'` : '' } 
             ${ shape ? `and sh.title in(${shape})` : '' } 
-            ${ color ? `and cl.title = in(${color})` : '' }
-            ${ size ? `and s.title = in(${size})` : '' }
+            ${ color ? `and cl.title in(${color})` : '' }
+            ${ size ? `and s.title in(${size})` : '' }
         GROUP BY
             m.title, c.title, co.title, s.title, sh.title, cl.title, si.title, cl.code
         ) AS subquery;
