@@ -7,11 +7,19 @@ import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from
 import { sizeParser } from 'src/infra/helpers';
 import { FilialService } from '../filial/filial.service';
 import { ModelService } from '../model/model.service';
-import { getByCode, getSupports, internetShop, iShopAccounting, prodSearch } from './utils';
+import {
+  getByCode,
+  getSupports,
+  internetInfoBulkUpdate,
+  internetShop,
+  internetShopByModel,
+  iShopAccounting,
+  prodSearch,
+  productMediumByStyleQuery,
+} from './utils';
 import { FileService } from '../file/file.service';
 import { ColorService } from '../color/color.service';
 import { CollectionService } from '../collection/collection.service';
-import ProductMediumByStyleUtil from './utils/product-medium-by-style.util';
 import createProductDto from './dto/create-product.dto';
 
 Injectable();
@@ -108,7 +116,7 @@ export class ProductService {
   }
 
   async getProdsByStyle(){
-    return this.productRepository.query(ProductMediumByStyleUtil);
+    return this.productRepository.query(productMediumByStyleQuery());
   }
 
   async getByCollections(quer: any, id: string) {
@@ -212,7 +220,6 @@ export class ProductService {
     if(value?.collection){
       delete value.collection
     }
-
     if(value?.size){
       const xy = sizeParser(value.size);
       value.x = xy[0] / 100;
@@ -241,12 +248,20 @@ export class ProductService {
       }
     }
 
-    return await this.productRepository
+    const data = await this.productRepository
       .createQueryBuilder()
       .update()
       .set(value as unknown as Product)
       .where('id = :id', { id })
       .execute();
+
+    const prod = await this.productRepository.findOne({ where: { id }, relations: { model: { collection: true } } });
+
+    if (value?.internetInfo) {
+      await this.productRepository.query(internetInfoBulkUpdate(prod.model.collection.id, value?.internetInfo));
+    }
+
+    return data;
   }
 
   async changeInternetShopProduct(value: UpdateInternetShopProductDto, id: string) {
@@ -359,7 +374,16 @@ export class ProductService {
     return await this.productRepository.query(getSupports(collection, model, shape, color, size));
   }
 
-  async internetShop() {
+  async internetShop(query) {
+    if (query.collection) {
+      return await this.productRepository.query(
+        internetShopByModel(
+          JSON.parse(query.collection || '{}'),
+          JSON.parse(query.size || '{}'),
+          JSON.parse(query.style || '{}'),
+          JSON.parse(query.color || '{}')),
+      );
+    }
     return await this.productRepository.query(internetShop());
   }
 

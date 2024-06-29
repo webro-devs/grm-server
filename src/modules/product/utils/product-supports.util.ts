@@ -25,17 +25,17 @@ FROM
             LEFT JOIN country co ON p.country = co.title
             LEFT JOIN style s ON p.style = s.title
             LEFT JOIN shape sh ON p.shape = sh.title
-            LEFT JOIN color cl ON p."colorId" = cl.id
+            JOIN color cl ON p."colorId" = cl.id
             LEFT JOIN size si ON p.size = si.title
         WHERE
             p."isInternetShop" = true
             and p.count > 0
             and p.y > 0
-            ${ collection ? `and c.title = '${collection}'` : '' } 
+            ${ collection ? `and c.title in(${collection})` : '' } 
             ${ model ? `and m.title = '${model}'` : '' } 
-            ${ shape ? `and sh.title = '${shape}'` : '' } 
-            ${ color ? `and cl.title = '${color}'` : '' }
-            ${ size ? `and s.title = '${size}'` : '' }
+            ${ shape ? `and sh.title in(${shape})` : '' } 
+            ${ color ? `and cl.title = in(${color})` : '' }
+            ${ size ? `and s.title = in(${size})` : '' }
         GROUP BY
             m.title, c.title, co.title, s.title, sh.title, cl.title, si.title, cl.code
         ) AS subquery;

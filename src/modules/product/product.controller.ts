@@ -91,7 +91,7 @@ export class ProductController {
     color: string,
     size: string
   }) {
-    return (await this.productService.getSupports(query?.collection, query?.model, query?.shape, query?.color, query?.size))[0];
+    return (await this.productService.getSupports(JSON.parse(query?.collection), query?.model, JSON.parse(query?.shape), JSON.parse(query?.color), JSON.parse(query?.size)))[0];
   }
 
   @Get('/baza')
@@ -137,8 +137,8 @@ export class ProductController {
     description: 'The I-Shop products accounting were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getIShopProducts() {
-    return await this.productService.internetShop();
+  async getIShopProducts(@Query() query: {collection: string, size: string, style: string, color: string}) {
+    return await this.productService.internetShop(query);
   }
 
   @Get('/max-price')

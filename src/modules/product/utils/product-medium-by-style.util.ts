@@ -1,6 +1,7 @@
-export default
 
-`WITH ranked_products AS (
+
+const query = () => `
+WITH ranked_products AS (
   SELECT DISTINCT
 price,
   LOWER(style) AS normalized_style,
@@ -18,3 +19,5 @@ ranked_products
 WHERE
 row_num = CEIL(total_rows / 2.0);
 `;
+
+export default query
