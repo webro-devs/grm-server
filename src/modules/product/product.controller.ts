@@ -91,7 +91,7 @@ export class ProductController {
     color: string,
     size: string
   }) {
-    return (await this.productService.getSupports(JSON.parse(query?.collection), query?.model, JSON.parse(query?.shape), JSON.parse(query?.color), JSON.parse(query?.size)))[0];
+    return (await this.productService.getSupports(JSON.parse(query?.collection || '{}'), query?.model, JSON.parse(query?.shape || '{}'), JSON.parse(query?.color || '{}'), JSON.parse(query?.size || '{}')))[0];
   }
 
   @Get('/baza')
