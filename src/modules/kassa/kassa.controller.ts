@@ -23,6 +23,7 @@ import { CreateKassaDto, UpdateKassaDto } from './dto';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from 'src/infra/shared/enum';
+import { UserRoleEnum } from '../../infra/shared/enum';
 
 @ApiTags('Kassa')
 @Controller('kassa')
@@ -50,7 +51,7 @@ export class KassaController {
     return await this.kassaService.getKassa(id);
   }
 
-  @Roles(UserRoleEnum.CASHIER, UserRoleEnum.SUPPER_MANAGER)
+  @Roles(UserRoleEnum.CASHIER, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.BOSS)
   @Get('/report')
   @ApiOperation({ summary: 'Method: returns single kassa' })
   @ApiOkResponse({
