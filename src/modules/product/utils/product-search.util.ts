@@ -39,7 +39,8 @@ WHERE (SELECT COUNT(*)
                                                        FROM (SELECT REGEXP_SPLIT_TO_TABLE(LOWER('%${text}%'), ' ') AS word) AS words) AS unique_words)
   and p.count > 0
   and p.y > 0
-  ${filialId ? `and f.id = '${filialId}'` : ''} 
+  and f."isActive" = true
+  ${filialId ? `and f.id = '${filialId}'` : ''}
   ${collection ? `and col.id = '${collection}'` : ''} 
   ${ base ? '' : `and f.title != 'baza'`}
   ${ shop == 'true' || shop == 'false' ? `and p."isInternetShop" = ${shop}` : '' }

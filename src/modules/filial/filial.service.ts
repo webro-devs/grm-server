@@ -16,12 +16,19 @@ export class FilialService {
     return paginate<Filial>(this.filialRepository, options, {
       order: {
         title: 'ASC',
+      },
+      where: {
+        isActive: true,
       }
     });
   }
 
   async getAllFilial() {
-    const data = await this.filialRepository.find();
+    const data = await this.filialRepository.find({
+      where: {
+        isActive: true,
+      },
+    });
     return data;
   }
 
@@ -105,7 +112,7 @@ export class FilialService {
   }
 
   async getFilialWithKassa() {
-    return this.filialRepository.find({ relations: { kassa: { orders: true } } });
+    return this.filialRepository.find({ relations: { kassa: { orders: true } }, where: { isActive: true } });
   }
 
   async getIDokon() {

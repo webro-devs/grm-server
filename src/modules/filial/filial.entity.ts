@@ -40,6 +40,9 @@ export class Filial {
   @Column()
   phone2: string;
 
+  @Column({ type: 'boolean', default: true })
+  isActive: boolean;
+
   @OneToMany(() => Kassa, (kassa) => kassa.filial, { cascade: true })
   kassa: Kassa[];
 
