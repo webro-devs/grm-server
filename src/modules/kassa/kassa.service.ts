@@ -55,7 +55,12 @@ export class KassaService {
         ...(startDate && { startDate: MoreThanOrEqual(startDate) }),
         ...(endDate && { startDate: LessThanOrEqual(endDate) }),
         isActive: false,
-        filial: { id: user.filial.id, users: { role: 2 } },
+        ...(where.filial ? { filial: where.filial, users: { role: 2 } } : {
+          filial: {
+            id: user.filial.id,
+            users: { role: 2 },
+          },
+        }),
       },
       order: { startDate: 'DESC' },
     });
