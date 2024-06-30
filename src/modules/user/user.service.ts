@@ -1,7 +1,7 @@
-  import { NotFoundException, Injectable, BadRequestException, Inject, forwardRef } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, FindOptionsWhere, EntityManager, Repository, MoreThan, Between, ILike, Equal } from 'typeorm';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { MoreThan, Repository } from 'typeorm';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { promisify } from 'util';
 import { exec } from 'child_process';
 
@@ -15,8 +15,6 @@ import { FilialService } from '../filial/filial.service';
 import { PositionService } from '../position/position.service';
 import { UserRoleEnum } from '../../infra/shared/enum';
 import { ProductService } from '../product/product.service';
-import { OrderService } from '../order/order.service';
-import { OrderModule } from '../order/order.module';
 import { ActionService } from '../action/action.service';
 
 Injectable();
@@ -42,8 +40,9 @@ export class UserService {
       },
       where: {
         role: MoreThan(0),
+        filial: { isActive: true },
         ...(where.role && { position: { id: where.role } }),
-        ...(where.filial && { filial: { id: where.filial } }),
+        ...(where.filial && { filial: { id: where.filial, isActive: true } }),
       },
     });
   }
