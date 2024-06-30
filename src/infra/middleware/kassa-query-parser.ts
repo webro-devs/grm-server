@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Response } from 'express';
-import { LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 
 @Injectable()
 class KassaQueryParserMiddleware implements NestMiddleware {
@@ -11,14 +11,19 @@ class KassaQueryParserMiddleware implements NestMiddleware {
     if (startDate) {
       startDate = new Date(startDate);
       startDate.setHours(0, 0, 0, 0);
-      where.endDate = MoreThanOrEqual(startDate)
+      where.endDate = MoreThanOrEqual(startDate);
     }
 
     if (endDate) {
       endDate = new Date(endDate);
       endDate.setHours(23, 59, 59, 999);
-      where.endDate = LessThanOrEqual(endDate)
+      where.endDate = LessThanOrEqual(endDate);
     }
+
+    if (endDate && startDate) {
+      where.endDate = Between(startDate, endDate);
+    }
+
     if (filial)
       where.filial = {
         id: filial,
