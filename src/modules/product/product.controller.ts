@@ -92,11 +92,11 @@ export class ProductController {
     size: string
   }) {
     return (await this.productService.getSupports(
-      JSON.parse(query.collection || 'false'),
+      query.collection,
       query.model,
-      JSON.parse(query.shape || 'false'),
-      JSON.parse(query.color || 'false'),
-      JSON.parse(query.size || 'false')
+      query.shape,
+      query.color,
+      query.size
     ))[0];
   }
 

@@ -378,10 +378,11 @@ export class ProductService {
     if (query.collection) {
       return await this.productRepository.query(
         internetShopByModel(
-          JSON.parse(query.collection || '{}'),
-          JSON.parse(query.size || '{}'),
-          JSON.parse(query.style || '{}'),
-          JSON.parse(query.color || '{}')),
+          query.collection || false,
+          query.size || false,
+          query.style || false,
+          query.color || false,
+        ),
       );
     }
     return await this.productRepository.query(internetShop());

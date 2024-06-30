@@ -31,11 +31,11 @@ FROM
             p."isInternetShop" = true
             and p.count > 0
             and p.y > 0
-            ${ collection ? `and c.title in(${JSON.stringify(collection).replace('[', '').replace(']', '')})` : '' } 
+            ${ collection ? `and c.title in(${collection.replace('[', '').replace(']', '')})` : '' } 
             ${ model ? `and m.title = '${model}'` : '' } 
-            ${ shape ? `and sh.title in(${JSON.stringify(shape).replace('[', '').replace(']', '')})` : '' } 
-            ${ color ? `and cl.title in(${JSON.stringify(color).replace('[', '').replace(']', '')})` : '' }
-            ${ size ? `and s.title in(${JSON.stringify(size).replace('[', '').replace(']', '')})` : '' }
+            ${ shape ? `and sh.title in(${shape.replace('[', '').replace(']', '')})` : '' } 
+            ${ color ? `and cl.title in(${color.replace('[', '').replace(']', '')})` : '' }
+            ${ size ? `and s.title in(${size.replace('[', '').replace(']', '')})` : '' }
         GROUP BY
             m.title, c.title, co.title, s.title, sh.title, cl.title, si.title, cl.code
         ) AS subquery;

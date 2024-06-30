@@ -24,7 +24,8 @@ export class KassaService {
     const queryBuilder = this.kassaRepository
       .createQueryBuilder('k')
       .leftJoinAndSelect('k.filial', 'f')
-      .leftJoinAndMapMany('f.cashiers', 'f.users', 'u', 'u.role = 2');
+      .leftJoinAndMapMany('f.cashiers', 'f.users', 'u', 'u.role = 2')
+      .orderBy('k.startDate', 'DESC');
 
     if (where) {
       queryBuilder.where(where);
