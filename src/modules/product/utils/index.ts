@@ -6,3 +6,4 @@ export { default as productMediumByStyleQuery } from './product-medium-by-style.
 export { default as internetShop } from './internet-shop.util';
 export { default as internetShopByModel } from './internet-shop-model';
 export { default as internetInfoBulkUpdate } from './update-bulk-internet-shop';
+export { default as productImgBulkUpdate } from './bulk-update-product-img';

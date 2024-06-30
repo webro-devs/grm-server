@@ -15,6 +15,7 @@ import {
   internetShopByModel,
   iShopAccounting,
   prodSearch,
+  productImgBulkUpdate,
   productMediumByStyleQuery,
 } from './utils';
 import { FileService } from '../file/file.service';
@@ -255,10 +256,17 @@ export class ProductService {
       .where('id = :id', { id })
       .execute();
 
-    const prod = await this.productRepository.findOne({ where: { id }, relations: { model: { collection: true } } });
+    const prod = await this.productRepository.findOne({
+      where: { id },
+      relations: { model: { collection: true }, color: true },
+    });
 
     if (value?.internetInfo) {
       await this.productRepository.query(internetInfoBulkUpdate(prod.model.collection.id, value?.internetInfo));
+    }
+
+    if (value?.imgUrl && prod.model) {
+      await this.productRepository.query(productImgBulkUpdate(value.imgUrl, prod.model.title, prod.color.title, prod.shape));
     }
 
     return data;
