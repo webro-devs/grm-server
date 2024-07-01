@@ -324,7 +324,7 @@ export class OrderService {
 
     const kassa = await this.kassaService.getById(order.kassa.id);
 
-    kassa.totalSum = kassa.totalSum + order.price;
+    kassa.totalSum = kassa.totalSum + Number(order.price) || 0;
 
     if (order.product.isMetric) {
       kassa.totalSize = kassa.totalSize + (order.x / 100) * order.product.x;
