@@ -338,7 +338,7 @@ export class OrderService {
 
     kassa.plasticSum = kassa.plasticSum + order.plasticSum;
 
-    await this.saveRepo(kassa);
+    await this.entityManager.save(kassa);
 
     const response = await this.orderRepository
       .createQueryBuilder()
@@ -556,7 +556,7 @@ export class OrderService {
 
     kassa.plasticSum = kassa.plasticSum + order.plasticSum;
 
-    await this.saveRepo(kassa);
+    await this.entityManager.save(kassa);
 
     return 'ok';
   }
