@@ -252,6 +252,7 @@ export class KassaService {
     const data = await this.kassaRepository.find({
       where,
     });
+
     if (data.length) {
       return data.reduce(
         (

@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { Between, DataSource, EntityManager, FindOptionsWhere, InsertResult, Repository } from 'typeorm';
+import { Between, DataSource, EntityManager, FindOptionsWhere, InsertResult, LessThan, Repository } from 'typeorm';
 
 import { Order } from './order.entity';
 import { CreateOrderDto, UpdateOrderDto } from './dto';
@@ -589,12 +589,22 @@ export class OrderService {
       }
     }
   }
-
   async acceptInternetShopOrder(value: CreateOrderDto, cashier: User, transferId: string) {
     // @ts-ignore
     value?.['product'] = await this.transferService.checkTransferManager(transferId, cashier.id);
     const order = await this.create(value, cashier.id);
     await this.checkOrder(order.raw[0].id, cashier.id);
     return 'Ok'
+  }
+
+  async getDiscount(where) {
+    const orders = await this.orderRepository.find({
+      where: {
+        ...where,
+        additionalProfitSum: LessThan(0),
+      },
+    });
+
+    return orders.reduce((acc, curr) => acc + curr.additionalProfitSum, 0);
   }
 }

@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, RequestMethod, forwardRef } from '@nestjs/common';
+import { forwardRef, MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Order } from './order.entity';
@@ -32,6 +32,8 @@ import { TransferModule } from '../transfer/transfer.module';
 })
 export class OrderModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(OrderQueryParserMiddleware).forRoutes({ path: '/order', method: RequestMethod.GET });
+    consumer.apply(OrderQueryParserMiddleware).forRoutes(
+      { path: '/order', method: RequestMethod.GET },
+      { path: '/discount/by/order', method: RequestMethod.GET });
   }
 }

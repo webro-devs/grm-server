@@ -7,6 +7,7 @@ import { ClientOrderService } from '../client-order/client-order.service';
 import { paginateArray } from 'src/infra/helpers';
 import { EntityManager, In } from 'typeorm';
 import { OrderCashflowDto } from './dto';
+import { OrderService } from '../order/order.service';
 
 Injectable();
 export class AccountingService {
@@ -17,6 +18,7 @@ export class AccountingService {
     private readonly productService: ProductService,
     private readonly collectionService: CollectionService,
     private readonly clientOrderService: ClientOrderService,
+    private readonly orderService: OrderService,
     private readonly entityManager: EntityManager,
   ) {}
 
@@ -65,6 +67,11 @@ export class AccountingService {
         ...(where.date && { date: where.date }),
       });
 
+      const discountSum = await this.orderService.getDiscount({
+        product: { filial: { id: where.filial.id } },
+        ...(where.date && { date: where.date }),
+      });
+
       result.push({
         id: filial.id,
         name: filial.name || filial.title,
@@ -80,6 +87,7 @@ export class AccountingService {
         cashFlowSumBoss,
         additionalProfitTotalSum,
         netProfitTotalSum,
+        discountSum,
       });
       delete where.filial.id;
 

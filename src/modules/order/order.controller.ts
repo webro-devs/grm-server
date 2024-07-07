@@ -21,6 +21,7 @@ import { CreateOrderDto, CreateWithBaskerOrderDto, UpdateOrderDto } from './dto'
 import { Order } from './order.entity';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from '../../infra/shared/enum';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Order')
 @Controller('order')
@@ -186,5 +187,16 @@ export class OrderController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async returnOrderProduct(@Param('id') id: string, @Req() req) {
     return await this.orderService.returnOrder(id, req.user.id);
+  }
+
+  @Public()
+  @Get('/discount/by/order')
+  @ApiOperation({ summary: 'Method: returns order' })
+  @ApiOkResponse({
+    description: 'Order was returned',
+  })
+  @HttpCode(HttpStatus.OK)
+  async returnOrderProductDiscount(@Req() req) {
+    return await this.orderService.getDiscount(req['where']);
   }
 }

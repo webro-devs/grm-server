@@ -21,6 +21,7 @@ class OrderQueryParserMiddleware implements NestMiddleware {
       collection,
       style,
       size,
+      kassa,
     }: OrderQueryDto = req.query;
 
     if (startDate && endDate) {
@@ -65,6 +66,10 @@ class OrderQueryParserMiddleware implements NestMiddleware {
     if (style) {
       const ddd = JSON.parse(style);
       ddd.length && (where.product = { ...(where.product && where.product), style: { id: In(ddd) } });
+    }
+
+    if (kassa) {
+      where.kassa = { id: kassa };
     }
 
     if (size?.length) {

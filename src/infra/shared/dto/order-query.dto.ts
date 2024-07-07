@@ -50,6 +50,15 @@ class OrderQueryDto {
   readonly endPrice;
 
   @ApiProperty({
+    description: `kassa id`,
+    example: 'uuid',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  readonly kassa;
+
+  @ApiProperty({
     description: `filial id`,
     example: 'uuid',
   })

@@ -13,6 +13,7 @@ import { FilialModule } from '../filial/filial.module';
 import { CollectionModule } from '../collection/collection.module';
 import { KassaQueryParserMiddleware } from '../../infra/middleware';
 import { ClientOrderModule } from '../client-order/client-order.module';
+import { OrderModule } from '../order/order.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ClientOrderModule } from '../client-order/client-order.module';
     FilialModule,
     CollectionModule,
     ClientOrderModule,
+    OrderModule
   ],
   controllers: [AccountingController],
   providers: [AccountingService],
