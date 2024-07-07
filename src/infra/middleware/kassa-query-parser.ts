@@ -12,16 +12,19 @@ class KassaQueryParserMiddleware implements NestMiddleware {
       startDate = new Date(startDate);
       startDate.setHours(0, 0, 0, 0);
       where.endDate = MoreThanOrEqual(startDate);
+      where.date = MoreThanOrEqual(startDate);
     }
 
     if (endDate) {
       endDate = new Date(endDate);
       endDate.setHours(23, 59, 59, 999);
       where.endDate = LessThanOrEqual(endDate);
+      where.date = LessThanOrEqual(endDate);
     }
 
     if (endDate && startDate) {
       where.endDate = Between(startDate, endDate);
+      where.date = Between(startDate, endDate);
     }
 
     if (filial)

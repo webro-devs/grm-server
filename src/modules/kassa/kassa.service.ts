@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { EntityManager, FindOptionsWhere, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { EntityManager, FindOptionsWhere, LessThan, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 
 import { Kassa } from './kassa.entity';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
@@ -17,7 +17,6 @@ export class KassaService {
     private readonly actionService: ActionService,
     private readonly filialService: FilialService,
     private readonly entityManager: EntityManager,
-
   ) {}
 
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Kassa>): Promise<Pagination<Kassa>> {
@@ -30,8 +29,31 @@ export class KassaService {
     if (where) {
       queryBuilder.where(where);
     }
+    const kassas = await paginate<Kassa>(queryBuilder, options);
+    // const orders = await this.orderRepository.find({
+    //   where: {
+    //     ...where,
+    //     additionalProfitSum: LessThan(0),
+    //   },
+    // });
+    //
+    // return orders.reduce((acc, curr) => acc + curr.additionalProfitSum, 0);
 
-    return paginate<Kassa>(queryBuilder, options);
+    for (const kassa of kassas.items) {
+      const orders = await this.entityManager
+        .getRepository('order')
+        .createQueryBuilder('order')
+        .where({
+          additionalProfitSum: LessThan(0),
+          kassa: { id: kassa.id },
+          ...(where['date'] && { data: where['date'] }),
+        })
+        .getMany();
+
+      kassa['discountSum'] = orders.reduce((acc, curr) => acc + curr.additionalProfitSum, 0);
+    }
+
+    return kassas;
   }
 
   async getReport(options: IPaginationOptions, user, where) {
