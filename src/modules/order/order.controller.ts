@@ -189,7 +189,6 @@ export class OrderController {
     return await this.orderService.returnOrder(id, req.user.id);
   }
 
-  @Public()
   @Get('/discount/by/order')
   @ApiOperation({ summary: 'Method: returns order' })
   @ApiOkResponse({
@@ -198,5 +197,15 @@ export class OrderController {
   @HttpCode(HttpStatus.OK)
   async returnOrderProductDiscount(@Req() req) {
     return await this.orderService.getDiscount(req['where']);
+  }
+
+  @Get('/selling/counts')
+  @ApiOperation({ summary: 'Method: returns order' })
+  @ApiOkResponse({
+    description: 'Order was returned',
+  })
+  @HttpCode(HttpStatus.OK)
+  async returnOrderSellingCounts(@Req() req) {
+    return await this.orderService.getCountOrdersShop(req['where']);
   }
 }

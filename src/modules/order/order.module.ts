@@ -34,6 +34,8 @@ export class OrderModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(OrderQueryParserMiddleware).forRoutes(
       { path: '/order', method: RequestMethod.GET },
-      { path: '/discount/by/order', method: RequestMethod.GET });
+      { path: '/discount/by/order', method: RequestMethod.GET },
+      { path: '/order/selling/counts', method: RequestMethod.GET },
+    )
   }
 }

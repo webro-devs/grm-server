@@ -9,7 +9,16 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { Between, DataSource, EntityManager, FindOptionsWhere, InsertResult, LessThan, Repository } from 'typeorm';
+import {
+  Between,
+  DataSource,
+  EntityManager,
+  FindOptionsWhere,
+  InsertResult,
+  LessThan,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 
 import { Order } from './order.entity';
 import { CreateOrderDto, UpdateOrderDto } from './dto';
@@ -606,5 +615,31 @@ export class OrderService {
     });
 
     return orders.reduce((acc, curr) => acc + curr.additionalProfitSum, 0);
+  }
+
+  async getCountOrdersShop(where) {
+    const count = await this.orderRepository.count({
+      where,
+    });
+
+    const lastWeek = new Date();
+    lastWeek.setDate(lastWeek.getDate() - 7);
+    const countWeek = await this.orderRepository.count({
+      where: {
+        ...where,
+        date: MoreThanOrEqual(lastWeek),
+      },
+    });
+
+    const lastMonth = new Date();
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
+    const countMonth = await this.orderRepository.count({
+      where: {
+        ...where,
+        date: MoreThanOrEqual(lastMonth),
+      },
+    });
+
+    return { all: count, week: countWeek, month: countMonth };
   }
 }
