@@ -25,7 +25,7 @@ export class DataSenderController {
   })
   @HttpCode(HttpStatus.OK)
   async OnSender(@Body() data: CreateSenderDataDto) {
-    return this.dataSenderService.cronJob(data);
+    // return this.dataSenderService.scheduleNotifications(data);
   }
 
   @Public()
@@ -36,6 +36,6 @@ export class DataSenderController {
   })
   @HttpCode(HttpStatus.OK)
   async offSender() {
-    return this.dataSenderService.onModuleDestroy();
+    // return this.dataSenderService.stopNotifications();
   }
 }

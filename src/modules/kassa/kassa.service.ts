@@ -20,6 +20,7 @@ export class KassaService {
   ) {}
 
   async getAll(options: IPaginationOptions, where?: FindOptionsWhere<Kassa>): Promise<Pagination<Kassa>> {
+    const date = where?.['date'] || null;
     const queryBuilder = this.kassaRepository
       .createQueryBuilder('k')
       .leftJoinAndSelect('k.filial', 'f')
@@ -27,18 +28,11 @@ export class KassaService {
       .orderBy('k.startDate', 'DESC');
 
     if (where) {
+      where?.['date'] && delete where['date'];
       queryBuilder.where(where);
     }
-    const kassas = await paginate<Kassa>(queryBuilder, options);
-    // const orders = await this.orderRepository.find({
-    //   where: {
-    //     ...where,
-    //     additionalProfitSum: LessThan(0),
-    //   },
-    // });
-    //
-    // return orders.reduce((acc, curr) => acc + curr.additionalProfitSum, 0);
 
+    const kassas = await paginate<Kassa>(queryBuilder, options);
     for (const kassa of kassas.items) {
       const orders = await this.entityManager
         .getRepository('order')
@@ -46,7 +40,7 @@ export class KassaService {
         .where({
           additionalProfitSum: LessThan(0),
           kassa: { id: kassa.id },
-          ...(where['date'] && { data: where['date'] }),
+          ...(date && { date }),
         })
         .getMany();
 
@@ -396,4 +390,4 @@ export class KassaService {
   async getKassaAndOrders(id: string) {
     return this.kassaRepository.findOne({ where: { id, orders: { isActive: 'accept'} }, relations: { orders: { product: true } } });
   }
-};
+}

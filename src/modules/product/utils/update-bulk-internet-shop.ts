@@ -1,9 +1,12 @@
-const query = (collection, text) => `
-update product
-set "internetInfo" = '${text}'
-from model
-         join collection on model."collectionId" = collection.id
-where collection.id = '${collection}';
+const query = (collection: string, text: string) => `
+WITH model_cte AS (
+    SELECT id
+    FROM model
+    WHERE "collectionId" = '${collection}'
+)
+UPDATE product
+SET "internetInfo" = '${text}'
+WHERE "modelId" IN (SELECT id FROM model_cte);
 `;
 
 export default query;

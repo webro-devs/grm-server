@@ -1,71 +1,76 @@
-import { Injectable, OnModuleDestroy } from '@nestjs/common';
-import * as cron from 'node-cron';
+import { Injectable, Logger } from '@nestjs/common';
+import { Cron, SchedulerRegistry } from '@nestjs/schedule';
 import { ProductService } from '../product/product.service';
 import { FilialService } from '../filial/filial.service';
-import { telegramSender } from '../../infra/helpers';
+import { MagazinInfoService } from '../magazin-info/magazin-info.service';
+
+const logging = new Logger('Request Middleware', { timestamp: true });
 
 @Injectable()
 export class DataSenderService {
-  private scheduledJobs: cron.ScheduledTask[] = [];
-  index = 0;
   constructor(
     private readonly productService: ProductService,
     private readonly filialService: FilialService,
+    private readonly magazinInfoService: MagazinInfoService,
+    private schedulerRegistry: SchedulerRegistry,
   ) {}
 
-  cronJob({ startTime = '09:00', endTime = '21:00', count = 1 }) {
-    const intervalMinutes = 60 / count;
+  @Cron('*/1 * * * *', {
+    name: 'notifications',
+  })
+  async scheduleNotifications() {
+    const { start_time, count, end_time, allowed } = await this.magazinInfoService.getAll();
+    if (allowed && start_time && end_time) {
+      const intervals = this.calculateIntervals(start_time, end_time, count);
+      const now = new Date();
+      const currentTime = now.getHours() * 60 + now.getMinutes();
 
-    const startMinutes = this.getTimeInMinutes(startTime);
-    const endMinutes = this.getTimeInMinutes(endTime);
-
-    for (
-      let minutes = startMinutes;
-      minutes < endMinutes;
-      minutes += intervalMinutes
-    ) {
-      const hour = Math.floor(minutes / 60);
-      const minute = minutes % 60;
-      const cronExpression = `${minute} ${hour} * * *`;
-      const job = cron.schedule(cronExpression, async() => await this.sendData());
-      this.scheduledJobs.push(job);
+      for (const time of intervals) {
+        if (intervals.length && currentTime === time) {
+          this.sendNotification();
+        }
+      }
+    } else if (!allowed) {
+      this.stopNotifications();
+    } else {
+      logging.log('Not allowed for telegram sending!');
     }
-    return 'ok';
   }
 
-  onModuleDestroy() {
-    this.scheduledJobs.forEach((job) => job.stop());
+  private calculateIntervals(from: string, to: string, count: number): number[] {
+    const [fromHours, fromMinutes] = from.split(':').map(Number);
+    const [toHours, toMinutes] = to.split(':').map(Number);
+
+    const fromTime = fromHours * 60 + fromMinutes;
+    const toTime = toHours * 60 + toMinutes;
+
+    const interval = (toTime - fromTime) / (count - 1);
+    const intervals = [];
+
+    for (let i = 0; i < count; i++) {
+      intervals.push(fromTime + Math.round(i * interval));
+    }
+
+    return intervals;
   }
 
-  private getTimeInMinutes(time: string): number {
-    const [hours, minutes] = time.split(':').map(Number);
-    return hours * 60 + minutes;
+  private sendNotification() {
+    console.log('Notification sent at', new Date().toLocaleTimeString());
   }
 
-  private async sendData() {
-    const { products, count } = await this.productService.getAllForTelegram();
+  stopNotifications() {
+    const job = this.schedulerRegistry.getCronJob('notifications');
+    if (job) {
+      job.stop();
+      logging.log('Cron job dead!');
+    }
+  }
 
-    if (count <= this.index) this.index = 0;
-
-    const filial = await this.filialService.getOne(
-      products[this.index].filial.id,
-    );
-
-    const data = await telegramSender({
-      imgUrl: products[this.index]?.imgUrl,
-      color: products[this.index]?.color,
-      model: products[this.index]?.model,
-      shape: products[this.index]?.shape,
-      size: products[this.index]?.size,
-      phone1: filial?.phone1,
-      phone2: filial?.phone2,
-      address: filial?.address,
-      addressLink: filial?.addressLink,
-      endWork: filial?.endWorkTime,
-      startWork: filial?.startWorkTime,
-      title: filial?.title,
-      landmark: filial?.landmark,
-    });
-    ++this.index;
+  startNotifications(){
+    const job = this.schedulerRegistry.getCronJob('notifications');
+    if(job){
+      job.start()
+      logging.log('Cron job running...');
+    }
   }
 }
