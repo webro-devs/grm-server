@@ -40,7 +40,7 @@ export class ProductController {
     return await this.productService.getAll({ limit: query.limit, page: query.page, route }, req.where, req.user);
   }
 
-  @Get('/')
+  @Get('/internet-product/price-product')
   @ApiOperation({ summary: 'Method: returns all products' })
   @ApiOkResponse({
     description: 'The products were returned successfully',
