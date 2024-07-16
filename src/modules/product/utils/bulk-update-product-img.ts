@@ -1,15 +1,17 @@
 const query = (url: string, model: string, color: string, shape: string) => `
-update
-    product
-set "imgUrl" = '${url}'
-from product
-         join
-     color as c on product."colorId" = c.id
-         join
-     model as m on product."modelId" = m.id
-where m.title = '${model}'
-  ${color ? `and c.title = '${color}'`: ''}
-  ${shape ? `and product.shape = '${shape}'`: ''}
+WITH product_ids AS (
+    SELECT product.id
+    FROM product
+    JOIN color AS c ON product."colorId" = c.id
+    JOIN model AS m ON product."modelId" = m.id
+    WHERE m.title Ilike '${model}'
+      ${color ? `AND c.title Ilike '${color}'` : ''}
+      ${shape ? `AND shape Ilike '${shape}'` : ''}
+)
+UPDATE product
+SET "imgUrl" = '${url}'
+FROM product_ids
+WHERE product.id = product_ids.id;
 `;
 
 export default query;
