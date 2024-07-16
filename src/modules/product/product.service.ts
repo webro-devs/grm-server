@@ -416,14 +416,23 @@ export class ProductService {
     return { product: prods[index], index };
   }
 
-  async getPriceInternetProduct(collection, size) {
+  async getPriceInternetProduct(id: string) {
+    const oldProduct = await this.productRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        model: { collection: true },
+      },
+    });
+
     const [product] = await this.productRepository.find({
       where: {
         isInternetShop: true,
         model: {
-          collection: { id: collection },
+          collection: { id: oldProduct.model.collection.id },
         },
-        size: ILike(`${size}`),
+        size: ILike(`${oldProduct.size}`),
       },
     });
 

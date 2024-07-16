@@ -46,8 +46,8 @@ export class ProductController {
     description: 'The products were returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getPriceInternetProduct(@Query() query: ProductQueryDto) {
-    return await this.productService.getPriceInternetProduct(query.collectionId, query.size);
+  async getPriceInternetProduct(@Param('id') id: string) {
+    return await this.productService.getPriceInternetProduct(id);
   }
 
   @Roles(UserRoleEnum.SELLER, UserRoleEnum.CASHIER, UserRoleEnum.BOSS, UserRoleEnum.CLIENT, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
