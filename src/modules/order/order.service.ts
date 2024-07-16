@@ -622,6 +622,8 @@ export class OrderService {
       where,
     });
 
+    const countAll = await this.orderRepository.count();
+
     const lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 7);
     const countWeek = await this.orderRepository.count({
@@ -640,6 +642,10 @@ export class OrderService {
       },
     });
 
-    return { all: count, week: countWeek, month: countMonth };
+    return {
+      all: { count, percentage: count / (countAll / 100) },
+      week: { count: countWeek, percentage: countWeek / (countAll / 100) },
+      month: { count: countMonth, percentage: countMonth / (countAll / 100) },
+    };
   }
 }
