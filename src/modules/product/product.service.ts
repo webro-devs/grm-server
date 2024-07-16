@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, In, MoreThan, Not, Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, In, MoreThan, Not, Repository } from 'typeorm';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { Product } from './product.entity';
 import { CreateProductDto, UpdateInternetShopProductDto, UpdateProductDto } from './dto';
@@ -402,5 +402,31 @@ export class ProductService {
       });
 
       return Array.from(map.values());
+  }
+
+  async getInernetProductSingle(index: number) {
+    const prods = await this.productRepository.find({
+      where: {
+        isInternetShop: true,
+      },
+      order: {
+        date: 'ASC',
+      },
+    });
+    return { product: prods[index], index };
+  }
+
+  async getPriceInternetProduct(collection, size) {
+    const [product] = await this.productRepository.find({
+      where: {
+        isInternetShop: true,
+        model: {
+          collection: { id: collection },
+        },
+        size: ILike(`${size}`),
+      },
+    });
+
+    return product.secondPrice || 0;
   }
 }
