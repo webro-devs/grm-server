@@ -13,7 +13,7 @@ import {
   Between,
   DataSource,
   EntityManager,
-  FindOptionsWhere,
+  FindOptionsWhere, In,
   InsertResult,
   LessThan,
   MoreThan,
@@ -612,6 +612,7 @@ export class OrderService {
       where: {
         ...where,
         additionalProfitSum: LessThan(0),
+        isActive: In(['accept'])
       },
     });
 
@@ -623,6 +624,7 @@ export class OrderService {
       where: {
         ...where,
         additionalProfitSum: MoreThan(0),
+        isActive: In(['accept'])
       },
     });
 
