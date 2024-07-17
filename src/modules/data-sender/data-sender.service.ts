@@ -64,8 +64,20 @@ export class DataSenderService {
       product = await this.productService.getInternetProductSingle(restoredIndex);
     }
     const { shape, color, model, imgUrl, size, price, style, secondPrice } = product;
-    await telegramSender({ shape, color, model, imgUrl, size, price: secondPrice || 0, style });
+    await telegramSender({
+      shape,
+      color,
+      model,
+      imgUrl,
+      size,
+      price: this.priceSplitter(secondPrice || 0) || 0,
+      style,
+    });
     console.log('Telegram Message sent at', new Date().toLocaleTimeString());
     await this.incrementService.increment()
+  }
+
+  priceSplitter(price: number) {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   }
 }
