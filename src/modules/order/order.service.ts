@@ -249,7 +249,7 @@ export class OrderService {
       product.y = product.y - cost;
       product.setTotalSize();
       product.calculateProductPrice();
-      additionalProfitSum = ((value.price + (value?.plasticSum || 0)) - product.priceMeter * cost);
+      additionalProfitSum = ((value.price + (value?.plasticSum || 0)) - product.priceMeter * (cost * product.x));
       netProfitSum = (product.priceMeter - product.comingPrice) * cost * product.x;
       value.kv = cost;
     } else {
@@ -301,9 +301,9 @@ export class OrderService {
         product.y = product.y - cost;
         product.setTotalSize();
         product.calculateProductPrice();
-        additionalProfitSum = ((+value.price + (+value?.plasticSum || 0)) - +product.priceMeter * cost);
+        additionalProfitSum = ((+value.price + (+value?.plasticSum || 0)) - +product.priceMeter * (cost * product.x));
         netProfitSum = (product.priceMeter - product.comingPrice) * cost * product.x;
-        value.kv = cost;
+        value.kv = cost * product.x;
       } else {
         product.count = +product.count - +value.x;
         product.setTotalSize();

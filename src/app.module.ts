@@ -35,6 +35,7 @@ import { QrBaseModule } from './modules/qr-base/qr-base.module';
 import { BannerModule } from './modules/banner/banner.module';
 import { IsUniqueConstraint } from './infra/shared/decorators/is-unique.constrain';
 import { OrderBasketModule } from './modules/order-basket/order-basket.module';
+import { IncrementModule } from './modules/increment/increment.module';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { OrderBasketModule } from './modules/order-basket/order-basket.module';
     FileModule,
     FilialModule,
     GrmSocketModule,
+    IncrementModule,
     KassaModule,
     MagazinInfoModule,
     ModelModule,

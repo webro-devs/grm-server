@@ -3,6 +3,8 @@ import { Cron, SchedulerRegistry } from '@nestjs/schedule';
 import { ProductService } from '../product/product.service';
 import { FilialService } from '../filial/filial.service';
 import { MagazinInfoService } from '../magazin-info/magazin-info.service';
+import { IncrementService } from '../increment/increment.service';
+import { telegramSender } from '../../infra/helpers';
 
 const logging = new Logger('Request Middleware', { timestamp: true });
 
@@ -13,6 +15,7 @@ export class DataSenderService {
     private readonly filialService: FilialService,
     private readonly magazinInfoService: MagazinInfoService,
     private schedulerRegistry: SchedulerRegistry,
+    private incrementService: IncrementService,
   ) {}
 
   @Cron('*/1 * * * *', {
@@ -27,11 +30,9 @@ export class DataSenderService {
 
       for (const time of intervals) {
         if (intervals.length && currentTime === time) {
-          this.sendNotification();
+          await this.sendNotification();
         }
       }
-    } else if (!allowed) {
-      this.stopNotifications();
     } else {
       logging.log('Not allowed for telegram sending!');
     }
@@ -54,23 +55,17 @@ export class DataSenderService {
     return intervals;
   }
 
-  private sendNotification() {
-    console.log('Notification sent at', new Date().toLocaleTimeString());
-  }
-
-  stopNotifications() {
-    const job = this.schedulerRegistry.getCronJob('notifications');
-    if (job) {
-      job.stop();
-      logging.log('Cron job dead!');
+  private async sendNotification() {
+    // const products = await this.productService.
+    const { index } = await this.incrementService.getIncrement();
+    let product = await this.productService.getInternetProductSingle(index);
+    if (!product) {
+      const restoredIndex = await this.incrementService.restore();
+      product = await this.productService.getInternetProductSingle(restoredIndex);
     }
-  }
-
-  startNotifications(){
-    const job = this.schedulerRegistry.getCronJob('notifications');
-    if(job){
-      job.start()
-      logging.log('Cron job running...');
-    }
+    const { shape, color, model, imgUrl, size, price, style, secondPrice } = product;
+    await telegramSender({ shape, color, model, imgUrl, size, price: secondPrice || 0, style });
+    console.log('Telegram Message sent at', new Date().toLocaleTimeString());
+    await this.incrementService.increment()
   }
 }

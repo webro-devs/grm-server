@@ -9,38 +9,28 @@ const telegram = async ({
   color,
   size,
   shape,
-  phone1,
-  phone2,
-  address,
-  addressLink,
-  title,
-  endWork,
-  startWork,
-  landmark,
+  style,
+  price
 }) => {
   const chatId = process.env.CHATID;
   console.log(chatId);
-  const text = `😍 Наши необычные ковры добавят интерьеру цвета, характер и современности вашего дома !)
+  const text = `
+✨ Самые красивые и уютные ковры ✨
 
-  🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
+📐 Размер: ${size}
+💎 Коллекция: ${model.collection.title}
+🎨 Цвет: ${color.title}
+🏷️ Модель: ${model.title}
+🔲 Форма: ${shape}
+🖼️ Стиль: ${style}
 
-  Модель: ${model}🧮
-  Цвет: ${color}💈
-  Размер: ${size}📐
-  Форма: ${shape}
+💰 Цена: ${price}  
 
-  🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
-  
-  😍 Наши ковры ${title} добавят цвет, характер и современность в ваш дом!)
-  📌 Имя филиала: ${title}. 
-  📍 Адрес: <a href='${addressLink}'>${address}</a>.
-  📌 Ориентир: ${landmark}.
+🛒 Широкий ассортимент ковров в онлайн магазине Gilamshop.uz
 
-  🕙 Время работы с ${startWork} до ${endWork}
-  📲 ${phone1}.
-  ☎️ ${phone2}.
-  
-  🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸`;
+📞 Телефон: +998 (99) 761-11-11
+🌐 Сайт: gilamshop.uz
+📷 Instagram: @gilamshop_insta`;
 
   imgUrl &&
     (await app.telegram.sendPhoto(
@@ -55,6 +45,7 @@ const telegram = async ({
     ));
 
   if (!imgUrl) await app.telegram.sendMessage(-1001922756052, text, { parse_mode: 'HTML' });
+  console.log("sent telegram!");
 };
 
 export default telegram;

@@ -404,16 +404,22 @@ export class ProductService {
       return Array.from(map.values());
   }
 
-  async getInernetProductSingle(index: number) {
-    const prods = await this.productRepository.find({
+  async getInternetProductSingle(index: number) {
+    const [product] = await this.productRepository.find({
       where: {
         isInternetShop: true,
       },
       order: {
         date: 'ASC',
       },
+      relations: {
+        color: true,
+        model: { collection: true },
+      },
+      skip: index,
+      take: 1,
     });
-    return { product: prods[index], index };
+    return product;
   }
 
   async getPriceInternetProduct(id: string) {
