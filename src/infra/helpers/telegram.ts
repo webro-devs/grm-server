@@ -14,6 +14,12 @@ const telegram = async ({
 }) => {
   const chatId = process.env.CHATID;
   console.log(chatId);
+  const shapes = {
+    rectangle: 'Прямоугольный',
+    rulo: 'Метражный',
+    oval: 'Овальный',
+    daire: 'Круглый',
+  };
   const text = `
 ✨ Самые красивые и уютные ковры ✨
 
@@ -21,7 +27,7 @@ const telegram = async ({
 💎 Коллекция: ${model.collection.title}
 🎨 Цвет: ${color.title}
 🏷️ Модель: ${model.title}
-🔲 Форма: ${shape}
+🔲 Форма: ${shapes[shape?.toLowerCase()]}
 🖼️ Стиль: ${style}
 
 💰 Цена: ${price}  
