@@ -16,6 +16,7 @@ import {
   FindOptionsWhere,
   InsertResult,
   LessThan,
+  MoreThan,
   MoreThanOrEqual,
   Repository,
 } from 'typeorm';
@@ -611,6 +612,17 @@ export class OrderService {
       where: {
         ...where,
         additionalProfitSum: LessThan(0),
+      },
+    });
+
+    return orders.reduce((acc, curr) => acc + curr.additionalProfitSum, 0);
+  }
+
+  async getAdditionalTotalProfitSumm(where) {
+    const orders = await this.orderRepository.find({
+      where: {
+        ...where,
+        additionalProfitSum: MoreThan(0),
       },
     });
 

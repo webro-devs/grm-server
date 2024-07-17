@@ -53,7 +53,7 @@ export class AccountingService {
         goingSumBoss,
         goingSumShop,
         sellingSize,
-        additionalProfitTotalSum,
+        // additionalProfitTotalSum,
         cashFlowSumBoss,
         cashFlowSumShop,
         plasticSum,
@@ -68,6 +68,11 @@ export class AccountingService {
       });
 
       const discountSum = await this.orderService.getDiscount({
+        product: { filial: { id: where.filial.id } },
+        ...(where.date && { date: where.date }),
+      });
+
+      const additionalProfitTotalSum = await this.orderService.getAdditionalTotalProfitSumm({
         product: { filial: { id: where.filial.id } },
         ...(where.date && { date: where.date }),
       });
