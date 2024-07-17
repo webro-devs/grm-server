@@ -30,7 +30,7 @@ const telegram = async ({
 🔲 Форма: ${shapes[shape?.toLowerCase()]}
 🖼️ Стиль: ${style}
 
-💰 Цена: ${price}  
+💰 Цена: ${price}-сум  
 
 🛒 Широкий ассортимент ковров в онлайн магазине Gilamshop.uz
 
