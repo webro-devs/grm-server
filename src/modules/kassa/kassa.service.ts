@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { EntityManager, FindOptionsWhere, LessThan, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { EntityManager, Equal, FindOptionsWhere, LessThan, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 
 import { Kassa } from './kassa.entity';
 import { CreateKassaDto, UpdateKassaDto } from './dto';
@@ -40,6 +40,7 @@ export class KassaService {
         .where({
           additionalProfitSum: LessThan(0),
           kassa: { id: kassa.id },
+          isActive: Equal('accept'),
           ...(date && { date }),
         })
         .getMany();

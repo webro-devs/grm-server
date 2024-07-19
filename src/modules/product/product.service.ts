@@ -442,6 +442,6 @@ export class ProductService {
       },
     });
 
-    return product.secondPrice || 0;
+    return product?.secondPrice || 0;
   }
 }

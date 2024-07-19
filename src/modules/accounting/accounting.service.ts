@@ -67,15 +67,26 @@ export class AccountingService {
         ...(where.date && { date: where.date }),
       });
 
-      const discountSum = await this.orderService.getDiscount({
-        product: { filial: { id: where.filial.id } },
-        ...(where.date && { date: where.date }),
-      });
+      // const discountSum = await this.orderService.getDiscount({
+      //   product: { filial: { id: where.filial.id } },
+      //   ...(where.date && { date: where.date }),
+      // });
+      //
+      // const additionalProfitTotalSum = await this.orderService.getAdditionalTotalProfitSumm({
+      //   product: { filial: { id: where.filial.id } },
+      //   ...(where.date && { date: where.date }),
+      // });
 
-      const additionalProfitTotalSum = await this.orderService.getAdditionalTotalProfitSumm({
+      const {
+        comingSumBase,
+        discountSum,
+        additionalProfitTotalSum,
+        additionalSum,
+      } = await this.orderService.getProfitSums({
         product: { filial: { id: where.filial.id } },
         ...(where.date && { date: where.date }),
-      });
+        ...(!whereKassa?.startDate && !whereKassa?.endDate && {kassa: {isActive: true}})
+      })
 
       result.push({
         id: filial.id,
@@ -93,6 +104,8 @@ export class AccountingService {
         additionalProfitTotalSum,
         netProfitTotalSum,
         discountSum,
+        comingSumBase,
+        additionalSum,
       });
       delete where.filial.id;
 

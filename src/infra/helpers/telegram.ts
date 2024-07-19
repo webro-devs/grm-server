@@ -40,7 +40,7 @@ const telegram = async ({
 
   imgUrl &&
     (await app.telegram.sendPhoto(
-      chatId,
+      -1001922756052,
       {
         url: imgUrl,
       },

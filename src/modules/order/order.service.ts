@@ -13,6 +13,7 @@ import {
   Between,
   DataSource,
   EntityManager,
+  Equal,
   FindOptionsWhere, In,
   InsertResult,
   LessThan,
@@ -612,7 +613,7 @@ export class OrderService {
       where: {
         ...where,
         additionalProfitSum: LessThan(0),
-        isActive: In(['accept'])
+        isActive: Equal('accept')
       },
     });
 
@@ -624,12 +625,60 @@ export class OrderService {
       where: {
         ...where,
         additionalProfitSum: MoreThan(0),
-        isActive: In(['accept'])
+        isActive: Equal('accept')
       },
     });
 
     return orders.reduce((acc, curr) => acc + curr.additionalProfitSum, 0);
   }
+
+  async getProfitSums(where) {
+    function flattenWhereConditions(where, parentKey = '') {
+      const result = {};
+      for (const key in where) {
+        const newKey = parentKey ? `${parentKey}.${key}` : key;
+        if (typeof where[key] === 'object' && where[key] !== null) {
+          Object.assign(result, flattenWhereConditions(where[key], newKey));
+        } else {
+          result[newKey] = where[key];
+        }
+      }
+      return result;
+    }
+
+    const queryBuilder = this.orderRepository.createQueryBuilder("order")
+    .leftJoin("order.product", "product")
+    .leftJoin("order.kassa", "kassa")
+    .leftJoin("product.filial", "filial")
+    .select("SUM(CASE WHEN order.additionalProfitSum < 0 THEN order.additionalProfitSum ELSE 0 END)", "discountSum")
+    .addSelect("SUM(CASE WHEN order.additionalProfitSum > 0 THEN order.additionalProfitSum ELSE 0 END)", "additionalProfitTotalSum")
+    .addSelect("SUM(product.comingPrice * order.kv)", "comingSum")
+    .addSelect("SUM(product.priceMeter * order.kv)", "additionalSum")
+    .where(where);
+
+  // Add other conditions from the `where` parameter
+  // for (const key in where) {
+  //   if (key === 'filial' && where[key].id) {
+  //     queryBuilder.andWhere("filial.id = :filialId", { filialId: where[key].id });
+  //   } else {
+  //     // Flattening nested where conditions for other properties
+  //     const flatWhere = flattenWhereConditions(where);
+  //     for (const flatKey in flatWhere) {
+  //       queryBuilder.andWhere(`${flatKey} = :${flatKey}`, { [flatKey]: flatWhere[flatKey] });
+  //     }
+  //   }
+  // }
+
+  const result = await queryBuilder.getRawOne();
+
+    return {
+      discountSum: parseFloat(result.discountSum) || 0,
+      additionalProfitTotalSum: parseFloat(result.additionalProfitTotalSum) || 0,
+      comingSumBase: parseFloat(result.comingSum) || 0,
+      additionalSum: parseFloat(result['additionalSum']) || 0,
+    };
+  }
+
 
   async getCountOrdersShop(where) {
     const count = await this.orderRepository.count({

@@ -26,7 +26,7 @@ export class DataSenderService {
     if (allowed && start_time && end_time) {
       const intervals = this.calculateIntervals(start_time, end_time, count);
       const now = new Date();
-      const currentTime = now.getHours() * 60 + now.getMinutes();
+      const currentTime = (now.getHours() + 5) * 60 + now.getMinutes();
 
       for (const time of intervals) {
         if (intervals.length && currentTime === time) {
