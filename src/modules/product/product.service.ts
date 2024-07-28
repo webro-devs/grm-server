@@ -17,6 +17,7 @@ import {
   prodSearch,
   productImgBulkUpdate,
   productMediumByStyleQuery,
+  productSecondPriceBulkUpdate,
 } from './utils';
 import { FileService } from '../file/file.service';
 import { ColorService } from '../color/color.service';
@@ -265,6 +266,10 @@ export class ProductService {
 
     if (value?.imgUrl && prod.model) {
       await this.productRepository.query(productImgBulkUpdate(value.imgUrl, prod.model.title, prod.color.title, prod.shape));
+    }
+
+    if (value.secondPrice) {
+      await this.productRepository.query(productSecondPriceBulkUpdate(prod.model.collection.id, value.size ? value.size : prod.size, value.secondPrice));
     }
 
     return data;
