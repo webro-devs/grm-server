@@ -87,14 +87,6 @@ class UpdateUserDto {
   @IsOptional()
   @IsString()
   readonly position: string;
-
-  constructor() {
-    (async () => {
-      if (this.login) {
-        this.password = await hashPassword(this.login);
-      }
-    })();
-  }
 }
 
 export default UpdateUserDto;

@@ -145,13 +145,15 @@ export class UserService {
   }
 
   async change(value: UpdateUserDto, id: string) {
-    const response = await this.userRepository
+    if (value.login) {
+      value.password = await hashPassword(value.login);
+    }
+    return await this.userRepository
       .createQueryBuilder()
       .update()
       .set(value as unknown as User)
       .where('id = :id', { id })
       .execute();
-    return response;
   }
 
   async create(data: CreateUserDto, user) {
