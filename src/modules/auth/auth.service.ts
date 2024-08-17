@@ -55,4 +55,9 @@ export class AuthService {
       expiresIn: jwtConfig.refreshTokenExpiration,
     });
   }
+
+  async isValidUser(id: string): Promise<boolean> {
+    const user = await this.userService.getOne(id);
+    return !!user?.isActive;
+  }
 }

@@ -63,7 +63,7 @@ export class DataSenderService {
       const restoredIndex = await this.incrementService.restore();
       product = await this.productService.getInternetProductSingle(restoredIndex);
     }
-    const { shape, color, model, imgUrl, size, price, style, secondPrice } = product;
+    const { shape, color, model, imgUrl, size, style, secondPrice } = product;
     await telegramSender({
       shape,
       color,

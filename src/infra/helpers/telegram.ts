@@ -38,7 +38,9 @@ const telegram = async ({
 🌐 Сайт: www.gilamshop.uz
 📷 Instagram: <a href="www.instagram.com/gilamshop/">Gilam Shop</a>`;
 
-  imgUrl &&
+  const urlRegex = /^https?:\/\//;
+
+  urlRegex.test(imgUrl) &&
   (await app.telegram.sendPhoto(
     Number(chatId),
     {

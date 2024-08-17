@@ -227,6 +227,9 @@ export class ProductService {
       value.totalSize = (eval(value.size.match(/\d+\.*\d*/g).join('*')) / 10000) * value.count;
       value.price = Number(value.priceMeter) * (value.x * value.y);
     }
+    if (value.priceMeter) {
+      value.price = Number(value.priceMeter) * (value.x * value.y);
+    }
 
     if (value?.imgUrl) {
       const product = await this.getById(id);
@@ -373,7 +376,7 @@ export class ProductService {
   async getByCode(code: string){
     if (!code){
       throw new BadRequestException('code must be exist');
-  }
+    }
     const product = (await this.productRepository.query(getByCode(code)))[0];
     if(!product){
       throw new BadRequestException('This product is not found!');
@@ -400,13 +403,13 @@ export class ProductService {
   }
 
   getFilial(array: Product[]){
-      const map = new Map();
+    const map = new Map();
 
-      array.forEach(item => {
-        map.set(item.filial.id, item.filial); // using 'id' as the unique key
-      });
+    array.forEach(item => {
+      map.set(item.filial.id, item.filial); // using 'id' as the unique key
+    });
 
-      return Array.from(map.values());
+    return Array.from(map.values());
   }
 
   async getInternetProductSingle(index: number) {

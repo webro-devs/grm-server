@@ -40,6 +40,7 @@ import { IncrementModule } from './modules/increment/increment.module';
 @Module({
   imports: [
     ScheduleModule.forRoot(),
+    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],

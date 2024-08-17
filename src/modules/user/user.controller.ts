@@ -1,19 +1,20 @@
 import {
-  Controller,
-  Post,
   Body,
+  Controller,
+  Delete,
+  Get,
   HttpCode,
   HttpStatus,
-  Delete,
-  Patch,
   Param,
-  Get,
+  Patch,
+  Post,
   Query,
   Req,
   Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { CreateClientDto, CreateUserDto, UpdateClientDto, UpdateUserDto } from './dto';
 import { User } from './user.entity';
@@ -49,7 +50,9 @@ export class UserController {
   })
   @HttpCode(HttpStatus.OK)
   async getme(@Req() request): Promise<User> {
-    return await this.userService.getOne(request.user.id);
+    const user = await this.userService.getOne(request.user.id);
+    if (!user.isActive) throw new UnauthorizedException();
+    return user;
   }
 
   @Get('/:id')

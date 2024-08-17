@@ -1,6 +1,8 @@
 import { IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRoleType } from '../../../infra/shared/type';
+import { hashPassword } from '../../../infra/helpers';
+
 class UpdateUserDto {
   @ApiProperty({
     description: `avatar`,
@@ -44,7 +46,7 @@ class UpdateUserDto {
   })
   @IsOptional()
   @IsString()
-  readonly password: string;
+  password: string;
 
   @ApiProperty({
     description: `role`,
@@ -85,6 +87,14 @@ class UpdateUserDto {
   @IsOptional()
   @IsString()
   readonly position: string;
+
+  constructor() {
+    (async () => {
+      if (this.login) {
+        this.password = await hashPassword(this.login);
+      }
+    })();
+  }
 }
 
 export default UpdateUserDto;

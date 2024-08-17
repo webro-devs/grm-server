@@ -7,7 +7,7 @@ function idGenerator() {
   hash.update(randomString);
   hash.update(timestamp);
   const fullHash = hash.digest('hex');
-  return '#' + fullHash.substr(0, 11);
+  return '#' + fullHash.substring(0, 11);
 }
 
 export default idGenerator;
