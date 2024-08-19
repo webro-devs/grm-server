@@ -134,4 +134,8 @@ export class FilialService {
     }
     return data;
   }
+
+  async getFilials4hick(){
+    return await this.filialRepository.find()
+  }
 }

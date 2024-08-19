@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Patch, HttpCode, Query, Body, Param, Delete, HttpStatus } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FilialService } from './filial.service';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { PaginationDto } from '../../infra/shared/dto';
@@ -72,5 +72,11 @@ export class FilialController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
     return await this.filialService.deleteOne(id);
+  }
+
+  @Public()
+  @Get('/hickontrol/all/filials/hook')
+  async getFilialsHik_control() {
+    return await this.filialService.getFilials4hick();
   }
 }
