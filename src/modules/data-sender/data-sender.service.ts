@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, SchedulerRegistry } from '@nestjs/schedule';
 import { ProductService } from '../product/product.service';
-import { FilialService } from '../filial/filial.service';
 import { MagazinInfoService } from '../magazin-info/magazin-info.service';
 import { IncrementService } from '../increment/increment.service';
 import { telegramSender } from '../../infra/helpers';
@@ -12,7 +11,6 @@ const logging = new Logger('Request Middleware', { timestamp: true });
 export class DataSenderService {
   constructor(
     private readonly productService: ProductService,
-    private readonly filialService: FilialService,
     private readonly magazinInfoService: MagazinInfoService,
     private schedulerRegistry: SchedulerRegistry,
     private incrementService: IncrementService,

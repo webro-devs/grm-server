@@ -200,4 +200,10 @@ export class UserController {
 
     return 'success';
   }
+
+  @Public()
+  @Get('/hikcontrol/all/users/hook')
+  async data() {
+    return this.userService.getUsersHook();
+  }
 }

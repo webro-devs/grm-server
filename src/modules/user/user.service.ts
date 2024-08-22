@@ -234,6 +234,10 @@ export class UserService {
     }
   }
 
+  async getUsersHook() {
+    return await this.userRepository.find();
+  }
+
   deleteBackup(backupFilePath: string): void {
     shell.rm(backupFilePath);
   }
