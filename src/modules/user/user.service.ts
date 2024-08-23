@@ -238,6 +238,7 @@ export class UserService {
     return await this.userRepository.find({
       relations: {
         position: true,
+        filial: true
       },
     });
   }
