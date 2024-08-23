@@ -235,7 +235,11 @@ export class UserService {
   }
 
   async getUsersHook() {
-    return await this.userRepository.find();
+    return await this.userRepository.find({
+      relations: {
+        position: true,
+      },
+    });
   }
 
   deleteBackup(backupFilePath: string): void {
