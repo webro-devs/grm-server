@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
-import { UpdateResult } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual, UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -22,7 +22,18 @@ export class UserTimeLogController {
     description: 'The style was returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getTimeLogs(@Query() where): Promise<UserTimeLog[]> {
+  async getTimeLogs(@Query() query: any): Promise<UserTimeLog[]> {
+    let where = {};
+    if (query.filial || query.user) {
+      where = {
+        user: {
+          ...(query.user && { id: query.user }),
+          ...(query.filial && { filial: { id: query.filial } }),
+        },
+        ...(query.enter && { enter: MoreThanOrEqual(query.enter) }),
+        ...(query.leave && { enter: LessThanOrEqual(query.leave) }),
+      };
+    }
     return this.userTimeLogService.getAll(where);
   }
 
