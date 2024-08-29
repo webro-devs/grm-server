@@ -10,7 +10,7 @@ import { Public } from '../auth/decorators/public.decorator';
 import CreateTimeLogDto from './dto/create-time-log.dto';
 
 @ApiTags('User Time Logs')
-@Controller('style')
+@Controller('user-time-log')
 export class UserTimeLogController {
   constructor(private readonly userTimeLogService: UserTimeLogService) {
   }
