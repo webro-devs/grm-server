@@ -72,6 +72,12 @@ export class UserService {
     return user;
   }
 
+  async getClientBy(key: string, value: string) {
+    return await this.userRepository.findOne({
+      where: { [key]: value },
+    });
+  }
+
   async getUsersWithSelling(id: string) {
     const data = await this.userRepository.find({
       where: { filial: { id } },

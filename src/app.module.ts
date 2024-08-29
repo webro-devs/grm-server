@@ -36,6 +36,7 @@ import { BannerModule } from './modules/banner/banner.module';
 import { IsUniqueConstraint } from './infra/shared/decorators/is-unique.constrain';
 import { OrderBasketModule } from './modules/order-basket/order-basket.module';
 import { IncrementModule } from './modules/increment/increment.module';
+import { UserTimeLogModule } from './modules/user-time-log/user-time-log.module';
 
 @Module({
   imports: [
@@ -83,6 +84,7 @@ import { IncrementModule } from './modules/increment/increment.module';
     StyleModule,
     TransferModule,
     UserModule,
+    UserTimeLogModule,
   ],
   providers: [IsUniqueConstraint],
 })

@@ -18,6 +18,7 @@ import { Action } from '../action/action.entity';
 import { ClientOrder } from '../client-order/client-order.entity';
 import { Product } from '../product/product.entity';
 import { Transfer } from '../transfer/transfer.entity';
+import { UserTimeLog } from '../user-time-log/user-time-log.entity';
 
 @Entity('users')
 export class User {
@@ -38,6 +39,9 @@ export class User {
 
   @Column({ type: 'varchar' })
   login: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  username: string;
 
   @Column({ type: 'varchar', nullable: true })
   email: string;
@@ -92,6 +96,9 @@ export class User {
 
   @OneToMany(() => Transfer, (transfer) => transfer.cashier)
   transferCashier: Transfer[];
+
+  @OneToMany(() => UserTimeLog, (transfer) => transfer.user)
+  timeLogs: UserTimeLog[];
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);

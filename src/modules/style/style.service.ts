@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { FindOptionsWhere, ILike, Repository } from 'typeorm';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { ILike, Repository } from 'typeorm';
 
-import { UpdateStyleDto, CreateStyleDto } from './dto';
+import { CreateStyleDto, UpdateStyleDto } from './dto';
 import { Style } from './style.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
