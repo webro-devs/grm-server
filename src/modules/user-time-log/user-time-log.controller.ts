@@ -23,9 +23,7 @@ export class UserTimeLogController {
   })
   @HttpCode(HttpStatus.OK)
   async getTimeLogs(@Query() query: any): Promise<UserTimeLog[]> {
-    let where = {};
-    if (query.filial || query.user) {
-      where = {
+    let where = {
         user: {
           ...(query.user && { id: query.user }),
           ...(query.filial && { filial: { id: query.filial } }),
@@ -33,7 +31,6 @@ export class UserTimeLogController {
         ...(query.enter && { enter: MoreThanOrEqual(query.enter) }),
         ...(query.leave && { enter: LessThanOrEqual(query.leave) }),
       };
-    }
     return this.userTimeLogService.getAll(where);
   }
 
