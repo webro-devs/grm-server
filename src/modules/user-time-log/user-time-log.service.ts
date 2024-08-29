@@ -21,6 +21,12 @@ export class UserTimeLogService {
       order: {
         enter: 'DESC',
       },
+      relations: {
+        user: {
+          filial: true,
+          position: true,
+        },
+      },
     });
   }
 
