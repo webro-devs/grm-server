@@ -16,7 +16,7 @@ export class UserTimeLogService {
   ) {
   }
 
-  async getAll() {
+  async getAll(where) {
     return await this.userTimeLogRepository.find({
       order: {
         enter: 'DESC',
@@ -27,6 +27,7 @@ export class UserTimeLogService {
           position: true,
         },
       },
+      where,
     });
   }
 

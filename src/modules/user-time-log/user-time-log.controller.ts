@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -22,8 +22,8 @@ export class UserTimeLogController {
     description: 'The style was returned successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async getTimeLogs(): Promise<UserTimeLog[]> {
-    return this.userTimeLogService.getAll();
+  async getTimeLogs(@Query() where): Promise<UserTimeLog[]> {
+    return this.userTimeLogService.getAll(where);
   }
 
   @Public()
