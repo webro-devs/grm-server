@@ -128,12 +128,12 @@ export class CollectionService {
       });
     } else if (query?.collection) {
       data = await this.collectionRepository.find({
-        relations: { model: { products: { color: true } } },
+        relations: { model: { products: { color: true, filial: true } } },
         where: { id: query.collection, model: { products: { count: MoreThan(0), y: MoreThan(0) } } },
       });
     } else if (query.model) {
       data = await this.collectionRepository.find({
-        relations: { model: { products: { color: true, model: { collection: true } } } },
+        relations: { model: { products: { color: true, model: { collection: true }, filial: true } } },
         where: {
           model: { id: query.model, products: { count: MoreThan(0), y: MoreThan(0) } },
         },
