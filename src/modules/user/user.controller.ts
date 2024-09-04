@@ -202,9 +202,25 @@ export class UserController {
   }
 
   @Public()
-  @Get('/hikcontrol/user/hook/:login')
-  async data(@Param('login') login: string) {
-    await this.userService.checkBoss({ login: '#' + login, password: '#' + login });
+  @Get('/hikcontrol/user/hook/:login/:password')
+  @HttpCode(HttpStatus.OK)
+  async data(@Param('login') loginString: string, @Param('password') passwordString: string) {
+    const login = '#' + loginString;
+    const password = '#' + passwordString;
+    await this.userService.checkBoss({ login: login, password });
     return this.userService.getUsersHook();
+  }
+
+  @Public()
+  @Patch('/hikcontrol/user/hook/:login/:password')
+  @HttpCode(HttpStatus.OK)
+  async dataSuccessHook(
+    @Param('login') loginString: string,
+    @Param('password') passwordString: string,
+  ) {
+    const login = '#' + loginString;
+    const password = '#' + passwordString;
+    await this.userService.checkBoss({ login, password });
+    return await this.userService.responseHook(login);
   }
 }

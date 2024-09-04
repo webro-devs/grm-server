@@ -156,6 +156,9 @@ export class UserService {
     if (value.login) {
       value.password = await hashPassword(value.login);
     }
+    if (value.avatar) {
+      value['isUpdated'] = true;
+    }
     return await this.userRepository
       .createQueryBuilder()
       .update()
@@ -245,7 +248,6 @@ export class UserService {
   async getUsersHook() {
     return await this.userRepository.findOne({
       where: {
-        isActive: true,
         isUpdated: true,
       },
       relations: {
@@ -265,6 +267,14 @@ export class UserService {
     if (!isSame) {
       throw new BadRequestException('Invalid login or password.');
     }
+  }
+
+  async responseHook(login: string) {
+    const user = await this.getClientBy('login', login);
+    if (!user) {
+      throw new BadRequestException('User Not Found!');
+    }
+    return await this.userRepository.update({ login }, { isUpdated: true });
   }
   deleteBackup(backupFilePath: string): void {
     shell.rm(backupFilePath);
