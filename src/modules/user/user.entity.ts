@@ -55,6 +55,9 @@ export class User {
   @Column({ type: 'int' })
   role: UserRoleType;
 
+  @Column({ default: true, nullable: true, type: 'boolean' })
+  isUpdated: boolean;
+
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',

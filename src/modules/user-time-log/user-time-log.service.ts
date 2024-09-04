@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserTimeLog } from './user-time-log.entity';
 import { UserService } from '../user/user.service';
-import { BadRequestException } from '@nestjs/common/exceptions';
+import { BadRequestException, HttpException } from '@nestjs/common/exceptions';
 import * as bcrypt from 'bcrypt';
 import CreateTimeLogDto from './dto/create-time-log.dto';
 
@@ -52,23 +52,31 @@ export class UserTimeLogService {
   }
 
   async create(value: CreateTimeLogDto) {
-    const user = await this.userService.getClientBy('username', value.login);
+    const user = await this.userService.getClientBy('login', value.login);
+    if (!user) {
+      throw new HttpException('user not found!', 404);
+    }
+
     const check = await this.userTimeLogRepository.findOne({
       where: {
         user: { id: user.id },
+        leave: IsNull(),
       },
     });
-    if (!check) {
-      if (!value.enter)
-        throw new BadRequestException('Leave must be value!');
 
-      const data = this.userTimeLogRepository.create(value);
+    if (!check) {
+      const data = this.userTimeLogRepository.create({ enter: new Date(value.date), user });
       await this.userTimeLogRepository.save(data);
     } else {
-      if (!value.leave)
-        throw new BadRequestException('Leave must be value!');
+      const leave = new Date(value.date);
+      const enterTime = new Date(check.enter).getTime();
+      const leaveTime = new Date(leave).getTime();
+      const timeDifference = leaveTime - enterTime;
 
-      await this.userTimeLogRepository.update({ id: check.id }, { leave: value.leave });
+      await this.userTimeLogRepository.update({ id: check.id }, {
+        leave,
+        totalTime: +(timeDifference / (1000 * 60 * 60)).toFixed(2),
+      });
     }
   }
 
@@ -77,6 +85,7 @@ export class UserTimeLogService {
     if (!user) {
       throw new BadRequestException('Invalid login or password.');
     }
+
     const isSame = await bcrypt.compare(password, user.password);
     if (!isSame) {
       throw new BadRequestException('Invalid login or password.');

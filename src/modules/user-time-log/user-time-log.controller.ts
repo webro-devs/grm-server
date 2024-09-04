@@ -24,19 +24,18 @@ export class UserTimeLogController {
   @HttpCode(HttpStatus.OK)
   async getTimeLogs(@Query() query: any): Promise<UserTimeLog[]> {
     let where = {
-        user: {
-          ...(query.user && { id: query.user }),
-          ...(query.filial && { filial: { id: query.filial } }),
-        },
-        ...(query.enter && { enter: MoreThanOrEqual(query.enter) }),
-        ...(query.leave && { enter: LessThanOrEqual(query.leave) }),
-      };
+      user: {
+        ...(query.user && { id: query.user }),
+        ...(query.filial && { filial: { id: query.filial } }),
+      },
+      ...(query.enter && { enter: MoreThanOrEqual(query.enter) }),
+      ...(query.leave && { enter: LessThanOrEqual(query.leave) }),
+    };
     return this.userTimeLogService.getAll(where);
   }
 
   @Public()
   @Post('/:login/:password')
-  @Roles(UserRoleEnum.BOSS, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
   @ApiOperation({ summary: 'Method: creates new Time Log' })
   @ApiCreatedResponse({
     description: 'The Time Log was created successfully',
@@ -46,10 +45,10 @@ export class UserTimeLogController {
     @Body() data: CreateTimeLogDto,
     @Param('login') login: string,
     @Param('password') password: string,
-  ): Promise<string> {
-    await this.userTimeLogService.checkBoss({ login, password });
+  ): Promise<object> {
+    await this.userTimeLogService.checkBoss({ login: '#' + login, password: '#' + password });
     await this.userTimeLogService.create(data);
-    return 'pk';
+    return { msg: 'ok' };
   }
 
   @Roles(UserRoleEnum.BOSS)

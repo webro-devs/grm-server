@@ -16,6 +16,8 @@ import { PositionService } from '../position/position.service';
 import { UserRoleEnum } from '../../infra/shared/enum';
 import { ProductService } from '../product/product.service';
 import { ActionService } from '../action/action.service';
+import { BadRequestException } from '@nestjs/common/exceptions';
+import * as bcrypt from 'bcrypt';
 
 Injectable();
 export class UserService {
@@ -74,7 +76,7 @@ export class UserService {
 
   async getClientBy(key: string, value: string) {
     return await this.userRepository.findOne({
-      where: { [key]: value },
+      where: { [key]: value, isActive: true },
     });
   }
 
@@ -241,7 +243,11 @@ export class UserService {
   }
 
   async getUsersHook() {
-    return await this.userRepository.find({
+    return await this.userRepository.findOne({
+      where: {
+        isActive: true,
+        isUpdated: true,
+      },
       relations: {
         position: true,
         filial: true
@@ -249,6 +255,17 @@ export class UserService {
     });
   }
 
+  async checkBoss({ login, password }) {
+    const user = await this.getByLogin(login);
+    if (!user) {
+      throw new BadRequestException('Invalid login or password.');
+    }
+
+    const isSame = await bcrypt.compare(password, user.password);
+    if (!isSame) {
+      throw new BadRequestException('Invalid login or password.');
+    }
+  }
   deleteBackup(backupFilePath: string): void {
     shell.rm(backupFilePath);
   }

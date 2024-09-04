@@ -1,5 +1,6 @@
-import { BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../user/user.entity';
+import { ColumnNumericTransformer } from 'src/infra/helpers';
 
 @Entity('userTimeLog')
 export class UserTimeLog {
@@ -13,20 +14,14 @@ export class UserTimeLog {
   @Column()
   enter: Date;
 
-  @Column()
+  @Column({nullable: true})
   leave: Date;
 
-  @Column('int')
+  @Column('numeric', {
+    precision: 20,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+    default: 0,
+  })
   totalTime: number;
-
-  @BeforeUpdate()
-  async calcTotalTime() {
-    if (this.leave) {
-      const enterTime = new Date(this.enter).getTime();
-      const leaveTime = new Date(this.leave).getTime();
-      const timeDifference = leaveTime - enterTime;
-
-      this.totalTime = timeDifference / (1000 * 60 * 60);
-    }
-  }
 }

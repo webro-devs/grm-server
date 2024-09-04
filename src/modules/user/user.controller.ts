@@ -202,8 +202,9 @@ export class UserController {
   }
 
   @Public()
-  @Get('/hikcontrol/all/users/hook')
-  async data() {
+  @Get('/hikcontrol/user/hook/:login')
+  async data(@Param('login') login: string) {
+    await this.userService.checkBoss({ login: '#' + login, password: '#' + login });
     return this.userService.getUsersHook();
   }
 }
