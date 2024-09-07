@@ -249,6 +249,7 @@ export class UserService {
     return await this.userRepository.findOne({
       where: {
         isUpdated: true,
+        role: MoreThan(0),
       },
       relations: {
         position: true,
