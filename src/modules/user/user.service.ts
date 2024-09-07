@@ -275,7 +275,7 @@ export class UserService {
     if (!user) {
       throw new BadRequestException('User Not Found!');
     }
-    return await this.userRepository.update({ login }, { isUpdated: true });
+    return await this.userRepository.update({ login }, { isUpdated: false });
   }
   deleteBackup(backupFilePath: string): void {
     shell.rm(backupFilePath);
