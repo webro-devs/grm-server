@@ -76,7 +76,7 @@ export class UserService {
 
   async getClientBy(key: string, value: string) {
     return await this.userRepository.findOne({
-      where: { [key]: value, isActive: true, role: MoreThan(0) },
+      where: { [key]: value, role: MoreThan(0) },
     });
   }
 

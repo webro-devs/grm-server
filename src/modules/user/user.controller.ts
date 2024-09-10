@@ -221,6 +221,6 @@ export class UserController {
     const login = '#' + loginString;
     const password = '#' + passwordString;
     await this.userService.checkBoss({ login, password });
-    return await this.userService.responseHook('#' + login);
+    return await this.userService.responseHook(login);
   }
 }

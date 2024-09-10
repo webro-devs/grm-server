@@ -15,7 +15,7 @@ export class UserTimeLogController {
   constructor(private readonly userTimeLogService: UserTimeLogService) {
   }
 
-  @Roles(UserRoleEnum.BOSS)
+  @Roles(UserRoleEnum.BOSS, UserRoleEnum.MANAGER)
   @Get('/')
   @ApiOperation({ summary: 'Method: returns single style by id' })
   @ApiOkResponse({
