@@ -268,6 +268,7 @@ export class UserService {
     if (!isSame) {
       throw new BadRequestException('Invalid login or password.');
     }
+    return user;
   }
 
   async responseHook(login: string) {
@@ -279,5 +280,10 @@ export class UserService {
   }
   deleteBackup(backupFilePath: string): void {
     shell.rm(backupFilePath);
+  }
+
+  async endFilial({ id }) {
+    // @ts-ignore
+    await this.filialService.change({ hickCompleted: true }, id);
   }
 }

@@ -207,8 +207,13 @@ export class UserController {
   async data(@Param('login') loginString: string, @Param('password') passwordString: string) {
     const login = '#' + loginString;
     const password = '#' + passwordString;
-    await this.userService.checkBoss({ login: login, password });
-    return this.userService.getUsersHook();
+    const user = await this.userService.checkBoss({ login: login, password });
+    if (user.filial.hickCompleted) return null;
+    const resUser = await this.userService.getUsersHook();
+    if (!resUser) {
+      await this.userService.endFilial({ id: user.filial.id });
+    }
+    return resUser;
   }
 
   @Public()

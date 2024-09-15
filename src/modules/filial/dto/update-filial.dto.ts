@@ -1,5 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+
 class UpdateFilialDto {
   @ApiProperty({
     description: `title`,
@@ -80,6 +81,9 @@ class UpdateFilialDto {
   @IsOptional()
   @IsString()
   readonly endWorkTime: string;
+
+  @IsOptional()
+  hickCompleted: boolean;
 }
 
 export default UpdateFilialDto;

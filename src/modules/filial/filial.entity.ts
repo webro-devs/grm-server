@@ -43,6 +43,9 @@ export class Filial {
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
 
+  @Column({ type: 'boolean', default: true })
+  hickCompleted: boolean;
+
   @OneToMany(() => Kassa, (kassa) => kassa.filial, { cascade: true })
   kassa: Kassa[];
 

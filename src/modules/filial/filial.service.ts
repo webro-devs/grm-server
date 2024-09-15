@@ -65,8 +65,7 @@ export class FilialService {
   }
 
   async change(value: UpdateFilialDto, id: string) {
-    const response = await this.filialRepository.update({ id }, value);
-    return response;
+    return await this.filialRepository.update({ id }, value);
   }
 
   async create(value: CreateFilialDto) {
