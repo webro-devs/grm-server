@@ -6,6 +6,7 @@ import { UserService } from '../user/user.service';
 import { BadRequestException, HttpException } from '@nestjs/common/exceptions';
 import * as bcrypt from 'bcrypt';
 import CreateTimeLogDto from './dto/create-time-log.dto';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class UserTimeLogService {
@@ -72,10 +73,12 @@ export class UserTimeLogService {
       const enterTime = new Date(check.enter).getTime();
       const leaveTime = new Date(leave).getTime();
       const timeDifference = leaveTime - enterTime;
+      const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
 
-      await this.userTimeLogRepository.update({ id: check.id }, {
+      minutes > 10 && await this.userTimeLogRepository.update({ id: check.id }, {
         leave,
-        totalTime: +(timeDifference / (1000 * 60 * 60)).toFixed(2),
+        totalTime: Number(`${hours}.${minutes < 10 ? '0': ''}${minutes}`),
       });
     }
   }
@@ -90,5 +93,21 @@ export class UserTimeLogService {
     if (!isSame) {
       throw new BadRequestException('Invalid login or password.');
     }
+  }
+
+  @Cron('0 20 * * *', {
+    name: 'userLogs',
+  })
+  async closeAtEightCron() {
+    const query = () => `
+UPDATE "userTimeLog"
+SET
+    leave = NOW(),  -- Set the leave time to the current timestamp
+    "totalTime" = FLOOR(EXTRACT(epoch FROM age(NOW(), enter)) / 3600) +  -- Hours part
+                (FLOOR((EXTRACT(epoch FROM age(NOW(), enter)) % 3600) / 60) / 100.0)  -- Minutes part as decimal
+WHERE leave is null;
+`;
+    const data = await this.userTimeLogRepository.query(query());
+    console.log(data);
   }
 }

@@ -43,9 +43,11 @@ export class ProductService {
     _user?: { role: number; },
   ) {
     if (where?.['fields']) {
-      if(!where['search']){
-        throw new BadRequestException('Search must be exist something');
+      if (!where['search']) {
+        throw new BadRequestException('Search must be provided.');
       }
+
+      // Fetch products
       const products = (await this.productRepository.query(prodSearch({
         text: where['search'],
         filialId: where?.filial,
@@ -57,6 +59,7 @@ export class ProductService {
         collection: where.model?.['collection']?.id
       }))) || [];
 
+      // Fetch total count
       const total = (await this.productRepository.query(prodSearch({
         text: where['search'],
         filialId: where?.filial,
@@ -71,20 +74,19 @@ export class ProductService {
       return {
         items: products,
         meta: {
-          "totalItems": +total[0].count,
-          "itemCount": products.length,
-          "itemsPerPage": +options.limit,
-          "totalPages": Math.ceil(+total[0].count / +options.limit),
-          "currentPage": +options.page
+          totalItems: +total[0].total,
+          itemCount: products.length,
+          itemsPerPage: +options.limit,
+          totalPages: Math.ceil(+total[0].total / +options.limit),
+          currentPage: +options.page,
         },
       };
     }
 
+    // Default pagination if no custom search is performed
     return paginate<Product>(this.productRepository, options, {
       relations: {
-        model: {
-          collection: true,
-        },
+        model: { collection: true },
         filial: true,
         color: true,
       },
@@ -92,11 +94,15 @@ export class ProductService {
         ...where,
         y: MoreThan(0),
         count: MoreThan(0),
-        ...(_user && _user?.role > 2 ? { ...(where.filial && { filial: { id: where.filial['id'] } }) } : { filial: { title: Not('baza'), ...(where.filial && { id: where.filial['id'] }) } }),
+        ...(_user && _user?.role > 2
+            ? { ...(where.filial && { filial: { id: where.filial['id'] } }) }
+            : { filial: { title: Not('baza'), ...(where.filial && { id: where.filial['id'] }) } }
+        ),
       },
       order: { date: 'DESC' },
     });
   }
+
 
   async getOne(id: string) {
     return this.productRepository
