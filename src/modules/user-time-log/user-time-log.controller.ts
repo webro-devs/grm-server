@@ -1,4 +1,17 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
 import { LessThanOrEqual, MoreThanOrEqual, UpdateResult } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -8,6 +21,7 @@ import { UserTimeLogService } from './user-time-log.service';
 import { UserTimeLog } from './user-time-log.entity';
 import { Public } from '../auth/decorators/public.decorator';
 import CreateTimeLogDto from './dto/create-time-log.dto';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('User Time Logs')
 @Controller('user-time-log')
@@ -74,5 +88,15 @@ export class UserTimeLogController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteData(@Param('id') id: string) {
     return await this.userTimeLogService.deleteOne(id);
+  }
+
+  @Public()
+  @Post('/')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(AnyFilesInterceptor())
+  async createTimeLog(
+    @UploadedFiles() files: Array<Express.Multer.File>, @Body() body: { event_log: string },
+  ) {
+    return await this.userTimeLogService.createLog(body);
   }
 }

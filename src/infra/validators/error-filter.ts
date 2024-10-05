@@ -12,6 +12,7 @@ class ErrorFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
+    console.log("Error: \n", exception);
 
     response.status(status).json({
       statusCode: status,

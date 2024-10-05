@@ -110,4 +110,18 @@ WHERE leave is null;
     const data = await this.userTimeLogRepository.query(query());
     console.log(data);
   }
+
+  async createLog(body: { event_log: string }) {
+    const { event_log } = body;
+    const data = JSON.parse(event_log);
+    const event = data?.['AccessControllerEvent'];
+    if (event?.['currentVerifyMode'] === 'faceOrPw' && event?.['employeeNoString']) {
+      const body = {
+        login: '#' + event?.['employeeNoString'],
+        date: data.dateTime,
+      };
+      return await this.create(body);
+    }
+    return 'ok';
+  }
 }
