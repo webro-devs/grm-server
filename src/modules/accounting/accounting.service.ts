@@ -5,7 +5,7 @@ import { ProductService } from '../product/product.service';
 import { CollectionService } from '../collection/collection.service';
 import { ClientOrderService } from '../client-order/client-order.service';
 import { paginateArray } from 'src/infra/helpers';
-import { EntityManager, In } from 'typeorm';
+import { EntityManager, In, MoreThan } from 'typeorm';
 import { OrderCashflowDto } from './dto';
 import { OrderService } from '../order/order.service';
 
@@ -63,6 +63,8 @@ export class AccountingService {
       );
 
       const { remainingSize, remainingSum } = await this.productService.remainingProducts({
+        count: MoreThan(0.5),
+        y: MoreThan(0.9),
         filial: { id: where.filial.id },
         ...(where.date && { date: where.date }),
       });
