@@ -76,7 +76,7 @@ export class UserTimeLogService {
       const hours = Math.floor(timeDifference / (1000 * 60 * 60));
       const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
 
-      +minutes > 1 && await this.userTimeLogRepository.update({ id: check.id }, {
+      minutes > 10 && await this.userTimeLogRepository.update({ id: check.id }, {
         leave,
         totalTime: Number(`${hours}.${minutes < 10 ? '0': ''}${minutes}`),
       });
@@ -116,17 +116,11 @@ WHERE leave is null;
     const data = JSON.parse(event_log);
     const event = data?.['AccessControllerEvent'];
     if (event?.['currentVerifyMode'] === 'faceOrPw' && event?.['employeeNoString']) {
-      const bodyContent = {
+      const body = {
         login: '#' + event?.['employeeNoString'],
         date: data.dateTime,
       };
-      try {
-        console.log(bodyContent);
-        await this.create(bodyContent);
-      } catch (e) {
-        console.log(e);
-      }
-      return 'ok';
+      return await this.create(body);
     }
     return 'ok';
   }

@@ -78,12 +78,12 @@ export class ColorService {
 
   async mergeColors() {
     const colors: Color[] = await this.getAll();
-    const groupedColors: Color[] = this.groupSimilarColors(colors);
+    const groupedColors: any[] = this.groupSimilarColors(colors);
 
     return groupedColors;
   }
 
-  private groupSimilarColors(colors: Color[]): Color[] {
+  private groupSimilarColors(colors: Color[]): any[] {
     const groupedColorsMap = new Map<string, Color[]>();
 
     colors.forEach((color) => {

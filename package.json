@@ -74,7 +74,6 @@
     "@types/multer": "^1.4.7",
     "@types/node": "^16.0.0",
     "@types/node-cron": "^3.0.11",
-    "@types/shelljs": "^0.8.15",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
