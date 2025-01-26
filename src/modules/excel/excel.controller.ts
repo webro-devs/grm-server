@@ -115,10 +115,8 @@ export class ExcelController {
     description: 'The data imported and saved to partiya successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async GetProducts(@Param('id') id: string) {
-    const response = await this.fileService.readProducts(id);
-
-    return response;
+  async GetProducts(@Param('id') id: string, @Param('search') search: string) {
+    return await this.fileService.readProducts(id, search);
   }
 
   @Public()

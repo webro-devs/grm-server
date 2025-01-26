@@ -189,12 +189,12 @@ export class ExcelService {
       .execute();
   }
 
-  async readProducts(partiyaId: string) {
+  async readProducts(partiyaId: string, search: string) {
     const partiya = await this.partiyaService.getOne(partiyaId);
     if (partiya) {
-      const data = await this.partiyaService.getOneProds(partiyaId);
+      const data = await this.partiyaService.getOneProds(partiyaId, search);
 
-      return excelDataParser(data.productsExcel, partiya.expense);
+      return excelDataParser(data?.productsExcel || [], partiya.expense);
     }
     throw new BadRequestException('Partiya not found!');
   }

@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 
 import { Partiya } from './partiya.entity';
 import { CreatePartiyaDto, UpdatePartiyaDto } from './dto';
 import { deleteFile, partiyaDateSort } from '../../infra/helpers';
 import { ExcelService } from '../excel/excel.service';
-import { MoreThan, Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { ActionService } from '../action/action.service';
 
 Injectable();
@@ -50,8 +50,8 @@ export class PartiyaService {
     return (await this.processInputData({ items: [data] })).items[0];
   }
 
-  async getOneProds(id: string) {
-    const data = await this.partiyaRepository
+  async getOneProds(id: string, search: string | boolean = false) {
+    return await this.partiyaRepository
       .findOne({
         relations: {
           productsExcel: {
@@ -63,13 +63,11 @@ export class PartiyaService {
             style: true,
           },
         },
-        where: { id },
+        where: { id, ...(search && { productsExcel: { model: { collection: { title: ILike(`%${search}%`) } } } }) },
       })
       .catch(() => {
         throw new NotFoundException('data not found');
       });
-
-    return data;
   }
 
   async deleteOne(id: string) {
