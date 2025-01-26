@@ -63,8 +63,8 @@ export class PartiyaService {
             style: true,
           },
         },
-        where: { id, ...(search && { productsExcel: { model: { collection: { title: ILike(`%${search}%`) } } } }) },
-        order: { productsExcel: { model: { collection: { title: 'asc' } } } },
+        where: { id, ...(search && { productsExcel: { collection: { title: ILike(`%${search}%`) } } }) },
+        order: { productsExcel: { collection: { title: 'asc' } } },
       })
       .catch(() => {
         throw new NotFoundException('data not found');
