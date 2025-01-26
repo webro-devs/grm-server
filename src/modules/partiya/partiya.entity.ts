@@ -38,5 +38,5 @@ export class Partiya {
   excel: Excel;
 
   @OneToMany(() => ProductExcel, (product) => product.partiya, { cascade: true })
-  productsExcel: ProductExcel[];
+    productsExcel: ProductExcel[];
 }

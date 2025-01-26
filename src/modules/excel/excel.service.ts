@@ -8,7 +8,7 @@ import { Excel } from './excel.entity';
 import { ProductExcel } from './excel-product.entity';
 import { deleteFile, excelDataParser } from 'src/infra/helpers';
 import { FileService } from '../file/file.service';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { PartiyaService } from '../partiya/partiya.service';
 import { ProductService } from '../product/product.service';
 import { CollectionService } from '../collection/collection.service';
@@ -192,9 +192,28 @@ export class ExcelService {
   async readProducts(partiyaId: string, search: string) {
     const partiya = await this.partiyaService.getOne(partiyaId);
     if (partiya) {
-      const data = await this.partiyaService.getOneProds(partiyaId, search);
+      // const data = await this.partiyaService.getOneProds(partiyaId, search);
+      const res_data = await this.productExcelRepository.find({
+        relations: {
+          collection: true,
+          model: { collection: true },
+          color: true,
+          size: true,
+          shape: true,
+          style: true,
+        },
+        where: {
+          partiya: { id: partiyaId },
+          ...(search && { collection: { title: ILike(`%${search}%`) } }),
+        },
+        order: {
+          collection: {
+            title: 'asc',
+          },
+        },
+      });
 
-      return excelDataParser(data?.productsExcel || [], partiya.expense);
+      return excelDataParser(res_data || [], partiya.expense);
     }
     throw new BadRequestException('Partiya not found!');
   }

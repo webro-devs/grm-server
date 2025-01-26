@@ -116,6 +116,7 @@ export class ExcelController {
   })
   @HttpCode(HttpStatus.CREATED)
   async GetProducts(@Param('id') id: string, @Param('search') search: string) {
+    console.log("search ========>", search);
     return await this.fileService.readProducts(id, search);
   }
 
