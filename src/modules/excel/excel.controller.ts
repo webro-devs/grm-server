@@ -1,4 +1,4 @@
-import { Controller, HttpCode, HttpStatus, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, HttpCode, HttpStatus, Param, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 
 import * as path from 'path';
 import { existsSync } from 'fs';
@@ -115,7 +115,7 @@ export class ExcelController {
     description: 'The data imported and saved to partiya successfully',
   })
   @HttpCode(HttpStatus.CREATED)
-  async GetProducts(@Param('id') id: string, @Param('search') search: string) {
+  async GetProducts(@Param('id') id: string, @Query('search') search: string) {
     console.log("search ========>", search);
     return await this.fileService.readProducts(id, search);
   }
