@@ -89,6 +89,9 @@ export class ProductService {
         model: { collection: true },
         filial: true,
         color: true,
+        bookings: {
+          user: { filial: true },
+        },
       },
       where: {
         ...where,
