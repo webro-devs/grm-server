@@ -37,6 +37,7 @@ import { IsUniqueConstraint } from './infra/shared/decorators/is-unique.constrai
 import { OrderBasketModule } from './modules/order-basket/order-basket.module';
 import { IncrementModule } from './modules/increment/increment.module';
 import { UserTimeLogModule } from './modules/user-time-log/user-time-log.module';
+import { BookingModule } from './modules/booking/booking.module';
 
 @Module({
   imports: [
@@ -85,6 +86,7 @@ import { UserTimeLogModule } from './modules/user-time-log/user-time-log.module'
     TransferModule,
     UserModule,
     UserTimeLogModule,
+    BookingModule,
   ],
   providers: [IsUniqueConstraint],
 })

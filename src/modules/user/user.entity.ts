@@ -19,6 +19,7 @@ import { ClientOrder } from '../client-order/client-order.entity';
 import { Product } from '../product/product.entity';
 import { Transfer } from '../transfer/transfer.entity';
 import { UserTimeLog } from '../user-time-log/user-time-log.entity';
+import { Booking } from '../booking/booking.entity';
 
 @Entity('users')
 export class User {
@@ -102,6 +103,9 @@ export class User {
 
   @OneToMany(() => UserTimeLog, (transfer) => transfer.user)
   timeLogs: UserTimeLog[];
+
+  @OneToMany(() => Booking, (bk) => bk.user)
+  bookings: Booking[];
 
   public async hashPassword(password: string): Promise<void> {
     this.password = await bcrypt.hash(password, 10);

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Order } from '../order/order.entity';
 import { Filial } from '../filial/filial.entity';
 import { Partiya } from '../partiya/partiya.entity';
@@ -7,6 +7,7 @@ import { User } from '../user/user.entity';
 import { ClientOrder } from '../client-order/client-order.entity';
 import { ColumnNumericTransformer } from '../../infra/helpers';
 import { Color } from '../color/color.entity';
+import { Booking } from '../booking/booking.entity';
 
 @Entity('product')
 export class Product {
@@ -137,6 +138,9 @@ export class Product {
 
   @OneToMany(() => ClientOrder, (clientOrder) => clientOrder.product)
   clientOrders: ClientOrder[];
+
+  @OneToMany(() => Booking, (bk) => bk.product)
+  bookings: Booking[];
 
   public setTotalSize() {
     this.totalSize = +this.x * +this.y * this.count;
