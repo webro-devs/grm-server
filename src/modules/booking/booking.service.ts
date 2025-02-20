@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { FindOptionsWhere, Repository } from 'typeorm';
@@ -16,6 +16,7 @@ export class BookingService {
   }
 
   async create(createBooking: CreateBookingDto, user: User) {
+    await this.checkDuplicate({ userId: user.id, productId: createBooking.product });
     const data = this.repository.create({ product: createBooking.product, user: user, count: createBooking.count });
     await this.repository.save(data);
     return data;
@@ -28,7 +29,7 @@ export class BookingService {
       },
       relations: {
         product: {
-          model: true,
+          model: { collection: true },
           color: true,
           filial: true,
         },
@@ -54,5 +55,21 @@ export class BookingService {
 
   async remove(id: string) {
     return await this.repository.delete(id);
+  }
+
+  async checkDuplicate({ userId, productId }) {
+    const data = await this.repository.findOne({
+      where: {
+        product: {
+          id: productId,
+        },
+        user: {
+          id: userId,
+        },
+      },
+    });
+
+    if (data)
+      throw new BadRequestException('You already book this product.');
   }
 }

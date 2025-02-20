@@ -5,12 +5,14 @@ import { Repository, UpdateResult } from 'typeorm';
 import { createOrderBasketDto, orderBasketUpdateDto } from './dto';
 import { User } from '../user/user.entity';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
+import { BookingService } from '../booking/booking.service';
 
 @Injectable()
 export class OrderBasketService {
   constructor(
     @InjectRepository(OrderBasket)
     private readonly orderBasketRepository: Repository<OrderBasket>,
+    private readonly bookingService: BookingService,
   ) {
   }
 
@@ -48,6 +50,7 @@ export class OrderBasketService {
        throw new BadRequestException('It is not your product!');
       }
     }
+    await this.bookingService.checkDuplicate({ userId: user.id, productId: product.id});
     const baskects = await this.orderBasketRepository.find({
       where: {
         product: { id: value.product },
