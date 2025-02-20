@@ -3,7 +3,7 @@ import { NextFunction } from 'express';
 
 @Injectable()
 class BookingQueryParserMiddleware implements NestMiddleware {
-  use(req, next: NextFunction) {
+  use(req, res, next: NextFunction) {
     let where: any = {};
     let relations: any = {};
     let { product, count }: { product: string, count: string } = req.query;

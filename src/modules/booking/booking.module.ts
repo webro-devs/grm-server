@@ -12,7 +12,7 @@ import { Booking } from './booking.entity';
   imports: [TypeOrmModule.forFeature([Booking])],
 })
 export class BookingModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): any {
+  configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(BookingQueryParserMiddleware)
       .forRoutes(

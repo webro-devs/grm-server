@@ -5,6 +5,7 @@ import { UpdateBookingDto } from './dto/update-booking.dto';
 import { ProductQueryDto } from '../../infra/shared/dto';
 import { Route } from '../../infra/shared/decorators/route.decorator';
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Booking')
 @Controller('booking')
@@ -39,7 +40,7 @@ export class BookingController {
   })
   @HttpCode(HttpStatus.OK)
   async findAllByUser(@Query() query: ProductQueryDto, @Route() route: string, @Req() req) {
-    return await this.bookingService.findAll({ limit: query.limit, page: query.page, route }, req.where, req.user);
+    return await this.bookingService.findAll({ limit: query.limit, page: query.page, route }, req.where, req?.user);
   }
 
   @Get(':id')
