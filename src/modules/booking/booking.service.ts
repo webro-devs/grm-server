@@ -61,6 +61,10 @@ export class BookingService {
   }
 
   async remove(id: string) {
+    const book = await this.repository.findOne({ where: { id }, relations: { product: true } });
+    const total: number = book.product.book_count;
+    const count = total - book.count;
+    await this.productService.changeBookCount({ id: book.product.id, book_count: count < 0 ? 0 : count });
     return await this.repository.delete(id);
   }
 
