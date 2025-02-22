@@ -6,16 +6,19 @@ import { Booking } from './booking.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { User } from '../user/user.entity';
+import { ProductService } from '../product/product.service';
 
 @Injectable()
 export class BookingService {
   constructor(
     @InjectRepository(Booking)
     private readonly repository: Repository<Booking>,
+    private readonly productService: ProductService,
   ) {
   }
 
   async create(createBooking: CreateBookingDto, user: User) {
+    await this.checkAvailible({ product_id: createBooking.product, count: createBooking.count });
     await this.checkDuplicate({ userId: user.id, productId: createBooking.product });
     const data = this.repository.create({ product: createBooking.product, user: user, count: createBooking.count });
     await this.repository.save(data);
@@ -71,5 +74,14 @@ export class BookingService {
 
     if (data)
       throw new BadRequestException('You already book this product.');
+  }
+
+  async checkAvailible({ product_id, count }) {
+    const product = await this.productService.getOne(product_id);
+    const total = product.book_count || 0 + count;
+    if (product.shape.toLowerCase() === 'rulo' && product.y < total)
+      throw new BadRequestException('You can not get this length');
+    else if (product.count < total)
+      throw new BadRequestException('You can not book');
   }
 }

@@ -4,12 +4,13 @@ import { BookingController } from './booking.controller';
 import { BookingQueryParserMiddleware } from '../../infra/middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Booking } from './booking.entity';
+import { ProductModule } from '../product/product.module';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([Booking]), ProductModule],
   controllers: [BookingController],
   providers: [BookingService],
   exports: [BookingService],
-  imports: [TypeOrmModule.forFeature([Booking])],
 })
 export class BookingModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

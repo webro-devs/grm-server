@@ -94,6 +94,9 @@ export class Product {
   })
   totalSize: number;
 
+  @Column('int', { default: 0 })
+  book_count: number;
+
   @Column()
   style: string;
 
