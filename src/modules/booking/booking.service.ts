@@ -18,10 +18,14 @@ export class BookingService {
   }
 
   async create(createBooking: CreateBookingDto, user: User) {
-    await this.checkAvailible({ product_id: createBooking.product, count: createBooking.count });
+    const { product, total } = await this.checkAvailible({
+      product_id: createBooking.product,
+      count: createBooking.count,
+    });
     await this.checkDuplicate({ userId: user.id, productId: createBooking.product });
     const data = this.repository.create({ product: createBooking.product, user: user, count: createBooking.count });
     await this.repository.save(data);
+    await this.productService.changeBookCount({ id: product.id, book_count: total });
     return data;
   }
 
@@ -78,10 +82,12 @@ export class BookingService {
 
   async checkAvailible({ product_id, count }) {
     const product = await this.productService.getOne(product_id);
-    const total = product.book_count || 0 + count;
+    const total: number = product.book_count || 0 + count;
     if (product.shape.toLowerCase() === 'rulo' && product.y < total)
       throw new BadRequestException('You can not get this length');
     else if (product.count < total)
       throw new BadRequestException('You can not book');
+
+    return { product, total };
   }
 }

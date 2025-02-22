@@ -167,6 +167,8 @@ class UpdateProductDto {
 
   @IsOptional()
   totalSize: number;
+
+  book_count: number;
 }
 
 export default UpdateProductDto;

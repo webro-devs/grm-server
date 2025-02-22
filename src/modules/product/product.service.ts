@@ -461,4 +461,13 @@ export class ProductService {
 
     return product?.secondPrice || 0;
   }
+
+  async changeBookCount({ id, book_count }: { id: string, book_count: number }) {
+    return await this.productRepository
+      .createQueryBuilder()
+      .update()
+      .set({ book_count })
+      .where('id = :id', { id })
+      .execute();
+  }
 }
