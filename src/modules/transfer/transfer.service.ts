@@ -132,11 +132,13 @@ export class TransferService {
     if (product.shape.toLowerCase() === 'rulo') {
       count /= 100;
       if (product.y < count) {
+        console.log(product);
         throw new HttpException('Not enough meter product', HttpStatus.BAD_REQUEST);
       }
       product.y -= count;
     } else {
       if (count > product.count) {
+        console.log(product);
         throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
       }
       product.count -= count;
