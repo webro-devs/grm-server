@@ -14,7 +14,7 @@ import {
   DataSource,
   EntityManager,
   Equal,
-  FindOptionsWhere, In,
+  FindOptionsWhere,
   InsertResult,
   LessThan,
   MoreThan,
@@ -223,6 +223,7 @@ export class OrderService {
     const product = await this.productService.getOne(value.product);
     let additionalProfitSum, netProfitSum;
     if (product.count < 1) {
+      console.log(product);
       throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
     }
     const user = await this.entityManager

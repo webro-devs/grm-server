@@ -84,6 +84,7 @@ export class ClientOrderService {
     for await (const o of order) {
       const product = await this.productService.getOne(o.id);
       if(product.count < o.count){
+        console.log(product);
         throw new BadRequestException('Not enough product!');
       }
     }
