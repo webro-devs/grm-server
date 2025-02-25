@@ -19,6 +19,7 @@ async function bootstrap() {
   });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.use(bodyParser.text({ type: 'application/xml' }));
+  app.use(bodyParser.json({ limit: '50mb' }));
 
   app.enableCors({
     origin: true,
