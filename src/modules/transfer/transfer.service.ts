@@ -12,6 +12,7 @@ import { ActionService } from '../action/action.service';
 import { FilialService } from '../filial/filial.service';
 
 Injectable();
+
 export class TransferService {
   constructor(
     @InjectRepository(Transfer)
@@ -21,14 +22,15 @@ export class TransferService {
     private readonly connection: DataSource,
     private readonly actionService: ActionService,
     private readonly filialService: FilialService,
-  ) {}
+  ) {
+  }
 
   async getAll(
     options: IPaginationOptions,
     where?: FindOptionsWhere<Transfer & { to: string, from: string, type: string, filial: any, }>,
     user?): Promise<Pagination<Transfer>> {
     const baza = await this.filialService.findOrCreateFilialByTitle('baza');
-    if(!user?.filial){
+    if (!user?.filial) {
       user.filial = baza;
     }
 
@@ -95,15 +97,18 @@ export class TransferService {
     if (values.length) {
       await Promise.all(
         values.map(async (value) => {
-          size += (await this.takeSize(value.product, value.count)) || 0;
-          await this.takeProduct(value.product, value.count);
-          await this.transferRepository
-            .createQueryBuilder()
-            .insert()
-            .into(Transfer)
-            .values({ ...value, transferer: id } as unknown as Transfer)
-            .returning('id')
-            .execute();
+          const prod = await this.productService.getOne(value.product);
+          if (prod.count > 0 && prod.y > 0.3) {
+            size += (await this.takeSize(value.product, value.count)) || 0;
+            await this.takeProduct(value.product, value.count);
+            await this.transferRepository
+              .createQueryBuilder()
+              .insert()
+              .into(Transfer)
+              .values({ ...value, transferer: id } as unknown as Transfer)
+              .returning('id')
+              .execute();
+          }
         }),
       );
       const filial_1 = await this.filialService.getOne(values[0].from);
@@ -120,8 +125,8 @@ export class TransferService {
 
   async takeSize(id: string, count: number) {
     const product = await this.productService.getById(id);
-    if(product.shape.toLowerCase().trim() === 'rulo'){
-      return product.x * count / 100
+    if (product.shape.toLowerCase().trim() === 'rulo') {
+      return product.x * count / 100;
     }
     return product.x * product.y * count;
   }
@@ -132,13 +137,11 @@ export class TransferService {
     if (product.shape.toLowerCase() === 'rulo') {
       count /= 100;
       if (product.y < count) {
-        console.log(product);
         throw new HttpException('Not enough meter product', HttpStatus.BAD_REQUEST);
       }
       product.y -= count;
     } else {
       if (count > product.count) {
-        console.log(product);
         throw new HttpException('Not enough product', HttpStatus.BAD_REQUEST);
       }
       product.count -= count;
@@ -205,13 +208,16 @@ export class TransferService {
 
     await this.transferRepository.update(id, { cashier, progres: 'Accepted', isChecked: true });
 
-    await this.actionService.create({ ...transfer, progres: 'Accepted' }, cashier.id, cashier.filial.id, 'transfer_accept');
+    await this.actionService.create({
+      ...transfer,
+      progres: 'Accepted',
+    }, cashier.id, cashier.filial.id, 'transfer_accept');
 
     return 'Ok';
   }
 
   async rejectProduct(id: string, userId: string) {
-    const transfer = await this.transferRepository.findOne({ where: { id }, relations: { product: { filial: true} } });
+    const transfer = await this.transferRepository.findOne({ where: { id }, relations: { product: { filial: true } } });
     if (transfer.isChecked) {
       throw new BadRequestException('Transfer already ended!');
     }
@@ -221,7 +227,10 @@ export class TransferService {
 
     await this.transferRepository.update(id, { cashier, progres: 'Rejected', isChecked: true });
 
-    await this.actionService.create({ ...transfer, progres: 'Rejected' }, cashier?.id, cashier?.filial?.id || transfer.product.filial.id, 'transfer_reject');
+    await this.actionService.create({
+      ...transfer,
+      progres: 'Rejected',
+    }, cashier?.id, cashier?.filial?.id || transfer.product.filial.id, 'transfer_reject');
   }
 
   async checkTransferManager(id: string, userId: string) {
@@ -262,9 +271,12 @@ export class TransferService {
 
     await this.transferRepository.update(id, { cashier, progres: 'Accepted', isChecked: true });
 
-    await this.actionService.create({ ...transfer, progres: 'Accepted' }, cashier.id, cashier.filial.id, 'transfer_accept');
+    await this.actionService.create({
+      ...transfer,
+      progres: 'Accepted',
+    }, cashier.id, cashier.filial.id, 'transfer_accept');
 
-    console.log("transer res =>: ", res);
+    console.log('transer res =>: ', res);
     return res.raw[0].id;
   }
 }
