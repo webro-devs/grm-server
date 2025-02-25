@@ -98,7 +98,7 @@ export class TransferService {
       await Promise.all(
         values.map(async (value) => {
           const prod = await this.productService.getOne(value.product);
-          if (prod.count > 0 && prod.y > 0.3) {
+          if ((prod.count > 0 && prod.shape.toLowerCase() !== 'rulo') || (prod.y > 0.3 && prod.shape.toLowerCase() === 'rulo')) {
             size += (await this.takeSize(value.product, value.count)) || 0;
             await this.takeProduct(value.product, value.count);
             await this.transferRepository
