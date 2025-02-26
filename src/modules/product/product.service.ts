@@ -470,4 +470,18 @@ export class ProductService {
       .where('id = :id', { id })
       .execute();
   }
+
+  async getOneForTransfer(id: string) {
+    return this.productRepository
+      .findOne({
+        where: { id, count: MoreThan(0), y: MoreThan(0.3) },
+        relations: {
+          model: {
+            collection: true,
+          },
+          filial: true,
+          color: true,
+        },
+      });
+  }
 }
