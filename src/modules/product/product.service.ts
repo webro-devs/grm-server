@@ -484,4 +484,31 @@ export class ProductService {
         },
       });
   }
+
+  async calculateSum(
+    productIds: string[],
+    filialId: string
+  ) {
+    const query = this.productRepository
+      .createQueryBuilder('p')
+      .select([
+        'SUM(p.x * p.y * p.count * p."priceMeter") AS "totalSum"',
+        'SUM(p.count) AS "totalCount"',
+        'SUM(p.x * p.y * p.count * p."comingPrice") AS "totalComingSum"',
+        'SUM(p.x * p.y * p.count) AS "totalSize"',
+      ])
+      .where('p.count > 0.3 AND p.y > 0.3')
+      .andWhere('p."filialId = :filialId', { filialId });
+
+    if (productIds && productIds.length > 0) {
+      query.andWhere('p.id IN (:...productIds)', { productIds });
+    }
+
+    const result = await query.getRawOne();
+
+    return {
+      totalSum: Number(result.totalSum) || 0,
+      totalCount: Number(result.totalCount) || 0,
+    };
+  }
 }

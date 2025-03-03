@@ -52,7 +52,7 @@ export class UserController {
   async getme(@Req() request): Promise<User> {
     const user = await this.userService.getOne(request.user.id);
     if (!user.isActive) throw new UnauthorizedException();
-    return user;
+    return request.user;
   }
 
   @Get('/:id')

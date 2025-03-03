@@ -95,22 +95,20 @@ export class TransferService {
   async create(values: CreateTransferDto[], id: string) {
     let size = 0;
     if (values.length) {
-      await Promise.all(
-        values.map(async (value) => {
-          const prod = await this.productService.getOneForTransfer(value.product);
-          if (prod) {
-            size += (await this.takeSize(value.product, value.count)) || 0;
-            await this.takeProduct(value.product, value.count);
-            await this.transferRepository
-              .createQueryBuilder()
-              .insert()
-              .into(Transfer)
-              .values({ ...value, transferer: id } as unknown as Transfer)
-              .returning('id')
-              .execute();
-          }
-        }),
-      );
+      values.map(async (value) => {
+        const prod = await this.productService.getOneForTransfer(value.product);
+        if (prod) {
+          size += (await this.takeSize(value.product, value.count)) || 0;
+          await this.takeProduct(value.product, value.count);
+          await this.transferRepository
+            .createQueryBuilder()
+            .insert()
+            .into(Transfer)
+            .values({ ...value, transferer: id } as unknown as Transfer)
+            .returning('id')
+            .execute();
+        }
+      });
       const filial_1 = await this.filialService.getOne(values[0].from);
       const filial_2 = await this.filialService.getOne(values[0].to);
       await this.actionService.create(

@@ -29,7 +29,7 @@ import { Public } from '../auth/decorators/public.decorator';
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
-  @Roles(UserRoleEnum.SELLER, UserRoleEnum.CASHIER, UserRoleEnum.BOSS, UserRoleEnum.CLIENT, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
+  @Roles(UserRoleEnum.SELLER, UserRoleEnum.CASHIER, UserRoleEnum.BOSS, UserRoleEnum.CLIENT, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER, UserRoleEnum.FILIAL_MANAGER)
   @Get('/')
   @ApiOperation({ summary: 'Method: returns all products' })
   @ApiOkResponse({
@@ -48,6 +48,17 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   async getPriceInternetProduct(@Param('id') id: string) {
     return await this.productService.getPriceInternetProduct(id);
+  }
+
+  @Roles(UserRoleEnum.FILIAL_MANAGER)
+  @Get('/total-accounting/by/filial')
+  @ApiOperation({ summary: 'Method: returns all products' })
+  @ApiOkResponse({
+    description: 'The products were returned successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  async calculateSum(@Body() body: { products: string[] }, @Req() req) {
+    return await this.productService.calculateSum(body.products, req?.user?.filial?.id);
   }
 
   @Roles(UserRoleEnum.SELLER, UserRoleEnum.CASHIER, UserRoleEnum.BOSS, UserRoleEnum.CLIENT, UserRoleEnum.SUPPER_MANAGER, UserRoleEnum.MANAGER)
