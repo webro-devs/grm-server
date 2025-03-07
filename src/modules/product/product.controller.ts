@@ -208,6 +208,7 @@ export class ProductController {
     return this.productService.getRemainingProductsForAllFilial();
   }
 
+  @Public()
   @Get('/:id')
   @ApiOperation({ summary: 'Method: returns single product by id' })
   @ApiOkResponse({

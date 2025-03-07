@@ -30,6 +30,7 @@ export class TransferService {
     where?: FindOptionsWhere<Transfer & { to: string, from: string, type: string, filial: any, }>,
     user?): Promise<Pagination<Transfer>> {
     const baza = await this.filialService.findOrCreateFilialByTitle('baza');
+
     if (!user?.filial) {
       user.filial = baza;
     }
@@ -58,7 +59,7 @@ export class TransferService {
   }
 
   async getById(id: string) {
-    const data = await this.transferRepository
+    return await this.transferRepository
       .findOne({
         where: { id },
         relations: {
@@ -71,25 +72,21 @@ export class TransferService {
       .catch(() => {
         throw new NotFoundException('data not found');
       });
-
-    return data;
   }
 
   async deleteOne(id: string) {
-    const response = await this.transferRepository.delete(id).catch(() => {
+    return await this.transferRepository.delete(id).catch(() => {
       throw new NotFoundException('data not found');
     });
-    return response;
   }
 
   async change(value: UpdateTransferDto, id: string) {
-    const response = await this.transferRepository
+    return await this.transferRepository
       .createQueryBuilder()
       .update()
       .set(value as unknown as Transfer)
       .where('id = :id', { id })
       .execute();
-    return response;
   }
 
   async create(values: CreateTransferDto[], id: string) {
