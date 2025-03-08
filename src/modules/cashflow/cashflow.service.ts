@@ -1,6 +1,6 @@
-import { NotFoundException, Injectable, BadRequestException, Inject, forwardRef } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { CreateCashflowDto, UpdateCashflowDto } from './dto';
 
 import { Cashflow } from './cashflow.entity';
@@ -189,8 +189,10 @@ export class CashflowService {
       }
 
       if (value.type == 'Расход') {
+        if (kassa.totalSum < kassa.expenditureShop + value.price)
+          return new BadRequestException('Can not add expenditure');
         if (value.title == 'Магазин Расход') {
-          await this.actionService.create(data, id, kassa.filial.id, 'add_expense_cashflow_shop', `$${value.price}`);          
+          await this.actionService.create(data, id, kassa.filial.id, 'add_expense_cashflow_shop', `$${value.price}`);
           kassa.expenditureShop = kassa.expenditureShop + value.price;
         } else {
           await this.actionService.create(data, id, kassa.filial.id, 'add_expense_cashflow_boss', `$${value.price}`);
