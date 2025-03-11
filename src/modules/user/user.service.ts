@@ -43,6 +43,7 @@ export class UserService {
       where: {
         role: MoreThan(0),
         filial: { isActive: true },
+        isActive: true,
         ...(where.role && { position: { id: where.role } }),
         ...(where.filial && { filial: { id: where.filial, isActive: true } }),
       },
